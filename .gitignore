@@ -1,0 +1,102 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environment
+.venv
+venv
+
+# Environment variables
+.env
+.env.local
+.env*.local
+.env.example.local
+
+# Model weights & AI files
+*.pth
+*.pt
+*.ckpt
+model_weights/
+!model_weights/.gitkeep
+
+# Image files
+uploads/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.bmp
+*.svg
+
+# Node & Frontend
+node_modules/
+.next/
+out/
+.nuxt/
+dist/
+.cache/
+.parcel-cache
+.parcel-state
+.cache-loader
+*.tsbuildinfo
+.npm
+.eslintcache
+.node_repl_history
+*.tgz
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# IDEs & Editors
+.vscode/
+.vscode-insiders/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-workspace
+*.sublime-project
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# System
+.env.production.local
+.env.staging.local
+
+# Logs
+logs/
+*.log
