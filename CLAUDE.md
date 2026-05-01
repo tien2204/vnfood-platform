@@ -257,11 +257,32 @@ GROUP_TO_WEIGHT = {
 - [x] Thiết kế spec toàn bộ usecase
 - [x] normalize_ingredients.py (chuẩn hóa ingredients)
 - [x] CLAUDE.md + specs localhost version
+- [x] `docker-compose.yml` (PostgreSQL 16 + pgAdmin)
+- [x] FastAPI boilerplate: `backend/app/main.py` + health check endpoints
+- [x] `backend/app/core/config.py` (pydantic-settings load .env)
+- [x] `backend/requirements.txt` (fastapi, sqlalchemy, asyncpg, jose, passlib, torch...)
+- [x] `backend/.env` + `backend/.env.example`
+- [x] Cấu trúc thư mục đầy đủ: `api/v1/`, `models/`, `schemas/`, `services/`, `ai/`
+- [x] `backend/app/core/database.py` — async engine, AsyncSessionLocal, get_db(), Base
+- [x] ORM models đầy đủ 12 bảng (user, recipe, social, meal_plan, ai_log) với relationships, CASCADE, UNIQUE, CHECK constraints, indexes
+- [x] Alembic init + `alembic/env.py` (async engine, import models, đọc .env)
+- [x] Migration `0001_initial_schema.py` — 12 bảng, đầy đủ indexes + constraints
 
 ### Làm tiếp (session kế)
-- Setup docker-compose.yml
-- Khởi tạo FastAPI project
-- Khởi tạo Next.js project
+- Chạy `alembic upgrade head` để tạo bảng (cần Docker postgres đang chạy)
+- `backend/app/core/security.py` — JWT encode/decode, hash password
+- `backend/app/core/deps.py` — get_current_user, require_admin dependencies
+- `backend/app/schemas/` — Pydantic schemas cho auth + user
+- Auth endpoints: POST /api/v1/auth/register, /login, /refresh, /logout
+- Khởi tạo Next.js frontend project
+
+### Quyết định kỹ thuật đã chốt
+- PostgreSQL Docker thay Supabase
+- JWT tự handle (python-jose), không Supabase Auth
+- Ảnh lưu local `backend/uploads/`
+- AI model chạy trong FastAPI process (không tách HF Spaces)
+- Recipe JSON: dùng file `*_extracted.json` (đã có ingredients_extract)
+- Alembic migration viết thủ công (không dùng autogenerate) vì cần offline generation
 
 ### Quyết định kỹ thuật đã chốt
 - PostgreSQL Docker thay Supabase
