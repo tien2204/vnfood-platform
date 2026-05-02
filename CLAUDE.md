@@ -229,7 +229,7 @@ GROUP_TO_WEIGHT = {
 - [x] FastAPI boilerplate + DB migrations
 - [x] Auth: register, login, JWT refresh
 - [x] Script import 22k recipes JSON → DB
-- [ ] Recipe browse + search + filter APIs
+- [x] Recipe browse + search + filter APIs
 - [ ] Next.js setup + Homepage + Recipe list + Recipe detail
 
 ### Week 2 — Core Features
@@ -271,7 +271,7 @@ GROUP_TO_WEIGHT = {
 - [x] pgAdmin auto-register server (`pgadmin-servers.json`) + persistent volume `pgadmin_data` → config không mất khi `docker-compose down`/`up`
 - [x] `start.bat` — script tự động khởi động Docker + activate venv + chạy uvicorn
 - [x] `backend/app/core/security.py` — hash_password, verify_password, create_access_token, create_refresh_token, decode_token
-- [x] `backend/app/core/deps.py` — oauth2_scheme, get_current_user, get_current_active_user, require_admin
+- [x] `backend/app/core/deps.py` — oauth2_scheme, get_current_user, get_current_active_user, require_admin, get_optional_current_user
 - [x] `backend/app/schemas/auth.py` — RegisterRequest, LoginRequest, RefreshRequest, TokenResponse, UserOut, ChangePasswordRequest
 - [x] `backend/app/services/auth_service.py` — register_user, login, refresh_access_token, change_password
 - [x] `backend/app/api/v1/auth.py` — 5 endpoints: /register, /login, /refresh, /logout, /change-password
@@ -280,12 +280,16 @@ GROUP_TO_WEIGHT = {
 - [x] `backend/scripts/import_recipes.py` — import 22k recipes từ 9 file `*_extracted.json`, batch 200, idempotent (skip duplicate cookpad_url), argparse (--dry-run, --files, --batch-size)
 - [x] `backend/scripts/check_recipes.py` — verify recipes trong DB: total, by source, by keyword, by status
 - [x] 22k recipes đã import thành công vào DB (source=cookpad, status=approved)
+- [x] `backend/app/schemas/recipe.py` — AuthorOut, AuthorDetailOut, IngredientOut, StepOut, PaginationOut, RecipeCardOut, RecipeDetailOut
+- [x] `backend/app/services/recipe_service.py` — list_recipes, get_recipe_detail, increment_view_count (background), search_recipes (PostgreSQL full-text), get_featured_recipes, get_recipes_by_keyword, get_user_recipes
+- [x] `backend/app/api/v1/recipes.py` — 5 endpoints: GET /recipes, GET /recipes/featured, GET /recipes/search, GET /recipes/by-keyword/{slug}, GET /recipes/{id}
+- [x] `backend/app/api/v1/users.py` — GET /users/{user_id}/recipes (UC-13)
+- [x] `main.py` — mount recipes_router + users_router
 
 ### Làm tiếp (session kế)
-- `backend/app/api/v1/recipes.py` — GET /recipes (list + filter + search), GET /recipes/{id}
-- `backend/app/schemas/recipe.py` — RecipeOut, RecipeListItem, RecipeFilter
 - Khởi tạo Next.js frontend (create-next-app, Tailwind, shadcn/ui)
 - Homepage + Recipe list page + Recipe detail page
+- User đăng recipe + Admin duyệt (spec 03)
 
 ### Quyết định kỹ thuật đã chốt
 - PostgreSQL Docker thay Supabase

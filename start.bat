@@ -26,8 +26,9 @@ echo [3/4] Seeding admin user (skip if exists)...
 python scripts/seed_admin.py
 
 echo.
-echo --- NOTE: First run? Import 22k recipes if not done yet: ---
-echo       python scripts/import_recipes.py --dry-run
+echo --- NOTE: First run? Run these once if not done yet: --------
+echo       alembic upgrade head
+echo       python scripts/seed_admin.py
 echo       python scripts/import_recipes.py
 echo       python scripts/check_recipes.py
 echo ------------------------------------------------------------
