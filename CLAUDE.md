@@ -225,9 +225,9 @@ GROUP_TO_WEIGHT = {
 ## Thứ tự implement
 
 ### Week 1 — Foundation
-- [ ] docker-compose.yml + PostgreSQL
-- [ ] FastAPI boilerplate + DB migrations
-- [ ] Auth: register, login, JWT refresh
+- [x] docker-compose.yml + PostgreSQL
+- [x] FastAPI boilerplate + DB migrations
+- [x] Auth: register, login, JWT refresh
 - [ ] Script import 22k recipes JSON → DB
 - [ ] Recipe browse + search + filter APIs
 - [ ] Next.js setup + Homepage + Recipe list + Recipe detail
@@ -267,14 +267,22 @@ GROUP_TO_WEIGHT = {
 - [x] ORM models đầy đủ 12 bảng (user, recipe, social, meal_plan, ai_log) với relationships, CASCADE, UNIQUE, CHECK constraints, indexes
 - [x] Alembic init + `alembic/env.py` (async engine, import models, đọc .env)
 - [x] Migration `0001_initial_schema.py` — 12 bảng, đầy đủ indexes + constraints
+- [x] Đã chạy `alembic upgrade head` thành công — 12 bảng đã tạo trong PostgreSQL
+- [x] pgAdmin auto-register server (`pgadmin-servers.json`) + persistent volume `pgadmin_data` → config không mất khi `docker-compose down`/`up`
+- [x] `start.bat` — script tự động khởi động Docker + activate venv + chạy uvicorn
+- [x] `backend/app/core/security.py` — hash_password, verify_password, create_access_token, create_refresh_token, decode_token
+- [x] `backend/app/core/deps.py` — oauth2_scheme, get_current_user, get_current_active_user, require_admin
+- [x] `backend/app/schemas/auth.py` — RegisterRequest, LoginRequest, RefreshRequest, TokenResponse, UserOut, ChangePasswordRequest
+- [x] `backend/app/services/auth_service.py` — register_user, login, refresh_access_token, change_password
+- [x] `backend/app/api/v1/auth.py` — 5 endpoints: /register, /login, /refresh, /logout, /change-password
+- [x] `main.py` — mount auth_router tại /api/v1/auth
+- [x] `backend/scripts/seed_admin.py` — tạo admin@vnfood.local / Admin@123 (idempotent)
 
 ### Làm tiếp (session kế)
-- Chạy `alembic upgrade head` để tạo bảng (cần Docker postgres đang chạy)
-- `backend/app/core/security.py` — JWT encode/decode, hash password
-- `backend/app/core/deps.py` — get_current_user, require_admin dependencies
-- `backend/app/schemas/` — Pydantic schemas cho auth + user
-- Auth endpoints: POST /api/v1/auth/register, /login, /refresh, /logout
-- Khởi tạo Next.js frontend project
+- `backend/scripts/import_recipes.py` — import 22k recipes từ `cookpad_recipe/*_extracted.json` vào DB
+- `backend/app/api/v1/recipes.py` — GET /recipes (list + filter), GET /recipes/{id}
+- `backend/app/schemas/recipe.py` — RecipeOut, RecipeListItem, RecipeFilter
+- Khởi tạo Next.js frontend (create-next-app, Tailwind, shadcn/ui)
 
 ### Quyết định kỹ thuật đã chốt
 - PostgreSQL Docker thay Supabase
@@ -283,10 +291,6 @@ GROUP_TO_WEIGHT = {
 - AI model chạy trong FastAPI process (không tách HF Spaces)
 - Recipe JSON: dùng file `*_extracted.json` (đã có ingredients_extract)
 - Alembic migration viết thủ công (không dùng autogenerate) vì cần offline generation
-
-### Quyết định kỹ thuật đã chốt
-- PostgreSQL Docker thay Supabase
-- JWT tự handle (python-jose), không Supabase Auth
-- Ảnh lưu local `backend/uploads/`
-- AI model chạy trong FastAPI process (không tách HF Spaces)
-- Recipe JSON: dùng file `*_extracted.json` (đã có ingredients_extract)
+- pgAdmin chạy desktop mode (`PGADMIN_CONFIG_SERVER_MODE=False`) để dùng được servers.json auto-register
+- pgAdmin connect tới postgres qua Docker network (host: `postgres`), KHÔNG phải `localhost`
+- `bcrypt` pin ở `4.0.1` — passlib 1.7.4 không tương thích với bcrypt 4.1+ (bỏ `__about__`)
