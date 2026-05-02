@@ -289,19 +289,25 @@ GROUP_TO_WEIGHT = {
 - [x] `frontend/` — Next.js 16 + React 19 + Tailwind v4 + shadcn/ui (Base UI)
 - [x] `frontend/app/globals.css` — VNFood design system: primary #E85D26, secondary #2D6A4F, warm background #FFFBF5
 - [x] `frontend/app/layout.tsx` — Playfair Display (heading) + Inter (body), Navbar, Footer, MobileBottomNav, Sonner Toaster
-- [x] `frontend/lib/api.ts` — Axios instance, Bearer token interceptor, 401 → redirect /auth/login
-- [x] `frontend/lib/types.ts` — TypeScript types: Author, Ingredient, Step, RecipeCard, RecipeDetail, etc.
-- [x] `frontend/components/layout/` — Navbar (sticky, mobile search), Footer, MobileBottomNav (5 tabs)
+- [x] `frontend/lib/api.ts` — Axios instance, Bearer interceptor, 401 → auto refresh token → retry → nếu fail clear + redirect
+- [x] `frontend/lib/types.ts` — TypeScript types: User, Author, Ingredient, Step, RecipeCard, RecipeDetail, etc.
+- [x] `frontend/lib/auth.ts` — saveTokens (localStorage + httpOnly cookie), clearTokens, getAccessToken, getRefreshToken, getStoredUser, decodeJWT
+- [x] `frontend/lib/actions/auth-cookies.ts` — `"use server"` actions: setTokensCookie / clearTokensCookie dùng `cookies()` từ `next/headers`
+- [x] `frontend/lib/hooks/useUser.ts` — `useUser()` hook (SWR cache), `refreshUser()` global mutate
+- [x] `frontend/components/layout/` — Navbar (sticky, mobile search, auth-aware: avatar dropdown / login+register buttons), Footer, MobileBottomNav (5 tabs)
 - [x] `frontend/components/recipes/` — RecipeCard (hover scale+shadow), RecipeCardSkeleton, RecipeGrid (1/2/3/4 col responsive)
 - [x] `frontend/components/common/SearchBar.tsx` — debounced 300ms
 - [x] `frontend/app/page.tsx` — Homepage: Hero gradient, keyword chips, trending (horizontal scroll), top_rated grid, new grid
 - [x] `frontend/app/recipes/page.tsx` — Browse: keyword chips filter, sort/difficulty dropdowns, pagination, URL search params
 - [x] `frontend/app/recipes/[id]/page.tsx` — Detail: hero image, tabs (ingredients/steps/comments), author card, sticky CTA
+- [x] `frontend/app/auth/login/page.tsx` — Form login, toast error, redirect về `?next=` hoặc `/`
+- [x] `frontend/app/auth/register/page.tsx` — Form đăng ký (validate pw ≥ 8, match), auto-login sau register
+- [x] `frontend/middleware.ts` — bảo vệ `/me/*`, `/admin/*`, `/recipes/new`, `/recipes/:id/edit`; check httpOnly cookie + JWT exp + role
 
 ### Làm tiếp (session kế)
-- Auth flow: /auth/login, /auth/register, JWT store trong localStorage
 - User đăng recipe + Admin duyệt (spec 03)
 - Comment, Rating, Save/Bookmark (Week 2)
+- User profile page `/me`
 
 ### Quyết định kỹ thuật đã chốt
 - PostgreSQL Docker thay Supabase
@@ -317,3 +323,7 @@ GROUP_TO_WEIGHT = {
 - Next.js 16 dùng **Tailwind v4** (`@theme` CSS directive, không có `tailwind.config.js`) và **Base UI** (không phải Radix UI). Base UI `Select.onValueChange` nhận `(value: string | null)` — phải handle null
 - `RecipeCard` phải có `"use client"` vì có `onClick` event handler — không thể dùng trong Server Component
 - `recipe.author` có thể null trong Cookpad data → luôn null-check trước khi render
+- Token storage dùng **dual strategy**: httpOnly cookie (set qua `"use server"` action) cho middleware server-side check + localStorage cho axios client-side. Cả hai được sync đồng thời trong `saveTokens()`
+- `ReadonlyRequestCookies` trong Next.js 16 (`next/headers`) vẫn có `.set()` và `.delete()` — gọi được trong server actions
+- Sau login/register gọi `refreshUser()` (`globalMutate(USER_CACHE_KEY)`) để SWR invalidate cache → Navbar cập nhật avatar ngay, không cần reload
+- Navbar ẩn auth buttons khi `isLoading === true` (SWR chưa resolve) để tránh hydration flash

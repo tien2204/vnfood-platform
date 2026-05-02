@@ -3,15 +3,34 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useCallback } from "react";
-import { Search, ScanLine, UtensilsCrossed, Menu, X } from "lucide-react";
+import { Search, ScanLine, UtensilsCrossed, X, ChevronDown, LogOut, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useDebounce } from "@/lib/hooks";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
+import { useUser } from "@/lib/hooks/useUser";
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
 
 export default function Navbar() {
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const { user, isLoggedIn, isLoading, logout } = useUser();
 
   const handleSearch = useCallback(
     (e: React.FormEvent) => {
@@ -24,6 +43,10 @@ export default function Navbar() {
     [query, router]
   );
 
+  const avatarSrc = user?.avatar_url
+    ? `${process.env.NEXT_PUBLIC_UPLOAD_URL}/${user.avatar_url}`
+    : undefined;
+
   return (
     <header className="sticky top-0 z-50 bg-[#FFFBF5]/95 backdrop-blur border-b border-[#E8DDD4]">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
@@ -32,7 +55,7 @@ export default function Navbar() {
           <UtensilsCrossed className="w-7 h-7 text-[#E85D26]" />
           <span
             className="text-xl font-bold text-[#E85D26]"
-            style={{ fontFamily: "var(--font-heading)" }}
+            style={{ fontFamily: "var(--font-playfair)" }}
           >
             VNFood
           </span>
@@ -77,15 +100,72 @@ export default function Navbar() {
             </Button>
           </Link>
 
-          {/* Auth */}
-          <Link href="/auth/login">
-            <Button
-              size="sm"
-              className="bg-[#E85D26] hover:bg-[#D44E1E] text-white"
-            >
-              Đăng nhập
-            </Button>
-          </Link>
+          {/* Auth area — hide until SWR resolves to avoid flash */}
+          {!isLoading && (
+            <>
+              {isLoggedIn && user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-full pl-1 pr-2 py-1 hover:bg-[#F7F0E8] transition-colors cursor-pointer outline-none">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={avatarSrc} alt={user.full_name} />
+                      <AvatarFallback className="bg-[#E85D26] text-white text-xs font-semibold">
+                        {getInitials(user.full_name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <ChevronDown className="w-3.5 h-3.5 text-[#7C6A56] hidden sm:block" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-auto min-w-[200px]"
+                  >
+                    <div className="px-2 py-2.5 border-b border-[#F7F0E8]">
+                      <p className="font-semibold text-sm text-[#2D2417] truncate">
+                        {user.full_name}
+                      </p>
+                      <p className="text-xs text-[#7C6A56] truncate">{user.email}</p>
+                    </div>
+                    <DropdownMenuItem
+                      className="gap-2 cursor-pointer"
+                      onClick={() => router.push("/me")}
+                    >
+                      <UserRound className="w-4 h-4 text-[#7C6A56]" />
+                      Trang cá nhân
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      variant="destructive"
+                      className="gap-2 cursor-pointer"
+                      onClick={logout}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Đăng xuất
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link href="/auth/login">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="hidden sm:flex border-[#E85D26] text-[#E85D26] hover:bg-[#E85D26] hover:text-white"
+                    >
+                      Đăng nhập
+                    </Button>
+                  </Link>
+                  <Link href="/auth/register">
+                    <Button
+                      size="sm"
+                      className="bg-[#E85D26] hover:bg-[#D44E1E] text-white"
+                    >
+                      <span className="sm:hidden">Đăng nhập</span>
+                      <span className="hidden sm:inline">Đăng ký</span>
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </nav>
 

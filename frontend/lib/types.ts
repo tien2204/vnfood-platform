@@ -1,3 +1,11 @@
+export interface User {
+  id: string;
+  email: string;
+  full_name: string;
+  role: "user" | "admin";
+  avatar_url: string | null;
+}
+
 export interface Author {
   id: string;
   full_name: string;
