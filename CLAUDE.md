@@ -230,7 +230,7 @@ GROUP_TO_WEIGHT = {
 - [x] Auth: register, login, JWT refresh
 - [x] Script import 22k recipes JSON → DB
 - [x] Recipe browse + search + filter APIs
-- [ ] Next.js setup + Homepage + Recipe list + Recipe detail
+- [x] Next.js setup + Homepage + Recipe list + Recipe detail
 
 ### Week 2 — Core Features
 - [ ] User đăng recipe + Admin duyệt
@@ -286,10 +286,22 @@ GROUP_TO_WEIGHT = {
 - [x] `backend/app/api/v1/users.py` — GET /users/{user_id}/recipes (UC-13)
 - [x] `main.py` — mount recipes_router + users_router
 
+- [x] `frontend/` — Next.js 16 + React 19 + Tailwind v4 + shadcn/ui (Base UI)
+- [x] `frontend/app/globals.css` — VNFood design system: primary #E85D26, secondary #2D6A4F, warm background #FFFBF5
+- [x] `frontend/app/layout.tsx` — Playfair Display (heading) + Inter (body), Navbar, Footer, MobileBottomNav, Sonner Toaster
+- [x] `frontend/lib/api.ts` — Axios instance, Bearer token interceptor, 401 → redirect /auth/login
+- [x] `frontend/lib/types.ts` — TypeScript types: Author, Ingredient, Step, RecipeCard, RecipeDetail, etc.
+- [x] `frontend/components/layout/` — Navbar (sticky, mobile search), Footer, MobileBottomNav (5 tabs)
+- [x] `frontend/components/recipes/` — RecipeCard (hover scale+shadow), RecipeCardSkeleton, RecipeGrid (1/2/3/4 col responsive)
+- [x] `frontend/components/common/SearchBar.tsx` — debounced 300ms
+- [x] `frontend/app/page.tsx` — Homepage: Hero gradient, keyword chips, trending (horizontal scroll), top_rated grid, new grid
+- [x] `frontend/app/recipes/page.tsx` — Browse: keyword chips filter, sort/difficulty dropdowns, pagination, URL search params
+- [x] `frontend/app/recipes/[id]/page.tsx` — Detail: hero image, tabs (ingredients/steps/comments), author card, sticky CTA
+
 ### Làm tiếp (session kế)
-- Khởi tạo Next.js frontend (create-next-app, Tailwind, shadcn/ui)
-- Homepage + Recipe list page + Recipe detail page
+- Auth flow: /auth/login, /auth/register, JWT store trong localStorage
 - User đăng recipe + Admin duyệt (spec 03)
+- Comment, Rating, Save/Bookmark (Week 2)
 
 ### Quyết định kỹ thuật đã chốt
 - PostgreSQL Docker thay Supabase
@@ -302,3 +314,6 @@ GROUP_TO_WEIGHT = {
 - pgAdmin connect tới postgres qua Docker network (host: `postgres`), KHÔNG phải `localhost`
 - `bcrypt` pin ở `4.0.1` — passlib 1.7.4 không tương thích với bcrypt 4.1+ (bỏ `__about__`)
 - SQLAlchemy `default=uuid.uuid4` chỉ chạy lúc flush, KHÔNG lúc tạo object → phải truyền `id=uuid.uuid4()` tường minh khi bulk insert
+- Next.js 16 dùng **Tailwind v4** (`@theme` CSS directive, không có `tailwind.config.js`) và **Base UI** (không phải Radix UI). Base UI `Select.onValueChange` nhận `(value: string | null)` — phải handle null
+- `RecipeCard` phải có `"use client"` vì có `onClick` event handler — không thể dùng trong Server Component
+- `recipe.author` có thể null trong Cookpad data → luôn null-check trước khi render
