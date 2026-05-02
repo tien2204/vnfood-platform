@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "VNFood Local",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "vnfood_db",
+      "Username": "vnfood",
+      "SSLMode": "prefer"
+    }
+  }
+}

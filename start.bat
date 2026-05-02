@@ -25,6 +25,14 @@ if %errorlevel% neq 0 (
 echo [3/4] Seeding admin user (skip if exists)...
 python scripts/seed_admin.py
 
+echo.
+echo --- NOTE: First run? Import 22k recipes if not done yet: ---
+echo       python scripts/import_recipes.py --dry-run
+echo       python scripts/import_recipes.py
+echo       python scripts/check_recipes.py
+echo ------------------------------------------------------------
+echo.
+
 echo [4/4] Starting FastAPI backend on http://localhost:8000 ...
 echo       Swagger UI: http://localhost:8000/docs
 echo.

@@ -228,7 +228,7 @@ GROUP_TO_WEIGHT = {
 - [x] docker-compose.yml + PostgreSQL
 - [x] FastAPI boilerplate + DB migrations
 - [x] Auth: register, login, JWT refresh
-- [ ] Script import 22k recipes JSON → DB
+- [x] Script import 22k recipes JSON → DB
 - [ ] Recipe browse + search + filter APIs
 - [ ] Next.js setup + Homepage + Recipe list + Recipe detail
 
@@ -277,12 +277,15 @@ GROUP_TO_WEIGHT = {
 - [x] `backend/app/api/v1/auth.py` — 5 endpoints: /register, /login, /refresh, /logout, /change-password
 - [x] `main.py` — mount auth_router tại /api/v1/auth
 - [x] `backend/scripts/seed_admin.py` — tạo admin@vnfood.local / Admin@123 (idempotent)
+- [x] `backend/scripts/import_recipes.py` — import 22k recipes từ 9 file `*_extracted.json`, batch 200, idempotent (skip duplicate cookpad_url), argparse (--dry-run, --files, --batch-size)
+- [x] `backend/scripts/check_recipes.py` — verify recipes trong DB: total, by source, by keyword, by status
+- [x] 22k recipes đã import thành công vào DB (source=cookpad, status=approved)
 
 ### Làm tiếp (session kế)
-- `backend/scripts/import_recipes.py` — import 22k recipes từ `cookpad_recipe/*_extracted.json` vào DB
-- `backend/app/api/v1/recipes.py` — GET /recipes (list + filter), GET /recipes/{id}
+- `backend/app/api/v1/recipes.py` — GET /recipes (list + filter + search), GET /recipes/{id}
 - `backend/app/schemas/recipe.py` — RecipeOut, RecipeListItem, RecipeFilter
 - Khởi tạo Next.js frontend (create-next-app, Tailwind, shadcn/ui)
+- Homepage + Recipe list page + Recipe detail page
 
 ### Quyết định kỹ thuật đã chốt
 - PostgreSQL Docker thay Supabase
@@ -294,3 +297,4 @@ GROUP_TO_WEIGHT = {
 - pgAdmin chạy desktop mode (`PGADMIN_CONFIG_SERVER_MODE=False`) để dùng được servers.json auto-register
 - pgAdmin connect tới postgres qua Docker network (host: `postgres`), KHÔNG phải `localhost`
 - `bcrypt` pin ở `4.0.1` — passlib 1.7.4 không tương thích với bcrypt 4.1+ (bỏ `__about__`)
+- SQLAlchemy `default=uuid.uuid4` chỉ chạy lúc flush, KHÔNG lúc tạo object → phải truyền `id=uuid.uuid4()` tường minh khi bulk insert
