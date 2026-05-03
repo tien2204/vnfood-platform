@@ -41,7 +41,7 @@ def _build_recipe(raw: dict) -> Recipe:
         source="cookpad",
         status="approved",
         author_id=None,
-        servings=2,
+        servings=None,
     )
 
 
@@ -67,7 +67,7 @@ def _build_steps(recipe_id, raw: dict) -> list[RecipeStep]:
             recipe_id=recipe_id,
             step_number=i + 1,
             content=c,
-            timer_seconds=0,
+            timer_seconds=None,
         )
         for i, c in enumerate(instructions)
         if c and c.strip()

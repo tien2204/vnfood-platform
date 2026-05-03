@@ -9,6 +9,7 @@ import {
   Bookmark,
   ChevronLeft,
   ExternalLink,
+  ChefHat,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,16 @@ const DIFFICULTY_LABEL = {
   medium: "Trung bình",
   hard: "Khó",
 } as const;
+
+function stripEmoji(text: string): string {
+  return text
+    .replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, "")
+    .trim();
+}
+
+function difficultyLabel(d: string): string {
+  return DIFFICULTY_LABEL[d as keyof typeof DIFFICULTY_LABEL] ?? d;
+}
 
 async function getRecipe(id: string): Promise<RecipeDetail | null> {
   try {
@@ -44,7 +55,7 @@ export async function generateMetadata({
   const { id } = await params;
   const recipe = await getRecipe(id);
   return {
-    title: recipe?.title ?? "Công thức",
+    title: recipe ? stripEmoji(recipe.title) : "Công thức",
     description: recipe?.description ?? undefined,
   };
 }
@@ -65,8 +76,65 @@ export default async function RecipeDetailPage({
       : `${process.env.NEXT_PUBLIC_UPLOAD_URL}/${recipe.image_url}`
     : null;
 
+  const cleanTitle = stripEmoji(recipe.title);
+
+  // Build meta items to interleave with dots
+  type MetaItem = { key: string; node: React.ReactNode };
+  const metaItems: MetaItem[] = [];
+  if (recipe.avg_rating > 0) {
+    metaItems.push({
+      key: "rating",
+      node: (
+        <span className="flex items-center gap-1">
+          <Star className="w-4 h-4 fill-[#F4A261] text-[#F4A261]" />
+          <strong className="text-[#1C1209]">{recipe.avg_rating.toFixed(1)}</strong>
+          <span>({recipe.rating_count} đánh giá)</span>
+        </span>
+      ),
+    });
+  }
+  if (recipe.view_count >= 100) {
+    metaItems.push({
+      key: "views",
+      node: (
+        <span className="flex items-center gap-1">
+          <Eye className="w-4 h-4" />
+          {recipe.view_count.toLocaleString()} lượt xem
+        </span>
+      ),
+    });
+  }
+  if (recipe.cooking_time) {
+    metaItems.push({
+      key: "time",
+      node: (
+        <span className="flex items-center gap-1">
+          <Clock className="w-4 h-4" />
+          {recipe.cooking_time} phút
+        </span>
+      ),
+    });
+  }
+  if (recipe.servings) {
+    metaItems.push({
+      key: "servings",
+      node: (
+        <span className="flex items-center gap-1">
+          <Users className="w-4 h-4" />
+          {recipe.servings} người
+        </span>
+      ),
+    });
+  }
+
+  const tabTriggerClass =
+    "px-4 py-3 text-sm font-medium rounded-none -mb-px border-b-2 border-transparent " +
+    "text-[#7C6A56] data-[state=active]:border-[#E85D26] data-[state=active]:text-[#E85D26] " +
+    "data-[state=active]:bg-transparent data-[state=active]:shadow-none " +
+    "hover:text-[#1C1209] transition-colors";
+
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 pb-28 lg:pb-6">
       {/* Back */}
       <Link
         href="/recipes"
@@ -81,7 +149,7 @@ export default async function RecipeDetailPage({
         {imageUrl ? (
           <Image
             src={imageUrl}
-            alt={recipe.title}
+            alt={cleanTitle}
             fill
             className="object-cover"
             priority
@@ -105,7 +173,7 @@ export default async function RecipeDetailPage({
           )}
           {recipe.difficulty && (
             <Badge variant="outline" className="border-[#E8DDD4] text-[#7C6A56]">
-              {DIFFICULTY_LABEL[recipe.difficulty]}
+              {difficultyLabel(recipe.difficulty)}
             </Badge>
           )}
           {recipe.source === "cookpad" && (
@@ -120,43 +188,29 @@ export default async function RecipeDetailPage({
           className="text-3xl sm:text-4xl font-bold text-[#1C1209] leading-tight mb-4"
           style={{ fontFamily: "var(--font-heading)" }}
         >
-          {recipe.title}
+          {cleanTitle}
         </h1>
 
         {/* Meta stats */}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-[#7C6A56] mb-4">
-          {recipe.avg_rating > 0 && (
-            <span className="flex items-center gap-1">
-              <Star className="w-4 h-4 fill-[#F4A261] text-[#F4A261]" />
-              <strong className="text-[#1C1209]">
-                {recipe.avg_rating.toFixed(1)}
-              </strong>
-              <span>({recipe.rating_count} đánh giá)</span>
-            </span>
-          )}
-          <span className="flex items-center gap-1">
-            <Eye className="w-4 h-4" />
-            {recipe.view_count.toLocaleString()} lượt xem
-          </span>
-          {recipe.cooking_time && (
-            <span className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              {recipe.cooking_time} phút
-            </span>
-          )}
-          {recipe.servings && (
-            <span className="flex items-center gap-1">
-              <Users className="w-4 h-4" />
-              {recipe.servings} người
-            </span>
-          )}
-        </div>
+        {metaItems.length > 0 && (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#7C6A56] mb-4">
+            {metaItems.map((item, i) => (
+              <span key={item.key} className="flex items-center gap-3">
+                {i > 0 && <span className="select-none text-[#E8DDD4]">•</span>}
+                {item.node}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* Description */}
         {recipe.description && (
-          <p className="text-[#7C6A56] leading-relaxed text-base">
+          <blockquote
+            className="border-l-4 border-[#E85D26]/30 pl-4 py-2 my-6 italic text-[#7C6A56] text-lg leading-relaxed"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
             {recipe.description}
-          </p>
+          </blockquote>
         )}
       </div>
 
@@ -170,9 +224,7 @@ export default async function RecipeDetailPage({
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-[#1C1209]">
-              {recipe.author.full_name}
-            </p>
+            <p className="font-semibold text-[#1C1209]">{recipe.author.full_name}</p>
             {recipe.author.follower_count > 0 && (
               <p className="text-xs text-[#7C6A56]">
                 {recipe.author.follower_count} người theo dõi
@@ -189,9 +241,7 @@ export default async function RecipeDetailPage({
       ) : recipe.source === "cookpad" ? (
         <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">
           <Avatar className="w-12 h-12">
-            <AvatarFallback className="bg-[#E85D26] text-white font-semibold">
-              C
-            </AvatarFallback>
+            <AvatarFallback className="bg-[#E85D26] text-white font-semibold">C</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-[#1C1209]">Cookpad</p>
@@ -210,110 +260,201 @@ export default async function RecipeDetailPage({
         </div>
       ) : null}
 
-      {/* Tabs */}
-      <Tabs defaultValue="ingredients" className="mb-10">
-        <TabsList className="bg-[#F7F0E8] border border-[#E8DDD4] p-1 h-auto rounded-xl mb-6">
-          <TabsTrigger
-            value="ingredients"
-            className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#E85D26] data-[state=active]:shadow-sm"
-          >
-            Nguyên liệu ({recipe.ingredients.length})
-          </TabsTrigger>
-          <TabsTrigger
-            value="steps"
-            className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#E85D26] data-[state=active]:shadow-sm"
-          >
-            Các bước ({recipe.steps.length})
-          </TabsTrigger>
-          <TabsTrigger
-            value="comments"
-            disabled
-            className="rounded-lg opacity-50"
-          >
-            Bình luận
-          </TabsTrigger>
-        </TabsList>
+      {/* 2-col layout: tabs + sidebar */}
+      <div className="lg:grid lg:grid-cols-3 lg:gap-8">
+        {/* Main content */}
+        <div className="lg:col-span-2">
+          <Tabs defaultValue="ingredients" className="mb-10">
+            <TabsList className="w-full justify-start bg-transparent p-0 h-auto rounded-none border-b border-[#E8DDD4] gap-0 mb-6">
+              <TabsTrigger value="ingredients" className={tabTriggerClass}>
+                Nguyên liệu ({recipe.ingredients.length})
+              </TabsTrigger>
+              <TabsTrigger value="steps" className={tabTriggerClass}>
+                Các bước ({recipe.steps.length})
+              </TabsTrigger>
+              <TabsTrigger value="comments" className={tabTriggerClass}>
+                Bình luận
+              </TabsTrigger>
+            </TabsList>
 
-        {/* Ingredients tab */}
-        <TabsContent value="ingredients">
-          {recipe.ingredients.length > 0 ? (
-            <ul className="space-y-2">
-              {recipe.ingredients.map((ing, idx) => (
-                <li
-                  key={ing.id ?? idx}
-                  className="flex items-start gap-3 py-2.5 border-b border-[#E8DDD4] last:border-0"
-                >
-                  <span className="w-2 h-2 rounded-full bg-[#E85D26] mt-2 shrink-0" />
-                  <span className="text-[#1C1209] leading-relaxed">
-                    {ing.display_text || `${ing.quantity} ${ing.ingredient_name}`}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-[#7C6A56] py-4">Chưa có thông tin nguyên liệu.</p>
-          )}
-        </TabsContent>
-
-        {/* Steps tab */}
-        <TabsContent value="steps">
-          {recipe.steps.length > 0 ? (
-            <ol className="space-y-6">
-              {recipe.steps.map((step) => (
-                <li key={step.step_number} className="flex gap-4">
-                  <div className="shrink-0 w-8 h-8 rounded-full bg-[#E85D26] text-white flex items-center justify-center text-sm font-bold">
-                    {step.step_number}
-                  </div>
-                  <div className="flex-1 pt-1">
-                    <p className="text-[#1C1209] leading-relaxed">
-                      {step.content}
-                    </p>
-                    {step.timer_seconds && step.timer_seconds > 0 && (
-                      <span className="inline-flex items-center gap-1 mt-2 text-xs text-[#7C6A56] bg-[#F7F0E8] px-2 py-1 rounded-full">
-                        <Clock className="w-3 h-3" />
-                        {Math.round(step.timer_seconds / 60)} phút
+            {/* Ingredients */}
+            <TabsContent value="ingredients">
+              {recipe.ingredients.length > 0 ? (
+                <ul className="space-y-2">
+                  {recipe.ingredients.map((ing, idx) => (
+                    <li
+                      key={ing.id ?? idx}
+                      className="flex items-start gap-3 py-2.5 border-b border-[#E8DDD4] last:border-0"
+                    >
+                      <span className="w-2 h-2 rounded-full bg-[#E85D26] mt-2 shrink-0" />
+                      <span className="text-[#1C1209] leading-relaxed">
+                        {ing.display_text || `${ing.quantity} ${ing.ingredient_name}`}
                       </span>
-                    )}
-                    {step.image_url && (
-                      <div className="relative aspect-video rounded-xl overflow-hidden mt-3 bg-[#F7F0E8]">
-                        <Image
-                          src={
-                            step.image_url.startsWith("http")
-                              ? step.image_url
-                              : `${process.env.NEXT_PUBLIC_UPLOAD_URL}/${step.image_url}`
-                          }
-                          alt={`Bước ${step.step_number}`}
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className="text-[#7C6A56] py-4">Chưa có thông tin các bước.</p>
-          )}
-        </TabsContent>
-      </Tabs>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-[#7C6A56] py-4">Chưa có thông tin nguyên liệu.</p>
+              )}
+            </TabsContent>
 
-      {/* Sticky CTA */}
-      <div className="fixed bottom-16 md:bottom-0 inset-x-0 md:relative md:inset-x-auto bg-[#FFFBF5] md:bg-transparent border-t border-[#E8DDD4] md:border-0 p-4 md:p-0 flex gap-3 justify-center md:justify-start">
-        <button className="flex-1 md:flex-none px-8 py-3 bg-[#E85D26] hover:bg-[#D44E1E] text-white rounded-xl font-semibold transition-colors">
+            {/* Steps */}
+            <TabsContent value="steps">
+              {recipe.steps.length > 0 ? (
+                <div className="space-y-6 pb-4">
+                  {recipe.steps.map((step, idx) => (
+                    <div key={step.step_number} className="flex gap-4">
+                      <div
+                        className="flex-shrink-0 w-12 h-12 rounded-full bg-[#E85D26]/10 flex items-center justify-center font-bold text-xl text-[#E85D26]"
+                        style={{ fontFamily: "var(--font-heading)" }}
+                      >
+                        {idx + 1}
+                      </div>
+                      <div className="flex-1 pt-2">
+                        <p className="text-[#1C1209] leading-relaxed">{step.content}</p>
+                        {(step.timer_seconds ?? 0) > 0 && (
+                          <span className="inline-flex items-center gap-1 mt-2 text-xs text-[#7C6A56] bg-[#F7F0E8] px-2 py-1 rounded-full">
+                            <Clock className="w-3 h-3" />
+                            {Math.round(step.timer_seconds / 60)} phút
+                          </span>
+                        )}
+                        {step.image_url && (
+                          <div className="relative aspect-video rounded-xl overflow-hidden mt-3 bg-[#F7F0E8] max-w-md">
+                            <Image
+                              src={
+                                step.image_url.startsWith("http")
+                                  ? step.image_url
+                                  : `${process.env.NEXT_PUBLIC_UPLOAD_URL}/${step.image_url}`
+                              }
+                              alt={`Bước ${idx + 1}`}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[#7C6A56] py-4">Chưa có thông tin các bước.</p>
+              )}
+            </TabsContent>
+
+            {/* Comments — coming soon */}
+            <TabsContent value="comments">
+              <div className="py-12 text-center">
+                <p className="text-[#7C6A56] text-lg mb-2">💬 Sắp có</p>
+                <p className="text-sm text-[#7C6A56]/70">
+                  Tính năng bình luận đang được phát triển.
+                </p>
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          {/* Desktop action bar */}
+          <div className="hidden lg:flex items-center gap-3 pt-6 border-t border-[#E8DDD4]">
+            <button className="inline-flex items-center gap-2 px-6 py-3 bg-[#E85D26] hover:bg-[#D44E1E] text-white rounded-xl font-semibold transition-colors">
+              <ChefHat className="w-5 h-5" />
+              Bắt đầu nấu
+            </button>
+            <button className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-[#E8DDD4] hover:border-[#E85D26] hover:text-[#E85D26] text-[#7C6A56] transition-colors">
+              <Bookmark className="w-5 h-5" />
+              {recipe.save_count > 0 && (
+                <span className="text-sm">{recipe.save_count}</span>
+              )}
+            </button>
+            {recipe.source === "cookpad" && recipe.cookpad_url && (
+              <a
+                href={recipe.cookpad_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-[#E8DDD4] hover:border-[#E85D26] hover:text-[#E85D26] text-[#7C6A56] transition-colors"
+              >
+                <ExternalLink className="w-5 h-5" />
+                <span>Cookpad</span>
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Sticky sidebar (desktop only) */}
+        <aside className="hidden lg:block lg:col-span-1">
+          <div className="sticky top-24 space-y-4">
+            {/* Recipe info */}
+            <div className="bg-[#F7F0E8] rounded-lg p-4 border border-[#E8DDD4]/50">
+              <h3
+                className="text-lg italic mb-3 text-[#1C1209]"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                Thông tin món ăn
+              </h3>
+              <dl className="space-y-2 text-sm">
+                {recipe.cooking_time && (
+                  <div className="flex justify-between">
+                    <dt className="text-[#7C6A56]">Thời gian</dt>
+                    <dd className="font-medium text-[#1C1209]">{recipe.cooking_time} phút</dd>
+                  </div>
+                )}
+                {recipe.servings && (
+                  <div className="flex justify-between">
+                    <dt className="text-[#7C6A56]">Khẩu phần</dt>
+                    <dd className="font-medium text-[#1C1209]">{recipe.servings} người</dd>
+                  </div>
+                )}
+                {recipe.difficulty && (
+                  <div className="flex justify-between">
+                    <dt className="text-[#7C6A56]">Độ khó</dt>
+                    <dd className="font-medium text-[#1C1209]">{difficultyLabel(recipe.difficulty)}</dd>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <dt className="text-[#7C6A56]">Nguồn</dt>
+                  <dd className="font-medium text-[#1C1209]">
+                    {recipe.source === "cookpad" ? "Cookpad" : "Cộng đồng"}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+            {/* Quick actions */}
+            <div className="bg-white rounded-lg p-4 border border-[#E8DDD4]/50">
+              <p className="text-xs text-[#7C6A56] mb-3">Hành động nhanh</p>
+              <div className="space-y-2.5">
+                <button className="w-full text-left text-sm text-[#1C1209] hover:text-[#E85D26] transition-colors">
+                  📋 Copy danh sách nguyên liệu
+                </button>
+                <button className="w-full text-left text-sm text-[#1C1209] hover:text-[#E85D26] transition-colors">
+                  🖨 In công thức
+                </button>
+                <button className="w-full text-left text-sm text-[#1C1209] hover:text-[#E85D26] transition-colors">
+                  📤 Chia sẻ
+                </button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      {/* Mobile bottom action bar */}
+      <div className="lg:hidden fixed bottom-16 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[#E8DDD4] px-4 py-3 z-40 flex items-center gap-3">
+        <button className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 bg-[#E85D26] hover:bg-[#D44E1E] text-white rounded-xl font-semibold transition-colors text-sm">
+          <ChefHat className="w-4 h-4" />
           Bắt đầu nấu
         </button>
-        <button className="p-3 rounded-xl border border-[#E8DDD4] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors">
+        <button className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-[#E8DDD4] hover:border-[#E85D26] hover:text-[#E85D26] text-[#7C6A56] transition-colors">
           <Bookmark className="w-5 h-5" />
+          {recipe.save_count > 0 && (
+            <span className="text-xs">{recipe.save_count}</span>
+          )}
         </button>
-        {recipe.cookpad_url && (
+        {recipe.source === "cookpad" && recipe.cookpad_url && (
           <a
             href={recipe.cookpad_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-3 rounded-xl border border-[#E8DDD4] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
-            title="Xem trên Cookpad"
+            className="inline-flex items-center px-3 py-2.5 rounded-xl border border-[#E8DDD4] hover:border-[#E85D26] hover:text-[#E85D26] text-[#7C6A56] transition-colors"
           >
             <ExternalLink className="w-5 h-5" />
           </a>

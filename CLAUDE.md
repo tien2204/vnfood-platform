@@ -295,14 +295,15 @@ GROUP_TO_WEIGHT = {
 - [x] `frontend/lib/actions/auth-cookies.ts` — `"use server"` actions: setTokensCookie / clearTokensCookie dùng `cookies()` từ `next/headers`
 - [x] `frontend/lib/hooks/useUser.ts` — `useUser()` hook (SWR cache), `refreshUser()` global mutate
 - [x] `frontend/components/layout/` — Navbar (sticky, mobile search, auth-aware: avatar dropdown / login+register buttons), Footer, MobileBottomNav (5 tabs)
-- [x] `frontend/components/recipes/` — RecipeCard (hover scale+shadow), RecipeCardSkeleton, RecipeGrid (1/2/3/4 col responsive)
+- [x] `frontend/components/recipes/` — RecipeCard (hover scale+shadow, badge Cookpad dot-style không gradient, badge Cộng đồng xanh), RecipeCardSkeleton, RecipeGrid (1/2/3/4 col responsive)
 - [x] `frontend/components/common/SearchBar.tsx` — debounced 300ms
 - [x] `frontend/app/page.tsx` — Homepage: Hero gradient, keyword chips, trending (horizontal scroll), top_rated grid, new grid
 - [x] `frontend/app/recipes/page.tsx` — Browse: keyword chips filter, sort/difficulty dropdowns, pagination, URL search params
-- [x] `frontend/app/recipes/[id]/page.tsx` — Detail: hero image, tabs (ingredients/steps/comments), author card, sticky CTA
+- [x] `frontend/app/recipes/[id]/page.tsx` — Detail: stripEmoji title, blockquote description, meta row (ẩn view<100, ẩn servings null), underline tabs, comments tab "Sắp có", steps card (w-12 circle), 2-col desktop layout (tabs + sticky sidebar info card + quick actions), mobile fixed bottom bar, action bar (save count, Cookpad link conditional)
 - [x] `frontend/app/auth/login/page.tsx` — Form login, toast error, redirect về `?next=` hoặc `/`
 - [x] `frontend/app/auth/register/page.tsx` — Form đăng ký (validate pw ≥ 8, match), auto-login sau register
 - [x] `frontend/middleware.ts` — bảo vệ `/me/*`, `/admin/*`, `/recipes/new`, `/recipes/:id/edit`; check httpOnly cookie + JWT exp + role
+- [x] `backend/alembic/versions/0002_nullable_servings_timer.py` — ALTER `recipes.servings` + `recipe_steps.timer_seconds` thành nullable; UPDATE 22k Cookpad recipes servings → NULL, tất cả steps timer_seconds = 0 → NULL
 
 ### Làm tiếp (session kế)
 - User đăng recipe + Admin duyệt (spec 03)
@@ -327,3 +328,5 @@ GROUP_TO_WEIGHT = {
 - `ReadonlyRequestCookies` trong Next.js 16 (`next/headers`) vẫn có `.set()` và `.delete()` — gọi được trong server actions
 - Sau login/register gọi `refreshUser()` (`globalMutate(USER_CACHE_KEY)`) để SWR invalidate cache → Navbar cập nhật avatar ngay, không cần reload
 - Navbar ẩn auth buttons khi `isLoading === true` (SWR chưa resolve) để tránh hydration flash
+- `{0 && <Component />}` trong React render ra số `0` (khác `false`) → luôn dùng `{value > 0 && ...}` hoặc `{!!value && ...}` thay vì `{value && ...}` khi value là number
+- `recipes.servings` và `recipe_steps.timer_seconds` phải nullable — Cookpad data không có thông tin này; hardcode default gây misleading UI

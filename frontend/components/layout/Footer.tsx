@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { UtensilsCrossed } from "lucide-react";
+import { UtensilsCrossed, Mail } from "lucide-react";
+import NewsletterForm from "@/components/common/NewsletterForm";
 
 const KEYWORD_LINKS = [
   { label: "Bánh", href: "/keyword/banh" },
@@ -12,42 +13,84 @@ const KEYWORD_LINKS = [
   { label: "Đặc Biệt", href: "/keyword/dac-biet" },
 ];
 
+const INFO_LINKS = [
+  { label: "Về VNFood", href: "/about" },
+  { label: "Tất cả công thức", href: "/recipes" },
+  { label: "AI Nhận diện món ăn", href: "/ai/scan" },
+  { label: "Đăng công thức", href: "/recipes/new" },
+];
+
+const SOCIAL_LINKS = [
+  {
+    label: "Facebook",
+    href: "#",
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Instagram",
+    href: "#",
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+      </svg>
+    ),
+  },
+  {
+    label: "YouTube",
+    href: "#",
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
+        <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" />
+      </svg>
+    ),
+  },
+  {
+    label: "GitHub",
+    href: "#",
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.2c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+        <path d="M9 18c-4.51 2-5-2-7-2" />
+      </svg>
+    ),
+  },
+];
+
 export default function Footer() {
   return (
     <footer className="bg-[#F7F0E8] border-t border-[#E8DDD4] mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Brand */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-6">
+
+        {/* ── 4-column grid ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-4">
+
+          {/* Col 1: Brand */}
           <div>
-            <Link href="/" className="flex items-center gap-2 mb-3">
+            <Link href="/" className="inline-flex items-center gap-2 mb-3">
               <UtensilsCrossed className="w-6 h-6 text-[#E85D26]" />
-              <span
-                className="text-lg font-bold text-[#E85D26]"
-                style={{ fontFamily: "var(--font-heading)" }}
-              >
-                VNFood
-              </span>
+              <span className="text-lg font-bold text-[#E85D26]">VNFood</span>
             </Link>
             <p className="text-sm text-[#7C6A56] leading-relaxed">
-              Khám phá hương vị Việt Nam qua hàng nghìn công thức nấu ăn
-              truyền thống và hiện đại.
+              Khám phá hương vị Việt Nam qua hàng nghìn công thức nấu ăn truyền thống và hiện đại.
             </p>
           </div>
 
-          {/* Categories */}
+          {/* Col 2: Categories */}
           <div>
-            <h4
-              className="font-semibold text-[#1C1209] mb-3"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Danh mục món ăn
-            </h4>
+            <h4 className="font-semibold text-[#1C1209] mb-3">Danh mục món ăn</h4>
             <ul className="grid grid-cols-2 gap-1">
               {KEYWORD_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors"
+                    className="text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors duration-150"
                   >
                     {link.label}
                   </Link>
@@ -56,46 +99,73 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Links */}
+          {/* Col 3: Info */}
           <div>
-            <h4
-              className="font-semibold text-[#1C1209] mb-3"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Thông tin
-            </h4>
-            <ul className="space-y-1">
-              <li>
-                <Link
-                  href="/about"
-                  className="text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors"
-                >
-                  Về VNFood
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/recipes"
-                  className="text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors"
-                >
-                  Tất cả công thức
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/ai/scan"
-                  className="text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors"
-                >
-                  AI Nhận diện món ăn
-                </Link>
-              </li>
+            <h4 className="font-semibold text-[#1C1209] mb-3">Thông tin</h4>
+            <ul className="space-y-1.5">
+              {INFO_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors duration-150"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
+          </div>
+
+          {/* Col 4: Contact */}
+          <div>
+            <h4 className="font-semibold text-[#1C1209] mb-3">Liên hệ</h4>
+            <a
+              href="mailto:contact@vnfood.local"
+              className="inline-flex items-center gap-2 text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors duration-150 mb-4"
+            >
+              <Mail className="w-4 h-4" />
+              contact@vnfood.local
+            </a>
+
+            <div className="flex items-center gap-3 mt-1">
+              {SOCIAL_LINKS.map(({ label, href, svg }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className="text-[#7C6A56] hover:text-[#E85D26] transition-colors duration-150"
+                >
+                  {svg}
+                </a>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* ── Newsletter ── */}
+        <NewsletterForm />
+
+        {/* ── Bottom row ── */}
+        <div className="border-t border-[#E8DDD4] pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="text-xs text-[#7C6A56]">
+            © 2026 VNFood Platform. Tổng hợp từ Cookpad & cộng đồng.
+          </p>
+          <div className="flex items-center gap-3 text-xs text-[#7C6A56]">
+            <Link href="/privacy" className="hover:text-[#E85D26] transition-colors">
+              Chính sách bảo mật
+            </Link>
+            <span className="text-[#E8DDD4]">•</span>
+            <Link href="/terms" className="hover:text-[#E85D26] transition-colors">
+              Điều khoản
+            </Link>
+            <span className="text-[#E8DDD4]">•</span>
+            <Link href="/contact" className="hover:text-[#E85D26] transition-colors">
+              Liên hệ
+            </Link>
           </div>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-[#E8DDD4] text-center text-sm text-[#7C6A56]">
-          © 2025 VNFood Platform. Tổng hợp từ Cookpad & cộng đồng.
-        </div>
       </div>
     </footer>
   );

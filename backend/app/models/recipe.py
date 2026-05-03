@@ -33,7 +33,7 @@ class Recipe(Base):
     )
     image_url: Mapped[str | None] = mapped_column(Text)
     cooking_time: Mapped[int | None] = mapped_column(Integer)
-    servings: Mapped[int] = mapped_column(Integer, nullable=False, default=2)
+    servings: Mapped[int | None] = mapped_column(Integer)
     difficulty: Mapped[str | None] = mapped_column(String(20))
     avg_rating: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     rating_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
@@ -108,6 +108,6 @@ class RecipeStep(Base):
     step_number: Mapped[int] = mapped_column(Integer, nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     image_url: Mapped[str | None] = mapped_column(Text)
-    timer_seconds: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    timer_seconds: Mapped[int | None] = mapped_column(Integer)
 
     recipe: Mapped["Recipe"] = relationship("Recipe", back_populates="steps")
