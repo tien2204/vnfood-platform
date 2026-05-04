@@ -31,7 +31,7 @@ class StepOut(BaseModel):
     step_number: int
     content: str
     image_url: str | None
-    timer_seconds: int
+    timer_seconds: int | None
 
     model_config = {"from_attributes": True}
 
@@ -50,7 +50,7 @@ class RecipeCardOut(BaseModel):
     avg_rating: float
     rating_count: int
     cooking_time: int | None
-    servings: int
+    servings: int | None
     difficulty: str | None
     source: str
     author: AuthorOut | None
@@ -66,7 +66,7 @@ class RecipeDetailOut(BaseModel):
     description: str | None
     image_url: str | None
     cooking_time: int | None
-    servings: int
+    servings: int | None
     difficulty: str | None
     source: str
     cookpad_url: str | None

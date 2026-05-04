@@ -304,6 +304,7 @@ GROUP_TO_WEIGHT = {
 - [x] `frontend/app/auth/register/page.tsx` — Form đăng ký (validate pw ≥ 8, match), auto-login sau register
 - [x] `frontend/middleware.ts` — bảo vệ `/me/*`, `/admin/*`, `/recipes/new`, `/recipes/:id/edit`; check httpOnly cookie + JWT exp + role
 - [x] `backend/alembic/versions/0002_nullable_servings_timer.py` — ALTER `recipes.servings` + `recipe_steps.timer_seconds` thành nullable; UPDATE 22k Cookpad recipes servings → NULL, tất cả steps timer_seconds = 0 → NULL
+- [x] `backend/app/schemas/recipe.py` — sync với migration 0002: `RecipeCardOut.servings`, `RecipeDetailOut.servings`, `StepOut.timer_seconds` đổi thành `int | None` (fix 500 trên `GET /api/v1/recipes` do Pydantic validate fail khi DB trả NULL)
 
 ### Làm tiếp (session kế)
 - User đăng recipe + Admin duyệt (spec 03)
@@ -330,3 +331,4 @@ GROUP_TO_WEIGHT = {
 - Navbar ẩn auth buttons khi `isLoading === true` (SWR chưa resolve) để tránh hydration flash
 - `{0 && <Component />}` trong React render ra số `0` (khác `false`) → luôn dùng `{value > 0 && ...}` hoặc `{!!value && ...}` thay vì `{value && ...}` khi value là number
 - `recipes.servings` và `recipe_steps.timer_seconds` phải nullable — Cookpad data không có thông tin này; hardcode default gây misleading UI
+- Khi đổi cột DB sang nullable, PHẢI update Pydantic schema tương ứng cùng lúc — nếu không, endpoint trả 500 và CORSMiddleware không gắn header lên 500 → frontend báo lỗi CORS gây hiểu nhầm gốc lỗi
