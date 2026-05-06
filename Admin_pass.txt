@@ -1,0 +1,1 @@
+Admin frontend pass = admin@vnfood.local / Admin@123

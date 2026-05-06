@@ -233,7 +233,7 @@ GROUP_TO_WEIGHT = {
 - [x] Next.js setup + Homepage + Recipe list + Recipe detail
 
 ### Week 2 — Core Features
-- [ ] User đăng recipe + Admin duyệt
+- [x] User đăng recipe + Admin duyệt
 - [ ] Comment, Rating, Save/Bookmark
 - [ ] Follow user + Social feed
 - [ ] User profile
@@ -306,9 +306,32 @@ GROUP_TO_WEIGHT = {
 - [x] `backend/alembic/versions/0002_nullable_servings_timer.py` — ALTER `recipes.servings` + `recipe_steps.timer_seconds` thành nullable; UPDATE 22k Cookpad recipes servings → NULL, tất cả steps timer_seconds = 0 → NULL
 - [x] `backend/app/schemas/recipe.py` — sync với migration 0002: `RecipeCardOut.servings`, `RecipeDetailOut.servings`, `StepOut.timer_seconds` đổi thành `int | None` (fix 500 trên `GET /api/v1/recipes` do Pydantic validate fail khi DB trả NULL)
 
+- [x] **Prompt 7 — User đăng recipe + Admin duyệt (spec 03)**
+- [x] `backend/app/schemas/recipe.py` — thêm RecipeCreate, RecipeUpdate, RecipeStatusUpdate, RecipeCardWithStatus
+- [x] `backend/app/services/recipe_service.py` — thêm create_recipe, update_recipe, delete_recipe, get_my_recipes, get_pending_recipes, approve_recipe
+- [x] `backend/app/services/upload_service.py` — save_upload_file (validate ext + size, lưu local `uploads/`)
+- [x] `backend/app/api/v1/upload.py` — POST /upload/image (multipart, trả url)
+- [x] `backend/app/api/v1/recipes.py` — thêm POST /recipes, PATCH /recipes/{id}, DELETE /recipes/{id}
+- [x] `backend/app/api/v1/users.py` — thêm GET /users/me/recipes (filter by status, pagination)
+- [x] `backend/app/api/v1/admin.py` — GET /admin/recipes, PATCH /admin/recipes/{id}/status, DELETE /admin/recipes/{id}
+- [x] `backend/app/main.py` — mount upload_router + admin_router
+- [x] `frontend/lib/types.ts` — thêm RecipeCreate, RecipeUpdate, RecipeCardWithStatus, UploadResponse, RECIPE_KEYWORDS, RECIPE_DIFFICULTIES
+- [x] `frontend/components/common/ImageUploader.tsx` — drag-and-drop + preview, upload lên /upload/image
+- [x] `frontend/components/recipes/StatusBadge.tsx` — badge pending/approved/rejected với tooltip lý do từ chối
+- [x] `frontend/components/recipes/RecipeForm.tsx` — form tạo/sửa recipe (ingredients dynamic, steps dynamic, ImageUploader)
+- [x] `frontend/app/recipes/new/page.tsx` — trang đăng công thức mới
+- [x] `frontend/app/recipes/[id]/edit/page.tsx` — trang sửa công thức (pre-fill từ API)
+- [x] `frontend/app/me/recipes/page.tsx` — danh sách công thức của tôi (tabs: tất cả/chờ/duyệt/từ chối, edit/delete)
+- [x] `frontend/app/admin/recipes/page.tsx` — trang admin duyệt recipe (tabs, approve/reject modal/delete)
+- [x] `frontend/middleware.ts` — bảo vệ /me/*, /admin/* (role=admin), /recipes/new, /recipes/:id/edit
+
+- [x] **Bugfix — Auth login 422**
+- [x] `backend/app/api/v1/auth.py` — đổi `/login` từ `OAuth2PasswordRequestForm` (form-urlencoded, field `username`) sang `LoginRequest` (JSON body, field `email`) — nhất quán với toàn bộ API
+- [x] `backend/app/schemas/auth.py` — `LoginRequest.email` đổi từ `EmailStr` → `str` để `admin@vnfood.local` (TLD `.local` reserved) không bị Pydantic EmailStr từ chối; `RegisterRequest` giữ `EmailStr`
+
 ### Làm tiếp (session kế)
-- User đăng recipe + Admin duyệt (spec 03)
 - Comment, Rating, Save/Bookmark (Week 2)
+- Follow user + Social feed (Week 2)
 - User profile page `/me`
 
 ### Quyết định kỹ thuật đã chốt
@@ -332,3 +355,10 @@ GROUP_TO_WEIGHT = {
 - `{0 && <Component />}` trong React render ra số `0` (khác `false`) → luôn dùng `{value > 0 && ...}` hoặc `{!!value && ...}` thay vì `{value && ...}` khi value là number
 - `recipes.servings` và `recipe_steps.timer_seconds` phải nullable — Cookpad data không có thông tin này; hardcode default gây misleading UI
 - Khi đổi cột DB sang nullable, PHẢI update Pydantic schema tương ứng cùng lúc — nếu không, endpoint trả 500 và CORSMiddleware không gắn header lên 500 → frontend báo lỗi CORS gây hiểu nhầm gốc lỗi
+- Upload ảnh: lưu local `backend/uploads/`, serve qua FastAPI `StaticFiles` tại `/static/uploads`; frontend gọi `NEXT_PUBLIC_API_URL + image_url` để hiển thị
+- `RecipeCardWithStatus` extends `RecipeCard` thêm `status`, `reject_reason`, `created_at` — dùng chung cho /me/recipes và /admin/recipes
+- `if status_filter:` trong Python falsy-check đúng cả `None` lẫn `""` → tab "Tất cả" gửi `status=""` vẫn trả về toàn bộ recipes không cần xử lý thêm
+- `useSWR` cache key phải encode đủ params (status + page) để invalidate đúng khi tab/page thay đổi; dùng `mutate(key)` sau mỗi action approve/reject/delete
+- Admin route `/admin/:path*` trong middleware kiểm tra `payload.role !== "admin"` → redirect `/` thay vì login (đã đăng nhập nhưng không đủ quyền)
+- `/login` endpoint KHÔNG dùng `OAuth2PasswordRequestForm` — FastAPI OAuth2 form expect `application/x-www-form-urlencoded` + field `username`, frontend gửi JSON `{ email, password }` → 422; dùng `LoginRequest` JSON body thay thế
+- `LoginRequest.email` dùng `str` không phải `EmailStr` — seed data dùng `admin@vnfood.local` (TLD `.local` reserved cho mDNS), Pydantic EmailStr từ chối → 422 khi admin login; `RegisterRequest` vẫn giữ `EmailStr` để validate email user mới
