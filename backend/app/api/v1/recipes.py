@@ -5,12 +5,52 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, s
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.deps import get_optional_current_user
+from app.core.deps import get_current_active_user, get_optional_current_user
 from app.models.user import User
+from app.schemas.recipe import RecipeCreate, RecipeUpdate
 from app.services import recipe_service
 from app.services.recipe_service import KEYWORD_MAP
 
 router = APIRouter()
+
+
+@router.post("")
+async def create_recipe(
+    data: RecipeCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    recipe = await recipe_service.create_recipe(db, data, current_user.id)
+    return {
+        "success": True,
+        "data": {"id": str(recipe.id), "status": recipe.status},
+        "message": "Công thức đã được tạo, đang chờ Admin duyệt",
+    }
+
+
+@router.put("/{recipe_id}")
+async def update_recipe(
+    recipe_id: uuid.UUID,
+    data: RecipeUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    recipe = await recipe_service.update_recipe(db, recipe_id, data, current_user)
+    return {
+        "success": True,
+        "data": {"id": str(recipe.id), "status": recipe.status},
+        "message": "Đã cập nhật công thức" + (" — đang chờ duyệt lại" if recipe.status == "pending" else ""),
+    }
+
+
+@router.delete("/{recipe_id}")
+async def delete_recipe(
+    recipe_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    await recipe_service.delete_recipe(db, recipe_id, current_user)
+    return {"success": True, "message": "Đã xóa công thức"}
 
 
 @router.get("/featured")

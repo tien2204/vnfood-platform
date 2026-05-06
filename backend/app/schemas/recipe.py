@@ -1,7 +1,63 @@
 import uuid
 from datetime import datetime
+from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+
+# ── Input schemas ──────────────────────────────────────────────────────────────
+
+class IngredientCreate(BaseModel):
+    display_text: str = Field(..., min_length=1, max_length=500)
+    ingredient_name: Optional[str] = None
+    quantity: Optional[str] = None
+    order_index: int = 0
+
+
+class StepCreate(BaseModel):
+    step_number: int = Field(..., ge=1)
+    content: str = Field(..., min_length=1, max_length=5000)
+    image_url: Optional[str] = None
+    timer_seconds: Optional[int] = Field(None, ge=0)
+
+
+VALID_KEYWORDS = ["Bánh", "Bún", "Cá", "Canh", "Cơm", "Gỏi", "Phở", "Thịt", "Xôi"]
+VALID_DIFFICULTIES = ["easy", "medium", "hard"]
+
+
+class RecipeCreate(BaseModel):
+    title: str = Field(..., min_length=5, max_length=200)
+    description: Optional[str] = Field(None, max_length=2000)
+    image_url: Optional[str] = None
+    cooking_time: Optional[int] = Field(None, ge=1, le=600)
+    servings: Optional[int] = Field(None, ge=1, le=50)
+    difficulty: Optional[str] = None
+    keyword: Optional[str] = None
+    ingredients: list[IngredientCreate] = Field(..., min_length=1, max_length=50)
+    steps: list[StepCreate] = Field(..., min_length=1, max_length=30)
+
+
+class RecipeUpdate(BaseModel):
+    title: Optional[str] = Field(None, min_length=5, max_length=200)
+    description: Optional[str] = Field(None, max_length=2000)
+    image_url: Optional[str] = None
+    cooking_time: Optional[int] = Field(None, ge=1, le=600)
+    servings: Optional[int] = Field(None, ge=1, le=50)
+    difficulty: Optional[str] = None
+    keyword: Optional[str] = None
+    ingredients: Optional[list[IngredientCreate]] = Field(None, min_length=1, max_length=50)
+    steps: Optional[list[StepCreate]] = Field(None, min_length=1, max_length=30)
+
+
+class RecipeStatusUpdate(BaseModel):
+    status: str = Field(..., pattern="^(approved|rejected)$")
+    reject_reason: Optional[str] = None
+
+
+class UploadResponse(BaseModel):
+    url: str
+    filename: str
+    size_bytes: int
 
 
 class AuthorOut(BaseModel):
@@ -56,6 +112,15 @@ class RecipeCardOut(BaseModel):
     author: AuthorOut | None
     save_count: int
     is_saved: bool | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class RecipeCardWithStatus(RecipeCardOut):
+    """RecipeCard extended with moderation fields — for owner/admin views."""
+    status: str
+    reject_reason: str | None = None
+    created_at: datetime
 
     model_config = {"from_attributes": True}
 

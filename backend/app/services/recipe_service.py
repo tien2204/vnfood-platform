@@ -1,11 +1,12 @@
 import uuid
 from typing import Optional
 
-from sqlalchemy import func, or_, select, text, update
+from fastapi import HTTPException, status
+from sqlalchemy import delete, func, or_, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.models.recipe import Recipe
+from app.models.recipe import Recipe, RecipeIngredient, RecipeStep
 from app.models.social import Follow, Rating, SavedRecipe
 from app.models.user import User
 from app.schemas.recipe import (
@@ -14,7 +15,11 @@ from app.schemas.recipe import (
     IngredientOut,
     PaginationOut,
     RecipeCardOut,
+    RecipeCardWithStatus,
+    RecipeCreate,
     RecipeDetailOut,
+    RecipeStatusUpdate,
+    RecipeUpdate,
     StepOut,
 )
 
@@ -405,6 +410,231 @@ async def get_user_recipes(
     saved_ids = await _get_saved_ids(db, recipe_ids, current_user)
 
     cards = [_build_recipe_card(r[0], r[1], saved_ids, current_user) for r in rows]
+    total_pages = (total + limit - 1) // limit if total > 0 else 0
+    pagination = PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
+    return cards, pagination
+
+
+# ── CRUD ──────────────────────────────────────────────────────────────────────
+
+def _build_recipe_card_with_status(recipe: Recipe, author: Optional[User]) -> RecipeCardWithStatus:
+    author_out = None
+    if author:
+        author_out = AuthorOut(
+            id=author.id,
+            full_name=author.full_name,
+            avatar_url=author.avatar_url,
+        )
+    return RecipeCardWithStatus(
+        id=recipe.id,
+        title=recipe.title,
+        image_url=recipe.image_url,
+        avg_rating=recipe.avg_rating,
+        rating_count=recipe.rating_count,
+        cooking_time=recipe.cooking_time,
+        servings=recipe.servings,
+        difficulty=recipe.difficulty,
+        source=recipe.source,
+        author=author_out,
+        save_count=recipe.save_count,
+        status=recipe.status,
+        reject_reason=recipe.reject_reason,
+        created_at=recipe.created_at,
+    )
+
+
+async def create_recipe(
+    db: AsyncSession,
+    data: RecipeCreate,
+    author_id: uuid.UUID,
+) -> Recipe:
+    recipe = Recipe(
+        id=uuid.uuid4(),
+        title=data.title,
+        description=data.description,
+        image_url=data.image_url,
+        cooking_time=data.cooking_time,
+        servings=data.servings,
+        difficulty=data.difficulty,
+        keyword=data.keyword,
+        source="user",
+        status="pending",
+        author_id=author_id,
+    )
+    db.add(recipe)
+    await db.flush()
+
+    for ing in data.ingredients:
+        db.add(RecipeIngredient(
+            id=uuid.uuid4(),
+            recipe_id=recipe.id,
+            display_text=ing.display_text,
+            ingredient_name=ing.ingredient_name,
+            quantity=ing.quantity,
+            order_index=ing.order_index,
+        ))
+
+    for step in data.steps:
+        db.add(RecipeStep(
+            id=uuid.uuid4(),
+            recipe_id=recipe.id,
+            step_number=step.step_number,
+            content=step.content,
+            image_url=step.image_url or None,
+            timer_seconds=step.timer_seconds,
+        ))
+
+    await db.commit()
+    await db.refresh(recipe)
+    return recipe
+
+
+async def update_recipe(
+    db: AsyncSession,
+    recipe_id: uuid.UUID,
+    data: RecipeUpdate,
+    current_user: User,
+) -> Recipe:
+    result = await db.execute(select(Recipe).where(Recipe.id == recipe_id))
+    recipe = result.scalar_one_or_none()
+    if recipe is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Công thức không tồn tại")
+
+    if current_user.role != "admin":
+        if recipe.source == "cookpad":
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không thể sửa công thức Cookpad")
+        if recipe.author_id != current_user.id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền sửa công thức này")
+
+    was_approved = recipe.status == "approved"
+
+    update_data = data.model_dump(exclude_none=True, exclude={"ingredients", "steps"})
+    for field, value in update_data.items():
+        setattr(recipe, field, value)
+
+    if was_approved and current_user.role != "admin":
+        recipe.status = "pending"
+        recipe.reject_reason = None
+
+    if data.ingredients is not None:
+        await db.execute(delete(RecipeIngredient).where(RecipeIngredient.recipe_id == recipe_id))
+        for ing in data.ingredients:
+            db.add(RecipeIngredient(
+                id=uuid.uuid4(),
+                recipe_id=recipe_id,
+                display_text=ing.display_text,
+                ingredient_name=ing.ingredient_name,
+                quantity=ing.quantity,
+                order_index=ing.order_index,
+            ))
+
+    if data.steps is not None:
+        await db.execute(delete(RecipeStep).where(RecipeStep.recipe_id == recipe_id))
+        for step in data.steps:
+            db.add(RecipeStep(
+                id=uuid.uuid4(),
+                recipe_id=recipe_id,
+                step_number=step.step_number,
+                content=step.content,
+                image_url=step.image_url or None,
+                timer_seconds=step.timer_seconds,
+            ))
+
+    await db.commit()
+    await db.refresh(recipe)
+    return recipe
+
+
+async def delete_recipe(
+    db: AsyncSession,
+    recipe_id: uuid.UUID,
+    current_user: User,
+) -> None:
+    result = await db.execute(select(Recipe).where(Recipe.id == recipe_id))
+    recipe = result.scalar_one_or_none()
+    if recipe is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Công thức không tồn tại")
+
+    if current_user.role != "admin":
+        if recipe.source == "cookpad":
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không thể xóa công thức Cookpad")
+        if recipe.author_id != current_user.id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền xóa công thức này")
+
+    await db.delete(recipe)
+    await db.commit()
+
+
+async def approve_recipe(
+    db: AsyncSession,
+    recipe_id: uuid.UUID,
+    data: RecipeStatusUpdate,
+) -> Recipe:
+    result = await db.execute(select(Recipe).where(Recipe.id == recipe_id))
+    recipe = result.scalar_one_or_none()
+    if recipe is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Công thức không tồn tại")
+
+    recipe.status = data.status
+    recipe.reject_reason = data.reject_reason if data.status == "rejected" else None
+    await db.commit()
+    await db.refresh(recipe)
+    return recipe
+
+
+async def get_pending_recipes(
+    db: AsyncSession,
+    page: int = 1,
+    limit: int = 20,
+    status_filter: Optional[str] = None,
+) -> tuple[list[RecipeCardWithStatus], PaginationOut]:
+    limit = min(limit, 50)
+    stmt = (
+        select(Recipe, User)
+        .outerjoin(User, Recipe.author_id == User.id)
+    )
+    if status_filter:
+        stmt = stmt.where(Recipe.status == status_filter)
+    stmt = stmt.order_by(Recipe.created_at.asc())
+
+    count_stmt = select(func.count()).select_from(stmt.subquery())
+    total = (await db.execute(count_stmt)).scalar_one()
+
+    offset = (page - 1) * limit
+    stmt = stmt.offset(offset).limit(limit)
+    rows = (await db.execute(stmt)).all()
+
+    cards = [_build_recipe_card_with_status(r[0], r[1]) for r in rows]
+    total_pages = (total + limit - 1) // limit if total > 0 else 0
+    pagination = PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
+    return cards, pagination
+
+
+async def get_my_recipes(
+    db: AsyncSession,
+    user_id: uuid.UUID,
+    page: int = 1,
+    limit: int = 20,
+    status_filter: Optional[str] = None,
+) -> tuple[list[RecipeCardWithStatus], PaginationOut]:
+    limit = min(limit, 50)
+    stmt = (
+        select(Recipe, User)
+        .outerjoin(User, Recipe.author_id == User.id)
+        .where(Recipe.author_id == user_id)
+    )
+    if status_filter:
+        stmt = stmt.where(Recipe.status == status_filter)
+    stmt = stmt.order_by(Recipe.created_at.desc())
+
+    count_stmt = select(func.count()).select_from(stmt.subquery())
+    total = (await db.execute(count_stmt)).scalar_one()
+
+    offset = (page - 1) * limit
+    stmt = stmt.offset(offset).limit(limit)
+    rows = (await db.execute(stmt)).all()
+
+    cards = [_build_recipe_card_with_status(r[0], r[1]) for r in rows]
     total_pages = (total + limit - 1) // limit if total > 0 else 0
     pagination = PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
     return cards, pagination

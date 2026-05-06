@@ -85,3 +85,54 @@ export interface FeaturedRecipes {
   new: RecipeCard[];
   top_rated: RecipeCard[];
 }
+
+// ── Recipe CRUD types ──────────────────────────────────────────────────────────
+
+export interface IngredientCreate {
+  display_text: string;
+  ingredient_name?: string;
+  quantity?: string;
+  order_index: number;
+}
+
+export interface StepCreate {
+  step_number: number;
+  content: string;
+  image_url?: string;
+  timer_seconds?: number;
+}
+
+export interface RecipeCreate {
+  title: string;
+  description?: string;
+  image_url?: string;
+  cooking_time?: number;
+  servings?: number;
+  difficulty?: "easy" | "medium" | "hard";
+  keyword?: string;
+  ingredients: IngredientCreate[];
+  steps: StepCreate[];
+}
+
+export type RecipeUpdate = Partial<RecipeCreate>;
+
+export interface RecipeCardWithStatus extends RecipeCard {
+  status: "pending" | "approved" | "rejected";
+  reject_reason: string | null;
+  created_at: string;
+}
+
+export interface UploadResponse {
+  url: string;
+  filename: string;
+  size_bytes: number;
+}
+
+export const RECIPE_KEYWORDS = ["Bánh", "Bún", "Cá", "Canh", "Cơm", "Gỏi", "Phở", "Thịt", "Xôi"] as const;
+export type RecipeKeyword = typeof RECIPE_KEYWORDS[number];
+
+export const RECIPE_DIFFICULTIES = [
+  { value: "easy", label: "Dễ" },
+  { value: "medium", label: "Trung bình" },
+  { value: "hard", label: "Khó" },
+] as const;
