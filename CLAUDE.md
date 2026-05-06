@@ -234,7 +234,7 @@ GROUP_TO_WEIGHT = {
 
 ### Week 2 — Core Features
 - [x] User đăng recipe + Admin duyệt
-- [ ] Comment, Rating, Save/Bookmark
+- [x] Comment, Rating, Save/Bookmark
 - [ ] Follow user + Social feed
 - [ ] User profile
 
@@ -329,8 +329,20 @@ GROUP_TO_WEIGHT = {
 - [x] `backend/app/api/v1/auth.py` — đổi `/login` từ `OAuth2PasswordRequestForm` (form-urlencoded, field `username`) sang `LoginRequest` (JSON body, field `email`) — nhất quán với toàn bộ API
 - [x] `backend/app/schemas/auth.py` — `LoginRequest.email` đổi từ `EmailStr` → `str` để `admin@vnfood.local` (TLD `.local` reserved) không bị Pydantic EmailStr từ chối; `RegisterRequest` giữ `EmailStr`
 
+- [x] **Prompt 8 — Comment + Rating (UC-20, UC-21)**
+- [x] `backend/app/schemas/social.py` — CommentCreate, CommentUpdate, CommentOut (with is_mine), CommentUserOut, RatingCreate, RatingOut
+- [x] `backend/app/services/social_service.py` — list_comments (pagination, filter is_hidden), create/update/delete_comment (auth: owner only/owner+admin), upsert_rating (UNIQUE constraint), get_my_rating, delete_rating (auto recompute avg_rating + rating_count trên Recipe)
+- [x] `backend/app/api/v1/comments.py` — 4 endpoints: GET /recipes/{id}/comments, POST, PUT /comments/{id}, DELETE /comments/{id}
+- [x] `backend/app/api/v1/ratings.py` — 3 endpoints: POST /recipes/{id}/rate, GET /recipes/{id}/my-rating, DELETE /recipes/{id}/rate
+- [x] `backend/app/main.py` — mount comments_router + ratings_router tại /api/v1
+- [x] `frontend/lib/types.ts` — thêm Comment, CommentUser, RatingOut
+- [x] `frontend/components/recipes/StarRating.tsx` — 5 sao, hover preview, readonly mode (half-star), interactive (onChange), size prop
+- [x] `frontend/components/recipes/RatingSection.tsx` — hiển thị avg+count (readonly), interactive stars cho logged-in, optimistic update, toast, redirect guest to login
+- [x] `frontend/components/recipes/CommentSection.tsx` — paginated "Load more", form gửi comment (logged-in only), mỗi comment: avatar+name+relative_time+content, inline edit (nếu is_mine), delete confirm (is_mine or admin), menu actions
+- [x] `frontend/app/recipes/[id]/page.tsx` — decode JWT server-side (cookies), fetch recipe với auth (no-store) hoặc cached (revalidate 60), render RatingSection + CommentSection, pass isAdmin prop
+
 ### Làm tiếp (session kế)
-- Comment, Rating, Save/Bookmark (Week 2)
+- Save/Bookmark recipes (Week 2)
 - Follow user + Social feed (Week 2)
 - User profile page `/me`
 
@@ -362,3 +374,12 @@ GROUP_TO_WEIGHT = {
 - Admin route `/admin/:path*` trong middleware kiểm tra `payload.role !== "admin"` → redirect `/` thay vì login (đã đăng nhập nhưng không đủ quyền)
 - `/login` endpoint KHÔNG dùng `OAuth2PasswordRequestForm` — FastAPI OAuth2 form expect `application/x-www-form-urlencoded` + field `username`, frontend gửi JSON `{ email, password }` → 422; dùng `LoginRequest` JSON body thay thế
 - `LoginRequest.email` dùng `str` không phải `EmailStr` — seed data dùng `admin@vnfood.local` (TLD `.local` reserved cho mDNS), Pydantic EmailStr từ chối → 422 khi admin login; `RegisterRequest` vẫn giữ `EmailStr` để validate email user mới
+- **Comment + Rating:**
+  - Rating: UNIQUE(recipe_id, user_id) + CHECK(score 1-5) — upsert thay vì insert+update riêng
+  - Recompute avg_rating/rating_count tự động sau mỗi upsert/delete rating (SQLAlchemy trigger hoặc app-level logic)
+  - Comment: soft delete với `is_hidden=true` + filter `is_hidden=false` (trừ admin), không hard delete → giữ thread integrity
+  - Admin xóa được comment người khác, user chỉ edit/delete comment của mình
+  - Frontend RatingSection: dual stars (avg readonly + user interactive), optimistic update + toast
+  - Frontend CommentSection: lazy load pagination với "Load more", inline edit (textarea + save/cancel), delete confirm, relative timestamps (vừa xong/X phút/X ngày)
+  - Server-side JWT decode (next/headers cookies) để fetch recipe với auth token → trả về user_rating; pass isAdmin prop xuống CommentSection
+  - CommentSection menu (⋯) hiển thị khi `is_mine || isAdmin` — Edit chỉ cho owner, Delete cho owner+admin
