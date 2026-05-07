@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useCallback } from "react";
-import { Search, ScanLine, UtensilsCrossed, X, ChevronDown, LogOut, UserRound } from "lucide-react";
+import { Search, ScanLine, UtensilsCrossed, X, ChevronDown, LogOut, UserRound, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -130,6 +130,13 @@ export default function Navbar() {
                     >
                       <UserRound className="w-4 h-4 text-[#7C6A56]" />
                       Trang cá nhân
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="gap-2 cursor-pointer"
+                      onClick={() => router.push("/me/saved")}
+                    >
+                      <Bookmark className="w-4 h-4 text-[#7C6A56]" />
+                      Đã lưu
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

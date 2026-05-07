@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Clock, Users, Star, Bookmark } from "lucide-react";
+import { Clock, Users, Star } from "lucide-react";
+import SaveButton from "./SaveButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { RecipeCard as RecipeCardType } from "@/lib/types";
 
@@ -26,9 +27,10 @@ function stripEmoji(text: string): string {
 
 interface Props {
   recipe: RecipeCardType;
+  onSaveChange?: (isSaved: boolean, saveCount: number) => void;
 }
 
-export default function RecipeCard({ recipe }: Props) {
+export default function RecipeCard({ recipe, onSaveChange }: Props) {
   const imageUrl = recipe.image_url
     ? recipe.image_url.startsWith("http")
       ? recipe.image_url
@@ -81,19 +83,15 @@ export default function RecipeCard({ recipe }: Props) {
           )}
 
           {/* Save button */}
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              /* TODO: save/unsave */
-            }}
-            className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-white/80 backdrop-blur-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors"
-          >
-            <Bookmark
-              className="w-4 h-4"
-              fill={recipe.is_saved ? "#E85D26" : "none"}
-              stroke={recipe.is_saved ? "#E85D26" : "currentColor"}
+          <div className="absolute top-2 right-2 z-10">
+            <SaveButton
+              recipeId={recipe.id}
+              initialSaved={recipe.is_saved ?? false}
+              initialCount={recipe.save_count}
+              variant="card"
+              onChange={onSaveChange}
             />
-          </button>
+          </div>
 
           {/* Difficulty badge */}
           {recipe.difficulty && (

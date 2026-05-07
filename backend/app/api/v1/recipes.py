@@ -54,8 +54,11 @@ async def delete_recipe(
 
 
 @router.get("/featured")
-async def get_featured_recipes(db: AsyncSession = Depends(get_db)):
-    data = await recipe_service.get_featured_recipes(db)
+async def get_featured_recipes(
+    db: AsyncSession = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user),
+):
+    data = await recipe_service.get_featured_recipes(db, current_user=current_user)
     return {"success": True, "data": data}
 
 

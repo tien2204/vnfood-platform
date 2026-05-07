@@ -319,7 +319,10 @@ async def search_recipes(
     return cards, pagination
 
 
-async def get_featured_recipes(db: AsyncSession) -> dict:
+async def get_featured_recipes(
+    db: AsyncSession,
+    current_user: Optional[User] = None,
+) -> dict:
     base = (
         select(Recipe, User)
         .outerjoin(User, Recipe.author_id == User.id)
@@ -345,8 +348,11 @@ async def get_featured_recipes(db: AsyncSession) -> dict:
         )
     ).all()
 
+    all_recipe_ids = list({r[0].id for r in trending_rows + new_rows + top_rated_rows})
+    saved_ids = await _get_saved_ids(db, all_recipe_ids, current_user)
+
     def to_cards(rows):
-        return [_build_recipe_card(r[0], r[1], set(), None) for r in rows]
+        return [_build_recipe_card(r[0], r[1], saved_ids, current_user) for r in rows]
 
     return {
         "trending": to_cards(trending_rows),

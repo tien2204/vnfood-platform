@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import {
   ScanLine,
@@ -26,11 +27,18 @@ const KEYWORD_GROUPS = [
   { label: "Đặc Biệt", slug: "dac-biet" },
 ];
 
-async function getFeaturedRecipes(): Promise<FeaturedRecipes | null> {
+async function getFeaturedRecipes(
+  accessToken?: string
+): Promise<FeaturedRecipes | null> {
   try {
+    const headers: Record<string, string> = {};
+    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/v1/recipes/featured`,
-      { next: { revalidate: 300 } }
+      accessToken
+        ? { headers, cache: "no-store" }
+        : { next: { revalidate: 60 } }
     );
     if (!res.ok) return null;
     const json: ApiResponse<FeaturedRecipes> = await res.json();
@@ -41,7 +49,9 @@ async function getFeaturedRecipes(): Promise<FeaturedRecipes | null> {
 }
 
 export default async function HomePage() {
-  const featured = await getFeaturedRecipes();
+  const jar = await cookies();
+  const accessToken = jar.get("access_token")?.value;
+  const featured = await getFeaturedRecipes(accessToken);
 
   return (
     <div>

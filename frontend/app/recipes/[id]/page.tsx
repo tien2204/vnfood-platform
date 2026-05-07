@@ -1,19 +1,21 @@
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import {
   Clock,
   Users,
-  Star,
   Eye,
-  Bookmark,
   ChevronLeft,
   ExternalLink,
   ChefHat,
 } from "lucide-react";
+import SaveButton from "@/components/recipes/SaveButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import RatingSection from "@/components/recipes/RatingSection";
+import CommentSection from "@/components/recipes/CommentSection";
 import type { ApiResponse, RecipeDetail } from "@/lib/types";
 
 const DIFFICULTY_LABEL = {
@@ -32,11 +34,26 @@ function difficultyLabel(d: string): string {
   return DIFFICULTY_LABEL[d as keyof typeof DIFFICULTY_LABEL] ?? d;
 }
 
-async function getRecipe(id: string): Promise<RecipeDetail | null> {
+function decodeJWTPayload(token: string): { sub?: string; role?: string } | null {
   try {
+    const part = token.split(".")[1];
+    const padded = part + "==".slice(0, (4 - (part.length % 4)) % 4);
+    return JSON.parse(Buffer.from(padded, "base64").toString("utf8"));
+  } catch {
+    return null;
+  }
+}
+
+async function getRecipe(id: string, accessToken?: string): Promise<RecipeDetail | null> {
+  try {
+    const headers: Record<string, string> = {};
+    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/v1/recipes/${id}`,
-      { next: { revalidate: 60 } }
+      accessToken
+        ? { headers, cache: "no-store" }
+        : { next: { revalidate: 60 } }
     );
     if (res.status === 404) return null;
     if (!res.ok) throw new Error("fetch failed");
@@ -66,8 +83,15 @@ export default async function RecipeDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const recipe = await getRecipe(id);
 
+  const jar = await cookies();
+  const accessToken = jar.get("access_token")?.value;
+  const jwtPayload = accessToken ? decodeJWTPayload(accessToken) : null;
+  const isLoggedIn = !!jwtPayload?.sub;
+  const currentUserId = jwtPayload?.sub;
+  const isAdmin = jwtPayload?.role === "admin";
+
+  const recipe = await getRecipe(id, accessToken);
   if (!recipe) notFound();
 
   const imageUrl = recipe.image_url
@@ -78,21 +102,8 @@ export default async function RecipeDetailPage({
 
   const cleanTitle = stripEmoji(recipe.title);
 
-  // Build meta items to interleave with dots
   type MetaItem = { key: string; node: React.ReactNode };
   const metaItems: MetaItem[] = [];
-  if (recipe.avg_rating > 0) {
-    metaItems.push({
-      key: "rating",
-      node: (
-        <span className="flex items-center gap-1">
-          <Star className="w-4 h-4 fill-[#F4A261] text-[#F4A261]" />
-          <strong className="text-[#1C1209]">{recipe.avg_rating.toFixed(1)}</strong>
-          <span>({recipe.rating_count} đánh giá)</span>
-        </span>
-      ),
-    });
-  }
   if (recipe.view_count >= 100) {
     metaItems.push({
       key: "views",
@@ -212,6 +223,15 @@ export default async function RecipeDetailPage({
             {recipe.description}
           </blockquote>
         )}
+
+        {/* Rating section */}
+        <RatingSection
+          recipeId={id}
+          avgRating={recipe.avg_rating}
+          ratingCount={recipe.rating_count}
+          userRating={recipe.user_rating ?? null}
+          isLoggedIn={isLoggedIn}
+        />
       </div>
 
       {/* Author card */}
@@ -315,7 +335,7 @@ export default async function RecipeDetailPage({
                         {(step.timer_seconds ?? 0) > 0 && (
                           <span className="inline-flex items-center gap-1 mt-2 text-xs text-[#7C6A56] bg-[#F7F0E8] px-2 py-1 rounded-full">
                             <Clock className="w-3 h-3" />
-                            {Math.round(step.timer_seconds / 60)} phút
+                            {Math.round(step.timer_seconds! / 60)} phút
                           </span>
                         )}
                         {step.image_url && (
@@ -342,14 +362,14 @@ export default async function RecipeDetailPage({
               )}
             </TabsContent>
 
-            {/* Comments — coming soon */}
+            {/* Comments */}
             <TabsContent value="comments">
-              <div className="py-12 text-center">
-                <p className="text-[#7C6A56] text-lg mb-2">💬 Sắp có</p>
-                <p className="text-sm text-[#7C6A56]/70">
-                  Tính năng bình luận đang được phát triển.
-                </p>
-              </div>
+              <CommentSection
+                recipeId={id}
+                isLoggedIn={isLoggedIn}
+                currentUserId={currentUserId}
+                isAdmin={isAdmin}
+              />
             </TabsContent>
           </Tabs>
 
@@ -359,12 +379,12 @@ export default async function RecipeDetailPage({
               <ChefHat className="w-5 h-5" />
               Bắt đầu nấu
             </button>
-            <button className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-[#E8DDD4] hover:border-[#E85D26] hover:text-[#E85D26] text-[#7C6A56] transition-colors">
-              <Bookmark className="w-5 h-5" />
-              {recipe.save_count > 0 && (
-                <span className="text-sm">{recipe.save_count}</span>
-              )}
-            </button>
+            <SaveButton
+              recipeId={id}
+              initialSaved={recipe.is_saved ?? false}
+              initialCount={recipe.save_count}
+              variant="action"
+            />
             {recipe.source === "cookpad" && recipe.cookpad_url && (
               <a
                 href={recipe.cookpad_url}
@@ -443,12 +463,12 @@ export default async function RecipeDetailPage({
           <ChefHat className="w-4 h-4" />
           Bắt đầu nấu
         </button>
-        <button className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-[#E8DDD4] hover:border-[#E85D26] hover:text-[#E85D26] text-[#7C6A56] transition-colors">
-          <Bookmark className="w-5 h-5" />
-          {recipe.save_count > 0 && (
-            <span className="text-xs">{recipe.save_count}</span>
-          )}
-        </button>
+        <SaveButton
+          recipeId={id}
+          initialSaved={recipe.is_saved ?? false}
+          initialCount={recipe.save_count}
+          variant="action"
+        />
         {recipe.source === "cookpad" && recipe.cookpad_url && (
           <a
             href={recipe.cookpad_url}

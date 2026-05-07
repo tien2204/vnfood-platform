@@ -136,3 +136,48 @@ export const RECIPE_DIFFICULTIES = [
   { value: "medium", label: "Trung bình" },
   { value: "hard", label: "Khó" },
 ] as const;
+
+// ── Social types ───────────────────────────────────────────────────────────────
+
+export interface CommentUser {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+}
+
+export interface Comment {
+  id: string;
+  content: string;
+  is_hidden: boolean;
+  created_at: string;
+  updated_at: string;
+  user: CommentUser | null;
+  is_mine: boolean;
+}
+
+export interface RatingOut {
+  avg_rating: number;
+  rating_count: number;
+  user_rating: number;
+}
+
+export interface SaveResponse {
+  is_saved: boolean;
+  save_count: number;
+}
+
+export interface SavedRecipeOut {
+  id: string;
+  title: string;
+  image_url: string | null;
+  avg_rating: number;
+  rating_count: number;
+  cooking_time: number | null;
+  servings: number | null;
+  difficulty: "easy" | "medium" | "hard" | null;
+  source: "cookpad" | "user";
+  author: Author | null;
+  save_count: number;
+  is_saved: boolean;
+  saved_at: string;
+}

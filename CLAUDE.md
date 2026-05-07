@@ -341,8 +341,30 @@ GROUP_TO_WEIGHT = {
 - [x] `frontend/components/recipes/CommentSection.tsx` — paginated "Load more", form gửi comment (logged-in only), mỗi comment: avatar+name+relative_time+content, inline edit (nếu is_mine), delete confirm (is_mine or admin), menu actions
 - [x] `frontend/app/recipes/[id]/page.tsx` — decode JWT server-side (cookies), fetch recipe với auth (no-store) hoặc cached (revalidate 60), render RatingSection + CommentSection, pass isAdmin prop
 
+- [x] **Prompt 9 — Save/Bookmark recipes (UC-22)**
+- [x] `backend/app/schemas/social.py` — thêm SaveResponse (is_saved, save_count), SavedRecipeOut (id, title, image_url, avg_rating, rating_count, cooking_time, servings, difficulty, source, author, save_count, is_saved, saved_at)
+- [x] `backend/app/services/social_service.py` — thêm save_recipe, unsave_recipe, list_saved_recipes; fix SQLAlchemy synchronize_session bug: capture `new_count` BEFORE UPDATE statement
+- [x] `backend/app/api/v1/saved.py` — NEW FILE: POST /recipes/{id}/save, DELETE /recipes/{id}/save, GET /me/saved-recipes (với pagination)
+- [x] `backend/app/main.py` — mount saved_router tại /api/v1
+- [x] `backend/app/services/recipe_service.py` — update get_featured_recipes nhận `current_user: Optional[User]`; gọi `_get_saved_ids` để tính `is_saved` cho tất cả featured recipes trong một query
+- [x] `backend/app/api/v1/recipes.py` — update GET /featured inject `current_user` qua `get_optional_current_user`
+- [x] `frontend/lib/types.ts` — thêm SaveResponse, SavedRecipeOut
+- [x] `frontend/components/recipes/SaveButton.tsx` — NEW FILE: Heart icon, variant "card" (overlay nhỏ) + "action" (border button to), optimistic toggle, useRef lock chống double-click, router.refresh() để invalidate server cache, onChange callback
+- [x] `frontend/components/recipes/RecipeCard.tsx` — thay Bookmark bằng SaveButton, thêm onSaveChange prop
+- [x] `frontend/components/recipes/RecipeGrid.tsx` — forward onSaveChange(recipeId, isSaved, saveCount) xuống RecipeCard
+- [x] `frontend/app/recipes/[id]/page.tsx` — thay Bookmark buttons (desktop + mobile) bằng SaveButton variant="action"
+- [x] `frontend/app/me/saved/page.tsx` — NEW FILE: danh sách công thức đã lưu, SWR + optimistic removal khi unsave (mutate filter + revalidate: false), pagination
+- [x] `frontend/app/page.tsx` — read access_token từ httpOnly cookie, fetch featured với auth + cache: "no-store" cho logged-in user (fix stale save_count trên homepage)
+- [x] `frontend/components/layout/Navbar.tsx` — thêm link "Đã lưu" → /me/saved với Bookmark icon trong dropdown avatar
+
+- [x] **Bugfix — Save count +2 thay vì +1**
+- [x] SQLAlchemy `synchronize_session='auto'` silently cập nhật in-memory `recipe.save_count` sau `UPDATE ... SET save_count = save_count + 1` → `recipe.save_count` đã là giá trị mới → return `recipe.save_count + 1` cho kết quả +2; fix: capture `new_count = recipe.save_count + 1` TRƯỚC khi gọi `db.execute(update(...))`
+
+- [x] **Bugfix — Homepage stale save_count (cache 5 phút) + /me/saved chậm biến mất**
+- [x] Homepage: đọc token từ cookie, fetch với Bearer + cache: "no-store" cho logged-in; anonymous vẫn dùng revalidate: 60
+- [x] /me/saved: SaveButton.onChange → RecipeGrid.onSaveChange → page.handleSaveChange → SWR mutate filter (revalidate: false) → instant optimistic removal
+
 ### Làm tiếp (session kế)
-- Save/Bookmark recipes (Week 2)
 - Follow user + Social feed (Week 2)
 - User profile page `/me`
 
@@ -383,3 +405,11 @@ GROUP_TO_WEIGHT = {
   - Frontend CommentSection: lazy load pagination với "Load more", inline edit (textarea + save/cancel), delete confirm, relative timestamps (vừa xong/X phút/X ngày)
   - Server-side JWT decode (next/headers cookies) để fetch recipe với auth token → trả về user_rating; pass isAdmin prop xuống CommentSection
   - CommentSection menu (⋯) hiển thị khi `is_mine || isAdmin` — Edit chỉ cho owner, Delete cho owner+admin
+- **Save/Bookmark (UC-22):**
+  - SQLAlchemy `synchronize_session='auto'` sau UPDATE silently thay đổi in-memory object — capture computed values BEFORE gọi `db.execute(update(...))`
+  - `SaveButton` dùng `useRef` (không phải `useState`) cho in-flight lock: `useRef` sync, không trigger re-render cycle, đảm bảo double-click block hoạt động đúng
+  - `router.refresh()` trong SaveButton invalidate Server Component cache của route hiện tại — đủ cho /recipes/[id] page, KHÔNG đủ cho cross-route (homepage)
+  - Homepage cần `cache: "no-store"` + Bearer token khi logged-in để phản ánh `is_saved` mới nhất; anonymous vẫn revalidate: 60
+  - SWR optimistic removal: `mutate(filterFn, { revalidate: false })` để recipe biến mất ngay khi unsave — không cần chờ server round-trip
+  - `onSaveChange` prop chain: SaveButton → RecipeCard → RecipeGrid → page level để cho phép parent SWR cache biết về thay đổi
+  - `SavedRecipeOut` trả `is_saved: bool = True` cứng vì endpoint `/me/saved-recipes` chỉ trả bản ghi đã lưu
