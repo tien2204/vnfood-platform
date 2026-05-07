@@ -364,9 +364,23 @@ GROUP_TO_WEIGHT = {
 - [x] Homepage: đọc token từ cookie, fetch với Bearer + cache: "no-store" cho logged-in; anonymous vẫn dùng revalidate: 60
 - [x] /me/saved: SaveButton.onChange → RecipeGrid.onSaveChange → page.handleSaveChange → SWR mutate filter (revalidate: false) → instant optimistic removal
 
+- [x] **Prompt 10 — Follow + Public profile + Social feed (UC-23, 24, 25, 26)**
+- [x] `backend/app/schemas/user.py` — UserStats, UserMiniOut, UserProfileOut, UserUpdate, FollowResponse, FollowerOut, FeedItem
+- [x] `backend/app/services/user_service.py` — get_user_profile, update_profile
+- [x] `backend/app/services/social_service.py` — follow_user, unfollow_user, list_followers, list_following, get_feed
+- [x] `backend/app/api/v1/users.py` — profile + follow + followers/following endpoints + PUT /me/profile
+- [x] `backend/app/api/v1/feed.py` — GET /feed (auth, is_discover_mode)
+- [x] `frontend/lib/types.ts` — UserStats, UserMini, UserProfile, FollowerOut, FollowResponse, FeedItem, FeedResponse
+- [x] `frontend/components/users/FollowButton.tsx` — optimistic, 401 → redirect login
+- [x] `frontend/components/users/UserCard.tsx` + `UserStatsBar.tsx`
+- [x] `frontend/app/users/[id]/page.tsx` + `UserProfileClient.tsx` — public profile, tabs lazy
+- [x] `frontend/app/me/profile/page.tsx` — edit profile + avatar upload
+- [x] `frontend/app/feed/page.tsx` — useSWRInfinite, FeedCard, discover mode
+- [x] Navbar dropdown updated, MobileBottomNav updated, RecipeCard author link, recipe detail author link
+
 ### Làm tiếp (session kế)
-- Follow user + Social feed (Week 2)
-- User profile page `/me`
+- Admin dashboard (Week 4)
+- `/me` redirect → `/users/{id}`
 
 ### Quyết định kỹ thuật đã chốt
 - PostgreSQL Docker thay Supabase
@@ -413,3 +427,13 @@ GROUP_TO_WEIGHT = {
   - SWR optimistic removal: `mutate(filterFn, { revalidate: false })` để recipe biến mất ngay khi unsave — không cần chờ server round-trip
   - `onSaveChange` prop chain: SaveButton → RecipeCard → RecipeGrid → page level để cho phép parent SWR cache biết về thay đổi
   - `SavedRecipeOut` trả `is_saved: bool = True` cứng vì endpoint `/me/saved-recipes` chỉ trả bản ghi đã lưu
+- **Follow + Profile + Feed (UC-23–26):**
+  - `follow_user` idempotent: đã follow → không lỗi, chỉ return current count
+  - `get_user_profile` trả `is_following: null` cho guest, `true/false` cho logged-in — frontend tận dụng để ẩn/hiện FollowButton logic
+  - `get_feed` discover mode khi `following_ids` rỗng → fallback sort by save_count DESC, avg_rating DESC
+  - `UserProfileClient` lazy-load tab content: recipes/followers/following chỉ fetch khi tab được active lần đầu
+  - `useSWRInfinite` trong feed page: `getKey` trả `null` khi guest (không logged-in) hoặc hết trang
+  - Profile edit page fetch `/users/{id}/profile` riêng (không dùng cached `useUser`) để luôn có `bio` field
+  - `UserOut` schema (backend) thêm `bio` và `is_active` để `PUT /me/profile` trả về full user info
+  - `MobileBottomNav` dùng `useUser` để resolve profile link dynamically: logged-in → `/users/{id}`, guest → `/auth/login`
+  - RecipeCard author click dùng `e.preventDefault()` + `router.push()` vì nằm trong `<Link>` wrapper

@@ -42,6 +42,8 @@ class UserOut(BaseModel):
     full_name: str | None
     role: str
     avatar_url: str | None
+    bio: str | None = None
+    is_active: bool = True
 
     model_config = {"from_attributes": True}
 

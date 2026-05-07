@@ -4,6 +4,7 @@ export interface User {
   full_name: string;
   role: "user" | "admin";
   avatar_url: string | null;
+  bio?: string | null;
 }
 
 export interface Author {
@@ -164,6 +165,61 @@ export interface RatingOut {
 export interface SaveResponse {
   is_saved: boolean;
   save_count: number;
+}
+
+// ── User / Profile types ───────────────────────────────────────────────────────
+
+export interface UserStats {
+  recipe_count: number;
+  follower_count: number;
+  following_count: number;
+  total_likes_received: number;
+}
+
+export interface UserMini {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+}
+
+export interface UserProfile {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  created_at: string;
+  stats: UserStats;
+  is_following: boolean | null;
+  is_self: boolean;
+  recent_recipes: RecipeCard[];
+}
+
+export interface FollowerOut {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  is_following: boolean | null;
+}
+
+export interface FollowResponse {
+  is_following: boolean;
+  follower_count: number;
+}
+
+export interface FeedItem {
+  type: "recipe";
+  recipe: RecipeCard;
+  author: UserMini;
+  posted_at: string;
+}
+
+export interface FeedResponse {
+  success: boolean;
+  data: FeedItem[];
+  pagination: Pagination;
+  is_discover_mode: boolean;
 }
 
 export interface SavedRecipeOut {

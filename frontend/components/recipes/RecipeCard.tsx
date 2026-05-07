@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Clock, Users, Star } from "lucide-react";
 import SaveButton from "./SaveButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -31,6 +32,7 @@ interface Props {
 }
 
 export default function RecipeCard({ recipe, onSaveChange }: Props) {
+  const router = useRouter();
   const imageUrl = recipe.image_url
     ? recipe.image_url.startsWith("http")
       ? recipe.image_url
@@ -144,17 +146,21 @@ export default function RecipeCard({ recipe, onSaveChange }: Props) {
 
           {/* Author */}
           {recipe.author && (
-            <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); router.push(`/users/${recipe.author.id}`); }}
+              className="flex items-center gap-2 group/author"
+            >
               <Avatar className="w-6 h-6">
                 <AvatarImage src={recipe.author.avatar_url ?? undefined} />
                 <AvatarFallback className="text-[10px] bg-[#F7F0E8] text-[#E85D26]">
                   {recipe.author.full_name?.charAt(0)?.toUpperCase() ?? "?"}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-xs text-[#7C6A56] truncate">
+              <span className="text-xs text-[#7C6A56] truncate group-hover/author:text-[#E85D26] transition-colors">
                 {recipe.author.full_name}
               </span>
-            </div>
+            </button>
           )}
 
         </div>

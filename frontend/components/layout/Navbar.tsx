@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useCallback } from "react";
-import { Search, ScanLine, UtensilsCrossed, X, ChevronDown, LogOut, UserRound, Bookmark } from "lucide-react";
+import { Search, ScanLine, UtensilsCrossed, X, ChevronDown, LogOut, UserRound, Bookmark, Newspaper, ChefHat, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -126,10 +126,24 @@ export default function Navbar() {
                     </div>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
-                      onClick={() => router.push("/me")}
+                      onClick={() => router.push(`/users/${user.id}`)}
                     >
                       <UserRound className="w-4 h-4 text-[#7C6A56]" />
                       Trang cá nhân
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="gap-2 cursor-pointer"
+                      onClick={() => router.push("/feed")}
+                    >
+                      <Newspaper className="w-4 h-4 text-[#7C6A56]" />
+                      Bảng tin
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="gap-2 cursor-pointer"
+                      onClick={() => router.push("/me/recipes")}
+                    >
+                      <ChefHat className="w-4 h-4 text-[#7C6A56]" />
+                      Công thức của tôi
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
@@ -137,6 +151,13 @@ export default function Navbar() {
                     >
                       <Bookmark className="w-4 h-4 text-[#7C6A56]" />
                       Đã lưu
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="gap-2 cursor-pointer"
+                      onClick={() => router.push("/me/profile")}
+                    >
+                      <Settings className="w-4 h-4 text-[#7C6A56]" />
+                      Cài đặt hồ sơ
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

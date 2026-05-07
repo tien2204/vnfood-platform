@@ -7,10 +7,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.recipe import Recipe
-from app.models.social import Comment, Rating, SavedRecipe
+from app.models.social import Comment, Follow, Rating, SavedRecipe
 from app.models.user import User
-from app.schemas.recipe import PaginationOut
+from app.schemas.recipe import AuthorOut, PaginationOut, RecipeCardOut
 from app.schemas.social import CommentOut, CommentUserOut, RatingOut, SaveResponse, SavedRecipeOut
+from app.schemas.user import FeedItem, FollowResponse, FollowerOut, UserMiniOut
 
 
 # ── Comments ───────────────────────────────────────────────────────────────────
@@ -351,3 +352,216 @@ async def list_saved_recipes(
     total_pages = (total + limit - 1) // limit if total > 0 else 0
     pagination = PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
     return results, pagination
+
+
+# ── Follow / Unfollow ──────────────────────────────────────────────────────────
+
+async def follow_user(
+    db: AsyncSession,
+    follower_id: uuid.UUID,
+    following_id: uuid.UUID,
+) -> FollowResponse:
+    if follower_id == following_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Không thể tự follow bản thân")
+
+    target = (await db.execute(select(User).where(User.id == following_id))).scalar_one_or_none()
+    if target is None or not target.is_active:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Người dùng không tồn tại")
+
+    existing = (await db.execute(
+        select(Follow).where(Follow.follower_id == follower_id, Follow.following_id == following_id)
+    )).scalar_one_or_none()
+
+    if not existing:
+        db.add(Follow(id=uuid.uuid4(), follower_id=follower_id, following_id=following_id))
+        await db.commit()
+
+    follower_count = (await db.execute(
+        select(func.count(Follow.id)).where(Follow.following_id == following_id)
+    )).scalar_one()
+    return FollowResponse(is_following=True, follower_count=follower_count)
+
+
+async def unfollow_user(
+    db: AsyncSession,
+    follower_id: uuid.UUID,
+    following_id: uuid.UUID,
+) -> FollowResponse:
+    existing = (await db.execute(
+        select(Follow).where(Follow.follower_id == follower_id, Follow.following_id == following_id)
+    )).scalar_one_or_none()
+
+    if existing:
+        await db.delete(existing)
+        await db.commit()
+
+    follower_count = (await db.execute(
+        select(func.count(Follow.id)).where(Follow.following_id == following_id)
+    )).scalar_one()
+    return FollowResponse(is_following=False, follower_count=follower_count)
+
+
+async def list_followers(
+    db: AsyncSession,
+    user_id: uuid.UUID,
+    page: int = 1,
+    limit: int = 20,
+    current_user_id: Optional[uuid.UUID] = None,
+) -> tuple[list[FollowerOut], PaginationOut]:
+    limit = min(limit, 50)
+
+    count_total = (await db.execute(
+        select(func.count(Follow.id)).where(Follow.following_id == user_id)
+    )).scalar_one()
+
+    offset = (page - 1) * limit
+    rows = (await db.execute(
+        select(User)
+        .join(Follow, Follow.follower_id == User.id)
+        .where(Follow.following_id == user_id)
+        .order_by(Follow.created_at.desc())
+        .offset(offset).limit(limit)
+    )).scalars().all()
+
+    followed_ids: set[uuid.UUID] = set()
+    if current_user_id:
+        ids = [u.id for u in rows]
+        if ids:
+            res = await db.execute(
+                select(Follow.following_id).where(
+                    Follow.follower_id == current_user_id,
+                    Follow.following_id.in_(ids),
+                )
+            )
+            followed_ids = {r for r, in res.all()}
+
+    result = [
+        FollowerOut(
+            id=u.id,
+            full_name=u.full_name,
+            avatar_url=u.avatar_url,
+            bio=u.bio,
+            is_following=(u.id in followed_ids) if current_user_id else None,
+        )
+        for u in rows
+    ]
+    total_pages = (count_total + limit - 1) // limit if count_total > 0 else 0
+    return result, PaginationOut(page=page, limit=limit, total=count_total, total_pages=total_pages)
+
+
+async def list_following(
+    db: AsyncSession,
+    user_id: uuid.UUID,
+    page: int = 1,
+    limit: int = 20,
+    current_user_id: Optional[uuid.UUID] = None,
+) -> tuple[list[FollowerOut], PaginationOut]:
+    limit = min(limit, 50)
+
+    count_total = (await db.execute(
+        select(func.count(Follow.id)).where(Follow.follower_id == user_id)
+    )).scalar_one()
+
+    offset = (page - 1) * limit
+    rows = (await db.execute(
+        select(User)
+        .join(Follow, Follow.following_id == User.id)
+        .where(Follow.follower_id == user_id)
+        .order_by(Follow.created_at.desc())
+        .offset(offset).limit(limit)
+    )).scalars().all()
+
+    followed_ids: set[uuid.UUID] = set()
+    if current_user_id:
+        ids = [u.id for u in rows]
+        if ids:
+            res = await db.execute(
+                select(Follow.following_id).where(
+                    Follow.follower_id == current_user_id,
+                    Follow.following_id.in_(ids),
+                )
+            )
+            followed_ids = {r for r, in res.all()}
+
+    result = [
+        FollowerOut(
+            id=u.id,
+            full_name=u.full_name,
+            avatar_url=u.avatar_url,
+            bio=u.bio,
+            is_following=(u.id in followed_ids) if current_user_id else None,
+        )
+        for u in rows
+    ]
+    total_pages = (count_total + limit - 1) // limit if count_total > 0 else 0
+    return result, PaginationOut(page=page, limit=limit, total=count_total, total_pages=total_pages)
+
+
+# ── Social Feed ────────────────────────────────────────────────────────────────
+
+async def get_feed(
+    db: AsyncSession,
+    user_id: uuid.UUID,
+    page: int = 1,
+    limit: int = 20,
+) -> tuple[list[FeedItem], PaginationOut, bool]:
+    limit = min(limit, 50)
+
+    following_ids_res = await db.execute(
+        select(Follow.following_id).where(Follow.follower_id == user_id)
+    )
+    following_ids = [r for r, in following_ids_res.all()]
+
+    is_discover_mode = len(following_ids) == 0
+
+    if is_discover_mode:
+        base = (
+            select(Recipe, User)
+            .outerjoin(User, Recipe.author_id == User.id)
+            .where(Recipe.status == "approved")
+            .order_by(Recipe.save_count.desc(), Recipe.avg_rating.desc(), Recipe.created_at.desc())
+        )
+    else:
+        base = (
+            select(Recipe, User)
+            .outerjoin(User, Recipe.author_id == User.id)
+            .where(Recipe.status == "approved", Recipe.author_id.in_(following_ids))
+            .order_by(Recipe.created_at.desc())
+        )
+
+    count_stmt = select(func.count()).select_from(base.subquery())
+    total = (await db.execute(count_stmt)).scalar_one()
+
+    offset = (page - 1) * limit
+    rows = (await db.execute(base.offset(offset).limit(limit))).all()
+
+    items: list[FeedItem] = []
+    for recipe, author in rows:
+        author_out = UserMiniOut(
+            id=author.id if author else uuid.uuid4(),
+            full_name=author.full_name if author else None,
+            avatar_url=author.avatar_url if author else None,
+            bio=author.bio if author else None,
+        )
+        recipe_out = RecipeCardOut(
+            id=recipe.id,
+            title=recipe.title,
+            image_url=recipe.image_url,
+            avg_rating=recipe.avg_rating,
+            rating_count=recipe.rating_count,
+            cooking_time=recipe.cooking_time,
+            servings=recipe.servings,
+            difficulty=recipe.difficulty,
+            source=recipe.source,
+            author=AuthorOut(
+                id=author.id if author else uuid.uuid4(),
+                full_name=author.full_name if author else None,
+                avatar_url=author.avatar_url if author else None,
+            ),
+            save_count=recipe.save_count,
+            is_saved=None,
+        )
+        items.append(FeedItem(type="recipe", recipe=recipe_out, author=author_out, posted_at=recipe.created_at))
+
+    total_pages = (total + limit - 1) // limit if total > 0 else 0
+    return items, PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages), is_discover_mode

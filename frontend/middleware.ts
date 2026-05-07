@@ -49,6 +49,8 @@ export const config = {
   matcher: [
     "/me/:path*",
     "/admin/:path*",
+    "/feed",
+    "/feed/:path*",
     "/recipes/new",
     "/recipes/:id/edit",
   ],

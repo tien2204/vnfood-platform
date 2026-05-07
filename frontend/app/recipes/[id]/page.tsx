@@ -237,26 +237,32 @@ export default async function RecipeDetailPage({
       {/* Author card */}
       {recipe.author ? (
         <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">
-          <Avatar className="w-12 h-12">
-            <AvatarImage src={recipe.author.avatar_url ?? undefined} />
-            <AvatarFallback className="bg-[#E85D26] text-white font-semibold">
-              {recipe.author.full_name?.charAt(0)?.toUpperCase() ?? "?"}
-            </AvatarFallback>
-          </Avatar>
+          <Link href={`/users/${recipe.author.id}`}>
+            <Avatar className="w-12 h-12">
+              <AvatarImage src={recipe.author.avatar_url ?? undefined} />
+              <AvatarFallback className="bg-[#E85D26] text-white font-semibold">
+                {recipe.author.full_name?.charAt(0)?.toUpperCase() ?? "?"}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-[#1C1209]">{recipe.author.full_name}</p>
+            <Link href={`/users/${recipe.author.id}`}>
+              <p className="font-semibold text-[#1C1209] hover:text-[#E85D26] transition-colors">
+                {recipe.author.full_name}
+              </p>
+            </Link>
             {recipe.author.follower_count > 0 && (
               <p className="text-xs text-[#7C6A56]">
                 {recipe.author.follower_count} người theo dõi
               </p>
             )}
           </div>
-          <button
-            disabled
-            className="px-4 py-1.5 rounded-full border border-[#E8DDD4] text-sm text-[#7C6A56] cursor-not-allowed opacity-50"
+          <Link
+            href={`/users/${recipe.author.id}`}
+            className="px-4 py-1.5 rounded-full border border-[#E85D26] text-sm text-[#E85D26] hover:bg-[#E85D26] hover:text-white transition-colors"
           >
-            Theo dõi
-          </button>
+            Xem hồ sơ
+          </Link>
         </div>
       ) : recipe.source === "cookpad" ? (
         <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">

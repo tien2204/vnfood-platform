@@ -2,28 +2,35 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, ScanLine, CalendarDays, User } from "lucide-react";
+import { Home, Search, ScanLine, Newspaper, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useUser } from "@/lib/hooks/useUser";
 
-const NAV_ITEMS = [
+const STATIC_ITEMS = [
   { href: "/", icon: Home, label: "Trang chủ" },
   { href: "/search", icon: Search, label: "Tìm kiếm" },
   { href: "/ai/scan", icon: ScanLine, label: "AI Scan", highlight: true },
-  { href: "/meal-plans", icon: CalendarDays, label: "Thực đơn" },
-  { href: "/profile", icon: User, label: "Cá nhân" },
+  { href: "/feed", icon: Newspaper, label: "Bảng tin" },
 ];
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
+  const { user } = useUser();
+
+  const profileHref = user ? `/users/${user.id}` : "/auth/login";
+  const allItems = [
+    ...STATIC_ITEMS,
+    { href: profileHref, icon: User, label: "Cá nhân", highlight: false },
+  ];
 
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#FFFBF5] border-t border-[#E8DDD4] pb-safe">
       <div className="flex items-center justify-around h-16">
-        {NAV_ITEMS.map(({ href, icon: Icon, label, highlight }) => {
-          const active = pathname === href;
+        {allItems.map(({ href, icon: Icon, label, highlight }) => {
+          const active = pathname === href || (href !== "/" && pathname.startsWith(href));
           return (
             <Link
-              key={href}
+              key={label}
               href={href}
               className={cn(
                 "flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-colors",
