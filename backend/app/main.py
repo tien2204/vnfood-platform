@@ -1,8 +1,18 @@
+import logging
+import os
+from contextlib import asynccontextmanager
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.admin import router as admin_router
+from app.api.v1.ai import router as ai_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.comments import router as comments_router
 from app.api.v1.feed import router as feed_router
@@ -13,10 +23,39 @@ from app.api.v1.upload import router as upload_router
 from app.api.v1.users import router as users_router
 from app.core.config import settings
 
+logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # ── startup ──────────────────────────────────────────────
+    from app.ai.inference import VNFoodPredictor
+    from app.ai.state import set_predictor
+
+    weights_dir = os.path.abspath(settings.MODEL_WEIGHTS_DIR)
+    if not os.path.isdir(weights_dir):
+        logger.warning("Model weights dir not found: %s — AI features disabled", weights_dir)
+    else:
+        try:
+            logger.info("Loading AI models from %s ...", weights_dir)
+            set_predictor(VNFoodPredictor(weights_dir))
+            logger.info("AI models loaded successfully")
+        except Exception as exc:
+            logger.error("Failed to load AI models: %s", exc)
+
+    yield
+
+    # ── shutdown ─────────────────────────────────────────────
+    from app.ai.state import set_predictor
+    set_predictor(None)
+    logger.info("AI models released")
+
+
 app = FastAPI(
     title="VNFood API",
     description="Vietnamese Food Platform API",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -27,7 +66,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-import os
 os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
 app.mount("/static/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
 
@@ -40,6 +78,7 @@ app.include_router(comments_router, prefix="/api/v1", tags=["comments"])
 app.include_router(ratings_router, prefix="/api/v1", tags=["ratings"])
 app.include_router(saved_router, prefix="/api/v1", tags=["saved"])
 app.include_router(feed_router, prefix="/api/v1/feed", tags=["feed"])
+app.include_router(ai_router, prefix="/api/v1/ai", tags=["ai"])
 
 
 @app.get("/health")

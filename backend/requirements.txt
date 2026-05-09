@@ -1,5 +1,6 @@
 # Web framework
 fastapi==0.111.0
+starlette==0.37.2
 uvicorn[standard]==0.29.0
 
 # Database
