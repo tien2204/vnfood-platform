@@ -6,7 +6,7 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ## Trạng thái hiện tại
 **Cập nhật lần cuối:** 2026-05-10  
 **Branch:** `main`  
-**Task đang làm:** Week 3 — AI Features (Prompt 12 xong + bugfixes OpenAI fallback, chuẩn bị gợi ý từ nguyên liệu)
+**Task đang làm:** Week 3 — AI Features (Prompt 13 xong — Gợi ý recipe từ nguyên liệu)
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -147,6 +147,20 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 - [x] `openai==1.30.1` truyền `proxies=` vào `httpx.AsyncClient` nhưng `httpx>=0.28` đã bỏ param này → `TypeError`
 - [x] `backend/requirements.txt` — nâng `openai>=1.52.0`, `httpx>=0.27.0,<1`; chạy `pip install "openai>=1.52.0" --upgrade` để fix
 
+- [x] **Prompt 13 — Gợi ý recipe từ nguyên liệu (UC-30)**
+- [x] `backend/app/services/ingredient_service.py` — get_popular_ingredients, search_ingredients, suggest_recipes_by_ingredients (any/all/most mode, PostgreSQL array_agg, match_score)
+- [x] `backend/app/services/ingredient_ai_service.py` — ai_suggest_recipes() OpenAI GPT-4o-mini fallback, returns 5 gợi ý khi DB < 3 kết quả
+- [x] `backend/app/api/v1/ingredients.py` — GET /ingredients/popular, GET /ingredients/search, POST /ingredients/suggest-recipes
+- [x] `backend/app/main.py` — mount ingredients_router tại /api/v1/ingredients
+- [x] `frontend/lib/types.ts` — thêm IngredientItem, RecipeMatchResult, AISuggestion, IngredientSuggestResult
+- [x] `frontend/components/ingredients/IngredientChip.tsx` — toggle chip với check icon + usage count
+- [x] `frontend/components/ingredients/IngredientSearch.tsx` — autocomplete debounce 300ms, dropdown suggestions
+- [x] `frontend/components/ingredients/SelectedIngredients.tsx` — chips đã chọn với X button, warning > 10
+- [x] `frontend/components/ingredients/MatchModeSelector.tsx` — radio group 3 mode (any/most/all)
+- [x] `frontend/components/ingredients/RecipeMatchCard.tsx` — RecipeCard + badge Khớp X/Y, matched/missing ingredients
+- [x] `frontend/components/ingredients/AISuggestionCard.tsx` — AI suggestion với key/additional ingredients, CTA tìm tương tự
+- [x] `frontend/app/suggest/page.tsx` — public route /suggest, hero + chips + search + mode selector + results grid + mobile sticky bar
+
 - [x] **Bugfix — OpenAI fallback trả về "Unknown" thay vì tên món**
 - [x] Prompt cũ chỉ bảo "set confidence below 0.3" → OpenAI tự đặt dish_name = "Unknown"
 - [x] `backend/app/services/ai_service.py` — cập nhật prompt: bắt buộc trả tên thật của món (kể cả non-VN food), không được reply "Unknown"
@@ -175,7 +189,7 @@ User đăng recipe · Admin duyệt · Comment · Rating · Save/Bookmark · Fol
 ### 🔄 Week 3 — AI Features (Đang làm — Prompt 12 xong)
 - [x] AI foundation: VNFoodPredictor load models + predict() test được
 - [x] Prompt 12: POST /api/v1/ai/recognize + OpenAI fallback + /recognize page
-- [ ] Gợi ý recipe từ nguyên liệu
+- [x] Gợi ý recipe từ nguyên liệu (Prompt 13)
 - [ ] Meal plan + Grocery list
 
 ### ⏳ Week 4 — Polish (Chưa bắt đầu)
@@ -186,8 +200,8 @@ User đăng recipe · Admin duyệt · Comment · Rating · Save/Bookmark · Fol
 ---
 
 ## Làm tiếp (session kế bắt đầu từ đây)
-**Prompt 13 — Gợi ý recipe từ nguyên liệu**
-- User nhập danh sách nguyên liệu → AI tìm/gợi ý recipes có thể nấu
+**Prompt 14 — Meal plan + Grocery list**
+- Lên kế hoạch bữa ăn theo tuần, tổng hợp grocery list từ các recipe
 
 ---
 

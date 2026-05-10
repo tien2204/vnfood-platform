@@ -265,3 +265,41 @@ export interface SavedRecipeOut {
   is_saved: boolean;
   saved_at: string;
 }
+
+// ── Ingredient Suggest types ───────────────────────────────────────────────────
+
+export interface IngredientItem {
+  name: string;
+  usage_count: number;
+}
+
+export interface RecipeMatchResult {
+  recipe: {
+    id: string;
+    title: string;
+    image_url: string | null;
+    avg_rating: number;
+    rating_count: number;
+    cooking_time: number | null;
+    source: "cookpad" | "user";
+  };
+  match_score: number;
+  matched_ingredients: string[];
+  missing_ingredients: string[];
+}
+
+export interface AISuggestion {
+  name: string;
+  description: string;
+  key_ingredients: string[];
+  additional_needed: string[];
+}
+
+export interface IngredientSuggestResult {
+  match_mode: "any" | "all" | "most";
+  selected_ingredients: string[];
+  db_results: RecipeMatchResult[];
+  total_db_results: number;
+  ai_suggestions: AISuggestion[];
+  ai_used: boolean;
+}

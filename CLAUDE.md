@@ -5,7 +5,7 @@
 
 ---
 
-## Tech Stack (Localhost)
+## Tech Stack
 
 | Layer | Technology | Chi tiết |
 |---|---|---|
@@ -20,130 +20,12 @@
 
 ---
 
-## Cấu trúc thư mục
-
-```
-vnfood-platform/
-├── backend/
-│   ├── app/
-│   │   ├── api/v1/
-│   │   │   ├── auth.py
-│   │   │   ├── recipes.py
-│   │   │   ├── users.py
-│   │   │   ├── comments.py
-│   │   │   ├── ai.py
-│   │   │   ├── meal_plans.py
-│   │   │   └── admin.py
-│   │   ├── core/
-│   │   │   ├── config.py       # Settings từ .env
-│   │   │   ├── database.py     # SQLAlchemy async engine
-│   │   │   ├── security.py     # JWT encode/decode
-│   │   │   └── deps.py         # FastAPI dependencies
-│   │   ├── models/             # SQLAlchemy ORM models
-│   │   ├── schemas/            # Pydantic schemas
-│   │   ├── services/           # Business logic
-│   │   ├── ai/
-│   │   │   ├── inference.py    # PyTorch model load & predict
-│   │   │   └── class_names.py  # GROUP_CLASSES + display names
-│   │   └── main.py
-│   ├── alembic/
-│   ├── uploads/                # Ảnh upload lưu ở đây
-│   ├── scripts/
-│   │   └── import_recipes.py   # Import 22k JSON vào DB
-│   ├── .env
-│   ├── .env.example
-│   └── requirements.txt
-├── frontend/
-│   ├── app/
-│   ├── components/
-│   ├── lib/
-│   ├── .env.local
-│   └── package.json
-├── model_weights/              # Copy file .pth vào đây
-│   ├── best_group_effb0.pth
-│   ├── best_sub_BANH_effb2.pth
-│   ├── best_sub_BUN_PHO_effb2.pth
-│   ├── best_sub_CANH_CHAO_effb2.pth
-│   ├── best_sub_COM_effb2.pth
-│   ├── best_sub_DAC_BIET_effb2.pth
-│   ├── best_sub_GOI_CUON_effb2.pth
-│   ├── best_sub_MON_KHO_NUONG_effb2.pth
-│   └── best_sub_XOI_effb2.pth
-├── cookpad_recipe/             # Recipe JSON (extracted version)
-└── docker-compose.yml
-```
-
----
-
 ## Khởi động nhanh
 
 ```bash
-# 1. Database
 docker-compose up -d
-
-# 2. Backend
-cd backend
-python -m venv .venv && .venv\Scripts\activate
-pip install -r requirements.txt
-alembic upgrade head
-python scripts/import_recipes.py
-uvicorn app.main:app --reload --port 8000
-
-# 3. Frontend
-cd frontend
-npm install && npm run dev
-```
-
----
-
-## docker-compose.yml
-
-```yaml
-version: "3.9"
-services:
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: vnfood_db
-      POSTGRES_USER: vnfood
-      POSTGRES_PASSWORD: vnfood123
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
-    depends_on: [postgres]
-volumes:
-  postgres_data:
-```
-
----
-
-## Environment Variables
-
-### `backend/.env`
-```env
-DATABASE_URL=postgresql+asyncpg://vnfood:vnfood123@localhost:5432/vnfood_db
-SECRET_KEY=your-super-secret-key-change-this
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=60
-REFRESH_TOKEN_EXPIRE_DAYS=7
-OPENAI_API_KEY=sk-...
-UPLOAD_DIR=uploads
-MAX_UPLOAD_SIZE_MB=10
-MODEL_WEIGHTS_DIR=../model_weights
-```
-
-### `frontend/.env.local`
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_UPLOAD_URL=http://localhost:8000/static/uploads
+cd backend && .venv\Scripts\activate && uvicorn app.main:app --reload --port 8000
+cd frontend && npm run dev
 ```
 
 ---
@@ -154,15 +36,79 @@ NEXT_PUBLIC_UPLOAD_URL=http://localhost:8000/static/uploads
 **Auth:** `Authorization: Bearer <access_token>`
 
 ```json
-// Success
 { "success": true, "data": {}, "message": "string" }
-
-// Success với pagination
 { "success": true, "data": [], "pagination": { "page": 1, "limit": 20, "total": 500 } }
-
-// Error
 { "success": false, "error": { "code": "RECIPE_NOT_FOUND", "message": "..." } }
 ```
+
+---
+
+## Naming Conventions
+- Python: `snake_case` vars/funcs, `PascalCase` classes
+- TypeScript: `camelCase` vars/funcs, `PascalCase` components/types
+- DB tables: `snake_case` · API endpoints: `kebab-case`
+
+---
+
+## Shell commands — ưu tiên dùng các lệnh này
+
+Dùng các lệnh dưới đây thay vì default. Bỏ qua nếu không có sẵn.
+
+### Tìm kiếm
+- **Search code:** `rg` thay vì grep — bundled sẵn trong Claude Code
+- **Find files:** `fd` thay vì find
+- **File tree:** `tree -L 2 --gitignore` hoặc `fd -t d` khi cần — KHÔNG hardcode trong file này
+- **Structural/AST search:** `ast-grep` (`sg`) cho refactor và pattern search TS/TSX
+
+### Data & config
+- **JSON:** `jq` cho mọi parsing, filtering, transformation trong pipeline
+- **YAML/TOML:** `yq`
+- **GitHub:** `gh` cho PRs, issues, CI status — không scrape github.com trực tiếp
+
+### Code quality
+- **Typecheck only:** `tsc --noEmit`
+- **Dead code:** `knip`
+- **Circular deps:** `madge --circular`
+- **Duplication:** `jscpd`
+
+### Tránh các pattern tốn token
+- KHÔNG dùng `find -exec` hay `xargs` khi `fd -x` hoặc `rg -l` làm được
+- KHÔNG đọc từng file để tìm pattern — dùng `rg 'pattern' src/` trước
+- KHÔNG scan toàn bộ codebase để "nắm context" — hỏi nếu cần
+
+---
+
+## Context hygiene
+
+### Khi bắt đầu session
+1. Đọc `.claude/session-state.md` — không cần scan lại codebase
+2. Chỉ đọc file liên quan trực tiếp đến task hiện tại
+
+### Khi hoàn thành mỗi task/prompt
+Tự động cập nhật `.claude/session-state.md` — không cần chờ tôi nhắc:
+- Tick ✅ vào task vừa xong
+- Ghi decisions kỹ thuật mới phát sinh (nếu có)
+- Cập nhật "Làm tiếp" sang task kế
+
+### Khi kết thúc session hoặc ~50% context window
+1. Cập nhật `.claude/session-state.md` với state mới nhất
+2. Ghi rõ: đang làm gì · đã xong gì · bước tiếp theo · file nào đang chỉnh
+
+### Không làm
+- Đọc file để "confirm" thứ đã biết
+- Re-read file đã đọc trong cùng session
+- List toàn bộ directory mà không có lý do
+
+---
+
+## Cấu trúc thư mục
+Gọi `tree -L 3 --gitignore` nếu cần xem cấu trúc mới nhất — không đọc từ file này.
+
+## Environment Variables
+Xem `backend/.env.example` và `frontend/.env.local` — không hardcode ở đây.
+
+## AI Classes & model weights
+Xem `backend/app/ai/class_names.py` làm source of truth.
 
 ---
 
@@ -214,14 +160,6 @@ GROUP_TO_WEIGHT = {
 
 ---
 
-## Naming Conventions
-- Python: `snake_case` vars/funcs, `PascalCase` classes
-- TypeScript: `camelCase` vars/funcs, `PascalCase` components/types
-- DB tables: `snake_case`
-- API endpoints: `kebab-case`
-
----
-
 ## Thứ tự implement
 
 ### Week 1 — Foundation
@@ -235,8 +173,8 @@ GROUP_TO_WEIGHT = {
 ### Week 2 — Core Features
 - [x] User đăng recipe + Admin duyệt
 - [x] Comment, Rating, Save/Bookmark
-- [ ] Follow user + Social feed
-- [ ] User profile
+- [X] Follow user + Social feed
+- [X] User profile
 
 ### Week 3 — AI Features
 - [ ] AI inference (PyTorch model load + EfficientNet pipeline)
@@ -253,187 +191,4 @@ GROUP_TO_WEIGHT = {
 
 ## Trạng thái hiện tại _(cập nhật sau mỗi session)_
 
-### Đã hoàn thành
-- [x] Thiết kế spec toàn bộ usecase
-- [x] normalize_ingredients.py (chuẩn hóa ingredients)
-- [x] CLAUDE.md + specs localhost version
-- [x] `docker-compose.yml` (PostgreSQL 16 + pgAdmin)
-- [x] FastAPI boilerplate: `backend/app/main.py` + health check endpoints
-- [x] `backend/app/core/config.py` (pydantic-settings load .env)
-- [x] `backend/requirements.txt` (fastapi, sqlalchemy, asyncpg, jose, passlib, torch...)
-- [x] `backend/.env` + `backend/.env.example`
-- [x] Cấu trúc thư mục đầy đủ: `api/v1/`, `models/`, `schemas/`, `services/`, `ai/`
-- [x] `backend/app/core/database.py` — async engine, AsyncSessionLocal, get_db(), Base
-- [x] ORM models đầy đủ 12 bảng (user, recipe, social, meal_plan, ai_log) với relationships, CASCADE, UNIQUE, CHECK constraints, indexes
-- [x] Alembic init + `alembic/env.py` (async engine, import models, đọc .env)
-- [x] Migration `0001_initial_schema.py` — 12 bảng, đầy đủ indexes + constraints
-- [x] Đã chạy `alembic upgrade head` thành công — 12 bảng đã tạo trong PostgreSQL
-- [x] pgAdmin auto-register server (`pgadmin-servers.json`) + persistent volume `pgadmin_data` → config không mất khi `docker-compose down`/`up`
-- [x] `start.bat` — script tự động khởi động Docker + activate venv + chạy uvicorn
-- [x] `backend/app/core/security.py` — hash_password, verify_password, create_access_token, create_refresh_token, decode_token
-- [x] `backend/app/core/deps.py` — oauth2_scheme, get_current_user, get_current_active_user, require_admin, get_optional_current_user
-- [x] `backend/app/schemas/auth.py` — RegisterRequest, LoginRequest, RefreshRequest, TokenResponse, UserOut, ChangePasswordRequest
-- [x] `backend/app/services/auth_service.py` — register_user, login, refresh_access_token, change_password
-- [x] `backend/app/api/v1/auth.py` — 5 endpoints: /register, /login, /refresh, /logout, /change-password
-- [x] `main.py` — mount auth_router tại /api/v1/auth
-- [x] `backend/scripts/seed_admin.py` — tạo admin@vnfood.local / Admin@123 (idempotent)
-- [x] `backend/scripts/import_recipes.py` — import 22k recipes từ 9 file `*_extracted.json`, batch 200, idempotent (skip duplicate cookpad_url), argparse (--dry-run, --files, --batch-size)
-- [x] `backend/scripts/check_recipes.py` — verify recipes trong DB: total, by source, by keyword, by status
-- [x] 22k recipes đã import thành công vào DB (source=cookpad, status=approved)
-- [x] `backend/app/schemas/recipe.py` — AuthorOut, AuthorDetailOut, IngredientOut, StepOut, PaginationOut, RecipeCardOut, RecipeDetailOut
-- [x] `backend/app/services/recipe_service.py` — list_recipes, get_recipe_detail, increment_view_count (background), search_recipes (PostgreSQL full-text), get_featured_recipes, get_recipes_by_keyword, get_user_recipes
-- [x] `backend/app/api/v1/recipes.py` — 5 endpoints: GET /recipes, GET /recipes/featured, GET /recipes/search, GET /recipes/by-keyword/{slug}, GET /recipes/{id}
-- [x] `backend/app/api/v1/users.py` — GET /users/{user_id}/recipes (UC-13)
-- [x] `main.py` — mount recipes_router + users_router
-
-- [x] `frontend/` — Next.js 16 + React 19 + Tailwind v4 + shadcn/ui (Base UI)
-- [x] `frontend/app/globals.css` — VNFood design system: primary #E85D26, secondary #2D6A4F, warm background #FFFBF5
-- [x] `frontend/app/layout.tsx` — Playfair Display (heading) + Inter (body), Navbar, Footer, MobileBottomNav, Sonner Toaster
-- [x] `frontend/lib/api.ts` — Axios instance, Bearer interceptor, 401 → auto refresh token → retry → nếu fail clear + redirect
-- [x] `frontend/lib/types.ts` — TypeScript types: User, Author, Ingredient, Step, RecipeCard, RecipeDetail, etc.
-- [x] `frontend/lib/auth.ts` — saveTokens (localStorage + httpOnly cookie), clearTokens, getAccessToken, getRefreshToken, getStoredUser, decodeJWT
-- [x] `frontend/lib/actions/auth-cookies.ts` — `"use server"` actions: setTokensCookie / clearTokensCookie dùng `cookies()` từ `next/headers`
-- [x] `frontend/lib/hooks/useUser.ts` — `useUser()` hook (SWR cache), `refreshUser()` global mutate
-- [x] `frontend/components/layout/` — Navbar (sticky, mobile search, auth-aware: avatar dropdown / login+register buttons), Footer, MobileBottomNav (5 tabs)
-- [x] `frontend/components/recipes/` — RecipeCard (hover scale+shadow, badge Cookpad dot-style không gradient, badge Cộng đồng xanh), RecipeCardSkeleton, RecipeGrid (1/2/3/4 col responsive)
-- [x] `frontend/components/common/SearchBar.tsx` — debounced 300ms
-- [x] `frontend/app/page.tsx` — Homepage: Hero gradient, keyword chips, trending (horizontal scroll), top_rated grid, new grid
-- [x] `frontend/app/recipes/page.tsx` — Browse: keyword chips filter, sort/difficulty dropdowns, pagination, URL search params
-- [x] `frontend/app/recipes/[id]/page.tsx` — Detail: stripEmoji title, blockquote description, meta row (ẩn view<100, ẩn servings null), underline tabs, comments tab "Sắp có", steps card (w-12 circle), 2-col desktop layout (tabs + sticky sidebar info card + quick actions), mobile fixed bottom bar, action bar (save count, Cookpad link conditional)
-- [x] `frontend/app/auth/login/page.tsx` — Form login, toast error, redirect về `?next=` hoặc `/`
-- [x] `frontend/app/auth/register/page.tsx` — Form đăng ký (validate pw ≥ 8, match), auto-login sau register
-- [x] `frontend/middleware.ts` — bảo vệ `/me/*`, `/admin/*`, `/recipes/new`, `/recipes/:id/edit`; check httpOnly cookie + JWT exp + role
-- [x] `backend/alembic/versions/0002_nullable_servings_timer.py` — ALTER `recipes.servings` + `recipe_steps.timer_seconds` thành nullable; UPDATE 22k Cookpad recipes servings → NULL, tất cả steps timer_seconds = 0 → NULL
-- [x] `backend/app/schemas/recipe.py` — sync với migration 0002: `RecipeCardOut.servings`, `RecipeDetailOut.servings`, `StepOut.timer_seconds` đổi thành `int | None` (fix 500 trên `GET /api/v1/recipes` do Pydantic validate fail khi DB trả NULL)
-
-- [x] **Prompt 7 — User đăng recipe + Admin duyệt (spec 03)**
-- [x] `backend/app/schemas/recipe.py` — thêm RecipeCreate, RecipeUpdate, RecipeStatusUpdate, RecipeCardWithStatus
-- [x] `backend/app/services/recipe_service.py` — thêm create_recipe, update_recipe, delete_recipe, get_my_recipes, get_pending_recipes, approve_recipe
-- [x] `backend/app/services/upload_service.py` — save_upload_file (validate ext + size, lưu local `uploads/`)
-- [x] `backend/app/api/v1/upload.py` — POST /upload/image (multipart, trả url)
-- [x] `backend/app/api/v1/recipes.py` — thêm POST /recipes, PATCH /recipes/{id}, DELETE /recipes/{id}
-- [x] `backend/app/api/v1/users.py` — thêm GET /users/me/recipes (filter by status, pagination)
-- [x] `backend/app/api/v1/admin.py` — GET /admin/recipes, PATCH /admin/recipes/{id}/status, DELETE /admin/recipes/{id}
-- [x] `backend/app/main.py` — mount upload_router + admin_router
-- [x] `frontend/lib/types.ts` — thêm RecipeCreate, RecipeUpdate, RecipeCardWithStatus, UploadResponse, RECIPE_KEYWORDS, RECIPE_DIFFICULTIES
-- [x] `frontend/components/common/ImageUploader.tsx` — drag-and-drop + preview, upload lên /upload/image
-- [x] `frontend/components/recipes/StatusBadge.tsx` — badge pending/approved/rejected với tooltip lý do từ chối
-- [x] `frontend/components/recipes/RecipeForm.tsx` — form tạo/sửa recipe (ingredients dynamic, steps dynamic, ImageUploader)
-- [x] `frontend/app/recipes/new/page.tsx` — trang đăng công thức mới
-- [x] `frontend/app/recipes/[id]/edit/page.tsx` — trang sửa công thức (pre-fill từ API)
-- [x] `frontend/app/me/recipes/page.tsx` — danh sách công thức của tôi (tabs: tất cả/chờ/duyệt/từ chối, edit/delete)
-- [x] `frontend/app/admin/recipes/page.tsx` — trang admin duyệt recipe (tabs, approve/reject modal/delete)
-- [x] `frontend/middleware.ts` — bảo vệ /me/*, /admin/* (role=admin), /recipes/new, /recipes/:id/edit
-
-- [x] **Bugfix — Auth login 422**
-- [x] `backend/app/api/v1/auth.py` — đổi `/login` từ `OAuth2PasswordRequestForm` (form-urlencoded, field `username`) sang `LoginRequest` (JSON body, field `email`) — nhất quán với toàn bộ API
-- [x] `backend/app/schemas/auth.py` — `LoginRequest.email` đổi từ `EmailStr` → `str` để `admin@vnfood.local` (TLD `.local` reserved) không bị Pydantic EmailStr từ chối; `RegisterRequest` giữ `EmailStr`
-
-- [x] **Prompt 8 — Comment + Rating (UC-20, UC-21)**
-- [x] `backend/app/schemas/social.py` — CommentCreate, CommentUpdate, CommentOut (with is_mine), CommentUserOut, RatingCreate, RatingOut
-- [x] `backend/app/services/social_service.py` — list_comments (pagination, filter is_hidden), create/update/delete_comment (auth: owner only/owner+admin), upsert_rating (UNIQUE constraint), get_my_rating, delete_rating (auto recompute avg_rating + rating_count trên Recipe)
-- [x] `backend/app/api/v1/comments.py` — 4 endpoints: GET /recipes/{id}/comments, POST, PUT /comments/{id}, DELETE /comments/{id}
-- [x] `backend/app/api/v1/ratings.py` — 3 endpoints: POST /recipes/{id}/rate, GET /recipes/{id}/my-rating, DELETE /recipes/{id}/rate
-- [x] `backend/app/main.py` — mount comments_router + ratings_router tại /api/v1
-- [x] `frontend/lib/types.ts` — thêm Comment, CommentUser, RatingOut
-- [x] `frontend/components/recipes/StarRating.tsx` — 5 sao, hover preview, readonly mode (half-star), interactive (onChange), size prop
-- [x] `frontend/components/recipes/RatingSection.tsx` — hiển thị avg+count (readonly), interactive stars cho logged-in, optimistic update, toast, redirect guest to login
-- [x] `frontend/components/recipes/CommentSection.tsx` — paginated "Load more", form gửi comment (logged-in only), mỗi comment: avatar+name+relative_time+content, inline edit (nếu is_mine), delete confirm (is_mine or admin), menu actions
-- [x] `frontend/app/recipes/[id]/page.tsx` — decode JWT server-side (cookies), fetch recipe với auth (no-store) hoặc cached (revalidate 60), render RatingSection + CommentSection, pass isAdmin prop
-
-- [x] **Prompt 9 — Save/Bookmark recipes (UC-22)**
-- [x] `backend/app/schemas/social.py` — thêm SaveResponse (is_saved, save_count), SavedRecipeOut (id, title, image_url, avg_rating, rating_count, cooking_time, servings, difficulty, source, author, save_count, is_saved, saved_at)
-- [x] `backend/app/services/social_service.py` — thêm save_recipe, unsave_recipe, list_saved_recipes; fix SQLAlchemy synchronize_session bug: capture `new_count` BEFORE UPDATE statement
-- [x] `backend/app/api/v1/saved.py` — NEW FILE: POST /recipes/{id}/save, DELETE /recipes/{id}/save, GET /me/saved-recipes (với pagination)
-- [x] `backend/app/main.py` — mount saved_router tại /api/v1
-- [x] `backend/app/services/recipe_service.py` — update get_featured_recipes nhận `current_user: Optional[User]`; gọi `_get_saved_ids` để tính `is_saved` cho tất cả featured recipes trong một query
-- [x] `backend/app/api/v1/recipes.py` — update GET /featured inject `current_user` qua `get_optional_current_user`
-- [x] `frontend/lib/types.ts` — thêm SaveResponse, SavedRecipeOut
-- [x] `frontend/components/recipes/SaveButton.tsx` — NEW FILE: Heart icon, variant "card" (overlay nhỏ) + "action" (border button to), optimistic toggle, useRef lock chống double-click, router.refresh() để invalidate server cache, onChange callback
-- [x] `frontend/components/recipes/RecipeCard.tsx` — thay Bookmark bằng SaveButton, thêm onSaveChange prop
-- [x] `frontend/components/recipes/RecipeGrid.tsx` — forward onSaveChange(recipeId, isSaved, saveCount) xuống RecipeCard
-- [x] `frontend/app/recipes/[id]/page.tsx` — thay Bookmark buttons (desktop + mobile) bằng SaveButton variant="action"
-- [x] `frontend/app/me/saved/page.tsx` — NEW FILE: danh sách công thức đã lưu, SWR + optimistic removal khi unsave (mutate filter + revalidate: false), pagination
-- [x] `frontend/app/page.tsx` — read access_token từ httpOnly cookie, fetch featured với auth + cache: "no-store" cho logged-in user (fix stale save_count trên homepage)
-- [x] `frontend/components/layout/Navbar.tsx` — thêm link "Đã lưu" → /me/saved với Bookmark icon trong dropdown avatar
-
-- [x] **Bugfix — Save count +2 thay vì +1**
-- [x] SQLAlchemy `synchronize_session='auto'` silently cập nhật in-memory `recipe.save_count` sau `UPDATE ... SET save_count = save_count + 1` → `recipe.save_count` đã là giá trị mới → return `recipe.save_count + 1` cho kết quả +2; fix: capture `new_count = recipe.save_count + 1` TRƯỚC khi gọi `db.execute(update(...))`
-
-- [x] **Bugfix — Homepage stale save_count (cache 5 phút) + /me/saved chậm biến mất**
-- [x] Homepage: đọc token từ cookie, fetch với Bearer + cache: "no-store" cho logged-in; anonymous vẫn dùng revalidate: 60
-- [x] /me/saved: SaveButton.onChange → RecipeGrid.onSaveChange → page.handleSaveChange → SWR mutate filter (revalidate: false) → instant optimistic removal
-
-- [x] **Prompt 10 — Follow + Public profile + Social feed (UC-23, 24, 25, 26)**
-- [x] `backend/app/schemas/user.py` — UserStats, UserMiniOut, UserProfileOut, UserUpdate, FollowResponse, FollowerOut, FeedItem
-- [x] `backend/app/services/user_service.py` — get_user_profile, update_profile
-- [x] `backend/app/services/social_service.py` — follow_user, unfollow_user, list_followers, list_following, get_feed
-- [x] `backend/app/api/v1/users.py` — profile + follow + followers/following endpoints + PUT /me/profile
-- [x] `backend/app/api/v1/feed.py` — GET /feed (auth, is_discover_mode)
-- [x] `frontend/lib/types.ts` — UserStats, UserMini, UserProfile, FollowerOut, FollowResponse, FeedItem, FeedResponse
-- [x] `frontend/components/users/FollowButton.tsx` — optimistic, 401 → redirect login
-- [x] `frontend/components/users/UserCard.tsx` + `UserStatsBar.tsx`
-- [x] `frontend/app/users/[id]/page.tsx` + `UserProfileClient.tsx` — public profile, tabs lazy
-- [x] `frontend/app/me/profile/page.tsx` — edit profile + avatar upload
-- [x] `frontend/app/feed/page.tsx` — useSWRInfinite, FeedCard, discover mode
-- [x] Navbar dropdown updated, MobileBottomNav updated, RecipeCard author link, recipe detail author link
-
-### Làm tiếp (session kế)
-- Admin dashboard (Week 4)
-- `/me` redirect → `/users/{id}`
-
-### Quyết định kỹ thuật đã chốt
-- PostgreSQL Docker thay Supabase
-- JWT tự handle (python-jose), không Supabase Auth
-- Ảnh lưu local `backend/uploads/`
-- AI model chạy trong FastAPI process (không tách HF Spaces)
-- Recipe JSON: dùng file `*_extracted.json` (đã có ingredients_extract)
-- Alembic migration viết thủ công (không dùng autogenerate) vì cần offline generation
-- pgAdmin chạy desktop mode (`PGADMIN_CONFIG_SERVER_MODE=False`) để dùng được servers.json auto-register
-- pgAdmin connect tới postgres qua Docker network (host: `postgres`), KHÔNG phải `localhost`
-- `bcrypt` pin ở `4.0.1` — passlib 1.7.4 không tương thích với bcrypt 4.1+ (bỏ `__about__`)
-- SQLAlchemy `default=uuid.uuid4` chỉ chạy lúc flush, KHÔNG lúc tạo object → phải truyền `id=uuid.uuid4()` tường minh khi bulk insert
-- Next.js 16 dùng **Tailwind v4** (`@theme` CSS directive, không có `tailwind.config.js`) và **Base UI** (không phải Radix UI). Base UI `Select.onValueChange` nhận `(value: string | null)` — phải handle null
-- `RecipeCard` phải có `"use client"` vì có `onClick` event handler — không thể dùng trong Server Component
-- `recipe.author` có thể null trong Cookpad data → luôn null-check trước khi render
-- Token storage dùng **dual strategy**: httpOnly cookie (set qua `"use server"` action) cho middleware server-side check + localStorage cho axios client-side. Cả hai được sync đồng thời trong `saveTokens()`
-- `ReadonlyRequestCookies` trong Next.js 16 (`next/headers`) vẫn có `.set()` và `.delete()` — gọi được trong server actions
-- Sau login/register gọi `refreshUser()` (`globalMutate(USER_CACHE_KEY)`) để SWR invalidate cache → Navbar cập nhật avatar ngay, không cần reload
-- Navbar ẩn auth buttons khi `isLoading === true` (SWR chưa resolve) để tránh hydration flash
-- `{0 && <Component />}` trong React render ra số `0` (khác `false`) → luôn dùng `{value > 0 && ...}` hoặc `{!!value && ...}` thay vì `{value && ...}` khi value là number
-- `recipes.servings` và `recipe_steps.timer_seconds` phải nullable — Cookpad data không có thông tin này; hardcode default gây misleading UI
-- Khi đổi cột DB sang nullable, PHẢI update Pydantic schema tương ứng cùng lúc — nếu không, endpoint trả 500 và CORSMiddleware không gắn header lên 500 → frontend báo lỗi CORS gây hiểu nhầm gốc lỗi
-- Upload ảnh: lưu local `backend/uploads/`, serve qua FastAPI `StaticFiles` tại `/static/uploads`; frontend gọi `NEXT_PUBLIC_API_URL + image_url` để hiển thị
-- `RecipeCardWithStatus` extends `RecipeCard` thêm `status`, `reject_reason`, `created_at` — dùng chung cho /me/recipes và /admin/recipes
-- `if status_filter:` trong Python falsy-check đúng cả `None` lẫn `""` → tab "Tất cả" gửi `status=""` vẫn trả về toàn bộ recipes không cần xử lý thêm
-- `useSWR` cache key phải encode đủ params (status + page) để invalidate đúng khi tab/page thay đổi; dùng `mutate(key)` sau mỗi action approve/reject/delete
-- Admin route `/admin/:path*` trong middleware kiểm tra `payload.role !== "admin"` → redirect `/` thay vì login (đã đăng nhập nhưng không đủ quyền)
-- `/login` endpoint KHÔNG dùng `OAuth2PasswordRequestForm` — FastAPI OAuth2 form expect `application/x-www-form-urlencoded` + field `username`, frontend gửi JSON `{ email, password }` → 422; dùng `LoginRequest` JSON body thay thế
-- `LoginRequest.email` dùng `str` không phải `EmailStr` — seed data dùng `admin@vnfood.local` (TLD `.local` reserved cho mDNS), Pydantic EmailStr từ chối → 422 khi admin login; `RegisterRequest` vẫn giữ `EmailStr` để validate email user mới
-- **Comment + Rating:**
-  - Rating: UNIQUE(recipe_id, user_id) + CHECK(score 1-5) — upsert thay vì insert+update riêng
-  - Recompute avg_rating/rating_count tự động sau mỗi upsert/delete rating (SQLAlchemy trigger hoặc app-level logic)
-  - Comment: soft delete với `is_hidden=true` + filter `is_hidden=false` (trừ admin), không hard delete → giữ thread integrity
-  - Admin xóa được comment người khác, user chỉ edit/delete comment của mình
-  - Frontend RatingSection: dual stars (avg readonly + user interactive), optimistic update + toast
-  - Frontend CommentSection: lazy load pagination với "Load more", inline edit (textarea + save/cancel), delete confirm, relative timestamps (vừa xong/X phút/X ngày)
-  - Server-side JWT decode (next/headers cookies) để fetch recipe với auth token → trả về user_rating; pass isAdmin prop xuống CommentSection
-  - CommentSection menu (⋯) hiển thị khi `is_mine || isAdmin` — Edit chỉ cho owner, Delete cho owner+admin
-- **Save/Bookmark (UC-22):**
-  - SQLAlchemy `synchronize_session='auto'` sau UPDATE silently thay đổi in-memory object — capture computed values BEFORE gọi `db.execute(update(...))`
-  - `SaveButton` dùng `useRef` (không phải `useState`) cho in-flight lock: `useRef` sync, không trigger re-render cycle, đảm bảo double-click block hoạt động đúng
-  - `router.refresh()` trong SaveButton invalidate Server Component cache của route hiện tại — đủ cho /recipes/[id] page, KHÔNG đủ cho cross-route (homepage)
-  - Homepage cần `cache: "no-store"` + Bearer token khi logged-in để phản ánh `is_saved` mới nhất; anonymous vẫn revalidate: 60
-  - SWR optimistic removal: `mutate(filterFn, { revalidate: false })` để recipe biến mất ngay khi unsave — không cần chờ server round-trip
-  - `onSaveChange` prop chain: SaveButton → RecipeCard → RecipeGrid → page level để cho phép parent SWR cache biết về thay đổi
-  - `SavedRecipeOut` trả `is_saved: bool = True` cứng vì endpoint `/me/saved-recipes` chỉ trả bản ghi đã lưu
-- **Follow + Profile + Feed (UC-23–26):**
-  - `follow_user` idempotent: đã follow → không lỗi, chỉ return current count
-  - `get_user_profile` trả `is_following: null` cho guest, `true/false` cho logged-in — frontend tận dụng để ẩn/hiện FollowButton logic
-  - `get_feed` discover mode khi `following_ids` rỗng → fallback sort by save_count DESC, avg_rating DESC
-  - `UserProfileClient` lazy-load tab content: recipes/followers/following chỉ fetch khi tab được active lần đầu
-  - `useSWRInfinite` trong feed page: `getKey` trả `null` khi guest (không logged-in) hoặc hết trang
-  - Profile edit page fetch `/users/{id}/profile` riêng (không dùng cached `useUser`) để luôn có `bio` field
-  - `UserOut` schema (backend) thêm `bio` và `is_active` để `PUT /me/profile` trả về full user info
-  - `MobileBottomNav` dùng `useUser` để resolve profile link dynamically: logged-in → `/users/{id}`, guest → `/auth/login`
-  - RecipeCard author click dùng `e.preventDefault()` + `router.push()` vì nằm trong `<Link>` wrapper
+Xem `.claude/session-state.md` — chứa tiến độ, decisions, và task tiếp theo.

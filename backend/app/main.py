@@ -16,6 +16,7 @@ from app.api.v1.ai import router as ai_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.comments import router as comments_router
 from app.api.v1.feed import router as feed_router
+from app.api.v1.ingredients import router as ingredients_router
 from app.api.v1.ratings import router as ratings_router
 from app.api.v1.recipes import router as recipes_router
 from app.api.v1.saved import router as saved_router
@@ -78,6 +79,7 @@ app.include_router(comments_router, prefix="/api/v1", tags=["comments"])
 app.include_router(ratings_router, prefix="/api/v1", tags=["ratings"])
 app.include_router(saved_router, prefix="/api/v1", tags=["saved"])
 app.include_router(feed_router, prefix="/api/v1/feed", tags=["feed"])
+app.include_router(ingredients_router, prefix="/api/v1/ingredients", tags=["ingredients"])
 app.include_router(ai_router, prefix="/api/v1/ai", tags=["ai"])
 
 
