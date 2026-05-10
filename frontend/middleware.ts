@@ -53,5 +53,7 @@ export const config = {
     "/feed/:path*",
     "/recipes/new",
     "/recipes/:id/edit",
+    "/meal-plan",
+    "/meal-plan/:path*",
   ],
 };

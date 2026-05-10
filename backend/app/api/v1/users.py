@@ -127,6 +127,22 @@ async def get_following(
     return {"success": True, "data": [r.model_dump() for r in rows], "pagination": pagination.model_dump()}
 
 
+# ── My Meal Plans ────────────────────────────────────────────────────────────
+
+@router.get("/me/meal-plans")
+async def get_my_meal_plans(
+    page: int = Query(default=1, ge=1),
+    limit: int = Query(default=10, ge=1, le=50),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    from app.services import meal_plan_service
+    plans, pagination = await meal_plan_service.list_user_meal_plans(
+        db, user_id=current_user.id, page=page, limit=limit
+    )
+    return {"success": True, "data": plans, "pagination": pagination}
+
+
 # ── User's public recipes ─────────────────────────────────────────────────────
 
 @router.get("/{user_id}/recipes")

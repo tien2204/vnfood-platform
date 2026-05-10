@@ -303,3 +303,59 @@ export interface IngredientSuggestResult {
   ai_suggestions: AISuggestion[];
   ai_used: boolean;
 }
+
+// ── Meal Plan types ────────────────────────────────────────────────────────────
+
+export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
+
+export interface MealPlanRecipeSnippet {
+  id: string;
+  title: string;
+  image_url: string | null;
+  cooking_time: number | null;
+}
+
+export interface MealPlanSlotItem {
+  item_id: string;
+  recipe: MealPlanRecipeSnippet | null;
+  servings: number;
+  note: string | null;
+}
+
+export type MealPlanDaySlots = Record<MealType, MealPlanSlotItem[]>;
+export type MealPlanDays = Record<string, MealPlanDaySlots>;
+
+export interface MealPlanDetail {
+  id: string;
+  name: string;
+  week_start: string;
+  days: MealPlanDays;
+}
+
+export interface MealPlanSummary {
+  id: string;
+  name: string;
+  week_start: string;
+  items_count: number;
+  created_at: string;
+}
+
+export interface GroceryFromRecipe {
+  recipe_id: string;
+  title: string;
+  quantity: string;
+}
+
+export interface GroceryItem {
+  id: string;
+  ingredient_name: string;
+  quantity: string | null;
+  is_checked: boolean;
+  from_recipes: GroceryFromRecipe[];
+}
+
+export interface GroceryList {
+  items: GroceryItem[];
+  total_items: number;
+  checked_count: number;
+}

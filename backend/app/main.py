@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.admin import router as admin_router
+from app.api.v1.meal_plans import router as meal_plans_router, grocery_router
 from app.api.v1.ai import router as ai_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.comments import router as comments_router
@@ -81,6 +82,8 @@ app.include_router(saved_router, prefix="/api/v1", tags=["saved"])
 app.include_router(feed_router, prefix="/api/v1/feed", tags=["feed"])
 app.include_router(ingredients_router, prefix="/api/v1/ingredients", tags=["ingredients"])
 app.include_router(ai_router, prefix="/api/v1/ai", tags=["ai"])
+app.include_router(meal_plans_router, prefix="/api/v1/meal-plans", tags=["meal-plans"])
+app.include_router(grocery_router, prefix="/api/v1", tags=["grocery"])
 
 
 @app.get("/health")

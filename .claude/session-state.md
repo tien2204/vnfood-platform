@@ -6,7 +6,7 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ## Trạng thái hiện tại
 **Cập nhật lần cuối:** 2026-05-10  
 **Branch:** `main`  
-**Task đang làm:** Week 3 — AI Features (Prompt 13 xong — Gợi ý recipe từ nguyên liệu)
+**Task đang làm:** Week 3 — Meal Plan + Grocery List (Prompt 14 xong)
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -161,6 +161,23 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 - [x] `frontend/components/ingredients/AISuggestionCard.tsx` — AI suggestion với key/additional ingredients, CTA tìm tương tự
 - [x] `frontend/app/suggest/page.tsx` — public route /suggest, hero + chips + search + mode selector + results grid + mobile sticky bar
 
+- [x] **Prompt 14 — Meal Plan + Grocery List (UC-31 → UC-39, bỏ UC-38 AI suggest)**
+- [x] `backend/app/schemas/meal_plan.py` — MealPlanCreate, MealPlanItemCreate, MealPlanItemUpdate, GroceryItemUpdate, GroceryItemCreate
+- [x] `backend/app/services/meal_plan_service.py` — create/get/list/delete meal plan, add/update/delete item, generate/get/update grocery list, manual add/delete grocery item
+- [x] `backend/app/api/v1/meal_plans.py` — 12 endpoints (meal plan CRUD + items CRUD + grocery CRUD); `grocery_router` cho PATCH/DELETE `/grocery-items/{id}`
+- [x] `backend/app/api/v1/users.py` — thêm GET /users/me/meal-plans
+- [x] `backend/app/main.py` — mount meal_plans_router + grocery_router
+- [x] `frontend/lib/types.ts` — MealType, MealPlanRecipeSnippet, MealPlanSlotItem, MealPlanDays, MealPlanDetail, MealPlanSummary, GroceryFromRecipe, GroceryItem, GroceryList
+- [x] `frontend/components/meal-plan/MealSlot.tsx` — empty/filled state, servings expand panel, delete
+- [x] `frontend/components/meal-plan/WeeklyCalendar.tsx` — desktop 7×4 grid + mobile accordion, inline API calls
+- [x] `frontend/components/meal-plan/AddRecipeModal.tsx` — multi-select flow: search luôn hiển thị, click chọn nhiều recipe (checkmark), mỗi recipe có ± servings riêng, checkbox "Thêm nguyên liệu vào grocery list" (gọi regenerate → cộng dồn ingredients trùng tên), add tất cả bằng Promise.all
+- [x] `frontend/components/meal-plan/GroceryList.tsx` — checklist optimistic, expand from_recipes, manual add, delete, regenerate
+- [x] `frontend/app/meal-plan/page.tsx` — list plans + create modal (Monday picker)
+- [x] `frontend/app/meal-plan/[id]/page.tsx` — WeeklyCalendar + link to grocery
+- [x] `frontend/app/meal-plan/[id]/grocery/page.tsx` — GroceryList component
+- [x] `frontend/middleware.ts` — thêm /meal-plan + /meal-plan/:path* vào matcher
+- [x] `frontend/components/layout/Navbar.tsx` — thêm "Meal Plan" → /meal-plan trong dropdown
+
 - [x] **Bugfix — OpenAI fallback trả về "Unknown" thay vì tên món**
 - [x] Prompt cũ chỉ bảo "set confidence below 0.3" → OpenAI tự đặt dish_name = "Unknown"
 - [x] `backend/app/services/ai_service.py` — cập nhật prompt: bắt buộc trả tên thật của món (kể cả non-VN food), không được reply "Unknown"
@@ -190,7 +207,7 @@ User đăng recipe · Admin duyệt · Comment · Rating · Save/Bookmark · Fol
 - [x] AI foundation: VNFoodPredictor load models + predict() test được
 - [x] Prompt 12: POST /api/v1/ai/recognize + OpenAI fallback + /recognize page
 - [x] Gợi ý recipe từ nguyên liệu (Prompt 13)
-- [ ] Meal plan + Grocery list
+- [x] Meal plan + Grocery list (Prompt 14)
 
 ### ⏳ Week 4 — Polish (Chưa bắt đầu)
 - [ ] Cooking mode + Scale recipe
@@ -200,8 +217,10 @@ User đăng recipe · Admin duyệt · Comment · Rating · Save/Bookmark · Fol
 ---
 
 ## Làm tiếp (session kế bắt đầu từ đây)
-**Prompt 14 — Meal plan + Grocery list**
-- Lên kế hoạch bữa ăn theo tuần, tổng hợp grocery list từ các recipe
+**Week 4 — Polish**
+- Cooking mode + Scale recipe
+- Admin dashboard
+- Testing + UI polish
 
 ---
 
