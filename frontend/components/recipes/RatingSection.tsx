@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import StarRating from "./StarRating";
 import api from "@/lib/api";
+import { useUser } from "@/lib/hooks/useUser";
 import type { RatingOut } from "@/lib/types";
 
 interface RatingSectionProps {
@@ -23,13 +24,18 @@ export default function RatingSection({
   isLoggedIn,
 }: RatingSectionProps) {
   const router = useRouter();
+  const { isLoggedIn: clientLoggedIn } = useUser();
+  // Server may send isLoggedIn=false when httpOnly cookie is stale;
+  // fall back to client-side auth state once SWR resolves.
+  const effectiveLoggedIn = isLoggedIn || clientLoggedIn;
+
   const [avgRating, setAvgRating] = useState(initialAvg);
   const [ratingCount, setRatingCount] = useState(initialCount);
   const [userRating, setUserRating] = useState<number | null>(initialUserRating);
   const [loading, setLoading] = useState(false);
 
   async function handleRate(score: number) {
-    if (!isLoggedIn) {
+    if (!effectiveLoggedIn) {
       router.push(`/auth/login?next=/recipes/${recipeId}`);
       return;
     }
@@ -70,7 +76,7 @@ export default function RatingSection({
       </div>
 
       <div className="sm:ml-auto flex items-center gap-2">
-        {isLoggedIn ? (
+        {effectiveLoggedIn ? (
           <>
             <span className="text-sm text-[#7C6A56]">
               {userRating ? "Bạn đã đánh giá:" : "Đánh giá của bạn:"}

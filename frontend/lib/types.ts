@@ -222,6 +222,34 @@ export interface FeedResponse {
   is_discover_mode: boolean;
 }
 
+// ── AI Recognition types ───────────────────────────────────────────────────────
+
+export interface SuggestedRecipe {
+  id: string;
+  title: string;
+  image_url: string | null;
+  avg_rating: number;
+  rating_count: number;
+  cooking_time: number | null;
+  source: "cookpad" | "user";
+}
+
+export interface AITopPrediction {
+  class: string;
+  display_name: string;
+  confidence: number;
+}
+
+export interface AIRecognitionResult {
+  predicted_class: string;
+  display_name: string;
+  confidence: number;
+  model_used: "vnfood" | "openai";
+  subgroup: string | null;
+  top_predictions: AITopPrediction[];
+  suggested_recipes: SuggestedRecipe[];
+}
+
 export interface SavedRecipeOut {
   id: string;
   title: string;

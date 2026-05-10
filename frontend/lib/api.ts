@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAccessToken, getRefreshToken, clearTokens } from "./auth";
+import { getAccessToken, getRefreshToken, saveTokens, clearTokens } from "./auth";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL + "/api/v1",
@@ -37,7 +37,8 @@ api.interceptors.response.use(
             { refresh_token: refreshToken }
           );
           const newToken: string = res.data.data.access_token;
-          localStorage.setItem("access_token", newToken);
+          const newRefreshToken: string = res.data.data.refresh_token ?? refreshToken;
+          await saveTokens(newToken, newRefreshToken);
           original.headers.Authorization = `Bearer ${newToken}`;
           return api(original);
         } catch {

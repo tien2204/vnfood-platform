@@ -89,7 +89,7 @@ export default function Navbar() {
           </button>
 
           {/* AI Scan */}
-          <Link href="/ai/scan">
+          <Link href="/recognize">
             <Button
               variant="outline"
               size="sm"
