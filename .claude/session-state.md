@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-05-10  
+**Cập nhật lần cuối:** 2026-05-11  
 **Branch:** `main`  
-**Task đang làm:** Week 3 — Meal Plan + Grocery List (Prompt 14 xong)
+**Task đang làm:** Week 4 — Polish
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -209,16 +209,16 @@ User đăng recipe · Admin duyệt · Comment · Rating · Save/Bookmark · Fol
 - [x] Gợi ý recipe từ nguyên liệu (Prompt 13)
 - [x] Meal plan + Grocery list (Prompt 14)
 
-### ⏳ Week 4 — Polish (Chưa bắt đầu)
-- [ ] Cooking mode + Scale recipe
+### 🔄 Week 4 — Polish (Đang làm)
+- [x] Cooking mode + Scale recipe (Prompt 15)
+- [x] Fix: Search page 404 + input text color (dark mode override)
 - [ ] Admin dashboard
 - [ ] Testing + UI polish
 
 ---
 
 ## Làm tiếp (session kế bắt đầu từ đây)
-**Week 4 — Polish**
-- Cooking mode + Scale recipe
+**Week 4 — Polish (tiếp)**
 - Admin dashboard
 - Testing + UI polish
 
