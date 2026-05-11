@@ -4,7 +4,7 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-05-11  
+**Cập nhật lần cuối:** 2026-05-11 (Prompt 16 — Admin Dashboard + bugfix)  
 **Branch:** `main`  
 **Task đang làm:** Week 4 — Polish
 
@@ -178,6 +178,17 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 - [x] `frontend/middleware.ts` — thêm /meal-plan + /meal-plan/:path* vào matcher
 - [x] `frontend/components/layout/Navbar.tsx` — thêm "Meal Plan" → /meal-plan trong dropdown
 
+- [x] **Prompt 16 — Admin Dashboard (UC-42..46)**
+- [x] `backend/app/services/admin_service.py` — stats, charts, user management (ban/unban, role), comment moderation, ingredient merge/rename
+- [x] `backend/app/api/v1/admin.py` — 12 new endpoints: stats, charts, users CRUD, comments, ingredients
+- [x] `frontend/components/admin/AdminLayout.tsx` + `app/admin/layout.tsx` — sidebar navigation, mobile hamburger
+- [x] `frontend/components/layout/ConditionalLayout.tsx` — ẩn Navbar/Footer cho /admin/* routes
+- [x] `frontend/app/admin/page.tsx` — recharts: 2 line + 1 pie + 1 bar
+- [x] `frontend/app/admin/users/page.tsx` + `/[id]/page.tsx` — user table + detail + ban/role actions
+- [x] `frontend/app/admin/comments/page.tsx` — filter + hide/delete
+- [x] `frontend/app/admin/ingredients/page.tsx` — merge modal + rename modal
+- [x] **Bugfix — /admin/users 422**: `cacheKey` dùng template string → `is_active=` (empty string) gửi lên → FastAPI không parse được `Optional[bool]` → đổi sang `URLSearchParams`, chỉ set param khi có giá trị
+
 - [x] **Bugfix — OpenAI fallback trả về "Unknown" thay vì tên món**
 - [x] Prompt cũ chỉ bảo "set confidence below 0.3" → OpenAI tự đặt dish_name = "Unknown"
 - [x] `backend/app/services/ai_service.py` — cập nhật prompt: bắt buộc trả tên thật của món (kể cả non-VN food), không được reply "Unknown"
@@ -212,14 +223,13 @@ User đăng recipe · Admin duyệt · Comment · Rating · Save/Bookmark · Fol
 ### 🔄 Week 4 — Polish (Đang làm)
 - [x] Cooking mode + Scale recipe (Prompt 15)
 - [x] Fix: Search page 404 + input text color (dark mode override)
-- [ ] Admin dashboard
+- [x] Admin dashboard (Prompt 16)
 - [ ] Testing + UI polish
 
 ---
 
 ## Làm tiếp (session kế bắt đầu từ đây)
 **Week 4 — Polish (tiếp)**
-- Admin dashboard
 - Testing + UI polish
 
 ---

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import MobileBottomNav from "@/components/layout/MobileBottomNav";
+import ConditionalLayout from "@/components/layout/ConditionalLayout";
 import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
@@ -32,10 +30,7 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`${inter.variable} ${playfair.variable}`}>
       <body className="min-h-screen flex flex-col bg-[#FFFBF5] antialiased">
-        <Navbar />
-        <main className="flex-1 pb-16 md:pb-0">{children}</main>
-        <Footer />
-        <MobileBottomNav />
+        <ConditionalLayout>{children}</ConditionalLayout>
         <Toaster richColors position="top-right" />
       </body>
     </html>

@@ -1,29 +1,76 @@
 import uuid
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.deps import require_admin
 from app.models.user import User
 from app.schemas.recipe import RecipeStatusUpdate
-from app.services import recipe_service
+from app.services import admin_service, recipe_service
 
 router = APIRouter()
 
+
+# ── Request bodies ─────────────────────────────────────────────────────────────
+
+class UserStatusBody(BaseModel):
+    is_active: bool
+    reason: str | None = None
+
+
+class UserRoleBody(BaseModel):
+    role: str
+
+
+class CommentToggleBody(BaseModel):
+    is_hidden: bool
+
+
+class MergeIngredientsBody(BaseModel):
+    from_names: list[str]
+    to_name: str
+
+
+class RenameIngredientBody(BaseModel):
+    from_name: str
+    to_name: str
+
+
+# ── Stats ──────────────────────────────────────────────────────────────────────
+
+@router.get("/stats")
+async def admin_stats(
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    data = await admin_service.get_admin_stats(db)
+    return {"success": True, "data": data}
+
+
+@router.get("/charts")
+async def admin_charts(
+    days: int = Query(default=30, ge=7, le=90),
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    data = await admin_service.get_chart_data(db, days=days)
+    return {"success": True, "data": data}
+
+
+# ── Recipes (existing + enhanced) ─────────────────────────────────────────────
 
 @router.get("/recipes")
 async def list_admin_recipes(
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=20, ge=1, le=50),
-    status: Optional[str] = Query(default=None, description="pending | approved | rejected"),
+    status: Optional[str] = Query(default=None),
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_admin),
 ):
-    cards, pagination = await recipe_service.get_pending_recipes(
-        db, page=page, limit=limit, status_filter=status
-    )
+    cards, pagination = await recipe_service.get_pending_recipes(db, page=page, limit=limit, status_filter=status)
     return {"success": True, "data": [c.model_dump() for c in cards], "pagination": pagination.model_dump()}
 
 
@@ -46,3 +93,149 @@ async def admin_delete_recipe(
 ):
     await recipe_service.delete_recipe(db, recipe_id, current_user)
     return {"success": True, "message": "Đã xóa công thức"}
+
+
+# ── Users ──────────────────────────────────────────────────────────────────────
+
+@router.get("/users")
+async def list_users(
+    page: int = Query(default=1, ge=1),
+    limit: int = Query(default=20, ge=1, le=100),
+    search: Optional[str] = Query(default=None),
+    role: Optional[str] = Query(default=None),
+    is_active: Optional[bool] = Query(default=None),
+    sort: str = Query(default="newest"),
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    result = await admin_service.list_admin_users(
+        db, page=page, limit=limit, search=search, role=role, is_active=is_active, sort=sort
+    )
+    return {"success": True, **result}
+
+
+@router.get("/users/{user_id}")
+async def get_user_detail(
+    user_id: str,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    data = await admin_service.get_admin_user_detail(db, user_id)
+    if not data:
+        raise HTTPException(404, detail="User không tồn tại")
+    return {"success": True, "data": data}
+
+
+@router.patch("/users/{user_id}/status")
+async def update_user_status(
+    user_id: str,
+    body: UserStatusBody,
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(require_admin),
+):
+    if str(current_admin.id) == user_id:
+        raise HTTPException(400, detail="Không thể ban chính mình")
+
+    user = await admin_service.update_user_status(db, user_id, body.is_active)
+    if not user:
+        raise HTTPException(404, detail="User không tồn tại")
+
+    action = "unban" if body.is_active else "ban"
+    return {"success": True, "data": {"id": str(user.id), "is_active": user.is_active, "action": action}}
+
+
+@router.patch("/users/{user_id}/role")
+async def update_user_role(
+    user_id: str,
+    body: UserRoleBody,
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(require_admin),
+):
+    if str(current_admin.id) == user_id:
+        raise HTTPException(400, detail="Không thể tự thay đổi role của mình")
+    if body.role not in ("user", "admin"):
+        raise HTTPException(400, detail="Role không hợp lệ (user | admin)")
+
+    user = await admin_service.update_user_role(db, user_id, body.role)
+    if not user:
+        raise HTTPException(404, detail="User không tồn tại")
+
+    return {"success": True, "data": {"id": str(user.id), "role": user.role}}
+
+
+# ── Comments ───────────────────────────────────────────────────────────────────
+
+@router.get("/comments")
+async def list_comments(
+    page: int = Query(default=1, ge=1),
+    limit: int = Query(default=20, ge=1, le=100),
+    is_hidden: Optional[bool] = Query(default=None),
+    search: Optional[str] = Query(default=None),
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    result = await admin_service.list_admin_comments(
+        db, page=page, limit=limit, is_hidden=is_hidden, search=search
+    )
+    return {"success": True, **result}
+
+
+@router.patch("/comments/{comment_id}")
+async def toggle_comment(
+    comment_id: str,
+    body: CommentToggleBody,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    comment = await admin_service.toggle_comment_hidden(db, comment_id, body.is_hidden)
+    if not comment:
+        raise HTTPException(404, detail="Comment không tồn tại")
+    return {"success": True, "data": {"id": str(comment.id), "is_hidden": comment.is_hidden}}
+
+
+@router.delete("/comments/{comment_id}")
+async def delete_comment(
+    comment_id: str,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    ok = await admin_service.delete_comment(db, comment_id)
+    if not ok:
+        raise HTTPException(404, detail="Comment không tồn tại")
+    return {"success": True, "message": "Đã xóa comment"}
+
+
+# ── Ingredients ────────────────────────────────────────────────────────────────
+
+@router.get("/ingredients")
+async def list_ingredients(
+    page: int = Query(default=1, ge=1),
+    limit: int = Query(default=50, ge=1, le=200),
+    search: Optional[str] = Query(default=None),
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    result = await admin_service.list_admin_ingredients(db, page=page, limit=limit, search=search)
+    return {"success": True, **result}
+
+
+@router.post("/ingredients/merge")
+async def merge_ingredients(
+    body: MergeIngredientsBody,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    if not body.from_names:
+        raise HTTPException(400, detail="from_names không được rỗng")
+    count = await admin_service.merge_ingredients(db, body.from_names, body.to_name)
+    return {"success": True, "data": {"updated_count": count}}
+
+
+@router.post("/ingredients/rename")
+async def rename_ingredient(
+    body: RenameIngredientBody,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    count = await admin_service.rename_ingredient(db, body.from_name, body.to_name)
+    return {"success": True, "data": {"updated_count": count}}
