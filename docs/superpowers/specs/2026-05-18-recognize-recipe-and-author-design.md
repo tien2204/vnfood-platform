@@ -126,9 +126,9 @@ Trade-off: cold-cache trường hợp OpenAI fallback chậm thêm ~2-4s (1 Open
 - `backend/app/services/ai_service.py` — `recognize_image()` gọi `dish_recipe_service`, attach vào response
 - `backend/app/main.py` — `lifespan` event call `load_dish_recipes()` + validate
 
-### 3.4 RecipeCardOut serialization (cho Feature B)
+### 3.4 RecipeCardOut + RecipeDetailOut serialization (cho Feature B)
 
-`RecipeCardOut.author` giữ nguyên `AuthorOut | None` (User relationship — linkable). Thêm field mới `original_author_name: str | None`. Frontend tự quyết logic display.
+Cả 2 schema thêm field mới `original_author_name: str | None`. `RecipeCardOut.author` và `RecipeDetailOut.author` giữ nguyên `AuthorOut | None` (User relationship — linkable). Frontend tự quyết logic display ở từng nơi (card listing hoặc detail page).
 
 ---
 
@@ -235,11 +235,51 @@ return isLinkable
 | ❌ | ✅ | Avatar fallback initials (bg `#2D6A4F`) + tên + KHÔNG link |
 | ❌ | ❌ / `''` | Avatar fallback "UN" + text "Unknown" + KHÔNG link |
 
-### 5.3 Phạm vi áp dụng
+### 5.3 Phạm vi áp dụng (RecipeCard)
 
 RecipeCard dùng chung → tự động hiện author trên: `/recipes` browse, `/search`, homepage trending, `/me/saved`, `/users/[id]` profile recipes.
 
 KHÔNG sửa `SuggestedRecipeCard` (`RecipeCarousel.tsx`) — component riêng, ngoài scope.
+
+### 5.4 Recipe detail page `/recipes/[id]` — Author card
+
+File sửa: `frontend/app/recipes/[id]/page.tsx` (block "Author card", line 227-256 hiện tại).
+
+**Hiện trạng:**
+- `recipe.author` (User) → card đầy đủ: avatar 12x12, full_name, follower_count, nút "Xem hồ sơ" link `/users/{id}`
+- `recipe.source === 'cookpad'` + no author → card generic "Cookpad / Công thức tổng hợp" + link Cookpad URL
+- Không hiện tên tác giả Cookpad thật
+
+**Sửa logic — 3 nhánh thay vì 2:**
+
+1. **Có User (`recipe.author`)** — giữ nguyên (card user-uploaded hiện tại, có "Xem hồ sơ")
+
+2. **Có `original_author_name` không rỗng** (Cookpad đã scrape) — NEW:
+   ```tsx
+   <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">
+     <Avatar className="w-12 h-12">
+       <AvatarFallback className="bg-[#2D6A4F] text-white font-semibold">
+         {recipe.original_author_name.charAt(0).toUpperCase()}
+       </AvatarFallback>
+     </Avatar>
+     <div className="flex-1 min-w-0">
+       <p className="font-semibold text-[#1C1209]">{recipe.original_author_name}</p>
+       <p className="text-xs text-[#7C6A56]">Tác giả Cookpad</p>
+     </div>
+     {recipe.cookpad_url && (
+       <a href={recipe.cookpad_url} target="_blank" rel="noopener"
+          className="px-4 py-1.5 rounded-full border border-[#E85D26] text-sm text-[#E85D26]
+                     hover:bg-[#E85D26] hover:text-white transition-colors">
+         Xem trên Cookpad
+       </a>
+     )}
+   </div>
+   ```
+   Avatar fallback dùng màu secondary `#2D6A4F` (xanh) để phân biệt visual với user-uploaded (orange `#E85D26`).
+
+3. **Cookpad chưa scrape / `original_author_name` empty** — giữ card generic "Cookpad / Công thức tổng hợp" như hiện tại
+
+Sau khi enrichment script chạy xong, hầu hết Cookpad recipes sẽ rơi vào nhánh 2 (tên thật), nhánh 3 chỉ còn các recipes bị xóa.
 
 ---
 
@@ -270,10 +310,12 @@ Script `crawl_general_recipes.py` của project đã proven bypass 403 Cookpad b
 
 **Constants:**
 ```python
-SLEEP_SEC = 4               # nghỉ giữa requests
-PAGE_TIMEOUT = 20000        # ms
+SLEEP_SEC = 2               # nghỉ giữa requests
+PAGE_TIMEOUT = 10000        # ms
 BATCH_COMMIT = 50           # commit DB mỗi 50 rows
 ```
+
+Lưu ý: SLEEP_SEC giảm xuống 2s (so với 4s của crawler hiện tại) — phải test với `--limit 100` trước, nếu Cookpad không 429/403 thì OK chạy full. Nếu bị throttle → tăng ngược lên 4s.
 
 **Flow:**
 1. **Warm-up** trang chủ Cookpad để lấy cookies (giống `crawl_general_recipes.py` line 269-273)
@@ -313,9 +355,9 @@ BATCH_COMMIT = 50           # commit DB mỗi 50 rows
 | Timeout / network error | KHÔNG UPDATE (giữ NULL) | Retry lần chạy sau |
 
 **Argparse:**
-- `--limit N` (test 10 trước khi chạy full)
+- `--limit N` (test 10-100 trước khi chạy full)
 - `--headless` (default True)
-- `--sleep N` (default 4s, có thể giảm 2s nếu test OK)
+- `--sleep N` (default 2s, override để tăng/giảm khi cần)
 
 **Resumability — guarantee:**
 - Stop Ctrl+C lúc đang sleep → 0 rows mất
@@ -324,7 +366,7 @@ BATCH_COMMIT = 50           # commit DB mỗi 50 rows
 - Filter `IS NULL` đảm bảo idempotent khi rerun
 - **Chỉ chạy 1 instance script tại 1 thời điểm** (tránh double-scrape, không cấu trúc lock trong design)
 
-**ETA:** 22k × 4s = ~24h. Chạy overnight hoặc nhiều phiên — resumable. Có thể giảm SLEEP_SEC xuống 2s sau khi test 100 rows OK → ~12h.
+**ETA:** 22k × 2s = ~12h. Chạy overnight 1 phiên hoặc chia nhiều phiên — resumable. Nếu bị Cookpad throttle, tăng SLEEP_SEC lên 4s → ~24h.
 
 **Verification sau khi chạy xong:**
 ```sql
@@ -348,12 +390,19 @@ Kỳ vọng `pending = 0`, `unavailable < 5%`, `scraped > 95%`.
 - [ ] Click nút CTA "Tìm công thức" → navigate `/search?q=<tên món>`
 - [ ] AI-gen badge hiện ĐÚNG khi source=ai-generated, KHÔNG hiện khi source=curated
 
-### RecipeCard author
+### RecipeCard author (listing pages)
 - [ ] Recipe user-uploaded có author → hiện tên + avatar + link `/users/{id}` work
 - [ ] Recipe Cookpad đã scrape → hiện tên + avatar fallback initials + KHÔNG clickable
 - [ ] Recipe Cookpad chưa scrape (`original_author_name IS NULL`) → hiện "Unknown" + avatar "UN"
 - [ ] Click author không bubble lên parent Link → không navigate sang recipe detail
 - [ ] RecipeCard ở `/search`, `/recipes`, homepage, `/me/saved`, `/users/[id]` đều hiện author
+
+### Recipe detail page author card (`/recipes/[id]`)
+- [ ] Recipe user-uploaded → card đầy đủ (avatar 12x12, full_name, follower count, "Xem hồ sơ")
+- [ ] Recipe Cookpad đã scrape → card hiện `original_author_name` + "Tác giả Cookpad" + nút "Xem trên Cookpad"
+- [ ] Avatar fallback Cookpad dùng màu xanh `#2D6A4F` (phân biệt với user màu cam)
+- [ ] Recipe Cookpad chưa scrape → card generic "Cookpad / Công thức tổng hợp" như cũ
+- [ ] Nút "Xem trên Cookpad" mở `recipe.cookpad_url` ở tab mới
 
 ### Enrichment script
 - [ ] Chạy `--limit 10` → DB có 10 rows update, log rõ ràng
