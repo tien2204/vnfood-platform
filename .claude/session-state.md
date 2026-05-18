@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-05-11 (Prompt 16 — Admin Dashboard + bugfix)  
-**Branch:** `main`  
-**Task đang làm:** Week 4 — Polish
+**Cập nhật lần cuối:** 2026-05-18 (Merge `feat/recognize-recipe-author` → main: recognize dish recipe + RecipeCard author)
+**Branch:** `main`
+**Task đang làm:** (xong feature; tùy chọn enrichment 22k authors overnight)
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -220,22 +220,54 @@ User đăng recipe · Admin duyệt · Comment · Rating · Save/Bookmark · Fol
 - [x] Gợi ý recipe từ nguyên liệu (Prompt 13)
 - [x] Meal plan + Grocery list (Prompt 14)
 
-### 🔄 Week 4 — Polish (Đang làm)
+### ✅ Week 4 — Polish (Hoàn thành)
 - [x] Cooking mode + Scale recipe (Prompt 15)
 - [x] Fix: Search page 404 + input text color (dark mode override)
 - [x] Admin dashboard (Prompt 16)
-- [ ] Testing + UI polish
+- [x] UI Polish (Prompt 17): Mobile drawer, skeleton, EmptyState, 404/error pages, SEO, a11y, lazy load
 
 ---
 
+- [x] **Feature branch `feat/recognize-recipe-author` — 2 features, 14 tasks, 14 commits, merged → main**
+
+### Recognize page recipe section (Tasks 1-10)
+- [x] Migration `0003_ai_generated_recipes.py` — bảng cache OpenAI fallback (id, dish_name_normalized UNIQUE, display_name, recipe_json JSONB, created_at, created_by_user_id)
+- [x] Migration `0004_recipe_original_author.py` — thêm `recipes.original_author_name VARCHAR(200) NULL`
+- [x] `backend/app/models/ai_generated_recipe.py` — ORM model AIGeneratedRecipe
+- [x] `backend/scripts/generate_dish_recipes.py` — sinh `dish_recipes.json` qua OpenAI GPT-4o-mini, resumable, 103 món Vietnamese curated
+- [x] `backend/app/ai/dish_recipes.json` — 103 entries (title, description, ingredients, steps, cooking_time_minutes, servings, difficulty)
+- [x] `backend/app/services/dish_recipe_service.py` — load_dish_recipes() (startup), get_curated(slug), get_or_generate_ai(db, dish_name, user_id) với UNIQUE cache lookup
+- [x] `backend/app/main.py` — lifespan call load_dish_recipes(), log "Loaded 103 curated dish recipes"
+- [x] `backend/app/schemas/recipe.py` — thêm `DishRecipeOut`, thêm `original_author_name` vào `RecipeCardOut` + `RecipeDetailOut`
+- [x] `backend/app/services/ai_service.py` — `recognize_image()` attach `dish_recipe` (curated nếu vnfood path, AI cache nếu openai path, null nếu unknown)
+- [x] `backend/app/services/recipe_service.py` — `_build_recipe_card()` + RecipeDetailOut builder pass `original_author_name`
+- [x] `frontend/lib/types.ts` — thêm `DishRecipe`, extend `AIRecognitionResult.dish_recipe: DishRecipe | null`, `RecipeCard.author: Author | null`, `RecipeCard.original_author_name`, `RecipeDetail.author: AuthorDetail | null`
+- [x] `frontend/components/ai/DishRecipeCard.tsx` — NEW: two-column layout (ingredients sidebar `bg-[#F7F0E8]` + steps numbered circles `bg-[#E85D26]/10` Playfair), AI warning badge amber `#C97B16` chỉ khi `source === "ai-generated"`, meta chips (Clock/Users/ChefHat icons Lucide, no emoji)
+- [x] `frontend/components/ai/RecognitionResult.tsx` — dish name wrap `<Link>` đến `/search?q=<name>` với hover orange, CTA button orange "Tìm công thức" + Search icon (dùng `buttonVariants` + Link vì Base UI Button không có `asChild`), render `<DishRecipeCard>` khi `!isUnknown && dish_recipe`
+
+### RecipeCard + recipe detail page author display (Tasks 11-12)
+- [x] `frontend/components/recipes/RecipeCard.tsx` — author line dưới title: shadcn Avatar 18px + tên, displayName = `author?.full_name ?? original_author_name ?? "Unknown"`, avatar fallback bg `#2D6A4F` green, **clickable bằng `<span role="link">` + `useRouter().push()` thay vì `<Link>`** (tránh nested anchor invalid HTML), `e.preventDefault() + e.stopPropagation()` chặn parent card Link
+- [x] `frontend/app/recipes/[id]/page.tsx` — author card 3 nhánh: User (orange avatar + follower + "Xem hồ sơ"), Cookpad-scraped (green avatar `#2D6A4F` + name + "Tác giả Cookpad" + "Xem trên Cookpad"), Cookpad-no-author (**green `?` avatar + "Unknown" + "Tác giả Cookpad"** — placeholder visible trước khi enrichment chạy)
+
+### Cookpad author enrichment (Task 13)
+- [x] `backend/scripts/enrich_cookpad_authors.py` — Playwright Chromium headless, SLEEP_SEC=2, PAGE_TIMEOUT=10000, BATCH_COMMIT=50, Chrome 124 UA (không AI-bot UA), warm-up cookpad.com/vn cookies, 3 parse strategies (JSON-LD → `a[href*="/vn/users/"]` → `meta[itemprop=author]`), 4 status (ok/empty/skip/error), atomic UPDATE per row (error giữ NULL retry, ok/empty/skip UPDATE), resumable qua filter `IS NULL`
+- [x] Test --limit 10: ok=10/10, sample tên thật: "Hoàng Thị Tố Hà", "Annie Vo", "Mạn Mạn", "Phan Bao Van", "Huyen le Tran"
+- [x] **Pending:** chạy full enrichment overnight (~12h cho 22k rows) — `python -m scripts.enrich_cookpad_authors` (không `--limit`)
+
+### Bugfix sau test browser
+- [x] Nested `<a>` hydration error: RecipeCard inner Link → span+router.push
+- [x] Recipe detail Branch 3 "Cookpad / Công thức tổng hợp" → "Unknown / Tác giả Cookpad" với green `?` avatar
+
 ## Làm tiếp (session kế bắt đầu từ đây)
-**Week 4 — Polish (tiếp)**
-- Testing + UI polish
+**Tùy chọn:**
+1. Chạy full enrichment overnight: `cd backend && python -m scripts.enrich_cookpad_authors` (~12h cho 22k rows)
+2. Viết báo cáo thesis
+3. Deploy
 
 ---
 
 ## Files đang chỉnh sửa
-_(Không có — Prompt 11 hoàn chỉnh)_
+_(Không có)_
 
 ---
 
@@ -297,6 +329,18 @@ _(Không có — Prompt 11 hoàn chỉnh)_
 - OpenAI prompt phải nói rõ "always provide real dish name, never reply Unknown" — không chỉ bảo "set confidence < 0.3"
 - OpenAI Vision cho ảnh non-Vietnamese food: trả tên tiếng Anh (e.g. "Beef Wellington") với confidence ~0.1 — đây là behavior đúng
 - Frontend `isUnknown` check cần cover cả string literal "Unknown" (tiếng Anh) ngoài các string tiếng Việt
+
+### Recognize recipe + author (branch `feat/recognize-recipe-author`)
+- 103 món curated lưu `dish_recipes.json` static, load 1 lần lúc startup (memory dict) — không qua DB; key = slug khớp `CLASS_DISPLAY_NAMES` (`banh-beo`, `pho`, etc.)
+- AI fallback recipes cache trong bảng `ai_generated_recipes` (UNIQUE `dish_name_normalized` = `.lower().strip()`) — risk minor: 2 request đồng thời cùng 1 OOD dish → IntegrityError; chấp nhận cho thesis demo single-user
+- RecipeCard inner clickable **không được dùng `<Link>`** vì parent đã wrap toàn card trong `<Link>` → nested `<a>` invalid HTML hydration error → phải dùng `<span role="link" tabIndex={0}>` + `useRouter().push()` + `e.preventDefault() + e.stopPropagation()`
+- `recipe.author` (User) cho user-uploaded, `recipe.original_author_name` (string) cho Cookpad scraped — frontend prioritize User → scraped → "Unknown" fallback
+- Cookpad robots.txt cho phép `User-agent: *` truy cập recipe pages (Disallow chỉ apply `/reactions`, `/print`, `/similar_recipes`, …). Cấm AI bot UA (GPTBot, Claude-Web) — dùng Chrome 124 UA là OK
+- httpx async raw → Cookpad chặn 403; bắt buộc Playwright Chromium headless với vi-VN locale + warm-up homepage cookies
+- Cookpad JSON extracted (`cookpad_recipe/*.json`) **KHÔNG có** field author — phải re-scrape từng URL để lấy
+- Enrichment script resumable qua filter `WHERE original_author_name IS NULL`: stop bằng Ctrl+C → 0 rows mất; mất tối đa BATCH_COMMIT-1 rows uncommitted vẫn NULL → retry sau bình thường
+- 3 status update DB: ok (tên thật), empty/skip ('' empty string ≠ NULL để không retry), error (giữ NULL retry sau)
+- 22k * 2s sleep + ~4s page load ≈ 37h tổng. Chạy overnight nhiều phiên.
 
 ---
 
