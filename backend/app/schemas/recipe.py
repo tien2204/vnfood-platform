@@ -99,6 +99,18 @@ class PaginationOut(BaseModel):
     total_pages: int
 
 
+class DishRecipeOut(BaseModel):
+    """Curated or AI-generated cooking recipe attached to recognize response."""
+    source: str  # "curated" | "ai-generated"
+    title: str
+    description: str | None = None
+    ingredients: list[str]
+    steps: list[str]
+    cooking_time_minutes: int | None = None
+    servings: int | None = None
+    difficulty: str | None = None
+
+
 class RecipeCardOut(BaseModel):
     id: uuid.UUID
     title: str
@@ -109,6 +121,7 @@ class RecipeCardOut(BaseModel):
     servings: int | None
     difficulty: str | None
     source: str
+    original_author_name: str | None = None
     author: AuthorOut | None
     save_count: int
     is_saved: bool | None = None
@@ -135,6 +148,7 @@ class RecipeDetailOut(BaseModel):
     difficulty: str | None
     source: str
     cookpad_url: str | None
+    original_author_name: str | None = None
     keyword: str | None
     status: str
     avg_rating: float
