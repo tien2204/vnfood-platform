@@ -1,7 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { Search } from "lucide-react";
+
+import { buttonVariants } from "@/components/ui/button";
 import { AIRecognitionResult } from "@/lib/types";
+import DishRecipeCard from "./DishRecipeCard";
 
 interface Props {
   result: AIRecognitionResult;
@@ -83,12 +88,17 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
             <>
               <div>
                 <p className="text-xs text-[#7C6A56] uppercase tracking-wider mb-1">Món được nhận diện</p>
-                <h2
-                  className="text-3xl font-bold text-[#2D2417] leading-tight"
-                  style={{ fontFamily: "var(--font-playfair)" }}
+                <Link
+                  href={`/search?q=${encodeURIComponent(result.display_name)}`}
+                  className="inline-block group"
                 >
-                  {result.display_name}
-                </h2>
+                  <h2
+                    className="text-3xl font-bold text-[#2D2417] leading-tight group-hover:text-[#E85D26] transition-colors"
+                    style={{ fontFamily: "var(--font-playfair)" }}
+                  >
+                    {result.display_name}
+                  </h2>
+                </Link>
                 {result.subgroup && (
                   <p className="text-xs text-[#7C6A56] mt-1">Nhóm: {result.subgroup}</p>
                 )}
@@ -96,6 +106,14 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
 
               <ModelBadge model={result.model_used} />
               <ConfidenceBar value={result.confidence} />
+
+              <Link
+                href={`/search?q=${encodeURIComponent(result.display_name)}`}
+                className={buttonVariants({ variant: "default" }) + " bg-[#E85D26] hover:bg-[#D14E1C] text-white w-full sm:w-auto"}
+              >
+                <Search className="w-4 h-4 mr-2" />
+                Tìm công thức &quot;{result.display_name}&quot;
+              </Link>
 
               {result.model_used === "vnfood" && top3.length > 1 && (
                 <div>
@@ -124,6 +142,10 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
           )}
         </div>
       </div>
+
+      {!isUnknown && result.dish_recipe && (
+        <DishRecipeCard recipe={result.dish_recipe} />
+      )}
     </div>
   );
 }

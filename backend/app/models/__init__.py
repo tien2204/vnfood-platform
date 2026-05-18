@@ -3,6 +3,7 @@ from app.models.recipe import Recipe, RecipeIngredient, RecipeStep
 from app.models.social import Comment, Rating, SavedRecipe, Follow
 from app.models.meal_plan import MealPlan, MealPlanItem, GroceryItem
 from app.models.ai_log import AILog
+from app.models.ai_generated_recipe import AIGeneratedRecipe  # noqa: F401
 
 __all__ = [
     "User",
@@ -17,4 +18,5 @@ __all__ = [
     "MealPlanItem",
     "GroceryItem",
     "AILog",
+    "AIGeneratedRecipe",
 ]

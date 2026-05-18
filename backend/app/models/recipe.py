@@ -32,6 +32,7 @@ class Recipe(Base):
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL")
     )
     image_url: Mapped[str | None] = mapped_column(Text)
+    original_author_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
     cooking_time: Mapped[int | None] = mapped_column(Integer)
     servings: Mapped[int | None] = mapped_column(Integer)
     difficulty: Mapped[str | None] = mapped_column(String(20))
