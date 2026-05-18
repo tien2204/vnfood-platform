@@ -16,6 +16,7 @@ from app.ai.class_names import CLASS_DISPLAY_NAMES, get_keyword_from_class
 from app.core.config import settings
 from app.models.ai_log import AILog
 from app.models.recipe import Recipe
+from app.services import dish_recipe_service
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +93,13 @@ async def recognize_image(
     db.add(log)
     await db.commit()
 
+    # Resolve dish_recipe attachment
+    dish_recipe = None
+    if predicted_class and predicted_class != "unknown" and model_used == "vnfood":
+        dish_recipe = dish_recipe_service.get_curated(predicted_class)
+    elif model_used == "openai" and display_name and display_name not in ("Không nhận diện được", "unknown"):
+        dish_recipe = await dish_recipe_service.get_or_generate_ai(db, display_name, user_id=user_id)
+
     return {
         "predicted_class": predicted_class,
         "display_name": display_name,
@@ -100,6 +108,7 @@ async def recognize_image(
         "subgroup": group,
         "top_predictions": top5,
         "suggested_recipes": suggested_recipes,
+        "dish_recipe": dish_recipe,
     }
 
 
