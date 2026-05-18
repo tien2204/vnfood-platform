@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Clock, Users, Star } from "lucide-react";
 import SaveButton from "./SaveButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -31,6 +32,8 @@ interface Props {
 }
 
 export default function RecipeCard({ recipe, onSaveChange }: Props) {
+  const router = useRouter();
+
   const imageUrl = recipe.image_url
     ? recipe.image_url.startsWith("http")
       ? recipe.image_url
@@ -165,13 +168,25 @@ export default function RecipeCard({ recipe, onSaveChange }: Props) {
             );
 
             return isLinkable ? (
-              <Link
-                href={`/users/${recipe.author!.id}`}
-                onClick={(e) => e.stopPropagation()}
-                className="block w-fit"
+              <span
+                role="link"
+                tabIndex={0}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  router.push(`/users/${recipe.author!.id}`);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    router.push(`/users/${recipe.author!.id}`);
+                  }
+                }}
+                className="block w-fit cursor-pointer hover:opacity-80 transition-opacity"
               >
                 {authorEl}
-              </Link>
+              </span>
             ) : (
               authorEl
             );

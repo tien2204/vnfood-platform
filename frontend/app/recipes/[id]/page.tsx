@@ -279,14 +279,14 @@ export default async function RecipeDetailPage({
           )}
         </div>
       ) : recipe.source === "cookpad" ? (
-        // Branch 3: Cookpad recipe without scraped author (fallback unchanged)
+        // Branch 3: Cookpad recipe without scraped author — show "Unknown" placeholder
         <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">
           <Avatar className="w-12 h-12">
-            <AvatarFallback className="bg-[#E85D26] text-white font-semibold">C</AvatarFallback>
+            <AvatarFallback className="bg-[#2D6A4F] text-white font-semibold">?</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-[#1C1209]">Cookpad</p>
-            <p className="text-xs text-[#7C6A56]">Công thức tổng hợp</p>
+            <p className="font-semibold text-[#1C1209]">Unknown</p>
+            <p className="text-xs text-[#7C6A56]">Tác giả Cookpad</p>
           </div>
           {recipe.cookpad_url && (
             <a
