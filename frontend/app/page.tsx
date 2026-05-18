@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import RecipeCard from "@/components/recipes/RecipeCard";
 import RecipeCardSkeleton from "@/components/recipes/RecipeCardSkeleton";
+import RecipeImage from "@/components/common/RecipeImage";
 import SearchBar from "@/components/common/SearchBar";
 import type {
   ApiResponse,
@@ -339,18 +340,17 @@ function MenuListItem({ recipe }: { recipe: RecipeCardType }) {
       className="group flex gap-4 border-2 border-[#2c1810] bg-white p-4 shadow-block transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-block-sm"
     >
       <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden border-2 border-[#2c1810] bg-[#fff5e6]">
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={cleanTitle}
-            fill
-            className="object-cover"
-            sizes="96px"
-            unoptimized
-          />
-        ) : (
-          <ChefHat className="absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 text-[#e8ddd4]" />
-        )}
+        <RecipeImage
+          src={imageUrl}
+          alt={cleanTitle}
+          fill
+          className="object-cover"
+          sizes="96px"
+          unoptimized
+          fallback={
+            <ChefHat className="absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 text-[#e8ddd4]" />
+          }
+        />
       </div>
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex items-start justify-between gap-3">
