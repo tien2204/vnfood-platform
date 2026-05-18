@@ -56,9 +56,11 @@
   --color-warm-muted: #fff5e6;
   --color-warm-border: #e8ddd4;
 
-  /* VNFood fonts */
-  --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
-  --font-body: Karla, "Segoe UI", system-ui, sans-serif;
+  /* VNFood fonts — actual font CSS variables injected at <html> via next/font
+     (Playfair Display heading + Be Vietnam Pro body, both vietnamese subset).
+     Values here = fallback if next/font fails to load. */
+  --font-heading: "Playfair Display", "Be Vietnam Pro", Georgia, "Times New Roman", serif;
+  --font-body: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
 }
 
 :root {
