@@ -33,6 +33,17 @@ export interface Step {
   timer_seconds: number | null;
 }
 
+export interface DishRecipe {
+  source: "curated" | "ai-generated";
+  title: string;
+  description?: string | null;
+  ingredients: string[];
+  steps: string[];
+  cooking_time_minutes?: number | null;
+  servings?: number | null;
+  difficulty?: "easy" | "medium" | "hard" | null;
+}
+
 export interface RecipeCard {
   id: string;
   title: string;
@@ -43,7 +54,8 @@ export interface RecipeCard {
   servings: number | null;
   difficulty: "easy" | "medium" | "hard" | null;
   source: "cookpad" | "user";
-  author: Author;
+  original_author_name: string | null;
+  author: Author | null;
   save_count: number;
   is_saved?: boolean;
 }
@@ -54,7 +66,7 @@ export interface RecipeDetail extends RecipeCard {
   keyword: string | null;
   status: "pending" | "approved" | "rejected";
   view_count: number;
-  author: AuthorDetail;
+  author: AuthorDetail | null;
   ingredients: Ingredient[];
   steps: Step[];
   user_rating: number | null;
@@ -248,6 +260,7 @@ export interface AIRecognitionResult {
   subgroup: string | null;
   top_predictions: AITopPrediction[];
   suggested_recipes: SuggestedRecipe[];
+  dish_recipe: DishRecipe | null;
 }
 
 export interface SavedRecipeOut {
