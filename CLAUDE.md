@@ -177,10 +177,10 @@ GROUP_TO_WEIGHT = {
 - [X] User profile
 
 ### Week 3 — AI Features
-- [ ] AI inference (PyTorch model load + EfficientNet pipeline)
-- [ ] AI nhận diện ảnh → gợi ý recipe
-- [ ] Gợi ý recipe từ nguyên liệu
-- [ ] Meal plan + Grocery list
+- [X] AI inference (PyTorch model load + EfficientNet pipeline)
+- [X] AI nhận diện ảnh → gợi ý recipe
+- [X] Gợi ý recipe từ nguyên liệu
+- [X] Meal plan + Grocery list
 
 ### Week 4 — Polish
 - [ ] Cooking mode + Scale recipe

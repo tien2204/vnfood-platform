@@ -65,7 +65,7 @@ const SOCIAL_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#F7F0E8] border-t border-[#E8DDD4] mt-auto">
+    <footer className="bg-[#2c1810] border-t-2 border-[#2c1810] mt-auto text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-6">
 
         {/* ── 4-column grid ── */}
@@ -74,23 +74,25 @@ export default function Footer() {
           {/* Col 1: Brand */}
           <div>
             <Link href="/" className="inline-flex items-center gap-2 mb-3">
-              <UtensilsCrossed className="w-6 h-6 text-[#E85D26]" />
-              <span className="text-lg font-bold text-[#E85D26]">VNFood</span>
+              <span className="flex h-9 w-9 items-center justify-center border-2 border-white bg-[#ff6b35]">
+                <UtensilsCrossed className="w-5 h-5 text-white" />
+              </span>
+              <span className="text-lg font-bold tracking-wide text-white">VNFood</span>
             </Link>
-            <p className="text-sm text-[#7C6A56] leading-relaxed">
+            <p className="text-sm text-white/65 leading-relaxed">
               Khám phá hương vị Việt Nam qua hàng nghìn công thức nấu ăn truyền thống và hiện đại.
             </p>
           </div>
 
           {/* Col 2: Categories */}
           <div>
-            <h4 className="font-semibold text-[#1C1209] mb-3">Danh mục món ăn</h4>
+            <h4 className="font-semibold text-[#F2ECE0] mb-3">Danh mục món ăn</h4>
             <ul className="grid grid-cols-2 gap-1">
               {KEYWORD_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors duration-150"
+                    className="text-sm text-white/60 hover:text-[#ff6b35] transition-colors duration-150"
                   >
                     {link.label}
                   </Link>
@@ -101,13 +103,13 @@ export default function Footer() {
 
           {/* Col 3: Info */}
           <div>
-            <h4 className="font-semibold text-[#1C1209] mb-3">Thông tin</h4>
+            <h4 className="font-semibold text-[#F2ECE0] mb-3">Thông tin</h4>
             <ul className="space-y-1.5">
               {INFO_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors duration-150"
+                    className="text-sm text-white/60 hover:text-[#ff6b35] transition-colors duration-150"
                   >
                     {link.label}
                   </Link>
@@ -118,10 +120,10 @@ export default function Footer() {
 
           {/* Col 4: Contact */}
           <div>
-            <h4 className="font-semibold text-[#1C1209] mb-3">Liên hệ</h4>
+            <h4 className="font-semibold text-[#F2ECE0] mb-3">Liên hệ</h4>
             <a
               href="mailto:contact@vnfood.local"
-              className="inline-flex items-center gap-2 text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors duration-150 mb-4"
+              className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-[#ff6b35] transition-colors duration-150 mb-4"
             >
               <Mail className="w-4 h-4" />
               contact@vnfood.local
@@ -133,7 +135,7 @@ export default function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="text-[#7C6A56] hover:text-[#E85D26] transition-colors duration-150"
+                  className="flex h-10 w-10 items-center justify-center bg-white/10 text-white/70 hover:bg-[#ff6b35] hover:text-white transition-colors duration-150"
                 >
                   {svg}
                 </a>
@@ -147,20 +149,20 @@ export default function Footer() {
         <NewsletterForm />
 
         {/* ── Bottom row ── */}
-        <div className="border-t border-[#E8DDD4] pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-[#7C6A56]">
+        <div className="border-t border-white/15 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="text-xs text-white/55">
             © 2026 VNFood Platform. Tổng hợp từ Cookpad & cộng đồng.
           </p>
-          <div className="flex items-center gap-3 text-xs text-[#7C6A56]">
-            <Link href="/privacy" className="hover:text-[#E85D26] transition-colors">
+          <div className="flex items-center gap-3 text-xs text-white/55">
+            <Link href="/privacy" className="hover:text-[#ff6b35] transition-colors">
               Chính sách bảo mật
             </Link>
-            <span className="text-[#E8DDD4]">•</span>
-            <Link href="/terms" className="hover:text-[#E85D26] transition-colors">
+            <span className="text-white/20">•</span>
+            <Link href="/terms" className="hover:text-[#ff6b35] transition-colors">
               Điều khoản
             </Link>
-            <span className="text-[#E8DDD4]">•</span>
-            <Link href="/contact" className="hover:text-[#E85D26] transition-colors">
+            <span className="text-white/20">•</span>
+            <Link href="/contact" className="hover:text-[#ff6b35] transition-colors">
               Liên hệ
             </Link>
           </div>

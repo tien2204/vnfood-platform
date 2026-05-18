@@ -1,7 +1,19 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "mcp__plugin_context-mode_context-mode__ctx_doctor",
+      "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "Bash(rtk grep *)",
+      "PowerShell(\\(Get-Content \"d:\\\\Download_D\\\\ĐATN 20252\\\\demo\\\\vnfood-platform\\\\frontend\\\\components\\\\recipes\\\\RecipeDetailSkeleton.tsx\" -Raw\\) -replace 'bg-\\\\[#F7F0E8\\\\]', 'bg-[#221E19]' -replace 'border-\\\\[#E8DDD4\\\\]', 'border-[#2D2620]' | Set-Content \"d:\\\\Download_D\\\\ĐATN 20252\\\\demo\\\\vnfood-platform\\\\frontend\\\\components\\\\recipes\\\\RecipeDetailSkeleton.tsx\" -Encoding utf8)",
+      "PowerShell(\\(Get-Content \"d:\\\\Download_D\\\\ĐATN 20252\\\\demo\\\\vnfood-platform\\\\frontend\\\\components\\\\users\\\\UserProfileSkeleton.tsx\" -Raw\\) -replace 'bg-\\\\[#F7F0E8\\\\]', 'bg-[#221E19]' -replace 'border-\\\\[#E8DDD4\\\\]', 'border-[#2D2620]' | Set-Content \"d:\\\\Download_D\\\\ĐATN 20252\\\\demo\\\\vnfood-platform\\\\frontend\\\\components\\\\users\\\\UserProfileSkeleton.tsx\" -Encoding utf8)",
+      "Bash(rtk tsc *)",
+      "Bash(rtk git *)"
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "context-mode statusline"
   }
 }

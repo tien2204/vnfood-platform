@@ -22,11 +22,11 @@ export default function NewsletterForm() {
   }
 
   return (
-    <div className="bg-[#E85D26]/8 border border-[#E85D26]/15 rounded-2xl px-6 py-6 mb-8">
-      <h4 className="text-base font-bold text-[#1C1209] mb-1">
+    <div className="bg-white text-[#2c1810] border-2 border-white px-6 py-6 mb-8 shadow-block">
+      <h4 className="text-base font-bold text-[#2c1810] mb-1">
         Nhận công thức mới hàng tuần
       </h4>
-      <p className="text-sm text-[#7C6A56] mb-4">
+      <p className="text-sm text-[#6b5344] mb-4">
         Không spam. Chỉ những công thức ngon nhất từ cộng đồng mỗi tuần.
       </p>
       <form onSubmit={handleSubmit} className="flex max-w-sm">
@@ -36,12 +36,12 @@ export default function NewsletterForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="email@example.com"
           disabled={loading}
-          className="flex-1 h-10 px-4 text-sm border border-[#E8DDD4] border-r-0 rounded-l-lg bg-white focus:outline-none focus:ring-1 focus:ring-[#E85D26] focus:border-[#E85D26] disabled:opacity-50"
+          className="flex-1 h-10 px-4 text-sm border-2 border-[#2c1810] border-r-0 bg-white focus:outline-none focus:ring-1 focus:ring-[#ff6b35] focus:border-[#ff6b35] disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={loading}
-          className="h-10 px-5 text-sm font-medium text-white bg-[#E85D26] hover:bg-[#D44E1E] rounded-r-lg transition-colors duration-150 disabled:opacity-60 whitespace-nowrap"
+          className="h-10 px-5 text-sm font-bold text-white bg-[#ff6b35] hover:bg-[#e55a2b] border-2 border-[#2c1810] transition-colors duration-150 disabled:opacity-60 whitespace-nowrap"
         >
           {loading ? "..." : "Đăng ký"}
         </button>

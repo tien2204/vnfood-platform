@@ -7,6 +7,15 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "**" },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/ai/scan",
+        destination: "/recognize",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

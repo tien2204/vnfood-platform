@@ -101,3 +101,8 @@ htmlcov/
 # Logs
 logs/
 *.log
+
+
+# Local agent workspaces
+.superpowers/
+.claude/skills/ui-ux-pro-max/

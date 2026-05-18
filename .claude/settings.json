@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout *)",
+      "Read(//c/Users/DELL/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/brainstorming/**)",
+      "Bash(\"C:\\\\Users\\\\DELL\\\\.claude\\\\plugins\\\\cache\\\\claude-plugins-official\\\\superpowers\\\\5.1.0\\\\skills\\\\brainstorming\\\\scripts\\\\start-server.sh\" --project-dir \"d:/Download_D/ĐATN 20252/demo/vnfood-platform\")",
+      "Bash(rtk ls *)",
+      "Skill(superpowers:writing-plans)",
+      "Skill(superpowers:writing-plans:*)",
+      "Bash(rtk read *)",
+      "Skill(superpowers:subagent-driven-development)",
+      "Skill(superpowers:subagent-driven-development:*)",
+      "Read(//c/Users/DELL/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/subagent-driven-development/**)",
+      "Bash(rtk docker *)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute",
+      "Bash(.venv\\\\Scripts\\\\activate)",
+      "Bash(alembic upgrade *)",
+      "Bash(New-Item -ItemType File \"d:/Download_D/ĐATN 20252/demo/vnfood-platform/backend/scripts/__init__.py\" -Force)",
+      "Bash(Out-Null)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute_file",
+      "Bash(rtk wc *)",
+      "Bash(.venv\\\\Scripts\\\\python.exe -c \"import sys; sys.path.insert\\(0, '.'\\); from app.services.dish_recipe_service import load_dish_recipes, get_curated; count = load_dish_recipes\\(\\); print\\(f'Loaded: {count}'\\); r = get_curated\\('banh-beo'\\); print\\(f'banh-beo source: {r[\\\\\"source\\\\\"]}' if r else 'banh-beo: None'\\); r2 = get_curated\\('nonexistent'\\); print\\(f'nonexistent: {r2}'\\)\")",
+      "Bash(cmd /c \"cd /D \\\\\"D:\\\\Download_D\\\\ĐATN 20252\\\\demo\\\\vnfood-platform\\\\backend\\\\\" && .venv\\\\Scripts\\\\python.exe -c \\\\\"import sys; sys.path.insert\\(0, '.'\\); from app.services.dish_recipe_service import load_dish_recipes, get_curated; count = load_dish_recipes\\(\\); print\\('Loaded:', count\\); r = get_curated\\('banh-beo'\\); print\\('banh-beo source:', r['source'] if r else None\\); r2 = get_curated\\('nonexistent'\\); print\\('nonexistent:', r2\\)\\\\\"\")",
+      "Bash(cmd /c \"cd /D \\\\\"D:\\\\Download_D\\\\ĐATN 20252\\\\demo\\\\vnfood-platform\\\\backend\\\\\" && .venv\\\\Scripts\\\\python.exe -c \\\\\"import sys; sys.path.insert\\(0, '.'\\); from app.services.dish_recipe_service import load_dish_recipes, get_curated; count = load_dish_recipes\\(\\); print\\('Loaded:', count\\)\\\\\"\")",
+      "Bash(rtk curl *)",
+      "Bash(.venv/Scripts/python.exe -m scripts.enrich_cookpad_authors --limit 10)"
+    ]
+  }
+}

@@ -47,54 +47,54 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* VNFood custom colors */
-  --color-brand-primary: #E85D26;
-  --color-brand-primary-hover: #D44E1E;
-  --color-brand-secondary: #2D6A4F;
-  --color-brand-accent: #F4A261;
-  --color-warm-bg: #FFFBF5;
-  --color-warm-muted: #F7F0E8;
-  --color-warm-border: #E8DDD4;
+  /* VNFood restaurant theme */
+  --color-brand-primary: #ff6b35;
+  --color-brand-primary-hover: #e55a2b;
+  --color-brand-secondary: #8b4513;
+  --color-brand-accent: #4a7c59;
+  --color-warm-bg: #fffaf0;
+  --color-warm-muted: #fff5e6;
+  --color-warm-border: #e8ddd4;
 
   /* VNFood fonts */
-  --font-heading: var(--font-playfair), Georgia, serif;
-  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body: Karla, "Segoe UI", system-ui, sans-serif;
 }
 
 :root {
   color-scheme: light;
-  --background: #FFFBF5;
-  --foreground: #1C1209;
-  --card: #FFFFFF;
-  --card-foreground: #1C1209;
-  --popover: #FFFFFF;
-  --popover-foreground: #1C1209;
-  --primary: #E85D26;
-  --primary-foreground: #FFFFFF;
-  --secondary: #2D6A4F;
-  --secondary-foreground: #FFFFFF;
-  --muted: #F7F0E8;
-  --muted-foreground: #7C6A56;
-  --accent: #F4A261;
-  --accent-foreground: #1C1209;
+  --background: #fffaf0;
+  --foreground: #2c1810;
+  --card: #ffffff;
+  --card-foreground: #2c1810;
+  --popover: #ffffff;
+  --popover-foreground: #2c1810;
+  --primary: #ff6b35;
+  --primary-foreground: #ffffff;
+  --secondary: #8b4513;
+  --secondary-foreground: #ffffff;
+  --muted: #fff5e6;
+  --muted-foreground: #6b5344;
+  --accent: #4a7c59;
+  --accent-foreground: #ffffff;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #E8DDD4;
-  --input: #E8DDD4;
-  --ring: #E85D26;
-  --chart-1: #E85D26;
-  --chart-2: #2D6A4F;
-  --chart-3: #F4A261;
+  --border: #e8ddd4;
+  --input: #e8ddd4;
+  --ring: #ff6b35;
+  --chart-1: #ff6b35;
+  --chart-2: #8b4513;
+  --chart-3: #4a7c59;
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: #F7F0E8;
-  --sidebar-foreground: #1C1209;
-  --sidebar-primary: #E85D26;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F4A261;
-  --sidebar-accent-foreground: #1C1209;
-  --sidebar-border: #E8DDD4;
-  --sidebar-ring: #E85D26;
+  --radius: 0.375rem;
+  --sidebar: #fff5e6;
+  --sidebar-foreground: #2c1810;
+  --sidebar-primary: #ff6b35;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #4a7c59;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e8ddd4;
+  --sidebar-ring: #ff6b35;
 }
 
 @layer base {
@@ -107,14 +107,33 @@
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
+    letter-spacing: 0.02em;
   }
 }
 
 @layer utilities {
   .shadow-warm {
-    box-shadow: 0 4px 16px rgba(232, 93, 38, 0.15);
+    box-shadow: 0 8px 30px rgba(44, 24, 16, 0.12);
   }
   .shadow-card {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+    box-shadow: 0 4px 16px rgba(44, 24, 16, 0.08);
+  }
+  .shadow-block {
+    box-shadow: 6px 6px 0 #2c1810;
+  }
+  .shadow-block-sm {
+    box-shadow: 4px 4px 0 #2c1810;
+  }
+  .restaurant-card {
+    background: #ffffff;
+    border: 2px solid #2c1810;
+    box-shadow: 6px 6px 0 #2c1810;
+    transition: all 200ms ease;
+  }
+  .restaurant-card-hover {
+    &:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 4px 4px 0 #2c1810;
+    }
   }
 }
