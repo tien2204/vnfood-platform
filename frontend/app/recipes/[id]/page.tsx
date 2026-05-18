@@ -226,6 +226,7 @@ export default async function RecipeDetailPage({
 
       {/* Author card */}
       {recipe.author ? (
+        // Branch 1: User-uploaded recipe
         <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">
           <Link href={`/users/${recipe.author.id}`}>
             <Avatar className="w-12 h-12">
@@ -254,7 +255,31 @@ export default async function RecipeDetailPage({
             Xem hồ sơ
           </Link>
         </div>
+      ) : recipe.original_author_name && recipe.original_author_name.length > 0 ? (
+        // Branch 2: Cookpad recipe with scraped author
+        <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">
+          <Avatar className="w-12 h-12">
+            <AvatarFallback className="bg-[#2D6A4F] text-white font-semibold">
+              {recipe.original_author_name.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-[#1C1209]">{recipe.original_author_name}</p>
+            <p className="text-xs text-[#7C6A56]">Tác giả Cookpad</p>
+          </div>
+          {recipe.cookpad_url && (
+            <a
+              href={recipe.cookpad_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-1.5 rounded-full border border-[#E85D26] text-sm text-[#E85D26] hover:bg-[#E85D26] hover:text-white transition-colors"
+            >
+              Xem trên Cookpad
+            </a>
+          )}
+        </div>
       ) : recipe.source === "cookpad" ? (
+        // Branch 3: Cookpad recipe without scraped author (fallback unchanged)
         <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">
           <Avatar className="w-12 h-12">
             <AvatarFallback className="bg-[#E85D26] text-white font-semibold">C</AvatarFallback>
@@ -268,9 +293,9 @@ export default async function RecipeDetailPage({
               href={recipe.cookpad_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-[#E85D26] hover:underline"
+              className="px-4 py-1.5 rounded-full border border-[#E85D26] text-sm text-[#E85D26] hover:bg-[#E85D26] hover:text-white transition-colors"
             >
-              Nguồn gốc
+              Xem trên Cookpad
             </a>
           )}
         </div>
