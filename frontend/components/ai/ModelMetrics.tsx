@@ -1,6 +1,6 @@
 "use client";
 
-import { Info } from "lucide-react";
+import { ChevronDown, Info } from "lucide-react";
 import { useState } from "react";
 
 import { ClassMetrics } from "@/lib/types";
@@ -80,26 +80,46 @@ function MetricCell({
 }
 
 export default function ModelMetrics({ metrics, className = "" }: Props) {
+  const [expanded, setExpanded] = useState(false);
+
   return (
     <div className={className}>
-      <div className="flex items-center gap-2 mb-2">
-        <p className="text-xs text-[#7C6A56] uppercase tracking-wider">
-          Hiệu năng mô hình cho món này
-        </p>
-        <span className="text-[10px] text-[#A69588]">
-          (đánh giá trên test set · {metrics.support} ảnh)
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+        className="inline-flex items-center gap-1.5 text-xs text-[#7C6A56] hover:text-[#E85D26] transition-colors focus:outline-none"
+      >
+        <ChevronDown
+          className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-180" : ""}`}
+        />
+        <span>
+          {expanded ? "Ẩn" : "Xem"} hiệu năng mô hình cho món này
         </span>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {METRIC_DEFS.map((def) => (
-          <MetricCell
-            key={def.key}
-            label={def.label}
-            value={metrics[def.key]}
-            tooltip={def.tooltip}
-          />
-        ))}
-      </div>
+        <span className="text-[10px] text-[#A69588]">
+          (test set · {metrics.support} ảnh)
+        </span>
+      </button>
+
+      {expanded && (
+        <div className="mt-2">
+          <div className="flex flex-wrap gap-2">
+            {METRIC_DEFS.map((def) => (
+              <MetricCell
+                key={def.key}
+                label={def.label}
+                value={metrics[def.key]}
+                tooltip={def.tooltip}
+              />
+            ))}
+          </div>
+          <p className="mt-2 text-[11px] leading-relaxed text-[#7C6A56]">
+            Đây là độ đo đánh giá mô hình trên tập kiểm tra đã có nhãn — phản ánh
+            độ tin cậy chung của AI đối với loại món này, không phải cho ảnh bạn
+            vừa tải lên (con số đó là &ldquo;Độ tin cậy&rdquo; phía trên).
+          </p>
+        </div>
+      )}
     </div>
   );
 }
