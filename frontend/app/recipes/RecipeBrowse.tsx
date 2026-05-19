@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,6 +45,7 @@ const SORTS = [
 export default function RecipeBrowse() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [, startTransition] = useTransition();
 
   const [recipes, setRecipes] = useState<RecipeCard[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,7 +68,12 @@ export default function RecipeBrowse() {
         params.delete(key);
       }
       if (key !== "page") params.set("page", "1");
-      router.push(`/recipes?${params.toString()}`);
+      const nextUrl = `/recipes?${params.toString()}`;
+      startTransition(() => {
+        // scroll:false keeps the user at the pagination control instead of
+        // jumping to the top of the new page — better UX for paging.
+        router.push(nextUrl, { scroll: false });
+      });
     },
     [searchParams, router]
   );
@@ -273,6 +279,7 @@ export default function RecipeBrowse() {
       {!loading && totalPages > 1 && (
         <div className="mt-10 flex items-center justify-center gap-2">
           <Button
+            type="button"
             variant="outline"
             size="sm"
             disabled={page <= 1}
@@ -287,6 +294,7 @@ export default function RecipeBrowse() {
           </span>
 
           <Button
+            type="button"
             variant="outline"
             size="sm"
             disabled={page >= totalPages}

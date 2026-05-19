@@ -46,13 +46,22 @@ USER_AGENT = (
 
 OG_IMAGE_PREFIX = "https://og-image.cookpad.com/"
 CLEAN_HOST = "img-global.cpcdn.com"
+# Recipe photos are served from /recipes/<hash>/...
+# User avatars from /users/<id>/avatar.jpg — must NOT be picked up
+RECIPE_PATH_MARKER = "/recipes/"
+
+
+def _is_recipe_image_url(url: str) -> bool:
+    """A clean recipe image URL must (a) be on img-global.cpcdn.com and
+    (b) live under the /recipes/ path. Excludes /users/<id>/avatar.jpg etc."""
+    return CLEAN_HOST in url and RECIPE_PATH_MARKER in url
 
 
 def _extract_clean_url(value) -> Optional[str]:
-    """Recursively pull the first URL containing img-global.cpcdn.com out of
-    a JSON-LD value (which may be a string, list, or ImageObject dict)."""
+    """Recursively pull the first URL pointing to a Cookpad recipe photo out
+    of a JSON-LD value (string, list, or ImageObject dict)."""
     if isinstance(value, str):
-        return value if CLEAN_HOST in value else None
+        return value if _is_recipe_image_url(value) else None
     if isinstance(value, list):
         for item in value:
             found = _extract_clean_url(item)
@@ -68,7 +77,7 @@ def _extract_clean_url(value) -> Optional[str]:
 
 
 async def parse_clean_image(page) -> Optional[str]:
-    """Try JSON-LD first, then DOM fallbacks."""
+    """Try JSON-LD first, then DOM fallbacks. All URLs must be /recipes/ path."""
     # Strategy 1: JSON-LD
     try:
         ld_elements = await page.query_selector_all('script[type="application/ld+json"]')
@@ -89,13 +98,12 @@ async def parse_clean_image(page) -> Optional[str]:
     except Exception as e:
         logger.debug(f"JSON-LD parse failed: {e}")
 
-    # Strategy 2: <picture> or <img> in DOM with img-global host
+    # Strategy 2: <picture> or <img> in DOM with img-global host AND /recipes/ path
     try:
-        # Cookpad uses <picture><img src="..."> for hero
         imgs = await page.query_selector_all('img')
         for img in imgs:
             src = await img.get_attribute("src")
-            if src and CLEAN_HOST in src:
+            if src and _is_recipe_image_url(src):
                 return src
     except Exception:
         pass
@@ -105,7 +113,7 @@ async def parse_clean_image(page) -> Optional[str]:
         meta = await page.query_selector('meta[property="og:image:secure_url"]')
         if meta:
             content = await meta.get_attribute("content")
-            if content and CLEAN_HOST in content:
+            if content and _is_recipe_image_url(content):
                 return content
     except Exception:
         pass
