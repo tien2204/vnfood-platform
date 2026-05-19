@@ -70,9 +70,7 @@ export default function RecipeBrowse() {
       if (key !== "page") params.set("page", "1");
       const nextUrl = `/recipes?${params.toString()}`;
       startTransition(() => {
-        // scroll:false keeps the user at the pagination control instead of
-        // jumping to the top of the new page — better UX for paging.
-        router.push(nextUrl, { scroll: false });
+        router.push(nextUrl);
       });
     },
     [searchParams, router]
