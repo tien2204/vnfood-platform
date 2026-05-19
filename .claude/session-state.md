@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-05-19 (Enrichment xong + P/R/F1 metrics + UI polish)
+**Cập nhật lần cuối:** 2026-05-19 (Bug fixes + scripts đều xong)
 **Branch:** `main`
-**Task đang làm:** (feature ổn định; còn pending seed_cookpad_users + fix_cookpad_images chạy full)
+**Task đang làm:** (toàn bộ feature + data pipeline ổn định — sẵn sàng demo/báo cáo)
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -297,8 +297,22 @@ User đăng recipe · Admin duyệt · Comment · Rating · Save/Bookmark · Fol
 - DishRecipeCard thêm subtitle nhắc "đây là công thức tham khảo, xem biến tấu cộng đồng bên dưới"
 - Recipe detail thêm section "Công thức tương tự" (gợi ý theo keyword)
 
+### Bug fixes session 2026-05-19 (sau khi enrichment + seed + image-fix scripts xong)
+**Status data pipeline cuối:**
+- Cookpad authors: 21,791 / 22,273 (97.8%) đã scrape được tên
+- Synthetic users: **4,192 User accounts** từ distinct Cookpad authors
+- Linked recipes: **22,058 / 22,058** Cookpad recipes đã có `author_id` (still_unlinked = 0)
+- Image URLs: **0 watermarked** og-image / 22,021 clean img-global / 19 null (recipes Cookpad không có ảnh món, hiện placeholder)
+
+**Bug fixes:**
+- [x] **`fix_cookpad_images.py` resumability** — bug: status `skip`/`empty` không update DB → filter `LIKE 'og-image%'` re-fetch infinite loop, script "dừng" sau Ctrl+C re-run. Fix: cả `skip` và `empty` đều SET `image_url = NULL` → filter loại trừ row → truly idempotent. UI fallback placeholder qua RecipeImage component.
+- [x] **`fix_cookpad_images.py` path filter** — bug: script grab nhầm avatar tác giả (`img-global.cpcdn.com/users/<id>/avatar.jpg`) khi recipe gốc không có ảnh món, vì cả 2 endpoint cùng host. Fix: `_is_recipe_image_url()` yêu cầu cả `CLEAN_HOST` + `/recipes/` path. SQL cleanup 19 rows đã set nhầm bằng `UPDATE image_url=NULL WHERE image_url LIKE '%/users/%' OR LIKE '%/avatars/%'`.
+- [x] **Recipe detail Branch 1 thêm "Xem trên Cookpad"** — sau khi seed link `author_id`, Cookpad recipe rơi vào Branch 1 (User card) → mất nút Cookpad gốc. Fix: thêm nút secondary outline `#7C6A56` "Xem trên Cookpad" cạnh "Xem hồ sơ" khi `source === "cookpad" && cookpad_url`. Profile (orange filled, primary) + Cookpad (brown outline, secondary).
+- [x] **Pagination "Sau" reset về page 1** — bug nghiêm trọng: click "Sau" → URL `?page=2` lóe lên → ngay reset về `?page=1`. Backend log xác nhận 2 requests liên tiếp page=2 → page=1 cùng filters. Root cause: `SearchBar.tsx` `useEffect(..., [debounced, autoNavigate, router, onSearch])` có `onSearch` trong deps. Parent re-render → inline arrow `onSearch={(q) => updateParam("search", q)}` ref mới → effect fire lại → `onSearch("")` → `updateParam("search", "")` → `if (key !== "page") params.set("page", "1")` reset page.
+  - Fix `SearchBar.tsx`: `onSearchRef = useRef(onSearch)` để gọi latest qua ref, bỏ khỏi deps. `lastFiredRef = useRef<string>(initialValue)` track value, chỉ fire khi value đổi không phải reference. Initial run = no-op.
+- [x] **Pagination scroll-to-top** — user yêu cầu scroll lên đầu khi chuyển trang. Bỏ `scroll: false` khỏi `router.push` → Next.js default.
+
 **Sau cùng:** viết báo cáo thesis · deploy
-3. Deploy
 
 ---
 
@@ -400,6 +414,22 @@ _(Không có)_
 - Username pattern: `unicodedata.normalize('NFKD')` để strip diacritics, manual replace `đ/Đ → d/D` (NFKD không decompose 2 ký tự này), `re.findall(r'[A-Za-z0-9]+')`, capitalize từng chunk, concat. Email = lowercase username + `@cookpad.com`. Collision suffix `_2, _3...`.
 - Recipes với cùng `original_author_name` → cùng 1 User mới (single dedup, không phân biệt được homonyms — limitation chấp nhận được)
 - Sau seed: `recipes.author_id` được set, frontend tự động chuyển từ Branch 2 (scraped name only) sang Branch 1 (User link) trên detail page. Branch 2 thành dead code trong practice nhưng giữ làm safety fallback.
+- Branch 1 phải giữ thêm nút "Xem trên Cookpad" khi `source === "cookpad"` vì sau seed link author_id, recipe Cookpad cũng vào Branch 1 → nếu chỉ có "Xem hồ sơ" thì mất đường link nguồn gốc.
+
+### Image scraping Cookpad — 2 host phân biệt qua path
+- Cookpad có 2 endpoint ảnh CÙNG host `img-global.cpcdn.com` nhưng khác path:
+  - Recipe photo: `img-global.cpcdn.com/recipes/<hash>/<size>/photo.jpg`
+  - User avatar: `img-global.cpcdn.com/users/<id>/<size>/avatar.jpg`
+- Filter chỉ check host → bug: grab avatar khi recipe gốc không có ảnh món (chỉ có avatar tác giả trên page)
+- Phải check cả `CLEAN_HOST in url` AND `/recipes/ in url`
+- Khi parse fail (page có nhưng không tìm thấy `/recipes/` URL) → script SET `image_url = NULL` để (a) tránh re-fetch loop ở rerun (b) UI fallback placeholder
+
+### React useEffect deps + inline callback bug
+- Pattern bug: `<Child onCallback={(q) => updateParam(...)}>` — arrow function inline → reference mới mỗi parent render
+- Trong `Child.useEffect(..., [value, onCallback])` — `onCallback` trong deps → parent re-render → effect re-fire dù `value` không đổi → side effect không mong muốn (vd: gọi `onCallback("")` reset URL)
+- Fix pattern: capture callback trong `useRef`, gọi qua `ref.current?.()`, bỏ khỏi deps
+- Optional: `useRef<typeof value>(initialValue)` track last-fired value, skip nếu value chưa đổi (tránh fire spurious on mount/re-render)
+- Đặc biệt nguy hiểm khi callback đụng tới shared state (router/URL) — có thể tạo race conditions hoặc reset state đang đổi
 
 ---
 
