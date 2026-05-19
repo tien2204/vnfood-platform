@@ -43,8 +43,8 @@ export default function RecipeCard({ recipe, onSaveChange }: Props) {
   const cleanTitle = stripEmoji(recipe.title);
 
   return (
-    <Link href={`/recipes/${recipe.id}`} className="group block">
-      <article className="restaurant-card restaurant-card-hover overflow-hidden">
+    <Link href={`/recipes/${recipe.id}`} className="group block h-full">
+      <article className="restaurant-card restaurant-card-hover overflow-hidden h-full flex flex-col">
 
         {/* ── Image ── */}
         <div className="relative aspect-[4/3] bg-[#fff5e6] border-b-2 border-[#2c1810]">
@@ -106,7 +106,7 @@ export default function RecipeCard({ recipe, onSaveChange }: Props) {
         </div>
 
         {/* ── Content ── */}
-        <div className="p-4">
+        <div className="p-4 flex flex-col flex-1">
 
           {/* Rating */}
           <div className="flex items-center gap-1 mb-1.5 min-h-[1.25rem]">
@@ -123,13 +123,13 @@ export default function RecipeCard({ recipe, onSaveChange }: Props) {
             )}
           </div>
 
-          {/* Title */}
-          <h3 className="font-bold text-lg text-[#2c1810] line-clamp-2 leading-snug mb-3">
+          {/* Title — reserve 2 lines of height so 1-line and 2-line titles align */}
+          <h3 className="font-bold text-lg text-[#2c1810] line-clamp-2 leading-snug mb-3 min-h-[3.25rem]">
             {cleanTitle}
           </h3>
 
-          {/* Meta */}
-          <div className="flex items-center gap-3 text-xs font-medium text-[#6b5344] mb-4">
+          {/* Meta — reserve row even when both time & servings null */}
+          <div className="flex items-center gap-3 text-xs font-medium text-[#6b5344] mb-4 min-h-[1.125rem]">
             {recipe.cooking_time != null && (
               <span className="flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />
@@ -144,7 +144,8 @@ export default function RecipeCard({ recipe, onSaveChange }: Props) {
             )}
           </div>
 
-          {/* Author */}
+          {/* Author — mt-auto wrapper pins to bottom so cards align */}
+          <div className="mt-auto">
           {(() => {
             const displayName =
               recipe.author?.full_name ??
@@ -155,7 +156,7 @@ export default function RecipeCard({ recipe, onSaveChange }: Props) {
             const isLinkable = !!recipe.author;
 
             const authorEl = (
-              <div className="flex items-center gap-1.5 mt-1.5">
+              <div className="flex items-center gap-1.5">
                 <Avatar className="w-[18px] h-[18px]">
                   {recipe.author?.avatar_url && <AvatarImage src={recipe.author.avatar_url} />}
                   <AvatarFallback className="text-[9px] bg-[#2D6A4F] text-white">
@@ -190,6 +191,7 @@ export default function RecipeCard({ recipe, onSaveChange }: Props) {
               authorEl
             );
           })()}
+          </div>
 
         </div>
       </article>
