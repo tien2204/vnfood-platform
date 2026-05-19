@@ -3,14 +3,14 @@ import { UtensilsCrossed, Mail } from "lucide-react";
 import NewsletterForm from "@/components/common/NewsletterForm";
 
 const KEYWORD_LINKS = [
-  { label: "Bánh", href: "/keyword/banh" },
-  { label: "Bún / Phở", href: "/keyword/bun" },
-  { label: "Cơm", href: "/keyword/com" },
-  { label: "Canh", href: "/keyword/canh" },
-  { label: "Món Khô", href: "/keyword/thit" },
-  { label: "Xôi", href: "/keyword/xoi" },
-  { label: "Gỏi Cuốn", href: "/keyword/goi" },
-  { label: "Đặc Biệt", href: "/keyword/dac-biet" },
+  { label: "Bánh", href: `/recipes?keyword=${encodeURIComponent("Bánh")}` },
+  { label: "Bún / Phở", href: `/recipes?keyword=${encodeURIComponent("Bún")}` },
+  { label: "Cơm", href: `/recipes?keyword=${encodeURIComponent("Cơm")}` },
+  { label: "Canh", href: `/recipes?keyword=${encodeURIComponent("Canh")}` },
+  { label: "Món Khô", href: `/recipes?keyword=${encodeURIComponent("Thịt")}` },
+  { label: "Xôi", href: `/recipes?keyword=${encodeURIComponent("Xôi")}` },
+  { label: "Gỏi Cuốn", href: `/recipes?keyword=${encodeURIComponent("Gỏi")}` },
+  { label: "Đặc Biệt", href: `/recipes?keyword=${encodeURIComponent("Đặc biệt")}` },
 ];
 
 const INFO_LINKS = [

@@ -30,14 +30,14 @@ import type {
 } from "@/lib/types";
 
 const KEYWORD_GROUPS = [
-  { label: "Bánh", slug: "banh" },
-  { label: "Bún & Phở", slug: "bun" },
-  { label: "Cơm", slug: "com" },
-  { label: "Canh & Cháo", slug: "canh" },
-  { label: "Món Khô", slug: "thit" },
-  { label: "Xôi", slug: "xoi" },
-  { label: "Gỏi & Cuốn", slug: "goi" },
-  { label: "Đặc Biệt", slug: "dac-biet" },
+  { label: "Bánh", keyword: "Bánh" },
+  { label: "Bún & Phở", keyword: "Bún" },
+  { label: "Cơm", keyword: "Cơm" },
+  { label: "Canh & Cháo", keyword: "Canh" },
+  { label: "Món Khô", keyword: "Thịt" },
+  { label: "Xôi", keyword: "Xôi" },
+  { label: "Gỏi & Cuốn", keyword: "Gỏi" },
+  { label: "Đặc Biệt", keyword: "Đặc biệt" },
 ];
 
 const HERO_IMAGES = [
@@ -184,8 +184,12 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
           <ScrollArea>
             <div className="flex gap-3 pb-2">
-              {KEYWORD_GROUPS.map(({ label, slug }) => (
-                <Link key={slug} href={`/keyword/${slug}`} className="shrink-0">
+              {KEYWORD_GROUPS.map(({ label, keyword }) => (
+                <Link
+                  key={keyword}
+                  href={`/recipes?keyword=${encodeURIComponent(keyword)}`}
+                  className="shrink-0"
+                >
                   <span className="inline-flex border-2 border-[#2c1810] bg-[#fff5e6] px-4 py-2 text-sm font-bold text-[#2c1810] shadow-block-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:bg-[#ff6b35] hover:text-white hover:shadow-none">
                     {label}
                   </span>
