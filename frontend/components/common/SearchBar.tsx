@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -25,12 +25,26 @@ export default function SearchBar({
   const [query, setQuery] = useState(initialValue);
   const debounced = useDebounce(query, 300);
 
+  // Always call the latest onSearch via ref so a new inline arrow function
+  // from the parent doesn't retrigger the effect on every parent re-render
+  // (which would call onSearch('') and stomp on other URL params like page).
+  const onSearchRef = useRef(onSearch);
   useEffect(() => {
+    onSearchRef.current = onSearch;
+  }, [onSearch]);
+
+  // Fire only when the debounced VALUE changes (not when callback reference
+  // changes). Initialize with initialValue so the first run is a no-op.
+  const lastFiredRef = useRef<string>(initialValue);
+  useEffect(() => {
+    if (lastFiredRef.current === debounced) return;
+    lastFiredRef.current = debounced;
+
     if (autoNavigate && debounced.trim()) {
       router.push(`/search?q=${encodeURIComponent(debounced.trim())}`);
     }
-    if (onSearch) onSearch(debounced);
-  }, [debounced, autoNavigate, router, onSearch]);
+    onSearchRef.current?.(debounced);
+  }, [debounced, autoNavigate, router]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
