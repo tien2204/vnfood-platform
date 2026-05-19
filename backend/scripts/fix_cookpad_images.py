@@ -204,10 +204,21 @@ async def main():
                         )
                         pending_updates += 1
                         logger.info(f"[{total_processed}] ok    {recipe_id} -> {clean_url}")
-                    elif status == "skip":
-                        logger.info(f"[{total_processed}] skip  {recipe_id} (404, keeping og-image URL)")
-                    elif status == "empty":
-                        logger.info(f"[{total_processed}] empty {recipe_id} (no img-global found, keeping og-image)")
+                    elif status in ("skip", "empty"):
+                        # Mark as processed by clearing the watermarked URL so the LIKE
+                        # filter won't pick it up again. UI falls back to placeholder.
+                        # Trade-off: lose watermarked photo, gain idempotent resumability.
+                        await db.execute(
+                            update(Recipe)
+                            .where(Recipe.id == recipe_id)
+                            .values(image_url=None)
+                        )
+                        pending_updates += 1
+                        logger.info(
+                            f"[{total_processed}] {status:5s} {recipe_id} "
+                            f"({'404, recipe gone' if status == 'skip' else 'no img-global on page'} "
+                            f"-> set image_url=NULL)"
+                        )
                     else:
                         logger.warning(f"[{total_processed}] error {recipe_id} (will retry next run)")
 
