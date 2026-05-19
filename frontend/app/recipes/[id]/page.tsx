@@ -249,12 +249,24 @@ export default async function RecipeDetailPage({
               </p>
             )}
           </div>
-          <Link
-            href={`/users/${recipe.author.id}`}
-            className="px-4 py-1.5 rounded-full border border-[#E85D26] text-sm text-[#E85D26] hover:bg-[#E85D26] hover:text-white transition-colors"
-          >
-            Xem hồ sơ
-          </Link>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href={`/users/${recipe.author.id}`}
+              className="px-4 py-1.5 rounded-full border border-[#E85D26] text-sm text-[#E85D26] hover:bg-[#E85D26] hover:text-white transition-colors"
+            >
+              Xem hồ sơ
+            </Link>
+            {recipe.source === "cookpad" && recipe.cookpad_url && (
+              <a
+                href={recipe.cookpad_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-1.5 rounded-full border border-[#7C6A56] text-sm text-[#7C6A56] hover:bg-[#7C6A56] hover:text-white transition-colors"
+              >
+                Xem trên Cookpad
+              </a>
+            )}
+          </div>
         </div>
       ) : recipe.original_author_name && recipe.original_author_name.length > 0 ? (
         // Branch 2: Cookpad recipe with scraped author
