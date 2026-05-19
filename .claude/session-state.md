@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-05-18 (Merge `feat/recognize-recipe-author` → main: recognize dish recipe + RecipeCard author)
+**Cập nhật lần cuối:** 2026-05-19 (Enrichment xong + P/R/F1 metrics + UI polish)
 **Branch:** `main`
-**Task đang làm:** (xong feature; tùy chọn enrichment 22k authors overnight)
+**Task đang làm:** (feature ổn định; còn pending seed_cookpad_users + fix_cookpad_images chạy full)
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -251,17 +251,53 @@ User đăng recipe · Admin duyệt · Comment · Rating · Save/Bookmark · Fol
 
 ### Cookpad author enrichment (Task 13)
 - [x] `backend/scripts/enrich_cookpad_authors.py` — Playwright Chromium headless, SLEEP_SEC=2, PAGE_TIMEOUT=10000, BATCH_COMMIT=50, Chrome 124 UA (không AI-bot UA), warm-up cookpad.com/vn cookies, 3 parse strategies (JSON-LD → `a[href*="/vn/users/"]` → `meta[itemprop=author]`), 4 status (ok/empty/skip/error), atomic UPDATE per row (error giữ NULL retry, ok/empty/skip UPDATE), resumable qua filter `IS NULL`
-- [x] Test --limit 10: ok=10/10, sample tên thật: "Hoàng Thị Tố Hà", "Annie Vo", "Mạn Mạn", "Phan Bao Van", "Huyen le Tran"
-- [x] **Pending:** chạy full enrichment overnight (~12h cho 22k rows) — `python -m scripts.enrich_cookpad_authors` (không `--limit`)
+- [x] **Đã chạy full**: 21,791 / 22,273 Cookpad recipes có tên author (97.8%), 214 unavailable, 268 vẫn pending (sẽ retry sau)
 
 ### Bugfix sau test browser
 - [x] Nested `<a>` hydration error: RecipeCard inner Link → span+router.push
 - [x] Recipe detail Branch 3 "Cookpad / Công thức tổng hợp" → "Unknown / Tác giả Cookpad" với green `?` avatar
 
+### Polish session 2026-05-19
+- [x] **Font fix — Vietnamese rendering bug** (mề\`m, ô´c hiển thị backtick lạ)
+  - Root: `globals.css` khai báo `--font-heading: "Playfair Display", ...` nhưng KHÔNG load font → fallback xuống Georgia/Times → thiếu glyph Vietnamese precomposed (`ề ố ằ ự ỡ`) → Chrome decompose + render combining mark thành SPACING char
+  - Fix `frontend/app/layout.tsx`: load `Playfair_Display` + `Be_Vietnam_Pro` qua `next/font/google` với subset `["latin", "latin-ext", "vietnamese"]`, apply via `<html className>`
+  - Đổi Karla → Be Vietnam Pro vì next typing không cho Karla có vietnamese subset
+- [x] **Image fallback khi URL lỗi** — `frontend/components/common/RecipeImage.tsx` NEW: wrapper next/image với `useState(errored)` + `onError` handler, render `fallback` prop nếu `src==null || errored`. Áp dụng 4 chỗ: RecipeCard, recipe detail hero, MenuListItem (homepage), SuggestedRecipeCard (RecipeCarousel). Bỏ emoji 🍽️ ở 2 chỗ, dùng SVG utensil đồng nhất.
+- [x] **Bug 404 link `/keyword/<slug>`** — route không tồn tại. Fix: redirect sang `/recipes?keyword=<vietnamese>` (browse page filter đã có sẵn). Update [page.tsx:32](frontend/app/page.tsx) KEYWORD_GROUPS + [Footer.tsx:5-14](frontend/components/layout/Footer.tsx) KEYWORD_LINKS.
+- [x] **Watermark Cookpad og-image fix** (`backend/scripts/fix_cookpad_images.py`)
+  - Phát hiện: 2,274/22,273 recipes (10%) có URL ảnh `og-image.cookpad.com/global/vn/recipe/<id>` — đây là social card có watermark + tên author overlay
+  - Clean URL nằm ở `img-global.cpcdn.com/recipes/<hash>/...` — hash không tính được từ recipe id → phải scrape
+  - Script Playwright giống enrich pattern, parse JSON-LD `Recipe.image` field (clean URL), fallback DOM `<img>` với host `img-global.cpcdn.com`
+  - **Pending chạy full** (~76 phút cho 2,274 rows): `python -m scripts.fix_cookpad_images`
+- [x] **`backend/scripts/seed_cookpad_users.py`** — biến scraped author thành User account
+  - Distinct `original_author_name` (cookpad + author_id IS NULL) → tạo User row
+  - Username: CamelCase no-dấu (`HoangThiToHa`), email `<username>@cookpad.com`, collision suffix `_2, _3...`
+  - Password chung `cookpad123` (bcrypt hash, login được cho demo)
+  - `full_name` giữ tên có dấu gốc, `bio = "Tác giả Cookpad — tài khoản tự sinh"`, role=user, is_active=true
+  - UPDATE `recipes.author_id` cho tất cả recipes match name (atomic)
+  - Idempotent qua filter `author_id IS NULL`
+  - **Pending chạy** sau khi enrichment xong: `python -m scripts.seed_cookpad_users`
+- [x] **Per-class Precision/Recall/F1 metrics** — UI option (collapsed by default)
+  - `backend/scripts/evaluate_model.py` — load test set `test/<slug>/*.jpg`, predict end-to-end cascade (group + sub), `sklearn.precision_recall_fscore_support` per class, output `backend/app/ai/model_metrics.json`
+  - Eval xong trên 7,384 ảnh / 103 class: **Accuracy 81.9%, Macro F1 0.851 (P=0.958, R=0.776), Weighted F1 0.877, fallback rate 14.1%**
+  - `backend/app/services/metrics_service.py` — load JSON lúc startup, `get_class_metrics(slug)` lookup O(1)
+  - `backend/app/services/ai_service.py` — attach `class_metrics` vào response chỉ khi `model_used == "vnfood"` (OpenAI fallback / unknown → null)
+  - `backend/app/schemas/recipe.py` thêm `ClassMetricsOut(precision, recall, f1, support)`
+  - `frontend/components/ai/ModelMetrics.tsx` — collapsible block: chevron toggle "Xem hiệu năng mô hình", expand ra 3 card với (?) tooltip giải thích từng metric, 1 dòng disclaimer phân biệt "test-set evaluation" vs "per-image confidence"
+  - Đổi label `RecognitionResult` ConfidenceBar: "Độ chính xác" → "**Độ tin cậy cho ảnh này**" để rõ confidence khác với accuracy/P/R/F1
+
 ## Làm tiếp (session kế bắt đầu từ đây)
-**Tùy chọn:**
-1. Chạy full enrichment overnight: `cd backend && python -m scripts.enrich_cookpad_authors` (~12h cho 22k rows)
-2. Viết báo cáo thesis
+**Pending scripts (chạy khi rảnh, song song được):**
+1. `python -m scripts.fix_cookpad_images` — clean 2,274 watermark URLs (~76 phút @ sleep=2s)
+2. `python -m scripts.seed_cookpad_users` — biến 21,791 scraped name thành User accounts (~5 phút, không network)
+3. Restart uvicorn để load `model_metrics.json` (log "Loaded model metrics for 103 classes")
+
+**Polish optional cho UI liên mạch hơn (đề xuất cô giáo):**
+- Top3 predictions clickable → search
+- DishRecipeCard thêm subtitle nhắc "đây là công thức tham khảo, xem biến tấu cộng đồng bên dưới"
+- Recipe detail thêm section "Công thức tương tự" (gợi ý theo keyword)
+
+**Sau cùng:** viết báo cáo thesis · deploy
 3. Deploy
 
 ---
@@ -340,7 +376,30 @@ _(Không có)_
 - Cookpad JSON extracted (`cookpad_recipe/*.json`) **KHÔNG có** field author — phải re-scrape từng URL để lấy
 - Enrichment script resumable qua filter `WHERE original_author_name IS NULL`: stop bằng Ctrl+C → 0 rows mất; mất tối đa BATCH_COMMIT-1 rows uncommitted vẫn NULL → retry sau bình thường
 - 3 status update DB: ok (tên thật), empty/skip ('' empty string ≠ NULL để không retry), error (giữ NULL retry sau)
-- 22k * 2s sleep + ~4s page load ≈ 37h tổng. Chạy overnight nhiều phiên.
+- Real-world rate: ~3.7-4.8 req/s với sleep=2s. 22k recipes ~6h thực tế (không phải 37h ước lượng — log + page load nhanh hơn dự kiến)
+
+### Font + Image fallback (2026-05-19)
+- Next.js 16 `next/font/google` **KHÔNG hỗ trợ vietnamese subset cho Karla** (typing chỉ `'latin' | 'latin-ext'`). Dùng **Be Vietnam Pro** (typed `vietnamese` subset, thiết kế riêng cho Vietnamese)
+- Playfair Display **CÓ** vietnamese subset trong next/font typing — OK dùng
+- Bug "ký tự backtick lạc" (`mề\`m`, `ô´c`): root cause là CHỮ KHÔNG LOAD FONT THẬT, fallback Georgia/Times thiếu glyph precomposed Vietnamese (U+1EBx range) → Chrome render combining mark thành SPACING char. Fix bằng cách thật sự load font với subset vietnamese.
+- `next/image` không có `onError` fallback tự động → phải wrap component có state `errored`. `<RecipeImage>` component giải quyết 2 trường hợp: src null + URL broken
+- Cookpad có 2 endpoint ảnh: `og-image.cookpad.com/global/vn/recipe/<id>` (social card có watermark) vs `img-global.cpcdn.com/recipes/<hash>/...` (clean). Crawler cũ dùng `meta[property="og:image"]` → grab social card → 2,274 recipes bị watermark.
+
+### Model evaluation (2026-05-19)
+- `evaluate_model.py` chạy END-TO-END cascade (group → sub) trên test set, không tách 2 model riêng. Mỗi lỗi của bất kỳ tầng nào đều đếm vào P/R/F1 cuối.
+- `needs_fallback=True` (confidence < threshold) → đếm như predicted = `__unknown__` → FN cho true class, không gán FP cho class nào. Penalize honestly không skip.
+- 2 model: EfficientNet-B0 (group, 224×224) + EfficientNet-B2 (sub, 260×260). Resize trực tiếp không CenterCrop.
+- Per-class P/R/F1 là **đặc tính của model trên test set, không phải của ảnh user upload** → chỉ tính 1 lần offline, lookup O(1) lúc inference. Lưu `backend/app/ai/model_metrics.json`, commit vào git.
+- UI hiện confidence (per-image, dynamic) và class_metrics (per-class, static) là 2 chỉ số khác nhau — phải tách label rõ tránh user nhầm.
+- ModelMetrics block default collapsed (cô user bảo metric không hữu ích cho casual user). User click chevron mới expand.
+- `class_metrics = null` khi `model_used == "openai"` (fallback) hoặc `predicted_class == "unknown"` — không có test-set evaluation cho 2 trường hợp này.
+
+### Synthetic Cookpad users
+- 22k Cookpad recipes (no author originally) → enrichment script lấy tên → seed_cookpad_users biến distinct names thành User accounts.
+- Password chung `cookpad123` cho mọi synthetic account (chấp nhận cho thesis demo, KHÔNG production-safe). Bypass register endpoint min-length validation bằng cách INSERT trực tiếp với `hash_password()`.
+- Username pattern: `unicodedata.normalize('NFKD')` để strip diacritics, manual replace `đ/Đ → d/D` (NFKD không decompose 2 ký tự này), `re.findall(r'[A-Za-z0-9]+')`, capitalize từng chunk, concat. Email = lowercase username + `@cookpad.com`. Collision suffix `_2, _3...`.
+- Recipes với cùng `original_author_name` → cùng 1 User mới (single dedup, không phân biệt được homonyms — limitation chấp nhận được)
+- Sau seed: `recipes.author_id` được set, frontend tự động chuyển từ Branch 2 (scraped name only) sang Branch 1 (User link) trên detail page. Branch 2 thành dead code trong practice nhưng giữ làm safety fallback.
 
 ---
 

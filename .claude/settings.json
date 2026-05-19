@@ -23,7 +23,9 @@
       "Bash(cmd /c \"cd /D \\\\\"D:\\\\Download_D\\\\ĐATN 20252\\\\demo\\\\vnfood-platform\\\\backend\\\\\" && .venv\\\\Scripts\\\\python.exe -c \\\\\"import sys; sys.path.insert\\(0, '.'\\); from app.services.dish_recipe_service import load_dish_recipes, get_curated; count = load_dish_recipes\\(\\); print\\('Loaded:', count\\); r = get_curated\\('banh-beo'\\); print\\('banh-beo source:', r['source'] if r else None\\); r2 = get_curated\\('nonexistent'\\); print\\('nonexistent:', r2\\)\\\\\"\")",
       "Bash(cmd /c \"cd /D \\\\\"D:\\\\Download_D\\\\ĐATN 20252\\\\demo\\\\vnfood-platform\\\\backend\\\\\" && .venv\\\\Scripts\\\\python.exe -c \\\\\"import sys; sys.path.insert\\(0, '.'\\); from app.services.dish_recipe_service import load_dish_recipes, get_curated; count = load_dish_recipes\\(\\); print\\('Loaded:', count\\)\\\\\"\")",
       "Bash(rtk curl *)",
-      "Bash(.venv/Scripts/python.exe -m scripts.enrich_cookpad_authors --limit 10)"
+      "Bash(.venv/Scripts/python.exe -m scripts.enrich_cookpad_authors --limit 10)",
+      "Bash(rtk find *)",
+      "Bash(read d *)"
     ]
   }
 }
