@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { AIRecognitionResult } from "@/lib/types";
 import DishRecipeCard from "./DishRecipeCard";
+import ModelMetrics from "./ModelMetrics";
 
 interface Props {
   result: AIRecognitionResult;
@@ -21,7 +22,7 @@ function ConfidenceBar({ value }: { value: number }) {
   return (
     <div className="w-full">
       <div className="flex justify-between text-xs text-[#7C6A56] mb-1">
-        <span>Độ chính xác</span>
+        <span>Độ tin cậy cho ảnh này</span>
         <span className="font-semibold text-[#2D2417]">{pct}%</span>
       </div>
       <div className="h-2.5 rounded-full bg-[#E8DDD4] overflow-hidden">
@@ -106,6 +107,10 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
 
               <ModelBadge model={result.model_used} />
               <ConfidenceBar value={result.confidence} />
+
+              {result.class_metrics && (
+                <ModelMetrics metrics={result.class_metrics} />
+              )}
 
               <Link
                 href={`/search?q=${encodeURIComponent(result.display_name)}`}

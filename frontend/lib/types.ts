@@ -252,6 +252,13 @@ export interface AITopPrediction {
   confidence: number;
 }
 
+export interface ClassMetrics {
+  precision: number;
+  recall: number;
+  f1: number;
+  support: number;
+}
+
 export interface AIRecognitionResult {
   predicted_class: string;
   display_name: string;
@@ -261,6 +268,7 @@ export interface AIRecognitionResult {
   top_predictions: AITopPrediction[];
   suggested_recipes: SuggestedRecipe[];
   dish_recipe: DishRecipe | null;
+  class_metrics: ClassMetrics | null;
 }
 
 export interface SavedRecipeOut {

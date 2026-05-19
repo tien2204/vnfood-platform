@@ -99,6 +99,19 @@ class PaginationOut(BaseModel):
     total_pages: int
 
 
+class ClassMetricsOut(BaseModel):
+    """Per-class evaluation metrics from test set (Precision / Recall / F1).
+
+    Attached to recognize response so UI can show model performance for the
+    predicted class on the held-out test set. Separate from per-prediction
+    `confidence` (softmax probability for THIS image).
+    """
+    precision: float
+    recall: float
+    f1: float
+    support: int
+
+
 class DishRecipeOut(BaseModel):
     """Curated or AI-generated cooking recipe attached to recognize response."""
     source: str  # "curated" | "ai-generated"

@@ -25,6 +25,7 @@ from app.api.v1.upload import router as upload_router
 from app.api.v1.users import router as users_router
 from app.core.config import settings
 from app.services.dish_recipe_service import load_dish_recipes
+from app.services.metrics_service import load_model_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,9 @@ async def lifespan(app: FastAPI):
 
     count = load_dish_recipes()
     logging.info(f"[startup] Loaded {count} curated dish recipes")
+
+    metrics_count = load_model_metrics()
+    logging.info(f"[startup] Loaded model metrics for {metrics_count} classes")
 
     yield
 

@@ -1,0 +1,105 @@
+"use client";
+
+import { Info } from "lucide-react";
+import { useState } from "react";
+
+import { ClassMetrics } from "@/lib/types";
+
+interface Props {
+  metrics: ClassMetrics;
+  className?: string;
+}
+
+const METRIC_DEFS = [
+  {
+    key: "precision" as const,
+    label: "Precision",
+    tooltip:
+      'Khi mô hình dự đoán "đây là món này", bao nhiêu % dự đoán đúng? ' +
+      "Phạt các trường hợp báo nhầm (False Positive).",
+  },
+  {
+    key: "recall" as const,
+    label: "Recall",
+    tooltip:
+      "Trong các ảnh của món này thật sự, mô hình nhận ra được bao nhiêu %? " +
+      "Phạt các trường hợp bỏ sót (False Negative).",
+  },
+  {
+    key: "f1" as const,
+    label: "F1",
+    tooltip:
+      "Trung bình hài hòa của Precision và Recall. Cân bằng cả 2 chỉ số. " +
+      "F1 cao = mô hình vừa precise vừa không bỏ sót.",
+  },
+];
+
+function MetricCell({
+  label,
+  value,
+  tooltip,
+}: {
+  label: string;
+  value: number;
+  tooltip: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const pct = Math.round(value * 100);
+  const tone =
+    pct >= 85 ? "text-[#2D6A4F]" : pct >= 70 ? "text-[#C97B16]" : "text-[#9B2C2C]";
+
+  return (
+    <div className="flex-1 min-w-[110px] rounded-xl border border-[#E8DDD4] bg-white px-3 py-2.5">
+      <div className="flex items-center gap-1 mb-1 relative">
+        <span className="text-[10px] uppercase tracking-wider text-[#7C6A56] font-semibold">
+          {label}
+        </span>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          onBlur={() => setOpen(false)}
+          aria-label={`Giải thích ${label}`}
+          className="text-[#A69588] hover:text-[#7C6A56] focus:outline-none"
+        >
+          <Info className="w-3 h-3" />
+        </button>
+        {open && (
+          <div className="absolute left-0 top-5 z-10 w-56 rounded-lg border border-[#E8DDD4] bg-white p-2.5 text-[11px] leading-relaxed text-[#1C1209] shadow-lg">
+            {tooltip}
+          </div>
+        )}
+      </div>
+      <div
+        className={`text-xl font-bold ${tone}`}
+        style={{ fontFamily: "var(--font-heading)" }}
+      >
+        {pct}%
+      </div>
+    </div>
+  );
+}
+
+export default function ModelMetrics({ metrics, className = "" }: Props) {
+  return (
+    <div className={className}>
+      <div className="flex items-center gap-2 mb-2">
+        <p className="text-xs text-[#7C6A56] uppercase tracking-wider">
+          Hiệu năng mô hình cho món này
+        </p>
+        <span className="text-[10px] text-[#A69588]">
+          (đánh giá trên test set · {metrics.support} ảnh)
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {METRIC_DEFS.map((def) => (
+          <MetricCell
+            key={def.key}
+            label={def.label}
+            value={metrics[def.key]}
+            tooltip={def.tooltip}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}

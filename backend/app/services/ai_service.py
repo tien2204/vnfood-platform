@@ -16,7 +16,7 @@ from app.ai.class_names import CLASS_DISPLAY_NAMES, get_keyword_from_class
 from app.core.config import settings
 from app.models.ai_log import AILog
 from app.models.recipe import Recipe
-from app.services import dish_recipe_service
+from app.services import dish_recipe_service, metrics_service
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +100,12 @@ async def recognize_image(
     elif model_used == "openai" and display_name and display_name not in ("Không nhận diện được", "unknown"):
         dish_recipe = await dish_recipe_service.get_or_generate_ai(db, display_name, user_id=user_id)
 
+    # Attach per-class evaluation metrics only when prediction comes from VNFood model.
+    # OpenAI fallback has no offline-evaluated metrics (it's a different model entirely).
+    class_metrics = None
+    if model_used == "vnfood" and predicted_class and predicted_class != "unknown":
+        class_metrics = metrics_service.get_class_metrics(predicted_class)
+
     return {
         "predicted_class": predicted_class,
         "display_name": display_name,
@@ -109,6 +115,7 @@ async def recognize_image(
         "top_predictions": top5,
         "suggested_recipes": suggested_recipes,
         "dish_recipe": dish_recipe,
+        "class_metrics": class_metrics,
     }
 
 
