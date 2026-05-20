@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState, useCallback } from "react";
 import { Search, ScanLine, UtensilsCrossed, X, ChevronDown, LogOut, UserRound, Bookmark, Newspaper, ChefHat, Settings, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,9 +27,14 @@ function getInitials(name: string) {
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const { user, isLoggedIn, isLoading, logout } = useUser();
+
+  // /search already has its own search input — hide the navbar one there
+  // to avoid two stacked search boxes.
+  const hideSearchBar = pathname?.startsWith("/search");
 
   const handleSearch = useCallback(
     (e: React.FormEvent) => {
@@ -62,32 +67,36 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Search */}
-        <form
-          onSubmit={handleSearch}
-          className="hidden md:flex flex-1 max-w-lg mx-auto relative"
-        >
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#ff6b35]" />
-          <Input
-            placeholder="Tìm kiếm món ăn..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="pl-9 bg-white border-2 border-[#2c1810] rounded-none shadow-block-sm focus-visible:ring-[#ff6b35]"
-          />
-        </form>
+        {/* Desktop Search — hidden on /search to avoid stacked search boxes */}
+        {!hideSearchBar && (
+          <form
+            onSubmit={handleSearch}
+            className="hidden md:flex flex-1 max-w-lg mx-auto relative"
+          >
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#ff6b35]" />
+            <Input
+              placeholder="Tìm kiếm món ăn..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="pl-9 bg-white border-2 border-[#2c1810] rounded-none shadow-block-sm focus-visible:ring-[#ff6b35]"
+            />
+          </form>
+        )}
 
         <div className="flex items-center gap-2 ml-auto">
-          {/* Mobile search toggle */}
-          <button
-            className="md:hidden p-2 border-2 border-transparent hover:border-[#2c1810] hover:bg-[#fff5e6]"
-            onClick={() => setSearchOpen(!searchOpen)}
-          >
-            {searchOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Search className="w-5 h-5" />
-            )}
-          </button>
+          {/* Mobile search toggle — also hidden on /search */}
+          {!hideSearchBar && (
+            <button
+              className="md:hidden p-2 border-2 border-transparent hover:border-[#2c1810] hover:bg-[#fff5e6]"
+              onClick={() => setSearchOpen(!searchOpen)}
+            >
+              {searchOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Search className="w-5 h-5" />
+              )}
+            </button>
+          )}
 
           {/* AI Scan */}
           <Link href="/recognize">

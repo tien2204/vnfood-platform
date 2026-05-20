@@ -1,20 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import RecipeGrid from "@/components/recipes/RecipeGrid";
 import RecipeCardSkeleton from "@/components/recipes/RecipeCardSkeleton";
 import api from "@/lib/api";
 import type { PaginatedResponse, RecipeCard } from "@/lib/types";
 
+const PER_PAGE = 20;
+
 export default function SearchResults() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const q = searchParams.get("q") ?? "";
+  const page = Math.max(1, Number(searchParams.get("page") ?? "1"));
+  const [, startTransition] = useTransition();
 
   const [recipes, setRecipes] = useState<RecipeCard[]>([]);
   const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState(q);
 
@@ -23,6 +29,7 @@ export default function SearchResults() {
     if (!q.trim()) {
       setRecipes([]);
       setTotal(0);
+      setTotalPages(1);
       return;
     }
 
@@ -31,12 +38,13 @@ export default function SearchResults() {
 
     api
       .get<PaginatedResponse<RecipeCard>>("/recipes", {
-        params: { search: q, limit: "40", sort: "popular" },
+        params: { search: q, page: String(page), limit: String(PER_PAGE), sort: "popular" },
       })
       .then((res) => {
         if (!cancelled) {
           setRecipes(res.data.data);
           setTotal(res.data.pagination.total);
+          setTotalPages(res.data.pagination.total_pages);
         }
       })
       .catch(() => {
@@ -47,12 +55,18 @@ export default function SearchResults() {
       });
 
     return () => { cancelled = true; };
-  }, [q]);
+  }, [q, page]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const v = inputValue.trim();
-    if (v) router.push(`/search?q=${encodeURIComponent(v)}`);
+    if (v) router.push(`/search?q=${encodeURIComponent(v)}`); // resets page implicitly
+  };
+
+  const goToPage = (next: number) => {
+    startTransition(() => {
+      router.push(`/search?q=${encodeURIComponent(q)}&page=${next}`);
+    });
   };
 
   return (
@@ -117,6 +131,37 @@ export default function SearchResults() {
 
       {/* Results */}
       {!loading && recipes.length > 0 && <RecipeGrid recipes={recipes} />}
+
+      {/* Pagination */}
+      {!loading && totalPages > 1 && (
+        <div className="mt-10 flex items-center justify-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={page <= 1}
+            onClick={() => goToPage(page - 1)}
+            className="rounded-none border-2 border-[#2c1810] bg-white shadow-block-sm"
+          >
+            ← Trước
+          </Button>
+
+          <span className="px-2 text-sm font-medium text-[#6b5344]">
+            Trang {page} / {totalPages}
+          </span>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={page >= totalPages}
+            onClick={() => goToPage(page + 1)}
+            className="rounded-none border-2 border-[#2c1810] bg-white shadow-block-sm"
+          >
+            Sau →
+          </Button>
+        </div>
+      )}
 
       {/* No results */}
       {!loading && q && recipes.length === 0 && (
