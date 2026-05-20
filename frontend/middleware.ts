@@ -30,24 +30,28 @@ function isPublic(pathname: string): boolean {
 }
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
 
   // Anonymous-allowed paths bypass the auth check entirely.
   if (isPublic(pathname)) {
     return NextResponse.next();
   }
 
+  // Preserve the full original URL (path + query string) in `next` so e.g.
+  // /search?q=Bánh%20bèo round-trips through login back with the keyword intact.
+  const nextParam = encodeURIComponent(pathname + search);
+
   const token = request.cookies.get("access_token")?.value;
   if (!token) {
     return NextResponse.redirect(
-      new URL(`/auth/login?next=${encodeURIComponent(pathname)}`, request.url)
+      new URL(`/auth/login?next=${nextParam}`, request.url)
     );
   }
 
   const payload = decodeJWT(token);
   if (!payload || payload.exp * 1000 < Date.now()) {
     const res = NextResponse.redirect(
-      new URL(`/auth/login?next=${encodeURIComponent(pathname)}`, request.url)
+      new URL(`/auth/login?next=${nextParam}`, request.url)
     );
     res.cookies.delete("access_token");
     return res;
