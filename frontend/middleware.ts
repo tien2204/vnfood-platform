@@ -19,8 +19,23 @@ function decodeJWT(token: string): JWTPayload | null {
 
 const ADMIN_RE = /^\/admin(\/.*)?$/;
 
+// Paths that anonymous (not-logged-in) users may access freely.
+// Everything else requires a valid access_token cookie.
+const PUBLIC_EXACT = new Set(["/", "/recognize"]);
+const PUBLIC_PREFIXES = ["/auth/", "/recognize/"];
+
+function isPublic(pathname: string): boolean {
+  if (PUBLIC_EXACT.has(pathname)) return true;
+  return PUBLIC_PREFIXES.some((p) => pathname.startsWith(p));
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Anonymous-allowed paths bypass the auth check entirely.
+  if (isPublic(pathname)) {
+    return NextResponse.next();
+  }
 
   const token = request.cookies.get("access_token")?.value;
   if (!token) {
@@ -46,14 +61,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/me/:path*",
-    "/admin/:path*",
-    "/feed",
-    "/feed/:path*",
-    "/recipes/new",
-    "/recipes/:id/edit",
-    "/meal-plan",
-    "/meal-plan/:path*",
-  ],
+  // Run middleware on every route EXCEPT Next.js internals and static files.
+  // The handler then whitelists "/" and "/recognize" (+ /auth/* for login flow).
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };
