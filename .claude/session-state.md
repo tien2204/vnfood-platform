@@ -4,7 +4,7 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-05-19 (Bug fixes + scripts đều xong)
+**Cập nhật lần cuối:** 2026-05-20 (Auth restriction + UI polish wave 2)
 **Branch:** `main`
 **Task đang làm:** (toàn bộ feature + data pipeline ổn định — sẵn sàng demo/báo cáo)
 
@@ -314,6 +314,16 @@ User đăng recipe · Admin duyệt · Comment · Rating · Save/Bookmark · Fol
 
 **Sau cùng:** viết báo cáo thesis · deploy
 
+### Polish wave 2 — 2026-05-20 (UI + auth)
+- [x] **RecipeCard uniform height** — cards trong grid bị lệch chiều dài vì title 1-line vs 2-line, meta row collapse khi cooking_time + servings đều null. Fix: `<article>` thành `flex flex-col h-full`, body `flex-1`, title `min-h-[3.25rem]` (reserve 2 lines text-lg leading-snug), meta `min-h-[1.125rem]`, author wrap trong `<div className="mt-auto">` pin xuống đáy. Grid implicit row stretches all cards to max height.
+- [x] **Restrict anonymous to `/` + `/recognize`** — middleware đảo logic: matcher chạy MỌI route (`((?!_next/static|_next/image|favicon.ico|.*\\..*).*)`) trừ Next internals + static assets. Handler check `PUBLIC_EXACT = {/, /recognize}` + `PUBLIC_PREFIXES = [/auth/, /recognize/]` early return. Anonymous truy cập `/recipes`, `/search`, `/users/[id]`, `/feed`, `/suggest`, `/me/*`, `/meal-plan`, `/admin/*` đều bị redirect `/auth/login?next=...`.
+- [x] **Clear stale localStorage khi access_token expired** — bug split-brain: cookie hết hạn (TTL 60 phút khớp JWT exp) → middleware redirect login, nhưng `localStorage.user_info` không có TTL → navbar vẫn hiển thị logged-in trên trang login. Fix `getStoredUser()`: decode `localStorage.access_token` → check `payload.exp * 1000 < Date.now()` → expired → wipe 3 keys (access_token, refresh_token, user_info) → return null → SWR mutate → navbar đồng bộ logged-out.
+- [x] **Preserve query string trong `next` param** — bug UX: anonymous click "Tìm công thức Bánh bèo" trên `/recognize` → navigate `/search?q=Bánh%20bèo` → middleware redirect `/auth/login?next=/search` (query bị bỏ) → login xong landing `/search` rỗng. Fix middleware: `nextParam = encodeURIComponent(pathname + search)` thay vì chỉ `pathname`. Full URL `/search?q=...` round-trip qua login.
+- [x] **Search page UX** — fix 2 bugs:
+  - **2 thanh search:** Navbar luôn render search input → SearchResults cũng có input riêng → stacked. Fix `Navbar.tsx`: `usePathname()` + `hideSearchBar = pathname?.startsWith("/search")` → conditional render cả desktop form lẫn mobile toggle button.
+  - **Missing pagination:** SearchResults fetch limit=40 không có controls. Fix: thêm `page` từ URL searchParams, API call kèm `page + limit=20`, track `total_pages`, render prev/next button pair giống RecipeBrowse pattern (type='button', startTransition, scroll-to-top default). New query submit reset page về 1 implicitly.
+- [x] **CORS allow 127.0.0.1:3000** — bug: register endpoint trả OPTIONS 400 khi user truy cập frontend qua `http://127.0.0.1:3000` thay vì `localhost:3000`. CORSMiddleware so sánh string exact, không normalize host. Fix: thêm `http://127.0.0.1:3000` vào `allow_origins` list bên cạnh `http://localhost:3000`. Cần restart uvicorn để load config mới.
+
 ---
 
 ## Files đang chỉnh sửa
@@ -430,6 +440,25 @@ _(Không có)_
 - Fix pattern: capture callback trong `useRef`, gọi qua `ref.current?.()`, bỏ khỏi deps
 - Optional: `useRef<typeof value>(initialValue)` track last-fired value, skip nếu value chưa đổi (tránh fire spurious on mount/re-render)
 - Đặc biệt nguy hiểm khi callback đụng tới shared state (router/URL) — có thể tạo race conditions hoặc reset state đang đổi
+
+### Auth & middleware
+- Cookie `access_token` httpOnly TTL = JWT exp = 60 phút. **Phải khớp** để tránh split-brain.
+- `localStorage` keys (`access_token`, `refresh_token`, `user_info`) **không có TTL tự động** → cần validate exp trong `getStoredUser()` để xóa khi token hết hạn, tránh navbar hiển thị logged-in sau khi cookie biến mất.
+- Middleware matcher pattern `((?!_next/static|_next/image|favicon.ico|.*\\..*).*)` chạy mọi route trừ static. Whitelist anonymous-allowed trong handler bằng early return — dễ thêm/bớt routes hơn matcher inclusive.
+- Khi build `next=` param trong redirect, **phải include cả `pathname + search`** (query string), không chỉ pathname — nếu không user mất context (vd query `?q=Bánh bèo` bị bỏ sau khi login).
+- Admin role check (`payload.role !== "admin"`) đặt SAU token validate, redirect về `/` thay vì login (đã có token nhưng không đủ quyền).
+
+### CORS
+- `CORSMiddleware.allow_origins` so sánh string **exact**, không normalize host.
+- `http://localhost:3000` ≠ `http://127.0.0.1:3000` về mặt origin → preflight reject với 400 (vs 200 cho origin matched).
+- Phải liệt kê **cả 2 variants** trong allowlist cho dev. Hoặc dùng `allow_origin_regex` nếu cần linh hoạt nhiều port.
+- Triệu chứng bug: OPTIONS request return 400 → POST không bao giờ chạy → endpoint "không hoạt động" với 1 số user. Debug bằng fetch OPTIONS với mỗi origin để xem.
+
+### Grid card uniform height
+- CSS Grid implicit row height stretches all cards to TALLEST in row IF cards are flex-col with `h-full`.
+- Title trong card phải có `min-h` reserve 2 lines space (calc từ font-size × line-height × 2) để 1-line và 2-line titles cùng height.
+- Meta rows có thể collapse khi data null → cần `min-h` reserve hoặc render placeholder.
+- Footer-style content (như author info) pin xuống đáy bằng `mt-auto` trên wrapper trong flex-col container.
 
 ---
 
