@@ -426,3 +426,23 @@ async def rename_ingredient(db: AsyncSession, from_name: str, to_name: str) -> i
     )
     await db.commit()
     return result.rowcount
+
+
+# ── Canonical recipe management ────────────────────────────────────────────────
+
+async def set_manual_review(db: AsyncSession, recipe_id: uuid.UUID, is_reviewed: bool) -> dict:
+    result = await db.execute(
+        update(Recipe)
+        .where(Recipe.id == recipe_id)
+        .values(is_manually_reviewed=is_reviewed)
+        .execution_options(synchronize_session=False)
+    )
+    await db.commit()
+    return {
+        "success": True,
+        "data": {
+            "id": str(recipe_id),
+            "is_manually_reviewed": is_reviewed,
+            "updated": result.rowcount,
+        },
+    }

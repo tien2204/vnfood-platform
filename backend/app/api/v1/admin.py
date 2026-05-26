@@ -39,6 +39,10 @@ class RenameIngredientBody(BaseModel):
     to_name: str
 
 
+class ManualReviewPayload(BaseModel):
+    is_reviewed: bool
+
+
 # ── Stats ──────────────────────────────────────────────────────────────────────
 
 @router.get("/stats")
@@ -93,6 +97,16 @@ async def admin_delete_recipe(
 ):
     await recipe_service.delete_recipe(db, recipe_id, current_user)
     return {"success": True, "message": "Đã xóa công thức"}
+
+
+@router.patch("/recipes/{recipe_id}/manual-review")
+async def mark_manually_reviewed(
+    recipe_id: uuid.UUID,
+    payload: ManualReviewPayload,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    return await admin_service.set_manual_review(db, recipe_id, payload.is_reviewed)
 
 
 # ── Users ──────────────────────────────────────────────────────────────────────
