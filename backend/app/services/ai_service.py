@@ -81,6 +81,7 @@ async def recognize_image(
 
     keyword = get_keyword_from_class(predicted_class) if predicted_class and group else None
     suggested_recipes = await _find_suggested_recipes(db, predicted_class, display_name, keyword, limit=6)
+    canonical_recipe, variants = await _find_canonical_for_class(db, predicted_class)
 
     log = AILog(
         id=uuid.uuid4(),
@@ -114,6 +115,8 @@ async def recognize_image(
         "subgroup": group,
         "top_predictions": top5,
         "suggested_recipes": suggested_recipes,
+        "canonical_recipe": canonical_recipe,
+        "variants": variants,
         "dish_recipe": dish_recipe,
         "class_metrics": class_metrics,
     }
@@ -171,6 +174,49 @@ async def fetch_image_from_url(url: str) -> bytes:
         return resp.content
 
     return await asyncio.to_thread(_get)
+
+
+def _serialize_recipe_for_ai(r: Recipe) -> dict:
+    return {
+        "id": str(r.id),
+        "title": r.title,
+        "image_url": r.image_url,
+        "variant_label": r.variant_label,
+        "canonical_dish_slug": r.canonical_dish_slug,
+        "cooking_time": r.cooking_time,
+        "servings": r.servings,
+        "difficulty": r.difficulty,
+        "avg_rating": r.avg_rating,
+        "rating_count": r.rating_count,
+        "source": r.source,
+        "is_canonical": r.is_canonical,
+    }
+
+
+async def _find_canonical_for_class(
+    db: AsyncSession, predicted_class: Optional[str]
+) -> tuple[Optional[dict], list[dict]]:
+    """Return (canonical_recipe_dict, variants_list) for predicted class slug.
+
+    Matches predicted_class against canonical_dish_slug. Ranks by llm_judge_score
+    desc; top row is the main canonical, remainder are variants.
+    """
+    if not predicted_class or predicted_class == "unknown":
+        return None, []
+
+    result = await db.execute(
+        select(Recipe).where(
+            Recipe.is_canonical.is_(True),
+            Recipe.canonical_dish_slug == predicted_class,
+        ).order_by(Recipe.llm_judge_score.desc().nullslast())
+    )
+    rows = list(result.scalars().all())
+    if not rows:
+        return None, []
+
+    main = _serialize_recipe_for_ai(rows[0])
+    variants = [_serialize_recipe_for_ai(r) for r in rows[1:]]
+    return main, variants
 
 
 async def _find_suggested_recipes(
