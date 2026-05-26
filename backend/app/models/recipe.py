@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Float, Index, Integer, String, Text, ForeignKey
+from sqlalchemy import Boolean, Float, Index, Integer, String, Text, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
@@ -46,6 +46,17 @@ class Recipe(Base):
     updated_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
     )
+
+    # Canonical recipe metadata
+    is_canonical: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False, index=True)
+    canonical_dish_slug: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
+    variant_label: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    is_dessert: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False, index=True)
+    llm_judge_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    llm_judge_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    derived_from_recipe_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("recipes.id"), nullable=True)
+    refinement_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_manually_reviewed: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False)
 
     # Relationships
     author: Mapped["User"] = relationship(  # noqa: F821
