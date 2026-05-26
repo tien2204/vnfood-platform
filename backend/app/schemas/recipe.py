@@ -124,6 +124,15 @@ class DishRecipeOut(BaseModel):
     difficulty: str | None = None
 
 
+class RecipeMiniOut(BaseModel):
+    id: uuid.UUID
+    title: str
+    variant_label: str | None = None
+    image_url: str | None = None
+
+    model_config = {"from_attributes": True}
+
+
 class RecipeCardOut(BaseModel):
     id: uuid.UUID
     title: str
@@ -138,6 +147,8 @@ class RecipeCardOut(BaseModel):
     author: AuthorOut | None
     save_count: int
     is_saved: bool | None = None
+    is_canonical: bool = False
+    variant_label: str | None = None
 
     model_config = {"from_attributes": True}
 
@@ -175,5 +186,11 @@ class RecipeDetailOut(BaseModel):
     user_rating: int | None = None
     created_at: datetime
     updated_at: datetime
+    is_canonical: bool = False
+    canonical_dish_slug: str | None = None
+    variant_label: str | None = None
+    refinement_notes: str | None = None
+    is_manually_reviewed: bool = False
+    variants: list[RecipeMiniOut] = []
 
     model_config = {"from_attributes": True}

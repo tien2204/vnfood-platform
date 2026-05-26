@@ -55,10 +55,11 @@ async def delete_recipe(
 
 @router.get("/featured")
 async def get_featured_recipes(
+    show_all: bool = Query(default=False, description="Include non-canonical recipes (Cookpad pool)"),
     db: AsyncSession = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
 ):
-    data = await recipe_service.get_featured_recipes(db, current_user=current_user)
+    data = await recipe_service.get_featured_recipes(db, current_user=current_user, show_all=show_all)
     return {"success": True, "data": data}
 
 
@@ -70,6 +71,7 @@ async def search_recipes(
     keyword: Optional[str] = Query(default=None),
     difficulty: Optional[str] = Query(default=None),
     source: Optional[str] = Query(default=None),
+    show_all: bool = Query(default=False, description="Include non-canonical recipes (Cookpad pool)"),
     db: AsyncSession = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
 ):
@@ -77,13 +79,13 @@ async def search_recipes(
         cards, pagination = await recipe_service.list_recipes(
             db, page=page, limit=limit,
             keyword=keyword, difficulty=difficulty, source=source,
-            current_user=current_user,
+            current_user=current_user, show_all=show_all,
         )
     else:
         cards, pagination = await recipe_service.search_recipes(
             db, q=q, page=page, limit=limit,
             keyword=keyword, difficulty=difficulty, source=source,
-            current_user=current_user,
+            current_user=current_user, show_all=show_all,
         )
     return {"success": True, "data": [c.model_dump() for c in cards], "pagination": pagination.model_dump()}
 
@@ -116,6 +118,7 @@ async def list_recipes(
     difficulty: Optional[str] = Query(default=None),
     sort: str = Query(default="newest", pattern="^(newest|popular|top_rated)$"),
     search: Optional[str] = Query(default=None),
+    show_all: bool = Query(default=False, description="Include non-canonical recipes (Cookpad pool)"),
     db: AsyncSession = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
 ):
@@ -124,7 +127,7 @@ async def list_recipes(
         page=page, limit=limit,
         keyword=keyword, source=source, difficulty=difficulty,
         sort=sort, search=search,
-        current_user=current_user,
+        current_user=current_user, show_all=show_all,
     )
     return {"success": True, "data": [c.model_dump() for c in cards], "pagination": pagination.model_dump()}
 

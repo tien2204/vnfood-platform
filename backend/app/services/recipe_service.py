@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.recipe import Recipe, RecipeIngredient, RecipeStep
-from app.models.social import Follow, Rating, SavedRecipe
+from app.models.social import Rating, SavedRecipe
 from app.models.user import User
 from app.schemas.recipe import (
     AuthorDetailOut,
@@ -18,6 +18,7 @@ from app.schemas.recipe import (
     RecipeCardWithStatus,
     RecipeCreate,
     RecipeDetailOut,
+    RecipeMiniOut,
     RecipeStatusUpdate,
     RecipeUpdate,
     StepOut,
@@ -70,6 +71,17 @@ def _build_recipe_card(recipe: Recipe, author: Optional[User], saved_ids: set, u
         author=author_out,
         save_count=recipe.save_count,
         is_saved=is_saved,
+        is_canonical=recipe.is_canonical,
+        variant_label=recipe.variant_label,
+    )
+
+
+def _build_recipe_mini(recipe: Recipe) -> RecipeMiniOut:
+    return RecipeMiniOut(
+        id=recipe.id,
+        title=recipe.title,
+        variant_label=recipe.variant_label,
+        image_url=recipe.image_url,
     )
 
 
@@ -95,9 +107,16 @@ async def list_recipes(
     sort: str = "newest",
     search: Optional[str] = None,
     current_user: Optional[User] = None,
+    show_all: bool = False,
 ) -> tuple[list[RecipeCardOut], PaginationOut]:
     limit = min(limit, 50)
     stmt = _base_approved_query()
+
+    if not show_all:
+        stmt = stmt.where(
+            Recipe.is_canonical.is_(True),
+            Recipe.is_dessert.is_(False),
+        )
 
     if keyword:
         stmt = stmt.where(Recipe.keyword == keyword)
@@ -165,30 +184,15 @@ async def get_recipe_detail(
         if current_user.role != "admin" and (author is None or current_user.id != author.id):
             return None
 
-    # Author detail with follower_count and is_following
+    # Author detail (follow feature removed in refocus branch — table dropped)
     author_detail = None
     if author:
-        follower_count_result = await db.execute(
-            select(func.count()).where(Follow.following_id == author.id)
-        )
-        follower_count = follower_count_result.scalar_one()
-
-        is_following = False
-        if current_user:
-            follow_result = await db.execute(
-                select(Follow).where(
-                    Follow.follower_id == current_user.id,
-                    Follow.following_id == author.id,
-                )
-            )
-            is_following = follow_result.scalar_one_or_none() is not None
-
         author_detail = AuthorDetailOut(
             id=author.id,
             full_name=author.full_name,
             avatar_url=author.avatar_url,
-            follower_count=follower_count,
-            is_following=is_following,
+            follower_count=0,
+            is_following=False,
         )
 
     is_saved = None
@@ -230,6 +234,21 @@ async def get_recipe_detail(
         for s in recipe.steps
     ]
 
+    # Variants: other canonical recipes sharing same canonical_dish_slug
+    variants: list[RecipeMiniOut] = []
+    if recipe.is_canonical and recipe.canonical_dish_slug:
+        variants_q = (
+            select(Recipe)
+            .where(
+                Recipe.is_canonical.is_(True),
+                Recipe.canonical_dish_slug == recipe.canonical_dish_slug,
+                Recipe.id != recipe.id,
+            )
+            .limit(10)
+        )
+        variant_rows = (await db.execute(variants_q)).scalars().all()
+        variants = [_build_recipe_mini(r) for r in variant_rows]
+
     return RecipeDetailOut(
         id=recipe.id,
         title=recipe.title,
@@ -254,6 +273,12 @@ async def get_recipe_detail(
         user_rating=user_rating,
         created_at=recipe.created_at,
         updated_at=recipe.updated_at,
+        is_canonical=recipe.is_canonical,
+        canonical_dish_slug=recipe.canonical_dish_slug,
+        variant_label=recipe.variant_label,
+        refinement_notes=recipe.refinement_notes,
+        is_manually_reviewed=recipe.is_manually_reviewed,
+        variants=variants,
     )
 
 
@@ -278,9 +303,16 @@ async def search_recipes(
     difficulty: Optional[str] = None,
     source: Optional[str] = None,
     current_user: Optional[User] = None,
+    show_all: bool = False,
 ) -> tuple[list[RecipeCardOut], PaginationOut]:
     limit = min(limit, 50)
     stmt = _base_approved_query()
+
+    if not show_all:
+        stmt = stmt.where(
+            Recipe.is_canonical.is_(True),
+            Recipe.is_dessert.is_(False),
+        )
 
     if q:
         stmt = stmt.where(
@@ -324,6 +356,7 @@ async def search_recipes(
 async def get_featured_recipes(
     db: AsyncSession,
     current_user: Optional[User] = None,
+    show_all: bool = False,
 ) -> dict:
     base = (
         select(Recipe, User)
@@ -333,6 +366,12 @@ async def get_featured_recipes(
             or_(Recipe.author_id.is_(None), User.is_active.is_(True)),
         )
     )
+
+    if not show_all:
+        base = base.where(
+            Recipe.is_canonical.is_(True),
+            Recipe.is_dessert.is_(False),
+        )
 
     trending_rows = (
         await db.execute(base.order_by(Recipe.view_count.desc()).limit(10))
