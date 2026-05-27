@@ -464,3 +464,39 @@ _(Không có)_
 
 ## Blockers / cần clarify
 _(Không có)_
+
+---
+
+### ✅ Canonical Recipes — 2026-05-27 (branch `feat/canonical-recipes`)
+
+**Mục tiêu:** Mỗi món riêng biệt = 1 công thức chuẩn chỉnh (incl regional/protein variants), polish bằng LLM, có manual review override. Đáp ứng đề bài PDF "tư vấn nấu món ăn" (implies 1 công thức authoritative).
+
+**Decisions chốt:**
+- Branch từ `main` (refocus branch giữ nguyên)
+- Hide chỉ dessert kiểu Tây (kem/cupcake/tiramisu/mousse/flan/sữa chua/sinh tố); **giữ** bánh truyền thống VN
+- LLM 2-stage: GPT-4o-mini judge + refine (always refine + manual override flag)
+- Giữ AI cascade 103-class (không retrain)
+- Variant detection cho tất cả dishes (regional + protein), threshold ≥5 recipes
+
+**Output kỹ thuật:**
+- DB migration 0006: 9 cột mới (`is_canonical, canonical_dish_slug, variant_label, is_dessert, llm_judge_score, llm_judge_reason, derived_from_recipe_id, refinement_notes, is_manually_reviewed`)
+- Migration 0005 cherry-pick từ refocus (baseline để stack)
+- 583 desserts marked
+- LLM extract dish slug từ ~16k catch-all titles (cost ~$0.30)
+- LLM judge+refine pipeline chạy với cost ceiling $12, target 200-400 canonical recipes
+- Backend service filter `is_canonical=true AND is_dessert=false` mặc định, param `?show_all=true` cho admin
+- AI recognize trả `canonical_recipe` + `variants[]`
+- Admin manual-review endpoint
+- Frontend: CanonicalBadge, VariantsAccordion, ManualReviewBadge
+- Recipe detail hiển thị `refinement_notes` (collapsible)
+
+**Spec + Plan + ADR:**
+- docs/superpowers/specs/2026-05-27-canonical-recipes-design.md
+- docs/superpowers/plans/2026-05-27-canonical-recipes.md
+- docs/adr/0002-canonical-recipes.md
+
+**Key learnings:**
+- `keyword` column bẩn: trộn slug sạch (`banh-mi`, `pho`) và Vietnamese catch-all (`Bánh`=6262 recipes). Phải LLM-extract dish từ title cho catch-all → ~352 lowercase clusters có ≥5 recipes.
+- Hai branch song song share Postgres DB → migration revision collision. Resolve bằng cherry-pick refocus's 0005 làm baseline, canonical đặt 0006.
+- LLM refine ~20s/bucket → 352 buckets = ~2h. Background script + monitor qua DB query.
+- Filter `canonical_dish_slug !~ '^[A-Z]'` quan trọng để skip catch-all parents như "Bánh"/"Canh" trong select pipeline.
