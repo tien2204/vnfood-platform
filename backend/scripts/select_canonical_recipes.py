@@ -29,7 +29,7 @@ log = logging.getLogger("canonical")
 
 client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
 MODEL = "gpt-4o-mini"
-COST_CEILING_USD = 5.0
+COST_CEILING_USD = 12.0
 estimated_cost = 0.0
 
 
@@ -322,18 +322,19 @@ async def main(limit: int | None = None) -> None:
     async with AsyncSessionLocal() as db:
         admin_id = await get_admin_user(db)
 
+        # Phase 3 (expanded): no whitelist filter — process every clean
+        # canonical_dish_slug bucket with enough data. Keep dessert filter.
         whitelist = set(CLASS_DISPLAY_NAMES.keys())
-        log.info(f"Whitelist size: {len(whitelist)} slugs")
+        log.info(f"Display-name whitelist: {len(whitelist)} slugs (used only for display lookup)")
 
         result = await db.execute(
             select(Recipe.canonical_dish_slug, func.count(Recipe.id).label("cnt"))
             .where(
                 Recipe.canonical_dish_slug.is_not(None),
                 Recipe.is_dessert.is_(False),
-                Recipe.keyword.in_(whitelist),
             )
             .group_by(Recipe.canonical_dish_slug)
-            .having(func.count(Recipe.id) >= 1)
+            .having(func.count(Recipe.id) >= 3)  # min cluster size
             .order_by(func.count(Recipe.id).desc())
         )
         rows = result.all()
@@ -348,10 +349,11 @@ async def main(limit: int | None = None) -> None:
                 if test_kw in whitelist:
                     parent_kw = test_kw
                     break
-            display = CLASS_DISPLAY_NAMES.get(parent_kw, slug)
+            # Fall back to humanized slug if no display name in whitelist
+            display = CLASS_DISPLAY_NAMES.get(parent_kw) or slug.replace("-", " ").title()
             slugs_to_process.append((slug, display))
 
-        log.info(f"Processing {len(slugs_to_process)} dish buckets (whitelist-filtered)")
+        log.info(f"Total {len(slugs_to_process)} buckets after threshold (>=3 recipes)")
         if limit:
             slugs_to_process = slugs_to_process[:limit]
             log.info(f"LIMIT={limit} (dry-run)")
