@@ -483,7 +483,7 @@ _(Không có)_
 - Migration 0005 cherry-pick từ refocus (baseline để stack)
 - 583 desserts marked
 - LLM extract dish slug từ ~16k catch-all titles (cost ~$0.30)
-- LLM judge+refine pipeline chạy với cost ceiling $12, target 200-400 canonical recipes
+- LLM judge+refine pipeline hoàn thành: **369 canonical recipes**, avg score **8.81/10**, cost **$8.30** (under $12 ceiling)
 - Backend service filter `is_canonical=true AND is_dessert=false` mặc định, param `?show_all=true` cho admin
 - AI recognize trả `canonical_recipe` + `variants[]`
 - Admin manual-review endpoint
