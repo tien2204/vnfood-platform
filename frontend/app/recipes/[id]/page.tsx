@@ -12,6 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import RecipeImage from "@/components/common/RecipeImage";
 import RatingSection from "@/components/recipes/RatingSection";
 import { RecipeDetailClient } from "@/components/recipes/RecipeDetailClient";
+import { CanonicalBadge } from "@/components/recipes/CanonicalBadge";
+import { ManualReviewBadge } from "@/components/recipes/ManualReviewBadge";
+import { VariantsAccordion } from "@/components/recipes/VariantsAccordion";
 import type { ApiResponse, RecipeDetail } from "@/lib/types";
 
 const DIFFICULTY_LABEL = {
@@ -193,6 +196,28 @@ export default async function RecipeDetailPage({
           {cleanTitle}
         </h1>
 
+        {/* Canonical / review badges */}
+        {(recipe.is_canonical || recipe.is_manually_reviewed || recipe.variant_label) && (
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            {recipe.is_canonical && <CanonicalBadge size="md" />}
+            {recipe.is_manually_reviewed && <ManualReviewBadge />}
+            {recipe.variant_label && (
+              <span className="text-sm text-[#7C6A56]">— {recipe.variant_label}</span>
+            )}
+          </div>
+        )}
+
+        {recipe.refinement_notes && (
+          <details className="mb-4 p-3 bg-[#F7F0E8] border border-[#E8DDD4] rounded-xl text-sm">
+            <summary className="cursor-pointer font-medium text-[#1C1209]">
+              Ghi chú chỉnh sửa từ AI
+            </summary>
+            <p className="mt-2 text-[#7C6A56] whitespace-pre-wrap">
+              {recipe.refinement_notes}
+            </p>
+          </details>
+        )}
+
         {/* Meta stats */}
         {metaItems.length > 0 && (
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#7C6A56] mb-4">
@@ -320,6 +345,10 @@ export default async function RecipeDetailPage({
         currentUserId={currentUserId}
         isAdmin={isAdmin}
       />
+
+      {recipe.variants && recipe.variants.length > 0 && (
+        <VariantsAccordion variants={recipe.variants} />
+      )}
     </div>
   );
 }
