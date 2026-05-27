@@ -109,6 +109,7 @@ export default function AdminRecipesPage() {
   const [page, setPage] = useState(1);
   const [approving, setApproving] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [reviewingId, setReviewingId] = useState<string | null>(null);
   const [rejectTarget, setRejectTarget] = useState<{ id: string; title: string } | null>(null);
 
   const key = cacheKey(tab, page);
@@ -127,6 +128,19 @@ export default function AdminRecipesPage() {
       toast.error("Đã có lỗi xảy ra");
     } finally {
       setApproving(null);
+    }
+  }
+
+  async function handleToggleReview(id: string, current: boolean) {
+    setReviewingId(id);
+    try {
+      await api.patch(`/admin/recipes/${id}/manual-review`, { is_reviewed: !current });
+      toast.success(current ? "Đã bỏ đánh dấu review" : "Đã đánh dấu đã review");
+      mutate(key);
+    } catch {
+      toast.error("Đã có lỗi xảy ra");
+    } finally {
+      setReviewingId(null);
     }
   }
 
@@ -295,6 +309,25 @@ export default function AdminRecipesPage() {
                           title="Từ chối"
                         >
                           <X className="w-4 h-4" />
+                        </button>
+                      )}
+
+                      {recipe.is_canonical && (
+                        <button
+                          onClick={() => handleToggleReview(recipe.id, !!recipe.is_manually_reviewed)}
+                          disabled={reviewingId === recipe.id}
+                          className={`text-xs px-2 py-1 rounded-lg border transition-colors disabled:opacity-50 whitespace-nowrap ${
+                            recipe.is_manually_reviewed
+                              ? "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-50"
+                              : "bg-white text-[#7C6A56] border-[#E8DDD4] hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200"
+                          }`}
+                          title={recipe.is_manually_reviewed ? "Đã review (bấm để hủy)" : "Đánh dấu đã review"}
+                        >
+                          {reviewingId === recipe.id
+                            ? "..."
+                            : recipe.is_manually_reviewed
+                              ? "✓ Reviewed"
+                              : "Mark reviewed"}
                         </button>
                       )}
 

@@ -148,6 +148,7 @@ export interface RecipeCardWithStatus extends RecipeCard {
   status: "pending" | "approved" | "rejected";
   reject_reason: string | null;
   created_at: string;
+  is_manually_reviewed?: boolean;
 }
 
 export interface UploadResponse {
