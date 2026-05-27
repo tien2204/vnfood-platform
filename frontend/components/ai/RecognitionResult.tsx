@@ -6,8 +6,16 @@ import { Search } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { AIRecognitionResult } from "@/lib/types";
+import RecipeImage from "@/components/common/RecipeImage";
+import { CanonicalBadge } from "@/components/recipes/CanonicalBadge";
 import DishRecipeCard from "./DishRecipeCard";
 import ModelMetrics from "./ModelMetrics";
+
+function resolveImageUrl(src: string | null): string | null {
+  if (!src) return null;
+  if (src.startsWith("http")) return src;
+  return `${process.env.NEXT_PUBLIC_UPLOAD_URL}/${src}`;
+}
 
 interface Props {
   result: AIRecognitionResult;
@@ -147,6 +155,93 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
           )}
         </div>
       </div>
+
+      {!isUnknown && result.canonical_recipe && (
+        <section className="mt-8">
+          <h2
+            className="text-xl font-semibold text-[#2D2417] mb-4"
+            style={{ fontFamily: "var(--font-playfair)" }}
+          >
+            Công thức chuẩn cho món này
+          </h2>
+          <Link
+            href={`/recipes/${result.canonical_recipe.id}`}
+            className="block rounded-2xl border border-[#E8DDD4] bg-white overflow-hidden hover:shadow-lg transition-shadow"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3">
+              <div className="aspect-square md:aspect-auto relative bg-[#F7F0E8] md:min-h-[200px]">
+                <RecipeImage
+                  src={resolveImageUrl(result.canonical_recipe.image_url)}
+                  alt={result.canonical_recipe.title}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                  fallback={
+                    <div className="absolute inset-0 flex items-center justify-center text-[#E8DDD4]">
+                      <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.17-15.03-8.17-15.03 0h15.03zM1.02 17h15v2h-15z" />
+                      </svg>
+                    </div>
+                  }
+                />
+              </div>
+              <div className="md:col-span-2 p-4">
+                <CanonicalBadge />
+                <h3 className="text-xl font-semibold mt-2 text-[#2D2417]">
+                  {result.canonical_recipe.title}
+                </h3>
+                {result.canonical_recipe.cooking_time && (
+                  <p className="text-sm text-[#7C6A56] mt-2">
+                    ⏱ {result.canonical_recipe.cooking_time} phút
+                  </p>
+                )}
+              </div>
+            </div>
+          </Link>
+        </section>
+      )}
+
+      {!isUnknown && result.variants && result.variants.length > 0 && (
+        <section className="mt-6">
+          <h3
+            className="text-lg font-medium mb-3 text-[#2D2417]"
+            style={{ fontFamily: "var(--font-playfair)" }}
+          >
+            Biến thể khác ({result.variants.length})
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {result.variants.map((v) => (
+              <Link
+                key={v.id}
+                href={`/recipes/${v.id}`}
+                className="block rounded-xl border border-[#E8DDD4] bg-white overflow-hidden hover:shadow transition-shadow"
+              >
+                <div className="aspect-[4/3] relative bg-[#F7F0E8]">
+                  <RecipeImage
+                    src={resolveImageUrl(v.image_url)}
+                    alt={v.title}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                    fallback={
+                      <div className="absolute inset-0 flex items-center justify-center text-[#E8DDD4]">
+                        <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.17-15.03-8.17-15.03 0h15.03zM1.02 17h15v2h-15z" />
+                        </svg>
+                      </div>
+                    }
+                  />
+                </div>
+                <div className="p-2">
+                  <h3 className="text-xs font-medium line-clamp-2 text-[#2D2417]">
+                    {v.title}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {!isUnknown && result.dish_recipe && (
         <DishRecipeCard recipe={result.dish_recipe} />
