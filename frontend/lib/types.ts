@@ -44,6 +44,13 @@ export interface DishRecipe {
   difficulty?: "easy" | "medium" | "hard" | null;
 }
 
+export interface RecipeMini {
+  id: string;
+  title: string;
+  variant_label: string | null;
+  image_url: string | null;
+}
+
 export interface RecipeCard {
   id: string;
   title: string;
@@ -58,6 +65,8 @@ export interface RecipeCard {
   author: Author | null;
   save_count: number;
   is_saved?: boolean;
+  is_canonical?: boolean;
+  variant_label?: string | null;
 }
 
 export interface RecipeDetail extends RecipeCard {
@@ -72,6 +81,12 @@ export interface RecipeDetail extends RecipeCard {
   user_rating: number | null;
   created_at: string;
   updated_at: string;
+  is_canonical: boolean;
+  canonical_dish_slug: string | null;
+  variant_label: string | null;
+  refinement_notes: string | null;
+  is_manually_reviewed: boolean;
+  variants: RecipeMini[];
 }
 
 export interface Pagination {
@@ -267,6 +282,8 @@ export interface AIRecognitionResult {
   subgroup: string | null;
   top_predictions: AITopPrediction[];
   suggested_recipes: SuggestedRecipe[];
+  canonical_recipe: SuggestedRecipe | null;
+  variants: SuggestedRecipe[];
   dish_recipe: DishRecipe | null;
   class_metrics: ClassMetrics | null;
 }
