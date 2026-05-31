@@ -116,7 +116,7 @@ export default function GroceryList({ planId, initial }: GroceryListProps) {
         <div className="text-center py-12 text-[#B8A898]">
           <p className="text-4xl mb-3">🛒</p>
           <p className="font-medium">Danh sách mua sắm trống</p>
-          <p className="text-sm mt-1">Thêm recipe vào lịch rồi nhấn "Tạo lại"</p>
+          <p className="text-sm mt-1">Thêm món vào lịch để tự động tổng hợp nguyên liệu</p>
         </div>
       ) : (
         <div className="flex flex-col gap-1">

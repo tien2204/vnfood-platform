@@ -44,7 +44,7 @@ export default function GroceryPage({ params }: { params: Promise<{ id: string }
         <div className="text-center py-12">
           <p className="text-[#7C6A56]">Không thể tải danh sách mua sắm.</p>
           <p className="text-sm text-[#B8A898] mt-1">
-            Thêm recipe vào lịch rồi bấm "Tạo lại" để tổng hợp nguyên liệu.
+            Thêm món vào lịch để tự động tổng hợp nguyên liệu.
           </p>
         </div>
       )}
