@@ -2,7 +2,7 @@
 import asyncio
 import sys
 import unicodedata
-from collections import Counter, defaultdict
+from collections import Counter
 
 sys.stdout.reconfigure(encoding="utf-8")
 
