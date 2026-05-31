@@ -25,35 +25,41 @@ async def _aggregate_from_items(db: AsyncSession, plan_id: uuid.UUID) -> dict:
     Returns: {norm_key: {"name": display_name, "quantities": [distinct str],
                          "from_recipes": [{recipe_id,title,quantity}]}}
     """
-    items_q = await db.execute(
-        select(MealPlanItem).where(MealPlanItem.meal_plan_id == plan_id)
+    # Distinct recipe ids in the plan — a recipe used in multiple slots
+    # contributes its ingredients once (we concat+dedup quantities, never sum).
+    ids_q = await db.execute(
+        select(MealPlanItem.recipe_id).where(
+            MealPlanItem.meal_plan_id == plan_id,
+            MealPlanItem.recipe_id.is_not(None),
+        )
     )
-    items = items_q.scalars().all()
+    recipe_ids = list({rid for (rid,) in ids_q.all()})
 
     aggregated: dict = {}
-    for item in items:
-        if not item.recipe_id:
+    if not recipe_ids:
+        return aggregated
+
+    # Single query (avoid N+1 across meal items).
+    rows = await db.execute(
+        select(RecipeIngredient, Recipe)
+        .join(Recipe, Recipe.id == RecipeIngredient.recipe_id)
+        .where(RecipeIngredient.recipe_id.in_(recipe_ids))
+    )
+    for ing, recipe in rows.all():
+        name = ing.ingredient_name or ing.display_text
+        if not name:
             continue
-        ing_q = await db.execute(
-            select(RecipeIngredient, Recipe)
-            .join(Recipe, Recipe.id == RecipeIngredient.recipe_id)
-            .where(RecipeIngredient.recipe_id == item.recipe_id)
-        )
-        for ing, recipe in ing_q.all():
-            name = ing.ingredient_name or ing.display_text
-            if not name:
-                continue
-            key = _norm_ing(name)
-            if key not in aggregated:
-                aggregated[key] = {"name": name, "quantities": [], "from_recipes": []}
-            qty = (ing.quantity or "").strip()
-            if qty and qty not in aggregated[key]["quantities"]:
-                aggregated[key]["quantities"].append(qty)
-            aggregated[key]["from_recipes"].append({
-                "recipe_id": str(recipe.id),
-                "title": recipe.title,
-                "quantity": qty,
-            })
+        key = _norm_ing(name)
+        if key not in aggregated:
+            aggregated[key] = {"name": name, "quantities": [], "from_recipes": []}
+        qty = (ing.quantity or "").strip()
+        if qty and qty not in aggregated[key]["quantities"]:
+            aggregated[key]["quantities"].append(qty)
+        aggregated[key]["from_recipes"].append({
+            "recipe_id": str(recipe.id),
+            "title": recipe.title,
+            "quantity": qty,
+        })
     return aggregated
 
 
