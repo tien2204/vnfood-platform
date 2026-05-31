@@ -171,6 +171,9 @@ DEDUP_DECISIONS = {
     "com chien ca man": ("com-chien-ca-man", "com-chien-ca-man"),
     "canh ngao chua": ("canh-ngao-chua", "canh-ngao-chua"),
     "canh bi do thit bam": ("canh-bi-do-thit-bam", "canh-bi-do-thit-bam"),
+    # 18th cluster: only visible under normalized title (case differs: "băm"/"Bằm").
+    # Keep correct full slug over the typo/truncated "canh-ron-bien".
+    "canh rong bien thit bam": ("canh-rong-bien-thit-bam", "canh-rong-bien-thit-bam"),
 }
 
 
@@ -230,17 +233,17 @@ if __name__ == "__main__":
 - [ ] **Step 2: Dry-run and eyeball the plan**
 
 Run: `cd backend; $env:PYTHONUTF8=1; .venv/Scripts/python.exe -m scripts.dedupe_canonical --dry-run`
-Expected: 17 cluster lines printed, no `[WARN]`, final `DRY-RUN done. demoted=19 reslugged=2`.
+Expected: 18 cluster lines printed, no `[WARN]`, final `DRY-RUN done. demoted=20 reslugged=2`.
 
 - [ ] **Step 3: Execute for real**
 
 Run: `cd backend; $env:PYTHONUTF8=1; .venv/Scripts/python.exe -m scripts.dedupe_canonical`
-Expected: `done. demoted=19 reslugged=2`.
+Expected: `done. demoted=20 reslugged=2`.
 
 - [ ] **Step 4: Verify dedupe invariant**
 
 Run: `cd backend; $env:PYTHONUTF8=1; .venv/Scripts/python.exe -m scripts.verify_canonical_subset`
-Expected: `Duplicate-title clusters (0)`, `Total canonical: 350`. (Still FAIL overall — subset gap remains; that is Phase 2.)
+Expected: `Duplicate-title clusters (0)`, `Total canonical: 349`. (Still FAIL overall — subset gap remains; that is Phase 2.)
 
 - [ ] **Step 5: Commit**
 
@@ -538,12 +541,12 @@ import uuid
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-from sqlalchemy import select  # noqa: E402
+from sqlalchemy import or_, select  # noqa: E402
 from sqlalchemy.orm import selectinload  # noqa: E402
 from app.core.database import AsyncSessionLocal  # noqa: E402
 from app.models.recipe import Recipe, RecipeIngredient, RecipeStep  # noqa: E402
 from app.ai.class_names import CLASS_DISPLAY_NAMES  # noqa: E402
-from app.services.dish_recipe_service import DISH_RECIPES, load_dish_recipes  # noqa: E402
+from app.services import dish_recipe_service  # noqa: E402
 import scripts.select_canonical_recipes as pipe  # noqa: E402
 
 
@@ -578,14 +581,20 @@ async def reslug_same_title(db, slug, display) -> bool:
     return False
 
 
-async def gather_candidates(db, display):
+async def gather_candidates(db, slug, display):
+    # Match by the AI slug tag (crawled recipes are tagged) OR title PREFIX.
+    # Prefix (not substring) avoids grabbing compound dishes where the dish name
+    # is a substring, e.g. "Bò né" must not match "Bánh Mì Chảo - Bò Né".
     res = (await db.execute(
         select(Recipe)
         .options(selectinload(Recipe.ingredients), selectinload(Recipe.steps))
         .where(
             Recipe.is_canonical.is_(False),
             Recipe.is_dessert.is_(False),
-            Recipe.title.ilike(f"%{display}%"),
+            or_(
+                Recipe.canonical_dish_slug == slug,
+                Recipe.title.ilike(f"{display}%"),
+            ),
         )
         .order_by(Recipe.save_count.desc().nullslast())
         .limit(5)
@@ -594,7 +603,7 @@ async def gather_candidates(db, display):
 
 
 async def insert_refined(db, slug, display, admin_id) -> bool:
-    candidates = await gather_candidates(db, display)
+    candidates = await gather_candidates(db, slug, display)
     if not candidates:
         return False
     judged = await pipe.judge_candidates(display, candidates)
@@ -648,7 +657,7 @@ async def insert_refined(db, slug, display, admin_id) -> bool:
 
 
 async def insert_curated(db, slug, admin_id) -> bool:
-    data = DISH_RECIPES.get(slug)
+    data = dish_recipe_service.DISH_RECIPES.get(slug)
     if not data:
         print(f"  [WARN] no curated entry for {slug}")
         return False
@@ -683,7 +692,7 @@ async def insert_curated(db, slug, admin_id) -> bool:
 
 
 async def main() -> None:
-    load_dish_recipes()
+    dish_recipe_service.load_dish_recipes()
     async with AsyncSessionLocal() as db:
         admin_id = await pipe.get_admin_user(db)
         for slug, display in CLASS_DISPLAY_NAMES.items():
