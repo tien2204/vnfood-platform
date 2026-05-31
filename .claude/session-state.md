@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-05-20 (Auth restriction + UI polish wave 2)
-**Branch:** `main`
-**Task đang làm:** (toàn bộ feature + data pipeline ổn định — sẵn sàng demo/báo cáo)
+**Cập nhật lần cuối:** 2026-05-31 (Smart Shopping: keyword-clean + Tiki mặc định)
+**Branch:** `feat/canonical-recipes` (sẽ push lên remote)
+**Task đang làm:** Sub-project 6/6 (smart shopping) xong. Còn 4 sub-project: personalization engine, substitution, cooking-mode+voice, video. Chi tiết các milestone canonical/meal-plan/smart-shopping ở cuối file.
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -562,13 +562,15 @@ Yêu cầu user: mở rộng VNFood với 7 feature → tách thành **6 sub-pro
 - Migration 0007 (recreate meal_plan trio) + 0008 (is_manual) — DB version 0008.
 
 **Smart Shopping (sub-project 6/6) — per-item deep-link:**
-- `frontend/lib/shopping-links.ts`: `SHOPPING_PLATFORMS` thứ tự **Bách Hóa Xanh → Tiki → GrabMart → ShopeeFood** + `buildSearchUrl`/`openShopping` (window.open new tab noopener). Frontend-only, không backend.
-- `GroceryItemRow`: nút giỏ (mở Bách Hóa Xanh search) + caret menu cả 4 platform.
-- **Cooky bị loại**: cert SSL hết hạn (`SEC_E_CERT_EXPIRED`) → cảnh báo trình duyệt. BHX (`tim-kiem?key=`) + Tiki (`search?q=`) có search thật + cert hợp lệ (curl-verify 200); GrabMart/ShopeeFood mở trang chủ (không có search URL công khai).
+- `frontend/lib/shopping-links.ts`: `SHOPPING_PLATFORMS` thứ tự **Tiki → Bách Hóa Xanh → GrabMart → ShopeeFood** (user đổi Tiki làm mặc định) + `buildSearchUrl`/`openShopping` (window.open new tab noopener). Frontend-only, không backend.
+- `GroceryItemRow`: nút giỏ (mở **Tiki** search) + caret menu cả 4 platform theo thứ tự ưu tiên.
+- **`cleanIngredientKeyword()`** — làm sạch tên nguyên liệu TRƯỚC khi search (vì grocery name mang số lượng/qualifier kiểu recipe: "200 gram thịt heo băm có lẫn mỡ vừa đủ"). Strip số+đơn vị đầu (kể cả dính liền "500g"), bỏ filler đuôi ("vừa đủ", "có lẫn mỡ"…), map danh từ store không index được (`tôm→thịt tôm`, mực/cua/ghẹ). Chỉ ảnh hưởng URL search — label row vẫn hiện tên gốc. Giữ nguyên danh từ thật ("lá chanh", "cà rốt" không cắt nhầm).
+- **Cooky bị loại**: cert SSL hết hạn (`SEC_E_CERT_EXPIRED`) → cảnh báo trình duyệt. Tiki (`search?q=`) + BHX (`tim-kiem?key=`) có search thật + cert hợp lệ (curl-verify 200); GrabMart/ShopeeFood mở trang chủ (không có search URL công khai).
 - Ràng buộc: các platform không có public ordering/cart API → chỉ deep-link, user tự đặt; không detect tồn kho → fallback là menu thủ công.
 
 **Key learnings:**
 - `useState(prop)` chỉ lấy giá trị mount đầu → component bỏ qua prop đổi sau (SWR revalidate). Phải `useEffect` sync hoặc dùng prop trực tiếp.
 - Verify URL ngoài: curl `-w "%{http_code}"`; cert expired hiện qua `curl -I` (`SEC_E_CERT_EXPIRED`).
+- Grocery `ingredient_name` mang nguyên cụm số lượng+qualifier → phải normalize keyword trước khi đẩy vào store search, nếu không BHX/Tiki ra 0 kết quả ("200 gram tôm" vs "thịt tôm"). Strip leading qty chỉ khi có số đứng trước (tránh ăn nhầm "lá", "củ" trong "lá chanh").
 
 **Spec/Plan:** `docs/superpowers/{specs,plans}/2026-05-31-smart-shopping*`. Còn lại 4 sub-project: personalization engine, substitution, cooking-mode+voice, video.
