@@ -500,3 +500,31 @@ _(Không có)_
 - Hai branch song song share Postgres DB → migration revision collision. Resolve bằng cherry-pick refocus's 0005 làm baseline, canonical đặt 0006.
 - LLM refine ~20s/bucket → 352 buckets = ~2h. Background script + monitor qua DB query.
 - Filter `canonical_dish_slug !~ '^[A-Z]'` quan trọng để skip catch-all parents như "Bánh"/"Canh" trong select pipeline.
+
+---
+
+### ✅ Canonical Subset + Dedupe + Unify — 2026-05-31 (branch `feat/canonical-recipes`)
+
+**Mục tiêu:** Đảm bảo tập 103 món AI nhận diện được ⊆ tập món tra cứu (canonical). Dedupe trùng tên. Hợp nhất recognize ↔ lookup về 1 nguồn canonical.
+
+**Kết quả (harness `verify_canonical_subset.py` = PASS):**
+- **103/103** AI class có đúng 1 canonical (subset đạt). 0 trùng slug, 0 trùng title.
+- Tổng canonical: **405** (`llm-canonical` 395 + `curated-canonical` 10). Trong 103 AI-slug canonical: **93 real-derived (llm) + 10 curated**.
+- 10 món curated (Cookpad không có): nam-pia, bo-luc-lac, ca-muoi-xoi, ga-chien-nuoc-mam, kho-quet, lap-xuong, luon-xao-xa-ot, rau-muong-xao, goi-ca-chich, thit-trau-gac-bep.
+
+**Scripts mới (`backend/scripts/`):**
+- `verify_canonical_subset.py` — regression harness (subset + dup-title + children + source breakdown).
+- `dedupe_canonical.py` — Phase 1: bảng quyết định 18 cụm trùng tên (hardcode), demote 20, reslug 2 (369→349).
+- `crawl_missing_dishes.py` — Phase 2a: crawl Cookpad theo tên món (adapt `crawl_general_recipes.py`), prefix-match, resumable. 45 món → 40 file / 419 record.
+- `import_missing_crawled.py` — Phase 2b: import 390 recipe `source='cookpad'` tag `canonical_dish_slug`.
+- `fill_missing_canonical.py` — Phase 2c/2d: judge+refine real (≥1 candidate) hoặc curated fallback.
+
+**Backend unify (Phase 3):** `ai_service.py` nhánh VNFood chỉ đính `dish_recipe` curated khi `canonical_recipe is None` (fallback phòng thủ); nhánh OpenAI OOD giữ nguyên. Frontend `RecognitionResult.tsx` đã sẵn render canonical card link `/recipes/[id]` + chỉ hiện DishRecipeCard khi `dish_recipe` truthy → không cần sửa.
+
+**Key learnings (bug gặp khi execute):**
+- **Crawl phải chạy từ `backend/`** để pydantic-settings load `.env` (chạy từ repo root → `DATABASE_URL`/`SECRET_KEY` missing).
+- **Title-substring gather contaminate**: tên món ngắn là substring của món ghép (`Bò né` ⊂ "Bánh Mì Chảo - Bò Né"). Fix: gather bằng **slug-tag OR title PREFIX** (`ilike "display%"`), không dùng `%display%`.
+- **Import aliasing bug**: `from x import DISH_RECIPES` bind dict rỗng lúc import; `load_dish_recipes()` rebind module global → tên local vẫn trỏ dict cũ. Fix: dùng `dish_recipe_service.DISH_RECIPES` (module attr).
+- Harness normalize-title phát hiện cụm trùng thứ 18 (`Canh rong biển thịt băm`) mà exact-match bỏ sót (khác hoa/thường).
+
+**Còn lại:** browser verify trang `/recognize` (upload ảnh → canonical card link sang detail; OOD vẫn hiện DishRecipeCard). Spec/Plan/ADR: `docs/superpowers/{specs,plans}/2026-05-31-canonical-subset*`.
