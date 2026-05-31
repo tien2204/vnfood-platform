@@ -13,7 +13,7 @@ from app.schemas.meal_plan import (
     MealPlanItemCreate,
     MealPlanItemUpdate,
 )
-from app.services import meal_plan_service
+from app.services import meal_plan_service, recommend_service
 
 router = APIRouter()
 
@@ -30,6 +30,16 @@ async def create_meal_plan(
         db, user_id=current_user.id, name=data.name, week_start=data.week_start
     )
     return {"success": True, "data": {"id": str(plan.id), "name": plan.name, "week_start": plan.week_start.isoformat()}}
+
+
+@router.get("/suggestions")
+async def get_suggestions(
+    n: int = Query(default=6, ge=1, le=20),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    data = await recommend_service.suggest_recipes_for_user(db, current_user.id, n=n)
+    return {"success": True, "data": data}
 
 
 @router.get("/{plan_id}")
