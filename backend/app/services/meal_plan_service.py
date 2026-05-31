@@ -1,4 +1,5 @@
 import uuid
+import unicodedata
 from datetime import date, timedelta
 from collections import defaultdict
 from sqlalchemy import select, delete, update
@@ -8,6 +9,52 @@ from fastapi import HTTPException
 
 from app.models.meal_plan import MealPlan, MealPlanItem, GroceryItem
 from app.models.recipe import Recipe, RecipeIngredient
+from app.services.grocery_categories import categorize
+
+
+def _norm_ing(name: str) -> str:
+    """Normalize an ingredient name for dedup keying (diacritic/case-insensitive)."""
+    name = unicodedata.normalize("NFKD", name or "")
+    name = "".join(c for c in name if not unicodedata.combining(c))
+    return " ".join(name.lower().replace("đ", "d").replace("Đ", "d").split())
+
+
+async def _aggregate_from_items(db: AsyncSession, plan_id: uuid.UUID) -> dict:
+    """Aggregate ingredients across a plan's meal items.
+
+    Returns: {norm_key: {"name": display_name, "quantities": [distinct str],
+                         "from_recipes": [{recipe_id,title,quantity}]}}
+    """
+    items_q = await db.execute(
+        select(MealPlanItem).where(MealPlanItem.meal_plan_id == plan_id)
+    )
+    items = items_q.scalars().all()
+
+    aggregated: dict = {}
+    for item in items:
+        if not item.recipe_id:
+            continue
+        ing_q = await db.execute(
+            select(RecipeIngredient, Recipe)
+            .join(Recipe, Recipe.id == RecipeIngredient.recipe_id)
+            .where(RecipeIngredient.recipe_id == item.recipe_id)
+        )
+        for ing, recipe in ing_q.all():
+            name = ing.ingredient_name or ing.display_text
+            if not name:
+                continue
+            key = _norm_ing(name)
+            if key not in aggregated:
+                aggregated[key] = {"name": name, "quantities": [], "from_recipes": []}
+            qty = (ing.quantity or "").strip()
+            if qty and qty not in aggregated[key]["quantities"]:
+                aggregated[key]["quantities"].append(qty)
+            aggregated[key]["from_recipes"].append({
+                "recipe_id": str(recipe.id),
+                "title": recipe.title,
+                "quantity": qty,
+            })
+    return aggregated
 
 
 async def create_meal_plan(db: AsyncSession, user_id: uuid.UUID, name: str, week_start: date) -> MealPlan:
@@ -213,50 +260,26 @@ async def generate_grocery_list(db: AsyncSession, plan_id: uuid.UUID, user_id: u
     if not plan_q.scalar_one_or_none():
         raise HTTPException(404, detail="Meal plan không tồn tại")
 
-    items_q = await db.execute(
-        select(MealPlanItem).where(MealPlanItem.meal_plan_id == plan_id)
-    )
-    items = items_q.scalars().all()
+    aggregated = await _aggregate_from_items(db, plan_id)
 
-    if not items:
+    if not aggregated:
         await db.execute(delete(GroceryItem).where(GroceryItem.meal_plan_id == plan_id))
         await db.commit()
         return {"items": [], "total_items": 0, "checked_count": 0}
 
-    aggregated: dict = defaultdict(lambda: {"quantities": [], "from_recipes": []})
-
-    for item in items:
-        if not item.recipe_id:
-            continue
-        ing_q = await db.execute(
-            select(RecipeIngredient, Recipe)
-            .join(Recipe, Recipe.id == RecipeIngredient.recipe_id)
-            .where(RecipeIngredient.recipe_id == item.recipe_id)
-        )
-        for ing, recipe in ing_q.all():
-            name = ing.ingredient_name or ing.display_text
-            if not name:
-                continue
-            aggregated[name]["quantities"].append(ing.quantity or "")
-            aggregated[name]["from_recipes"].append({
-                "recipe_id": str(recipe.id),
-                "title": recipe.title,
-                "quantity": ing.quantity or "",
-            })
-
-    # Preserve existing is_checked state
+    # Preserve existing is_checked by normalized name
     existing_q = await db.execute(
         select(GroceryItem).where(GroceryItem.meal_plan_id == plan_id)
     )
-    existing_map = {g.ingredient_name: g.is_checked for g in existing_q.scalars().all()}
+    existing_map = {_norm_ing(g.ingredient_name): g.is_checked for g in existing_q.scalars().all()}
 
     await db.execute(delete(GroceryItem).where(GroceryItem.meal_plan_id == plan_id))
 
     output_items = []
-    for name, data in aggregated.items():
-        qty_parts = [q for q in data["quantities"] if q]
-        qty_str = ", ".join(qty_parts) if qty_parts else "vừa đủ"
-        is_checked = existing_map.get(name, False)
+    for key, data in aggregated.items():
+        name = data["name"]
+        qty_str = ", ".join(data["quantities"]) if data["quantities"] else "vừa đủ"
+        is_checked = existing_map.get(key, False)
 
         item = GroceryItem(
             meal_plan_id=plan_id,
@@ -272,6 +295,7 @@ async def generate_grocery_list(db: AsyncSession, plan_id: uuid.UUID, user_id: u
             "ingredient_name": name,
             "quantity": qty_str,
             "is_checked": is_checked,
+            "category": categorize(name),
             "from_recipes": data["from_recipes"],
         })
 
@@ -290,6 +314,8 @@ async def get_grocery_list(db: AsyncSession, plan_id: uuid.UUID, user_id: uuid.U
     if not plan_q.scalar_one_or_none():
         raise HTTPException(404, detail="Meal plan không tồn tại")
 
+    aggregated = await _aggregate_from_items(db, plan_id)
+
     grocery_q = await db.execute(
         select(GroceryItem).where(GroceryItem.meal_plan_id == plan_id).order_by(GroceryItem.ingredient_name)
     )
@@ -297,12 +323,15 @@ async def get_grocery_list(db: AsyncSession, plan_id: uuid.UUID, user_id: uuid.U
 
     output_items = []
     for g in items:
+        key = _norm_ing(g.ingredient_name)
+        from_recipes = aggregated.get(key, {}).get("from_recipes", [])
         output_items.append({
             "id": str(g.id),
             "ingredient_name": g.ingredient_name,
             "quantity": g.quantity,
             "is_checked": g.is_checked,
-            "from_recipes": [],
+            "category": categorize(g.ingredient_name),
+            "from_recipes": from_recipes,
         })
 
     return {
@@ -354,6 +383,7 @@ async def add_grocery_item_manual(
         "ingredient_name": item.ingredient_name,
         "quantity": item.quantity,
         "is_checked": item.is_checked,
+        "category": categorize(item.ingredient_name),
         "from_recipes": [],
     }
 
