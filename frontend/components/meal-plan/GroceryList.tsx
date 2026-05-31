@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, Trash2, Plus, Loader2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Trash2, Plus, Loader2, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { GroceryList as GroceryListType, GroceryItem } from "@/lib/types";
 import api from "@/lib/api";
 import { toast } from "sonner";
+import { SHOPPING_PLATFORMS, openShopping } from "@/lib/shopping-links";
 
 const CATEGORY_LABELS: Record<string, string> = {
   "thit-ca": "Thịt & Hải sản",
@@ -207,6 +208,7 @@ function GroceryItemRow({
   onCheck: (checked: boolean) => void;
   onDelete: () => void;
 }) {
+  const [shopOpen, setShopOpen] = useState(false);
   return (
     <div className={`rounded-lg border transition-colors ${item.is_checked ? "border-[#E8DDD4] bg-[#F9F6F2] opacity-70" : "border-[#E8DDD4] bg-white"}`}>
       <div className="flex items-center gap-3 px-3 py-2.5">
@@ -234,6 +236,45 @@ function GroceryItemRow({
               {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
           )}
+
+          {/* Buy: cart opens Bách Hóa Xanh; caret reveals all platforms in priority order */}
+          <div className="relative flex items-center">
+            <button
+              onClick={() => openShopping("bachhoaxanh", item.ingredient_name)}
+              className="p-1 text-[#2D6A4F] hover:text-[#E85D26] transition-colors"
+              title={`Mua "${item.ingredient_name}" trên Bách Hóa Xanh`}
+            >
+              <ShoppingCart className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setShopOpen((v) => !v)}
+              className="px-0.5 text-[#B8A898] hover:text-[#2D6A4F] transition-colors"
+              title="Chọn nền tảng mua"
+            >
+              <ChevronDown className="w-3 h-3" />
+            </button>
+            {shopOpen && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setShopOpen(false)} />
+                <div className="absolute right-0 top-full mt-1 z-20 w-40 rounded-lg border border-[#E8DDD4] bg-white shadow-lg py-1">
+                  {SHOPPING_PLATFORMS.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => {
+                        openShopping(p.id, item.ingredient_name);
+                        setShopOpen(false);
+                      }}
+                      className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs text-[#2D2417] hover:bg-[#F7F0E8]"
+                    >
+                      <ShoppingCart className="w-3 h-3 text-[#2D6A4F]" />
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
           <button
             onClick={onDelete}
             className="p-1 text-[#B8A898] hover:text-red-500 transition-colors"
