@@ -115,8 +115,7 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
         )
       );
 
-      // Always keep grocery list in sync (manual items are preserved server-side).
-      await api.post(`/meal-plans/${planId}/grocery-list/regenerate`);
+      // Grocery list is a live view (rebuilt on read), so no regenerate call needed.
       toast.success(`Đã thêm ${selected.length} món vào ${MEAL_LABELS[mealType]}`);
       onAdded();
     } catch {

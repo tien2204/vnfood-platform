@@ -331,37 +331,10 @@ async def generate_grocery_list(db: AsyncSession, plan_id: uuid.UUID, user_id: u
 
 
 async def get_grocery_list(db: AsyncSession, plan_id: uuid.UUID, user_id: uuid.UUID) -> dict:
-    plan_q = await db.execute(
-        select(MealPlan).where(MealPlan.id == plan_id, MealPlan.user_id == user_id)
-    )
-    if not plan_q.scalar_one_or_none():
-        raise HTTPException(404, detail="Meal plan không tồn tại")
-
-    aggregated = await _aggregate_from_items(db, plan_id)
-
-    grocery_q = await db.execute(
-        select(GroceryItem).where(GroceryItem.meal_plan_id == plan_id).order_by(GroceryItem.ingredient_name)
-    )
-    items = grocery_q.scalars().all()
-
-    output_items = []
-    for g in items:
-        key = _norm_ing(g.ingredient_name)
-        from_recipes = aggregated.get(key, {}).get("from_recipes", [])
-        output_items.append({
-            "id": str(g.id),
-            "ingredient_name": g.ingredient_name,
-            "quantity": g.quantity,
-            "is_checked": g.is_checked,
-            "category": categorize(g.ingredient_name),
-            "from_recipes": from_recipes,
-        })
-
-    return {
-        "items": output_items,
-        "total_items": len(output_items),
-        "checked_count": sum(1 for i in output_items if i["is_checked"]),
-    }
+    # Live view: rebuild recipe-derived items from the CURRENT meal plan on every
+    # read (preserving manual items + checked state). The list therefore always
+    # reflects the plan with no separate "regenerate" step.
+    return await generate_grocery_list(db, plan_id, user_id)
 
 
 async def update_grocery_item(

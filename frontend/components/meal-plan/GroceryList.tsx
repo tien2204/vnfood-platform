@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { RefreshCw, ChevronDown, ChevronUp, Trash2, Plus, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ChevronDown, ChevronUp, Trash2, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { GroceryList as GroceryListType, GroceryItem } from "@/lib/types";
@@ -24,7 +24,8 @@ interface GroceryListProps {
 
 export default function GroceryList({ planId, initial }: GroceryListProps) {
   const [data, setData] = useState<GroceryListType>(initial);
-  const [regenerating, setRegenerating] = useState(false);
+  // Grocery is a live view: reflect fresh server data whenever SWR revalidates.
+  useEffect(() => { setData(initial); }, [initial]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [newItem, setNewItem] = useState("");
   const [newQty, setNewQty] = useState("");
@@ -60,19 +61,6 @@ export default function GroceryList({ planId, initial }: GroceryListProps) {
       });
     } catch {
       toast.error("Không thể xóa");
-    }
-  }
-
-  async function handleRegenerate() {
-    setRegenerating(true);
-    try {
-      const res = await api.post(`/meal-plans/${planId}/grocery-list/regenerate`);
-      setData(res.data.data);
-      toast.success("Đã tạo lại danh sách mua sắm");
-    } catch {
-      toast.error("Không thể tạo lại danh sách");
-    } finally {
-      setRegenerating(false);
     }
   }
 
@@ -120,16 +108,6 @@ export default function GroceryList({ planId, initial }: GroceryListProps) {
             </div>
           )}
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-2 border-[#E8DDD4] text-[#7C6A56]"
-          onClick={handleRegenerate}
-          disabled={regenerating}
-        >
-          {regenerating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-          Tạo lại
-        </Button>
       </div>
 
       {/* Items list */}
