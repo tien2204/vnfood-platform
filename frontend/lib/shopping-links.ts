@@ -12,19 +12,19 @@ export interface ShoppingPlatform {
   searchUrl: (keyword: string) => string;
 }
 
-// Priority order: Bách Hóa Xanh + Tiki have real keyword search; GrabMart/ShopeeFood
+// Priority order: Tiki + Bách Hóa Xanh have real keyword search; GrabMart/ShopeeFood
 // have no stable public search URL so they open their homepage. (Cooky was dropped:
 // its SSL cert is expired → browser security warning.) All URLs curl-verified 200.
 export const SHOPPING_PLATFORMS: ShoppingPlatform[] = [
   {
-    id: "bachhoaxanh",
-    label: "Bách Hóa Xanh",
-    searchUrl: (kw) => `https://www.bachhoaxanh.com/tim-kiem?key=${encodeURIComponent(kw)}`,
-  },
-  {
     id: "tiki",
     label: "Tiki",
     searchUrl: (kw) => `https://tiki.vn/search?q=${encodeURIComponent(kw)}`,
+  },
+  {
+    id: "bachhoaxanh",
+    label: "Bách Hóa Xanh",
+    searchUrl: (kw) => `https://www.bachhoaxanh.com/tim-kiem?key=${encodeURIComponent(kw)}`,
   },
   {
     id: "grabmart",

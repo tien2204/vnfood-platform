@@ -237,12 +237,12 @@ function GroceryItemRow({
             </button>
           )}
 
-          {/* Buy: cart opens Bách Hóa Xanh; caret reveals all platforms in priority order */}
+          {/* Buy: cart opens Tiki; caret reveals all platforms in priority order */}
           <div className="relative flex items-center">
             <button
-              onClick={() => openShopping("bachhoaxanh", item.ingredient_name)}
+              onClick={() => openShopping("tiki", item.ingredient_name)}
               className="p-1 text-[#2D6A4F] hover:text-[#E85D26] transition-colors"
-              title={`Mua "${item.ingredient_name}" trên Bách Hóa Xanh`}
+              title={`Mua "${item.ingredient_name}" trên Tiki`}
             >
               <ShoppingCart className="w-3.5 h-3.5" />
             </button>
