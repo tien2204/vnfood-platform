@@ -390,6 +390,7 @@ export interface GroceryItem {
   ingredient_name: string;
   quantity: string | null;
   is_checked: boolean;
+  category: string;
   from_recipes: GroceryFromRecipe[];
 }
 

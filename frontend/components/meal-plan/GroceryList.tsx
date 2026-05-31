@@ -8,6 +8,15 @@ import type { GroceryList as GroceryListType, GroceryItem } from "@/lib/types";
 import api from "@/lib/api";
 import { toast } from "sonner";
 
+const CATEGORY_LABELS: Record<string, string> = {
+  "thit-ca": "Thịt & Hải sản",
+  "rau-cu": "Rau củ quả",
+  "gia-vi": "Gia vị & Nước chấm",
+  "kho-dong-goi": "Khô & Đóng gói",
+  khac: "Khác",
+};
+const CATEGORY_ORDER = ["thit-ca", "rau-cu", "gia-vi", "kho-dong-goi", "khac"];
+
 interface GroceryListProps {
   planId: string;
   initial: GroceryListType;
@@ -132,16 +141,25 @@ export default function GroceryList({ planId, initial }: GroceryListProps) {
         </div>
       ) : (
         <div className="flex flex-col gap-1">
-          {/* Unchecked */}
-          {uncheckedItems.map((item) => (
-            <GroceryItemRow
-              key={item.id}
-              item={item}
-              expanded={expandedId === item.id}
-              onToggleExpand={() => setExpandedId(expandedId === item.id ? null : item.id)}
-              onCheck={(checked) => handleCheck(item, checked)}
-              onDelete={() => handleDelete(item.id)}
-            />
+          {/* Unchecked — grouped by category */}
+          {CATEGORY_ORDER.filter((cat) => uncheckedItems.some((i) => i.category === cat)).map((cat) => (
+            <div key={cat} className="flex flex-col gap-1">
+              <p className="text-[11px] font-semibold text-[#7C6A56] uppercase tracking-wide mt-2 mb-0.5">
+                {CATEGORY_LABELS[cat] ?? cat}
+              </p>
+              {uncheckedItems
+                .filter((i) => i.category === cat)
+                .map((item) => (
+                  <GroceryItemRow
+                    key={item.id}
+                    item={item}
+                    expanded={expandedId === item.id}
+                    onToggleExpand={() => setExpandedId(expandedId === item.id ? null : item.id)}
+                    onCheck={(checked) => handleCheck(item, checked)}
+                    onDelete={() => handleDelete(item.id)}
+                  />
+                ))}
+            </div>
           ))}
 
           {/* Divider */}
