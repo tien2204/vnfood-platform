@@ -551,3 +551,24 @@ Yêu cầu user: mở rộng VNFood với 7 feature → tách thành **6 sub-pro
 - FastAPI: literal route (`/suggestions`) phải khai báo trước path-param route (`/{plan_id}`).
 
 **Còn lại:** browser smoke `/meal-plan` (cần restart uvicorn để load code mới). 5 sub-project còn lại: personalization engine, substitution, cooking-mode+voice, video, smart-shopping (deep-link). Spec/Plan: `docs/superpowers/{specs,plans}/2026-05-31-meal-plan-enhance*`.
+
+---
+
+### ✅ Bugfix grocery sync + Smart Shopping — 2026-05-31 (branch `feat/canonical-recipes`)
+
+**Bugfix grocery auto-sync (user báo "thêm/xóa món grocery không tự cập nhật"):**
+- Root cause 1 (frontend): `GroceryList` copy `initial` prop vào `useState(initial)` → không phản ánh SWR revalidate (kẹt cache cũ). Fix: `useEffect(()=>setData(initial),[initial])`.
+- Root cause 2 (kiến trúc): grocery là snapshot cần regenerate. Fix: `get_grocery_list` = **live view** (rebuild từ lịch hiện tại mỗi lần đọc, giữ item thủ công qua cột `grocery_items.is_manual` — **migration 0008**, + giữ tick). Gỡ nút "Tạo lại" (vô nghĩa) + các call regenerate thừa. Thêm/xóa món → mở trang grocery là thấy đúng.
+- Migration 0007 (recreate meal_plan trio) + 0008 (is_manual) — DB version 0008.
+
+**Smart Shopping (sub-project 6/6) — per-item deep-link:**
+- `frontend/lib/shopping-links.ts`: `SHOPPING_PLATFORMS` thứ tự **Bách Hóa Xanh → Tiki → GrabMart → ShopeeFood** + `buildSearchUrl`/`openShopping` (window.open new tab noopener). Frontend-only, không backend.
+- `GroceryItemRow`: nút giỏ (mở Bách Hóa Xanh search) + caret menu cả 4 platform.
+- **Cooky bị loại**: cert SSL hết hạn (`SEC_E_CERT_EXPIRED`) → cảnh báo trình duyệt. BHX (`tim-kiem?key=`) + Tiki (`search?q=`) có search thật + cert hợp lệ (curl-verify 200); GrabMart/ShopeeFood mở trang chủ (không có search URL công khai).
+- Ràng buộc: các platform không có public ordering/cart API → chỉ deep-link, user tự đặt; không detect tồn kho → fallback là menu thủ công.
+
+**Key learnings:**
+- `useState(prop)` chỉ lấy giá trị mount đầu → component bỏ qua prop đổi sau (SWR revalidate). Phải `useEffect` sync hoặc dùng prop trực tiếp.
+- Verify URL ngoài: curl `-w "%{http_code}"`; cert expired hiện qua `curl -I` (`SEC_E_CERT_EXPIRED`).
+
+**Spec/Plan:** `docs/superpowers/{specs,plans}/2026-05-31-smart-shopping*`. Còn lại 4 sub-project: personalization engine, substitution, cooking-mode+voice, video.
