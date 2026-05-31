@@ -1,6 +1,14 @@
 """Classify a grocery ingredient name into a coarse category (keyword map, on-the-fly).
 
 No DB, no migration: categories are computed when building the grocery payload.
+
+Strategy: diacritic-strip + lowercase, then
+  1. match multi-word PHRASES (specific, longest-first) — resolves ambiguous
+     bare syllables like "ca" (cá fish vs cà rốt carrot), "dau" (dầu oil vs
+     đậu beans), so "ca rot" -> rau-cu before the bare "ca" token -> thit-ca.
+  2. otherwise match a curated set of whole-word TOKENS, scanned in
+     CATEGORY_ORDER priority.
+  3. fallback "khac".
 """
 import unicodedata
 
@@ -15,32 +23,51 @@ CATEGORY_LABELS = {
 # Display/group order (most-perishable first is a sensible shopping order).
 CATEGORY_ORDER = ["thit-ca", "rau-cu", "gia-vi", "kho-dong-goi", "khac"]
 
-# Keyword → category. Keywords are diacritic-stripped lowercase substrings.
-_KEYWORDS = {
-    "thit-ca": [
-        "thit", "bo", "heo", "lon", "ga", "vit", "ca ", "ca,", "tom", "muc",
-        "cua", "ngao", "so", "oc", "luon", "trung", "xuong", "suon", "gio song",
-        "hai san", "cua dong", "ech", "chim",
-    ],
+# Multi-word phrases (diacritic-stripped lowercase) → category.
+# Checked FIRST, longest-first, so specific phrases beat ambiguous bare tokens.
+_PHRASES = {
     "rau-cu": [
-        "rau", "cu", "ca chua", "ca rot", "hanh", "toi", "ot", "nam", "gung",
-        "sa", "rieng", "khoai", "bi ", "bau", "muop", "dau", "gia ", "cai",
-        "ngo", "mui", "que", "chanh", "dua leo", "dua chuot", "kho qua",
-        "muop dang", "bap", "ngo ", "rau muong", "rau thom", "la lot", "chuoi",
-        "dua hau", "tao", "cam", "xa lach", "su hao", "do",
+        "ca rot", "ca chua", "kho qua", "muop dang", "rau muong", "rau thom",
+        "rau cai", "la lot", "dua leo", "dua chuot", "dua hau", "xa lach",
+        "su hao", "hanh la", "hanh tay", "hanh tim", "cu cai", "bi do",
+        "bi xanh", "khoai tay", "khoai lang", "gia do",
     ],
     "gia-vi": [
-        "muoi", "duong", "nuoc mam", "mam", "tieu", "dau an", "dau hao",
-        "bot ngot", "hat nem", "nuoc tuong", "tuong", "giam", "me", "sa te",
-        "bot", "nuoc cot", "ruou", "mat ong", "dau me", "ngu vi", "bot canh",
-        "nuoc dua", "sot",
+        "nuoc mam", "nuoc tuong", "dau hao", "dau an", "dau me", "bot ngot",
+        "hat nem", "bot canh", "bot nghe", "nuoc cot", "mat ong", "sa te",
+        "ngu vi huong", "nuoc dua", "tuong ot", "tuong den", "dau dieu",
     ],
     "kho-dong-goi": [
-        "bun", "pho", "mien", "banh trang", "banh pho", "banh da", "mi ",
-        "nui", "dau hu", "tau hu", "lap xuong", "cha", "nem", "do hop",
-        "sua", "pho mai", "bo ", "banh mi", "hu tieu", "bot mi", "bot gao",
-        "nep", "gao", "dau phong", "dau xanh", "me rang",
+        "banh trang", "banh pho", "banh da", "banh mi", "banh hoi", "hu tieu",
+        "dau hu", "tau hu", "lap xuong", "pho mai", "do hop", "bot mi",
+        "bot gao", "dau phong", "dau xanh", "me rang", "nuoc cot dua",
     ],
+    "thit-ca": [
+        "hai san", "ca loc", "ca hoi", "ca thu", "ca basa", "ca ngu", "ca chich",
+        "cua dong", "gio song", "thit bo", "thit heo", "thit ga", "thit vit",
+        "suon non", "suon heo", "trung vit", "trung ga", "trung cut",
+    ],
+}
+
+# Whole-word tokens (curated to minimise ambiguity) → category.
+# Checked AFTER phrases, in CATEGORY_ORDER priority.
+_TOKENS = {
+    "thit-ca": {
+        "thit", "bo", "heo", "lon", "ga", "vit", "tom", "muc", "cua", "ngao",
+        "oc", "luon", "trung", "xuong", "suon", "ech", "ca", "so", "ngheu",
+    },
+    "rau-cu": {
+        "rau", "cu", "hanh", "toi", "ot", "nam", "gung", "sa", "rieng", "khoai",
+        "bi", "bau", "muop", "cai", "ngo", "mui", "que", "chanh", "bap", "dua",
+        "tao", "cam", "gia", "ca",  # "ca" here only reached if not matched above
+    },
+    "gia-vi": {
+        "muoi", "duong", "mam", "tieu", "tuong", "giam", "me", "bot", "ruou",
+        "sot", "dau",
+    },
+    "kho-dong-goi": {
+        "bun", "pho", "mien", "nui", "cha", "nem", "sua", "nep", "gao", "mi",
+    },
 }
 
 
@@ -55,9 +82,21 @@ def categorize(name: str) -> str:
     n = _norm(name)
     if not n:
         return "khac"
-    # Check in priority order; first matching keyword wins.
+
+    # 1. Phrase match, longest phrase first (most specific wins).
+    phrase_hits = []
+    for cat, phrases in _PHRASES.items():
+        for ph in phrases:
+            if ph in n:
+                phrase_hits.append((len(ph), cat))
+    if phrase_hits:
+        phrase_hits.sort(reverse=True)  # longest phrase first
+        return phrase_hits[0][1]
+
+    # 2. Whole-word token match, in category priority order.
+    tokens = set(n.split())
     for cat in CATEGORY_ORDER:
-        for kw in _KEYWORDS.get(cat, []):
-            if kw.strip() and kw in n:
-                return cat
+        if cat in _TOKENS and tokens & _TOKENS[cat]:
+            return cat
+
     return "khac"
