@@ -35,7 +35,6 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
   const [results, setResults] = useState<RecipeCard[]>([]);
   const [searching, setSearching] = useState(false);
   const [selected, setSelected] = useState<SelectedRecipe[]>([]);
-  const [addToGrocery, setAddToGrocery] = useState(false);
   const [adding, setAdding] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [suggestions, setSuggestions] = useState<RecipeCard[]>([]);
@@ -116,12 +115,9 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
         )
       );
 
-      if (addToGrocery) {
-        await api.post(`/meal-plans/${planId}/grocery-list/regenerate`);
-        toast.success(`Đã thêm ${selected.length} món và cập nhật grocery list!`);
-      } else {
-        toast.success(`Đã thêm ${selected.length} món vào ${MEAL_LABELS[mealType]}`);
-      }
+      // Always keep grocery list in sync (manual items are preserved server-side).
+      await api.post(`/meal-plans/${planId}/grocery-list/regenerate`);
+      toast.success(`Đã thêm ${selected.length} món vào ${MEAL_LABELS[mealType]}`);
       onAdded();
     } catch {
       toast.error("Không thể thêm món. Thử lại nhé.");
@@ -226,24 +222,10 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
                 />
               ))}
 
-              {/* Add to grocery checkbox */}
-              <label className="flex items-start gap-3 mt-1 p-3 rounded-xl border border-[#E8DDD4] bg-[#F7F0E8] cursor-pointer hover:border-[#2D6A4F] transition-colors">
-                <input
-                  type="checkbox"
-                  checked={addToGrocery}
-                  onChange={(e) => setAddToGrocery(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 accent-[#2D6A4F] shrink-0 cursor-pointer"
-                />
-                <div>
-                  <div className="flex items-center gap-1.5 text-sm font-medium text-[#2D2417]">
-                    <ShoppingCart className="w-3.5 h-3.5 text-[#2D6A4F]" />
-                    Thêm nguyên liệu vào grocery list
-                  </div>
-                  <p className="text-xs text-[#7C6A56] mt-0.5">
-                    Nguyên liệu trùng nhau sẽ được cộng dồn tự động
-                  </p>
-                </div>
-              </label>
+              <p className="flex items-center gap-1.5 text-xs text-[#7C6A56] mt-1">
+                <ShoppingCart className="w-3.5 h-3.5 text-[#2D6A4F]" />
+                Nguyên liệu sẽ tự động thêm vào grocery list
+              </p>
             </div>
           )}
         </div>
