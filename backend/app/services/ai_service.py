@@ -94,10 +94,14 @@ async def recognize_image(
     db.add(log)
     await db.commit()
 
-    # Resolve dish_recipe attachment
+    # Resolve dish_recipe attachment.
+    # VNFood path: canonical_recipe is the single source of truth and links to the
+    # lookup detail page. Only fall back to the curated card if no canonical exists
+    # (defensive — should not happen after the canonical gap-fill).
     dish_recipe = None
     if predicted_class and predicted_class != "unknown" and model_used == "vnfood":
-        dish_recipe = dish_recipe_service.get_curated(predicted_class)
+        if canonical_recipe is None:
+            dish_recipe = dish_recipe_service.get_curated(predicted_class)
     elif model_used == "openai" and display_name and display_name not in ("Không nhận diện được", "unknown"):
         dish_recipe = await dish_recipe_service.get_or_generate_ai(db, display_name, user_id=user_id)
 
