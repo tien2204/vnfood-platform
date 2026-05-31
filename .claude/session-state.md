@@ -528,3 +528,26 @@ _(Không có)_
 - Harness normalize-title phát hiện cụm trùng thứ 18 (`Canh rong biển thịt băm`) mà exact-match bỏ sót (khác hoa/thường).
 
 **Còn lại:** browser verify trang `/recognize` (upload ảnh → canonical card link sang detail; OOD vẫn hiện DishRecipeCard). Spec/Plan/ADR: `docs/superpowers/{specs,plans}/2026-05-31-canonical-subset*`.
+
+---
+
+### ✅ Meal Plan Enhancement — 2026-05-31 (branch `feat/canonical-recipes`, sub-project 1/6)
+
+Yêu cầu user: mở rộng VNFood với 7 feature → tách thành **6 sub-project** (mỗi cái spec→plan→implement riêng). Sub-project 1 = meal plan enhance. (Decomposition + ràng buộc 6 cái ghi trong spec.)
+
+**Phát hiện lớn:** meal plan code/endpoints/frontend còn đủ, NHƯNG migration `0005` (refocus cherry-pick) đã `DROP TABLE meal_plans, meal_plan_items, grocery_items, follows` → 3 bảng meal_plan **đã bị xóa** trên DB này → feature runtime-broken (không phải "đã chạy"). `/feed` cũng hỏng vì mất `follows` (ngoài scope, refocus cố ý bỏ).
+
+**Đã làm (4 enhancement + 1 migration, all committed):**
+- **Migration 0007** (`0007_restore_meal_plan_tables.py`) — recreate meal_plan trio (KHÔNG recreate follows). DB version 0006→0007, 10→13 bảng.
+- **Canonical-first picker:** recipe search ĐÃ có sẵn param `show_all` (default false = canonical-only) → backend không đổi; chỉ thêm frontend toggle "Hiện tất cả" + badge "Chuẩn" trong `AddRecipeModal`.
+- **Smart grocery** (no extra migration): `grocery_categories.py` (phrase-first keyword map, 5 nhóm) + `meal_plan_service` refactor `_aggregate_from_items`/`_norm_ing` → dedup tên trùng, concat DISTINCT quantity (KHÔNG cộng số), gắn `category`, recompute `from_recipes` trên GET (kể cả item thủ công). `GroceryList.tsx` group theo category.
+- **Personalized suggestions:** `recommend_service.suggest_recipes_for_user(db, user_id, n, exclude_recipe_ids)` — **interface ổn định** (Personalization engine sub-project sau thay ruột). Signal: ratings≥4 + saved + ai_logs.predicted_class → top slug/keyword → canonical, fallback popular. `GET /meal-plans/suggestions` (⚠️ phải đăng ký TRƯỚC `/{plan_id}` nếu không bị parse thành UUID). AddRecipeModal hiện section "Gợi ý cho bạn".
+
+**Verify:** backend E2E PASS (tạo plan → add 2 canonical → grocery 12 items / đủ 5 category / có from_recipes → get recompute OK → cleanup). suggestions trả 6 canonical. tsc: 0 lỗi mới (5 lỗi pre-existing ở admin/profile/recognize pages).
+
+**Key learnings:**
+- Branch này thiếu meal_plan + follows tables do 0005 drop — kiểm tra `\dt` thật, đừng chỉ tin code wiring.
+- Categorizer: bare diacritic-stripped syllable collide (ca=cá/cà, dau=dầu/đậu) → phải phrase-first (longest) rồi mới token.
+- FastAPI: literal route (`/suggestions`) phải khai báo trước path-param route (`/{plan_id}`).
+
+**Còn lại:** browser smoke `/meal-plan` (cần restart uvicorn để load code mới). 5 sub-project còn lại: personalization engine, substitution, cooking-mode+voice, video, smart-shopping (deep-link). Spec/Plan: `docs/superpowers/{specs,plans}/2026-05-31-meal-plan-enhance*`.

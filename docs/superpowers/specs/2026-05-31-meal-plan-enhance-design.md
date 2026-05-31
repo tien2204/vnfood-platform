@@ -13,7 +13,7 @@ Người dùng yêu cầu "restore meal plan + grocery list (đã bị hide ở 
 - Frontend: `app/meal-plan/` (3 trang: list, `[id]`, `[id]/grocery`), link "Meal Plan" trong Navbar dropdown.
 - Middleware: `/meal-plan` bảo vệ qua catch-all (cần login).
 
-→ "Restore" cơ bản đã xong. Sub-project này tập trung vào **4 enhancement** đã chốt với user, **không cần build lại** và **không cần DB migration**.
+→ Wiring code có đủ. **Đính chính (phát hiện lúc execute):** kiểm tra bảng DB thật cho thấy migration `0005` (cherry-pick từ refocus) đã `DROP TABLE meal_plans, meal_plan_items, grocery_items, follows`. Trên DB hiện tại (sau 0006) **3 bảng meal_plan đã bị xóa** → feature runtime-broken. Vậy "restore" **bắt buộc 1 migration 0007** tái tạo meal_plan trio (KHÔNG tái tạo `follows` — social feed ngoài scope). Ngoài migration đó, 4 enhancement là additive, không cần migration khác.
 
 ## 2. Mục tiêu (4 phần)
 
@@ -23,7 +23,7 @@ C. **Smart grocery list:** phân nhóm theo loại nguyên liệu + dedup tên t
 D. **Personalized slot suggestions:** gợi ý món cho slot trống theo taste history, qua interface thay được.
 
 ### Non-goals
-- KHÔNG migration DB.
+- Migration DB chỉ giới hạn ở **0007 recreate meal_plan trio** (bắt buộc để restore). KHÔNG migration nào khác; KHÔNG tái tạo `follows`/social feed.
 - KHÔNG cộng dồn số lượng nguyên liệu (định lượng tiếng Việt tự do → rủi ro sai). Chỉ concat + dedup chuỗi.
 - KHÔNG build full personalization engine ở đây (đó là sub-project riêng) — chỉ signal nhẹ + interface.
 - KHÔNG đụng smart-shopping/voice/video/substitution (sub-project khác).
@@ -106,7 +106,7 @@ async def suggest_recipes_for_user(db, user_id, n: int = 6, exclude_recipe_ids: 
 - `frontend/components/meal-plan/GroceryList.tsx` — group theo category.
 - `frontend/lib/types.ts` — thêm `category` vào grocery item type, suggestions type.
 
-**No DB migration.**
+**Migration:** `backend/alembic/versions/0007_restore_meal_plan_tables.py` — recreate `meal_plans` + `meal_plan_items` + `grocery_items` (match models; FK CASCADE/SET NULL + indexes). No other migration.
 
 ## 6. Error handling
 - Taste history rỗng → fallback popular canonical.

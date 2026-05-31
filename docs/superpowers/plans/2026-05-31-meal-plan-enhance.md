@@ -30,7 +30,7 @@
 - `frontend/components/meal-plan/GroceryList.tsx` — group unchecked items by category.
 - `frontend/components/meal-plan/AddRecipeModal.tsx` — `show_all` toggle + "Chuẩn" badge + suggestions section.
 
-**No DB migration. No new pip deps.**
+**Migration (added during execution):** `backend/alembic/versions/0007_restore_meal_plan_tables.py` recreates `meal_plans`/`meal_plan_items`/`grocery_items` — migration `0005` (refocus cherry-pick) had `DROP`ped them, so the feature was runtime-broken on this DB. No other migration. No new pip deps.
 
 ---
 
