@@ -39,6 +39,9 @@ export default function WeeklyCalendar({ planId, days, onRefresh }: WeeklyCalend
   async function handleDelete(itemId: string) {
     try {
       await api.delete(`/meal-plans/${planId}/items/${itemId}`);
+      // Keep grocery list in sync: rebuild recipe-derived items (manual items
+      // are preserved server-side). Best-effort — don't fail the delete on it.
+      api.post(`/meal-plans/${planId}/grocery-list/regenerate`).catch(() => {});
       onRefresh();
     } catch {
       toast.error("Không thể xóa món");

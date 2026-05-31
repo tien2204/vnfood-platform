@@ -75,5 +75,6 @@ class GroceryItem(Base):
     ingredient_name: Mapped[str] = mapped_column(Text, nullable=False)
     quantity: Mapped[str | None] = mapped_column(Text)
     is_checked: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    is_manual: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False)
 
     meal_plan: Mapped["MealPlan"] = relationship("MealPlan", back_populates="grocery_items")

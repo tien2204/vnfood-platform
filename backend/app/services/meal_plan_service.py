@@ -268,30 +268,45 @@ async def generate_grocery_list(db: AsyncSession, plan_id: uuid.UUID, user_id: u
 
     aggregated = await _aggregate_from_items(db, plan_id)
 
-    if not aggregated:
-        await db.execute(delete(GroceryItem).where(GroceryItem.meal_plan_id == plan_id))
-        await db.commit()
-        return {"items": [], "total_items": 0, "checked_count": 0}
-
-    # Preserve existing is_checked by normalized name
     existing_q = await db.execute(
         select(GroceryItem).where(GroceryItem.meal_plan_id == plan_id)
     )
-    existing_map = {_norm_ing(g.ingredient_name): g.is_checked for g in existing_q.scalars().all()}
+    existing = list(existing_q.scalars().all())
+    # Preserve is_checked for recipe-derived items by normalized name.
+    checked_map = {_norm_ing(g.ingredient_name): g.is_checked for g in existing if not g.is_manual}
+    # Manual additions are kept verbatim (built into the payload before commit).
+    manual_payload = [
+        {
+            "id": str(g.id),
+            "ingredient_name": g.ingredient_name,
+            "quantity": g.quantity,
+            "is_checked": g.is_checked,
+            "category": categorize(g.ingredient_name),
+            "from_recipes": [],
+        }
+        for g in existing if g.is_manual
+    ]
 
-    await db.execute(delete(GroceryItem).where(GroceryItem.meal_plan_id == plan_id))
+    # Remove ONLY recipe-derived rows; manual additions survive regenerate.
+    await db.execute(
+        delete(GroceryItem).where(
+            GroceryItem.meal_plan_id == plan_id,
+            GroceryItem.is_manual.is_(False),
+        )
+    )
 
     output_items = []
     for key, data in aggregated.items():
         name = data["name"]
         qty_str = ", ".join(data["quantities"]) if data["quantities"] else "vừa đủ"
-        is_checked = existing_map.get(key, False)
+        is_checked = checked_map.get(key, False)
 
         item = GroceryItem(
             meal_plan_id=plan_id,
             ingredient_name=name,
             quantity=qty_str,
             is_checked=is_checked,
+            is_manual=False,
         )
         db.add(item)
         await db.flush()
@@ -304,6 +319,8 @@ async def generate_grocery_list(db: AsyncSession, plan_id: uuid.UUID, user_id: u
             "category": categorize(name),
             "from_recipes": data["from_recipes"],
         })
+
+    output_items.extend(manual_payload)
 
     await db.commit()
     return {
@@ -380,6 +397,7 @@ async def add_grocery_item_manual(
         ingredient_name=ingredient_name,
         quantity=quantity,
         is_checked=False,
+        is_manual=True,
     )
     db.add(item)
     await db.commit()
