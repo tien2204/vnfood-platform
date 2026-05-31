@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Search, X, Clock, Minus, Plus, Loader2, ShoppingCart, Check } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -37,6 +37,8 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
   const [selected, setSelected] = useState<SelectedRecipe[]>([]);
   const [addToGrocery, setAddToGrocery] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const [suggestions, setSuggestions] = useState<RecipeCard[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [, m, d] = date.split("-");
@@ -48,7 +50,7 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
     debounceRef.current = setTimeout(async () => {
       setSearching(true);
       try {
-        const res = await api.get("/recipes/search", { params: { q, limit: 12 } });
+        const res = await api.get("/recipes/search", { params: { q, limit: 12, show_all: showAll } });
         setResults(res.data.data ?? []);
       } catch {
         setResults([]);
@@ -56,6 +58,20 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
         setSearching(false);
       }
     }, 300);
+  }, [showAll]);
+
+  // Re-run current query when the canonical/all toggle flips
+  useEffect(() => {
+    if (query.trim()) search(query);
+  }, [showAll]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Load personalized suggestions once on open
+  useEffect(() => {
+    let active = true;
+    api.get("/meal-plans/suggestions", { params: { n: 6 } })
+      .then((res) => { if (active) setSuggestions(res.data.data ?? []); })
+      .catch(() => { if (active) setSuggestions([]); });
+    return () => { active = false; };
   }, []);
 
   function handleQueryChange(val: string) {
@@ -141,6 +157,15 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
                 <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7C6A56] animate-spin" />
               )}
             </div>
+            <label className="flex items-center gap-2 mt-2 text-xs text-[#7C6A56] cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={showAll}
+                onChange={(e) => setShowAll(e.target.checked)}
+                className="w-3.5 h-3.5 accent-[#E85D26] cursor-pointer"
+              />
+              Hiện tất cả công thức (mặc định chỉ công thức chuẩn)
+            </label>
           </div>
 
           {/* Search results */}
@@ -163,7 +188,24 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
               Không tìm thấy công thức nào
             </p>
           )}
-          {!query && selected.length === 0 && (
+          {!query && suggestions.length > 0 && (
+            <div className="px-6 pb-3">
+              <p className="text-xs font-semibold text-[#7C6A56] uppercase tracking-wide mb-2">
+                Gợi ý cho bạn
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {suggestions.map((r) => (
+                  <RecipePickCard
+                    key={r.id}
+                    recipe={r}
+                    selected={selectedIds.has(r.id)}
+                    onToggle={() => toggleRecipe(r)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          {!query && suggestions.length === 0 && selected.length === 0 && (
             <p className="text-center text-[#B8A898] text-sm py-6 px-6">
               Nhập tên món để tìm kiếm
             </p>
@@ -251,7 +293,12 @@ function RecipePickCard({
           <Check className="w-3 h-3 text-white" />
         </div>
       )}
-      <div className="aspect-video bg-[#F7F0E8] overflow-hidden">
+      <div className="aspect-video bg-[#F7F0E8] overflow-hidden relative">
+        {recipe.is_canonical && (
+          <span className="absolute top-1 left-1 z-10 px-1.5 py-0.5 rounded-full bg-[#2D6A4F] text-white text-[9px] font-semibold">
+            Chuẩn
+          </span>
+        )}
         {recipe.image_url ? (
           <Image
             src={recipe.image_url}
