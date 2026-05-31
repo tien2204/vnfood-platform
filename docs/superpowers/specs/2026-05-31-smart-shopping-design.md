@@ -8,7 +8,9 @@
 
 ## 1. Mục tiêu
 
-Từ grocery list, mỗi nguyên liệu có nút điều hướng sang nền tảng mua sắm (Cooky → GrabMart → ShopeeFood) để đặt mua, theo **deep-link search** (mở platform với từ khóa = tên nguyên liệu).
+Từ grocery list, mỗi nguyên liệu có nút điều hướng sang nền tảng mua sắm (**Bách Hóa Xanh → Tiki → GrabMart → ShopeeFood**) để đặt mua, theo **deep-link search** (mở platform với từ khóa = tên nguyên liệu).
+
+> **Đính chính (verify lúc design):** Cooky (`cooky.vn`) — dự kiến ưu tiên 1 — bị **hết hạn chứng chỉ SSL** (`SEC_E_CERT_EXPIRED`) → trình duyệt cảnh báo "kết nối không an toàn", không dùng được. Thay bằng **Bách Hóa Xanh** (`bachhoaxanh.com/tim-kiem?key=` — search thật, đồ tươi) + **Tiki** (`tiki.vn/search?q=` — search thật). GrabMart/ShopeeFood (200 OK) không có search URL công khai → mở trang chủ. Tất cả URL đã curl-verify 200 + cert hợp lệ.
 
 ## 2. Ràng buộc cứng (đã thống nhất với user)
 
@@ -18,8 +20,8 @@ Từ grocery list, mỗi nguyên liệu có nút điều hướng sang nền t�
 
 ## 3. Quyết định đã chốt
 - Granularity: **per-item** (mỗi dòng grocery 1 control mua). KHÔNG làm whole-list.
-- Thứ tự ưu tiên cố định: **Cooky → GrabMart → ShopeeFood**.
-- UI: nút chính mở Cooky + caret ▾ menu liệt kê cả 3 theo thứ tự (phương án thay thế thủ công).
+- Thứ tự ưu tiên cố định: **Bách Hóa Xanh → Tiki → GrabMart → ShopeeFood** (Cooky bị loại do cert hết hạn).
+- UI: nút chính mở Bách Hóa Xanh + caret ▾ menu liệt kê cả 4 theo thứ tự (phương án thay thế thủ công).
 - **Frontend-only**: không backend, không DB migration, không persistence.
 
 ### Non-goals
@@ -36,16 +38,17 @@ Từ grocery list, mỗi nguyên liệu có nút điều hướng sang nền t�
 - `SHOPPING_PLATFORMS`: mảng theo đúng thứ tự ưu tiên, mỗi phần tử:
   - `id` (`"cooky" | "grabmart" | "shopeefood"`), `label`, `searchUrl(keyword: string): string`.
   - `searchUrl` encode `keyword` bằng `encodeURIComponent`. Nếu platform không có search URL ổn định → trả URL trang chủ (bỏ qua keyword).
-- Giá trị URL khởi tạo (xác minh + chốt lúc implement; cái nào search không chạy → để trang chủ):
-  - Cooky: search theo từ khóa (Cooky Market có web search — ưu tiên cao nhất vì deep-link search rõ nhất).
-  - GrabMart: nếu không có search URL công khai ổn định → trang chủ `food.grab.com` (vùng VN).
-  - ShopeeFood: nếu không có → trang chủ `shopeefood.vn`.
+- Giá trị URL (đã curl-verify 200 + cert hợp lệ lúc design):
+  - Bách Hóa Xanh: `https://www.bachhoaxanh.com/tim-kiem?key=<kw>` — search thật.
+  - Tiki: `https://tiki.vn/search?q=<kw>` — search thật.
+  - GrabMart: `https://food.grab.com/vn/vi/` — trang chủ (không có search URL công khai ổn định).
+  - ShopeeFood: `https://shopeefood.vn/` — trang chủ (không có search URL công khai ổn định).
 - Hàm `buildSearchUrl(platformId, ingredientName)` (dùng cho test + UI).
 
 ### 4.2 UI trong `frontend/components/meal-plan/GroceryList.tsx` (`GroceryItemRow`)
 - Thêm 1 control mua ở cụm action (cạnh nút expand `from_recipes` / xóa):
-  - **Nút chính**: icon giỏ + nhãn ngắn → `window.open(buildSearchUrl("cooky", item.ingredient_name), "_blank", "noopener,noreferrer")`.
-  - **Caret ▾**: mở menu nhỏ liệt kê cả 3 platform theo thứ tự (Cooky / GrabMart / ShopeeFood); mỗi mục `window.open` URL tương ứng.
+  - **Nút chính**: icon giỏ + nhãn ngắn → `window.open(buildSearchUrl("bachhoaxanh", item.ingredient_name), "_blank", "noopener,noreferrer")`.
+  - **Caret ▾**: mở menu nhỏ liệt kê cả 4 platform theo thứ tự (Bách Hóa Xanh / Tiki / GrabMart / ShopeeFood); mỗi mục `window.open` URL tương ứng.
 - Menu dùng pattern dropdown đã có trong dự án (Base UI / shadcn) hoặc 1 popover đơn giản tự quản state mở/đóng (nhất quán với cách `expandedId` đang làm). Đóng menu sau khi chọn.
 - Item đã tick (`is_checked`) vẫn hiện nút mua (để mua lại được) — không ẩn.
 

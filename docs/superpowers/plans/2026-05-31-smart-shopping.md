@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add a per-ingredient "buy" control to the grocery list that opens Cooky → GrabMart → ShopeeFood search for that ingredient (priority order), so the user can navigate to a shopping platform to order it.
+**Goal:** Add a per-ingredient "buy" control to the grocery list that opens Bách Hóa Xanh → Tiki → GrabMart → ShopeeFood search for that ingredient (priority order), so the user can navigate to a shopping platform to order it.
 
-**Architecture:** Pure frontend, no backend/migration. A new config module `frontend/lib/shopping-links.ts` holds the ordered platform list + URL builders; `GroceryItemRow` (in `GroceryList.tsx`) gains a cart button (opens Cooky) plus a caret menu listing all three platforms. Opening is `window.open(url, "_blank", "noopener,noreferrer")`. Cooky has a real ingredient search URL; GrabMart/ShopeeFood are SPAs with no stable public search URL, so they open their homepage.
+**Architecture:** Pure frontend, no backend/migration. A new config module `frontend/lib/shopping-links.ts` holds the ordered platform list + URL builders; `GroceryItemRow` (in `GroceryList.tsx`) gains a cart button (opens Bách Hóa Xanh) plus a caret menu listing all four platforms. Opening is `window.open(url, "_blank", "noopener,noreferrer")`. Bách Hóa Xanh + Tiki have real keyword-search URLs; GrabMart/ShopeeFood are SPAs with no stable public search URL, so they open their homepage. (Cooky was dropped during design — its SSL cert is expired.)
 
 **Tech Stack:** Next.js 16 + React 19 + Tailwind v4 + Base UI, lucide-react icons.
 
@@ -39,7 +39,7 @@
 // platforms, so we open a search (Cooky) or the homepage (GrabMart/ShopeeFood)
 // in a new tab; the user completes the order on the platform.
 
-export type ShoppingPlatformId = "cooky" | "grabmart" | "shopeefood";
+export type ShoppingPlatformId = "bachhoaxanh" | "tiki" | "grabmart" | "shopeefood";
 
 export interface ShoppingPlatform {
   id: ShoppingPlatformId;
@@ -48,12 +48,19 @@ export interface ShoppingPlatform {
   searchUrl: (keyword: string) => string;
 }
 
-// Priority order: Cooky first (real ingredient search), then GrabMart, ShopeeFood.
+// Priority order: Bách Hóa Xanh + Tiki have real keyword search; GrabMart/ShopeeFood
+// have no stable public search URL so they open their homepage. (Cooky was dropped:
+// its SSL cert is expired → browser security warning.) All URLs curl-verified 200.
 export const SHOPPING_PLATFORMS: ShoppingPlatform[] = [
   {
-    id: "cooky",
-    label: "Cooky Market",
-    searchUrl: (kw) => `https://www.cooky.vn/market/search?q=${encodeURIComponent(kw)}`,
+    id: "bachhoaxanh",
+    label: "Bách Hóa Xanh",
+    searchUrl: (kw) => `https://www.bachhoaxanh.com/tim-kiem?key=${encodeURIComponent(kw)}`,
+  },
+  {
+    id: "tiki",
+    label: "Tiki",
+    searchUrl: (kw) => `https://tiki.vn/search?q=${encodeURIComponent(kw)}`,
   },
   {
     id: "grabmart",
@@ -84,13 +91,13 @@ export function openShopping(platformId: ShoppingPlatformId, ingredientName: str
 
 Run from `frontend/`:
 ```
-node -e "const kw='Nước mắm'; console.log('https://www.cooky.vn/market/search?q='+encodeURIComponent(kw))"
+node -e "const kw='Nước mắm'; console.log('https://www.bachhoaxanh.com/tim-kiem?key='+encodeURIComponent(kw))"
 ```
 Expected output exactly:
 ```
-https://www.cooky.vn/market/search?q=N%C6%B0%E1%BB%9Bc%20m%E1%BA%AFm
+https://www.bachhoaxanh.com/tim-kiem?key=N%C6%B0%E1%BB%9Bc%20m%E1%BA%AFm
 ```
-This confirms the Cooky template + encoding produce a valid URL (the module uses the same expression).
+This confirms the Bách Hóa Xanh template + encoding produce a valid URL (the module uses the same expression).
 
 - [ ] **Step 3: Typecheck**
 
@@ -175,9 +182,9 @@ Replace it with (adds the cart button + caret dropdown before the delete button)
           {/* Buy: cart opens Cooky; caret reveals all platforms in priority order */}
           <div className="relative flex items-center">
             <button
-              onClick={() => openShopping("cooky", item.ingredient_name)}
+              onClick={() => openShopping("bachhoaxanh", item.ingredient_name)}
               className="p-1 text-[#2D6A4F] hover:text-[#E85D26] transition-colors"
-              title={`Mua "${item.ingredient_name}" trên Cooky`}
+              title={`Mua "${item.ingredient_name}" trên Bách Hóa Xanh`}
             >
               <ShoppingCart className="w-3.5 h-3.5" />
             </button>
@@ -228,8 +235,8 @@ Expected: no NEW errors in `GroceryList.tsx` (ignore the known pre-existing file
 
 1. `cd frontend; npm run dev`; log in; open a meal plan with recipes; go to `/meal-plan/[id]/grocery`.
 2. Each grocery row shows a green cart icon + a small caret.
-3. Click the cart → a new tab opens `https://www.cooky.vn/market/search?q=<ingredient>` (the Cooky search for that ingredient).
-4. Click the caret → dropdown lists "Cooky Market", "GrabMart", "ShopeeFood" in that order. Clicking GrabMart opens `food.grab.com/vn/vi/`; ShopeeFood opens `shopeefood.vn/`. Menu closes after click and on outside-click.
+3. Click the cart → a new tab opens `https://www.bachhoaxanh.com/tim-kiem?key=<ingredient>` (the Bách Hóa Xanh search for that ingredient).
+4. Click the caret → dropdown lists "Bách Hóa Xanh", "Tiki", "GrabMart", "ShopeeFood" in that order. Tiki opens `tiki.vn/search?q=<ingredient>`; GrabMart opens `food.grab.com/vn/vi/`; ShopeeFood opens `shopeefood.vn/`. Menu closes after click and on outside-click.
 
 - [ ] **Step 6: Commit**
 
@@ -261,8 +268,8 @@ git commit -m "docs: session-state update for smart shopping"
 
 ## Self-Review notes
 
-- **Spec coverage:** config module + ordered platforms + `buildSearchUrl` → Task 1. Per-item cart (Cooky primary) + caret menu of all 3 in priority order → Task 2. `window.open` new tab noopener → `openShopping` (Task 1). Cooky search URL + GrabMart/ShopeeFood homepage fallback → Task 1 templates. Frontend-only, no backend/migration → confirmed. User-driven fallback (menu, no auto stock detection) → caret menu (Task 2).
-- **Type consistency:** `ShoppingPlatformId` / `openShopping(platformId, ingredientName)` used identically in Task 1 (def) and Task 2 (call); `item.ingredient_name` matches the `GroceryItem` type.
-- **Placeholder scan:** none — concrete code + commands throughout. URL templates are real best-effort values with documented homepage fallback; manual step verifies them live.
-- **Note for implementer:** if the Cooky `?q=` param turns out wrong when click-testing (Step 5), the only change needed is the Cooky `searchUrl` template in `shopping-links.ts` (e.g. fall back to `https://www.cooky.vn/market/search`); everything else is independent of the exact URL.
+- **Spec coverage:** config module + ordered platforms + `buildSearchUrl` → Task 1. Per-item cart (Bách Hóa Xanh primary) + caret menu of all 4 in priority order → Task 2. `window.open` new tab noopener → `openShopping` (Task 1). BHX/Tiki search URLs + GrabMart/ShopeeFood homepage → Task 1 templates. Frontend-only, no backend/migration → confirmed. User-driven fallback (menu, no auto stock detection) → caret menu (Task 2).
+- **Type consistency:** `ShoppingPlatformId` (`bachhoaxanh | tiki | grabmart | shopeefood`) / `openShopping(platformId, ingredientName)` used identically in Task 1 (def) and Task 2 (call); `item.ingredient_name` matches the `GroceryItem` type.
+- **Placeholder scan:** none — concrete code + commands throughout. All four URLs were curl-verified 200 + valid cert during design; manual step re-confirms live behavior.
+- **Note for implementer:** if a search param turns out wrong when click-testing (Step 5), the only change needed is that platform's `searchUrl` template in `shopping-links.ts` (e.g. fall back to its homepage); everything else is independent of the exact URL.
 ```
