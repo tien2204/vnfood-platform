@@ -59,7 +59,9 @@ export function useSpeech(): UseSpeech {
           urlRef.current = url;
           const audio = new Audio(url);
           audioRef.current = audio;
-          void audio.play();
+          // Ignore autoplay-policy rejections (e.g. first read before a gesture)
+          // so they don't surface as unhandled promise rejections.
+          void audio.play().catch(() => {});
         })
         .catch((err) => {
           if (controller.signal.aborted) return;
