@@ -1,69 +1,26 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 
 interface CountdownTimerProps {
   totalSeconds: number;
-  onComplete?: () => void;
-  autoStart?: boolean;
+  remaining: number;
+  running: boolean;
+  completed: boolean;
+  onToggle: () => void;
+  onReset: () => void;
 }
 
-function playBeep() {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const AudioCtx: typeof window.AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 800;
-    gain.gain.value = 0.3;
-    osc.start();
-    osc.stop(ctx.currentTime + 0.4);
-  } catch {}
-}
-
-export function CountdownTimer({ totalSeconds, onComplete, autoStart = false }: CountdownTimerProps) {
-  const [remaining, setRemaining] = useState(totalSeconds);
-  const [running, setRunning] = useState(autoStart);
-  const [completed, setCompleted] = useState(false);
-
-  useEffect(() => {
-    setRemaining(totalSeconds);
-    setRunning(false);
-    setCompleted(false);
-  }, [totalSeconds]);
-
-  useEffect(() => {
-    if (!running || remaining <= 0) return;
-    const id = setInterval(() => {
-      setRemaining((r) => {
-        if (r <= 1) {
-          clearInterval(id);
-          setRunning(false);
-          setCompleted(true);
-          playBeep();
-          if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-            new Notification('Hết giờ!', { body: 'Bước nấu ăn hiện tại đã xong' });
-          }
-          onComplete?.();
-          return 0;
-        }
-        return r - 1;
-      });
-    }, 1000);
-    return () => clearInterval(id);
-  }, [running, remaining, onComplete]);
-
-  const reset = useCallback(() => {
-    setRemaining(totalSeconds);
-    setRunning(false);
-    setCompleted(false);
-  }, [totalSeconds]);
-
+// Presentational only — all timer state (and the ticking interval, beep, and
+// notification) lives in CookingMode so a timer survives step navigation.
+export function CountdownTimer({
+  totalSeconds,
+  remaining,
+  running,
+  completed,
+  onToggle,
+  onReset,
+}: CountdownTimerProps) {
   const minutes = Math.floor(remaining / 60);
   const seconds = remaining % 60;
   const radius = 56;
@@ -100,7 +57,7 @@ export function CountdownTimer({ totalSeconds, onComplete, autoStart = false }: 
 
       <div className="flex gap-2">
         <button
-          onClick={() => setRunning((r) => !r)}
+          onClick={onToggle}
           disabled={completed && remaining === 0}
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-[#E85D26] text-[#E85D26] hover:bg-[#E85D26] hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm font-medium"
         >
@@ -108,7 +65,7 @@ export function CountdownTimer({ totalSeconds, onComplete, autoStart = false }: 
           {running ? 'Tạm dừng' : 'Bắt đầu'}
         </button>
         <button
-          onClick={reset}
+          onClick={onReset}
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-[#E8DDD4] text-[#7C6A56] hover:border-[#7C6A56] transition-colors text-sm"
         >
           <RotateCcw className="w-4 h-4" />

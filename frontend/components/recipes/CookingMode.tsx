@@ -11,8 +11,36 @@ interface CookingModeProps {
   onClose: () => void;
 }
 
+// A single timer that survives step navigation. Starting a timer on a new step
+// replaces any existing one (per spec: one persistent timer, not concurrent).
+type CookTimer = {
+  stepIndex: number;
+  totalSeconds: number;
+  remaining: number;
+  running: boolean;
+  completed: boolean;
+};
+
+function playBeep() {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const AudioCtx: typeof window.AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 800;
+    gain.gain.value = 0.3;
+    osc.start();
+    osc.stop(ctx.currentTime + 0.4);
+  } catch {}
+}
+
 export function CookingMode({ recipe, onClose }: CookingModeProps) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [timer, setTimer] = useState<CookTimer | null>(null);
   const steps = recipe.steps;
   const total = steps.length;
   const step = steps[currentStep];
@@ -24,6 +52,25 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
       Notification.requestPermission();
     }
   }, []);
+
+  // Single ticking interval, recreated only when running toggles.
+  useEffect(() => {
+    if (!timer?.running) return;
+    const id = setInterval(() => {
+      setTimer((t) => {
+        if (!t || !t.running) return t;
+        if (t.remaining <= 1) {
+          playBeep();
+          if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+            new Notification('Hết giờ!', { body: `Bước ${t.stepIndex + 1} đã xong` });
+          }
+          return { ...t, remaining: 0, running: false, completed: true };
+        }
+        return { ...t, remaining: t.remaining - 1 };
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [timer?.running]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -44,6 +91,26 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
   }, []);
+
+  const stepTimerSeconds = step.timer_seconds ?? 0;
+  const isCurrentStepTimer = timer?.stepIndex === currentStep;
+
+  function toggleCurrentTimer() {
+    setTimer((t) => {
+      if (t && t.stepIndex === currentStep) {
+        if (t.completed) {
+          return { stepIndex: currentStep, totalSeconds: stepTimerSeconds, remaining: stepTimerSeconds, running: true, completed: false };
+        }
+        return { ...t, running: !t.running };
+      }
+      // No timer for this step (or it belongs to another step) → start fresh, replacing any other.
+      return { stepIndex: currentStep, totalSeconds: stepTimerSeconds, remaining: stepTimerSeconds, running: true, completed: false };
+    });
+  }
+
+  function resetCurrentTimer() {
+    setTimer({ stepIndex: currentStep, totalSeconds: stepTimerSeconds, remaining: stepTimerSeconds, running: false, completed: false });
+  }
 
   const stepImageUrl = step.image_url
     ? step.image_url.startsWith('http')
@@ -92,20 +159,24 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
           </p>
 
           {/* Timer badge hint */}
-          {(step.timer_seconds ?? 0) > 0 && (
+          {stepTimerSeconds > 0 && (
             <div className="flex justify-center mb-2">
               <span className="inline-flex items-center gap-1.5 text-xs text-[#7C6A56] bg-[#F7F0E8] px-3 py-1 rounded-full border border-[#E8DDD4]">
                 <Clock className="w-3 h-3" />
-                {Math.floor(step.timer_seconds! / 60)}:{String(step.timer_seconds! % 60).padStart(2, '0')} phút
+                {Math.floor(stepTimerSeconds / 60)}:{String(stepTimerSeconds % 60).padStart(2, '0')} phút
               </span>
             </div>
           )}
 
-          {/* Countdown timer */}
-          {(step.timer_seconds ?? 0) > 0 && (
+          {/* Countdown timer (controlled by lifted state) */}
+          {stepTimerSeconds > 0 && (
             <CountdownTimer
-              key={`step-${currentStep}`}
-              totalSeconds={step.timer_seconds!}
+              totalSeconds={stepTimerSeconds}
+              remaining={isCurrentStepTimer ? timer!.remaining : stepTimerSeconds}
+              running={isCurrentStepTimer ? timer!.running : false}
+              completed={isCurrentStepTimer ? timer!.completed : false}
+              onToggle={toggleCurrentTimer}
+              onReset={resetCurrentTimer}
             />
           )}
 
@@ -120,6 +191,17 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
           )}
         </div>
       </div>
+
+      {/* Floating indicator: a timer is running on a different step */}
+      {timer && timer.stepIndex !== currentStep && (
+        <button
+          onClick={() => setCurrentStep(timer.stepIndex)}
+          className={`fixed bottom-24 right-4 z-50 inline-flex items-center gap-2 px-3 py-2 rounded-full shadow-lg text-sm font-semibold text-white transition-colors ${timer.completed ? 'bg-[#2D6A4F]' : 'bg-[#E85D26]'}`}
+        >
+          <Clock className="w-4 h-4" />
+          Bước {timer.stepIndex + 1} · {Math.floor(timer.remaining / 60)}:{String(timer.remaining % 60).padStart(2, '0')}
+        </button>
+      )}
 
       {/* Progress dots */}
       {total > 1 && (
