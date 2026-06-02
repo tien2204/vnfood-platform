@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     OPENAI_API_KEY: str = ""
+    OPENAI_TTS_MODEL: str = "gpt-4o-mini-tts"
+    OPENAI_TTS_VOICE: str = "alloy"
     UPLOAD_DIR: str = "uploads"
     MAX_UPLOAD_SIZE_MB: int = 10
     MODEL_WEIGHTS_DIR: str = "../model_weights"
