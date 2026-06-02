@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight, Clock } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Clock, Volume2, VolumeX, Mic, MicOff } from 'lucide-react';
 import { CountdownTimer } from './CountdownTimer';
 import { useWakeLock } from '@/lib/hooks/useWakeLock';
+import { useSpeech } from '@/lib/hooks/useSpeech';
+import { useVoiceCommands } from '@/lib/hooks/useVoiceCommands';
 import type { RecipeDetail } from '@/lib/types';
 
 interface CookingModeProps {
@@ -46,6 +48,29 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
   const step = steps[currentStep];
 
   useWakeLock(true);
+
+  const speech = useSpeech();
+
+  // Read "Bước N: <content>" aloud. Plain function (recreated each render) so it
+  // always closes over the latest speech + steps; not in any dependency array.
+  const speakStep = (i: number) => {
+    speech.speak(`Bước ${i + 1}: ${steps[i].content}`);
+  };
+
+  const voice = useVoiceCommands((cmd) => {
+    if (cmd === 'next') setCurrentStep((s) => Math.min(total - 1, s + 1));
+    else if (cmd === 'back') setCurrentStep((s) => Math.max(0, s - 1));
+    else if (cmd === 'repeat') speakStep(currentStep);
+  });
+
+  // Auto-read on step change and when TTS is (re)enabled.
+  useEffect(() => {
+    if (speech.supported && speech.enabled) speakStep(currentStep);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep, speech.enabled, speech.supported]);
+
+  // Stop talking when cooking mode unmounts.
+  useEffect(() => () => speech.cancel(), [speech]);
 
   useEffect(() => {
     if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
@@ -135,9 +160,36 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
         >
           {recipe.title}
         </span>
-        <span className="text-sm text-[#7C6A56] shrink-0">
-          {currentStep + 1} / {total}
-        </span>
+        <div className="flex items-center gap-2 shrink-0">
+          {speech.supported && (
+            <button
+              onClick={() => {
+                const next = !speech.enabled;
+                speech.setEnabled(next);
+                if (!next) speech.cancel();
+              }}
+              title={speech.enabled ? 'Tắt đọc bước' : 'Bật đọc bước'}
+              aria-pressed={speech.enabled}
+              className={`p-1.5 rounded-lg transition-colors ${speech.enabled ? 'text-[#E85D26] bg-[#E85D26]/10' : 'text-[#7C6A56] hover:text-[#E85D26]'}`}
+            >
+              {speech.enabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </button>
+          )}
+          {voice.supported && (
+            <button
+              onClick={voice.toggle}
+              title={voice.listening ? 'Tắt điều khiển giọng nói' : 'Bật điều khiển giọng nói'}
+              aria-pressed={voice.listening}
+              className={`inline-flex items-center gap-1 p-1.5 rounded-lg transition-colors ${voice.listening ? 'text-[#2D6A4F] bg-[#2D6A4F]/10' : 'text-[#7C6A56] hover:text-[#2D6A4F]'}`}
+            >
+              {voice.listening ? <Mic className="w-4 h-4 animate-pulse" /> : <MicOff className="w-4 h-4" />}
+              {voice.listening && <span className="text-[10px] font-semibold">Đang nghe</span>}
+            </button>
+          )}
+          <span className="text-sm text-[#7C6A56]">
+            {currentStep + 1} / {total}
+          </span>
+        </div>
       </div>
 
       {/* Body */}
