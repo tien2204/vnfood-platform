@@ -26,6 +26,7 @@ interface SpeechRecognitionLike {
   interimResults: boolean;
   onresult: ((event: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
   onend: (() => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
   start: () => void;
   stop: () => void;
 }
@@ -86,9 +87,24 @@ export function useVoiceCommands(onCommand: (cmd: VoiceCommand) => void): UseVoi
         }
       }
     };
+    rec.onerror = (event) => {
+      // Permission denied / no mic / service unavailable: stop the restart loop
+      // and reset the UI, otherwise the mic appears stuck "listening" forever.
+      if (
+        event.error === "not-allowed" ||
+        event.error === "service-not-allowed" ||
+        event.error === "audio-capture"
+      ) {
+        listeningRef.current = false;
+        setListening(false);
+      }
+    };
     recognitionRef.current = rec;
     return () => {
       listeningRef.current = false;
+      rec.onresult = null;
+      rec.onend = null;
+      rec.onerror = null;
       try {
         rec.stop();
       } catch {
