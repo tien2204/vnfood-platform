@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-03 (Cooking Mode Advanced + Voice — sub-project 4/6)
-**Branch:** `feat/canonical-recipes` (đã push remote)
-**Task đang làm:** Sub-project 4/6 (cooking mode + voice) xong, ready-to-merge. Còn 3 sub-project: personalization engine (embedding), substitution (curated+LLM), video. Chi tiết milestone ở cuối file.
+**Cập nhật lần cuối:** 2026-06-03 (Server-side Vietnamese TTS qua OpenAI)
+**Branch:** `feat/canonical-recipes` (đã push remote — local đang ahead, cần push lại)
+**Task đang làm:** Sub-project 4/6 (cooking mode + voice) + OpenAI TTS xong, ready-to-merge. Cần restart uvicorn để load `/api/v1/tts` + 2 setting TTS. Còn 3 sub-project: personalization engine (embedding), substitution (curated+LLM), video. Chi tiết milestone ở cuối file.
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -597,3 +597,23 @@ Nâng cấp cooking mode (Prompt 15 cơ bản) thành rảnh tay. **Frontend-onl
 - Timer bền: nhấc state khỏi component bị remount theo `key`; 1 interval ở parent, dep `[timer?.running]` + functional `setTimer` → không drift, không double-tick.
 
 **Còn lại:** browser smoke trên Chrome (tự đọc bước; mic "tiếp/lùi/đọc lại"; timer chạy nền + indicator). Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-02-cooking-mode-voice*`. 3 sub-project còn lại: personalization engine (embedding), substitution (curated+LLM), video.
+
+---
+
+### ✅ Server-side Vietnamese TTS (OpenAI) — 2026-06-03 (branch `feat/canonical-recipes`)
+
+**Lý do:** Web Speech `speechSynthesis` chỉ dùng voice CÀI SẴN trên máy; máy user (Chrome+Win11) không có voice tiếng Việt → đọc text Việt bằng giọng Anh. Không cài được voice Việt. → Chuyển synthesis lên server qua OpenAI (key + openai>=1.52 đã có sẵn). **OpenAI-only** (không hybrid). 4 task subagent-driven, final review opus = **ready to merge**.
+
+**Đã làm:**
+- `backend/app/core/config.py` — `OPENAI_TTS_MODEL="gpt-4o-mini-tts"`, `OPENAI_TTS_VOICE="alloy"`.
+- `backend/app/services/tts_service.py` — `synthesize_vi(text)->bytes`: cache file `uploads/tts/<sha1(model|voice|text)>.mp3` (cache-before-key-check), synth qua `AsyncOpenAI.audio.speech.with_streaming_response.create(...).stream_to_file(tmp)` + `os.replace` atomic, cap `MAX_TTS_CHARS=1000`. **Smoke thật chạy OK: 42624 bytes MP3, cache hit lần 2.**
+- `backend/app/api/v1/tts.py` + mount `/api/v1` — `GET /tts?text=` (yêu cầu login), map ValueError→400 / RuntimeError→503 / khác→502, trả `audio/mpeg` + `Cache-Control: public, max-age=86400`.
+- `frontend/lib/hooks/useSpeech.ts` — **viết lại ruột** (bỏ hết Web Speech): `speak` fetch blob qua `api.get('/tts',{params:{text},responseType:'blob',signal})` → `new Audio(objectURL).play().catch(()=>{})`; `cancel` abort fetch + pause + revoke URL. **Giữ nguyên interface** → `CookingMode` không đổi (giờ `supported=true` luôn → nút loa luôn hiện). STT giữ nguyên.
+
+**Key learnings:**
+- Web Speech TTS = ngõ cụt nếu máy thiếu voice ngôn ngữ đó (không nhúng được giọng riêng). Muốn giọng nhất quán mọi máy → cloud TTS qua backend.
+- `openai>=1.52` lấy audio bytes: `async with client.audio.speech.with_streaming_response.create(...) as r: await r.stream_to_file(path)` (API ổn định cho binary).
+- axios `baseURL` = `NEXT_PUBLIC_API_URL + "/api/v1"` → hook gọi `api.get("/tts")` ra `/api/v1/tts` (khớp mount). `responseType:"blob"` ↔ `Response(media_type="audio/mpeg")`. 401-refresh interceptor retry vẫn giữ `responseType` blob.
+- Cache 2 tầng (file server theo hash nội dung + browser Cache-Control) → recipe step ổn định nên gần như không re-synth/cost.
+
+**Còn lại:** restart uvicorn (load router + 2 setting mới) rồi browser smoke: cooking mode (đã login) → nghe **giọng Việt OpenAI**; đổi bước không chồng tiếng; tắt loa. Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-openai-tts*`.
