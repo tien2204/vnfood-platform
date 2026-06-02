@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import api from "@/lib/api";
 
 export interface UseSpeech {
   supported: boolean;
@@ -10,75 +11,64 @@ export interface UseSpeech {
   cancel: () => void;
 }
 
-/** Find an installed Vietnamese voice — by BCP-47 lang (vi/vi-VN) or by name
- * (e.g. "Google Tiếng Việt", "Microsoft HoaiMy"). Returns null if none. */
-function findVietnameseVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
-  return (
-    voices.find((v) => v.lang.toLowerCase().startsWith("vi")) ??
-    voices.find((v) => /viet|tiếng việt/i.test(v.name)) ??
-    null
-  );
-}
-
 /**
- * Text-to-speech for reading cooking steps aloud. Picks a Vietnamese voice if
- * the OS/browser provides one (voices load async, so we also listen for
- * `onvoiceschanged` AND re-pick lazily on the first `speak`). If the machine has
- * no Vietnamese voice we fall back to the default voice and warn once — the Web
- * Speech API can only use voices already installed; we cannot ship our own.
- * Each `speak` cancels the previous utterance so fast step changes don't overlap.
+ * Reads cooking steps aloud in Vietnamese via the backend `/tts` endpoint
+ * (OpenAI server-side synthesis) — no dependency on a locally installed voice.
+ * Fetches MP3 audio for the text and plays it; a new `speak` first cancels the
+ * previous audio and aborts any in-flight request so steps never overlap.
+ * `supported` is always true: synthesis happens on the server, and cooking mode
+ * is only reachable while logged in (so the authed request always has a token).
  */
 export function useSpeech(): UseSpeech {
-  const [supported] = useState(
-    () => typeof window !== "undefined" && "speechSynthesis" in window,
-  );
   const [enabled, setEnabled] = useState(true);
-  const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
-  const warnedRef = useRef(false);
-
-  useEffect(() => {
-    if (!supported) return;
-    const pick = () => {
-      voiceRef.current = findVietnameseVoice(window.speechSynthesis.getVoices());
-    };
-    pick();
-    window.speechSynthesis.onvoiceschanged = pick;
-    return () => {
-      window.speechSynthesis.onvoiceschanged = null;
-    };
-  }, [supported]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const urlRef = useRef<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const cancel = useCallback(() => {
-    if (supported) window.speechSynthesis.cancel();
-  }, [supported]);
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = "";
+      audioRef.current = null;
+    }
+    if (urlRef.current) {
+      URL.revokeObjectURL(urlRef.current);
+      urlRef.current = null;
+    }
+  }, []);
 
   const speak = useCallback(
     (text: string) => {
-      if (!supported || !enabled) return;
-      // Voices load asynchronously; if we don't have one yet, try again right
-      // now so the first step isn't read with the default (English) voice.
-      if (!voiceRef.current) {
-        voiceRef.current = findVietnameseVoice(window.speechSynthesis.getVoices());
-      }
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "vi-VN";
-      if (voiceRef.current) {
-        utterance.voice = voiceRef.current;
-      } else if (!warnedRef.current) {
-        warnedRef.current = true;
-        // eslint-disable-next-line no-console
-        console.warn(
-          "[useSpeech] Không có giọng đọc tiếng Việt trên trình duyệt/máy này — " +
-            "đang đọc bằng giọng mặc định. Cài gói giọng tiếng Việt (Windows: Cài đặt → " +
-            "Thời gian & ngôn ngữ → Giọng nói → Thêm giọng nói → Tiếng Việt) hoặc dùng " +
-            "Chrome khi có mạng ('Google Tiếng Việt').",
-        );
-      }
-      window.speechSynthesis.speak(utterance);
+      if (!enabled) return;
+      cancel();
+      const controller = new AbortController();
+      abortRef.current = controller;
+      api
+        .get("/tts", {
+          params: { text },
+          responseType: "blob",
+          signal: controller.signal,
+        })
+        .then((res) => {
+          if (controller.signal.aborted) return;
+          const url = URL.createObjectURL(res.data as Blob);
+          urlRef.current = url;
+          const audio = new Audio(url);
+          audioRef.current = audio;
+          void audio.play();
+        })
+        .catch((err) => {
+          if (controller.signal.aborted) return;
+          // eslint-disable-next-line no-console
+          console.warn("[useSpeech] TTS fetch failed:", err);
+        });
     },
-    [supported, enabled],
+    [enabled, cancel],
   );
 
-  return { supported, enabled, setEnabled, speak, cancel };
+  return { supported: true, enabled, setEnabled, speak, cancel };
 }
