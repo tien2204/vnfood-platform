@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-05-31 (Smart Shopping: keyword-clean + Tiki mặc định)
-**Branch:** `feat/canonical-recipes` (sẽ push lên remote)
-**Task đang làm:** Sub-project 6/6 (smart shopping) xong. Còn 4 sub-project: personalization engine, substitution, cooking-mode+voice, video. Chi tiết các milestone canonical/meal-plan/smart-shopping ở cuối file.
+**Cập nhật lần cuối:** 2026-06-03 (Cooking Mode Advanced + Voice — sub-project 4/6)
+**Branch:** `feat/canonical-recipes` (đã push remote)
+**Task đang làm:** Sub-project 4/6 (cooking mode + voice) xong, ready-to-merge. Còn 3 sub-project: personalization engine (embedding), substitution (curated+LLM), video. Chi tiết milestone ở cuối file.
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -574,3 +574,26 @@ Yêu cầu user: mở rộng VNFood với 7 feature → tách thành **6 sub-pro
 - Grocery `ingredient_name` mang nguyên cụm số lượng+qualifier → phải normalize keyword trước khi đẩy vào store search, nếu không BHX/Tiki ra 0 kết quả ("200 gram tôm" vs "thịt tôm"). Strip leading qty chỉ khi có số đứng trước (tránh ăn nhầm "lá", "củ" trong "lá chanh").
 
 **Spec/Plan:** `docs/superpowers/{specs,plans}/2026-05-31-smart-shopping*`. Còn lại 4 sub-project: personalization engine, substitution, cooking-mode+voice, video.
+
+---
+
+### ✅ Cooking Mode Advanced + Voice — 2026-06-03 (branch `feat/canonical-recipes`, sub-project 4/6)
+
+Nâng cấp cooking mode (Prompt 15 cơ bản) thành rảnh tay. **Frontend-only, Web Speech API, không backend/migration.** Hướng A: 3 unit tách bạch. 5 task qua subagent-driven, final review opus = **ready to merge**, tsc 0 lỗi mới, matchCommand node-test ALL PASS.
+
+**Đã làm:**
+- `frontend/lib/hooks/useVoiceCommands.ts` — `matchCommand(transcript)` pure (next/back/repeat, check repeat→back→next để "quay lại" không nhầm repeat) + hook STT bọc `SpeechRecognition` (vi-VN, continuous, auto-restart `onend`, `onerror` reset listening khi từ chối mic, onCommand giữ trong ref tránh rebuild). Mic **default OFF** (opt-in 1 chạm).
+- `frontend/lib/hooks/useSpeech.ts` — hook TTS bọc `speechSynthesis`, pick voice `vi-VN` (load async qua `onvoiceschanged`), cancel-before-speak. **Default ON**.
+- `frontend/components/recipes/CountdownTimer.tsx` — chuyển thành **controlled/presentational** (props `remaining/running/completed/onToggle/onReset`, bỏ state+interval+beep nội bộ).
+- `frontend/components/recipes/CookingMode.tsx` — nhấc timer lên state `CookTimer` (1 interval, **timer bền** qua chuyển bước, start cái mới thay cái cũ), indicator nổi khi timer thuộc bước khác (bấm → nhảy về), beep+Notification dời lên đây. Wire `useSpeech` (tự đọc "Bước N: …" khi đổi bước) + `useVoiceCommands` (next/back/repeat) + 2 nút header (loa/mic, ẩn khi browser không hỗ trợ).
+
+**Bug bắt được khi review (đã fix):**
+- STT: mic bị từ chối → `onend` restart loop throw nuốt lỗi → UI kẹt "đang nghe". Fix: thêm `onerror` reset state + null callbacks lúc cleanup.
+- **TTS bị cắt mỗi giây (CRITICAL):** `useEffect(()=>()=>speech.cancel(), [speech])` — `useSpeech()` trả object mới mỗi render → timer tick (mỗi 1s) re-render → cleanup chạy → `cancel()` cắt giọng đang đọc. Fix: destructure `cancel` (useCallback ổn định) rồi `[cancelSpeech]`.
+
+**Key learnings:**
+- Hook trả **object literal mới mỗi render** → đừng để cả object vào dep array của effect; destructure field ổn định (useCallback) ra rồi mới depend. Nếu không, effect cleanup chạy mỗi render (ở đây cắt TTS mỗi tick timer).
+- Web Speech: STT (`SpeechRecognition`) chỉ Chrome/Edge + cần net (stream lên Google) → feature-detect, fallback nút/phím; TTS (`speechSynthesis`) rộng hơn, voice vi-VN tùy OS. `getVoices()` load async → nghe `onvoiceschanged`.
+- Timer bền: nhấc state khỏi component bị remount theo `key`; 1 interval ở parent, dep `[timer?.running]` + functional `setTimer` → không drift, không double-tick.
+
+**Còn lại:** browser smoke trên Chrome (tự đọc bước; mic "tiếp/lùi/đọc lại"; timer chạy nền + indicator). Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-02-cooking-mode-voice*`. 3 sub-project còn lại: personalization engine (embedding), substitution (curated+LLM), video.
