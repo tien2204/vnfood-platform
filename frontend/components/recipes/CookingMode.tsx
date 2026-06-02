@@ -69,8 +69,12 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, speech.enabled, speech.supported]);
 
-  // Stop talking when cooking mode unmounts.
-  useEffect(() => () => speech.cancel(), [speech]);
+  // Stop talking when cooking mode unmounts. Depend on the stable `cancel`
+  // reference, NOT the `speech` object — useSpeech() returns a new object each
+  // render, so [speech] would re-run this cleanup (cancelling speech) on every
+  // timer-tick re-render and cut off the step being read aloud.
+  const { cancel: cancelSpeech } = speech;
+  useEffect(() => () => cancelSpeech(), [cancelSpeech]);
 
   useEffect(() => {
     if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
