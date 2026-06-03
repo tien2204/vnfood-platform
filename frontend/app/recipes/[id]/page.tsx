@@ -15,6 +15,7 @@ import { RecipeDetailClient } from "@/components/recipes/RecipeDetailClient";
 import { CanonicalBadge } from "@/components/recipes/CanonicalBadge";
 import { ManualReviewBadge } from "@/components/recipes/ManualReviewBadge";
 import { VariantsAccordion } from "@/components/recipes/VariantsAccordion";
+import { RecipeVideo } from "@/components/recipes/RecipeVideo";
 import type { ApiResponse, RecipeDetail } from "@/lib/types";
 
 const DIFFICULTY_LABEL = {
@@ -239,6 +240,9 @@ export default async function RecipeDetailPage({
             {recipe.description}
           </blockquote>
         )}
+
+        {/* YouTube tutorial video */}
+        <RecipeVideo url={recipe.video_url} />
 
         {/* Rating section */}
         <RatingSection

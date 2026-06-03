@@ -87,6 +87,7 @@ export interface RecipeDetail extends RecipeCard {
   refinement_notes: string | null;
   is_manually_reviewed: boolean;
   variants: RecipeMini[];
+  video_url?: string | null;
 }
 
 export interface Pagination {
