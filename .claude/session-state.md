@@ -4,9 +4,11 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-03 (MNMN video YouTube — code xong)
-**Branch:** `feat/canonical-recipes` (đã push remote — local đang ahead nhiều, cần push lại)
-**Task đang làm:** MNMN crawl→canonical + **video YouTube** CODE xong, verified sample. **Chờ user chạy full crawl** (cần cào lại để bắt video_url + 2 fix trước). Còn 2 sub-project: personalization (embedding), substitution (curated+LLM). Chi tiết cuối file.
+**Cập nhật lần cuối:** 2026-06-03 (MNMN full run xong + verify AI→recipe link)
+**Branch:** `feat/canonical-recipes` (push lại — local ahead ~54 commit)
+**Task đang làm:** MNMN crawl→canonical FULL đã chạy: **2615 canonical** (verbatim+video+metadata), harness PASS, đã fix 4 dup-title. **AI recognize→/recipes link verified 103/103** (17 món AI giờ trỏ canonical MNMN). Cần restart uvicorn để API trả data mới. Còn: thesis muc-luc cập nhật (cooking-mode/voice usecase + sửa "30 món"→103); 2 sub-project chưa làm: personalization (embedding), substitution (curated+LLM). Chi tiết cuối file.
+
+**Verify AI⊆lookup sau MNMN (2026-06-03):** `ai_service._find_canonical_for_class(slug)` query `canonical_dish_slug==slug AND is_canonical` → trả `canonical_recipe` (có `id`); frontend `RecognitionResult` link `/recipes/<id>`. Khớp theo SLUG động → sau MNMN tự trỏ canonical mới. Kiểm: **103/103 AI slug resolve** (nguồn: llm-canonical 76 + monngonmoingay 17 + curated 10), 0 đứt link.
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
