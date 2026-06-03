@@ -86,26 +86,42 @@ def parse_ingredients(node) -> list[str]:
     return [s.strip() for s in (node.get("recipeIngredient") or []) if isinstance(s, str) and s.strip()]
 
 
+# MNMN crams a whole section into one HowToStep: name=section title
+# ("Sơ Chế"/"Thực hiện"), text=all sub-steps inline ("Pha bột: ... Xào nhân: ...").
+# Split the blob at inline "<Label>:" markers that follow a sentence end so each
+# sub-step becomes its own step; keep the section title on the first piece.
+SUBSTEP_RE = re.compile(r"(?<=\.)\s+(?=[A-ZĐÀ-Ỹ][^:.\d]{1,24}:\s)")
+
+
+def _expand_step(name: str, text: str) -> list[str]:
+    name = (name or "").strip()
+    text = (text or "").strip()
+    if not text:
+        return [name] if name else []
+    parts = [p.strip() for p in SUBSTEP_RE.split(text) if p.strip()] or [text]
+    if name and name.lower() not in parts[0].lower():
+        parts[0] = f"{name}: {parts[0]}"
+    return parts
+
+
 def parse_steps(node) -> list[str]:
     ri = node.get("recipeInstructions")
     out: list[str] = []
     if isinstance(ri, str):
-        out = [x.strip() for x in re.split(r"[\r\n]+", ri) if x.strip()]
+        for x in re.split(r"[\r\n]+", ri):
+            out += _expand_step("", x)
     elif isinstance(ri, list):
         for it in ri:
-            if isinstance(it, str) and it.strip():
-                out.append(it.strip())
+            if isinstance(it, str):
+                out += _expand_step("", it)
             elif isinstance(it, dict):
                 if it.get("@type") == "HowToSection":
+                    sec = it.get("name") or ""
                     for st in it.get("itemListElement") or []:
                         if isinstance(st, dict):
-                            txt = (st.get("text") or st.get("name") or "").strip()
-                            if txt:
-                                out.append(txt)
+                            out += _expand_step(st.get("name") or sec, st.get("text") or st.get("name") or "")
                 else:
-                    txt = (it.get("text") or it.get("name") or "").strip()
-                    if txt:
-                        out.append(txt)
+                    out += _expand_step(it.get("name") or "", it.get("text") or "")
     return out
 
 
