@@ -8,6 +8,8 @@ export interface UseSpeech {
   enabled: boolean;
   setEnabled: (b: boolean) => void;
   speak: (text: string) => void;
+  /** Warm the server+browser cache for `text` without playing (e.g. next step). */
+  prefetch: (text: string) => void;
   cancel: () => void;
 }
 
@@ -72,5 +74,12 @@ export function useSpeech(): UseSpeech {
     [enabled, cancel],
   );
 
-  return { supported: true, enabled, setEnabled, speak, cancel };
+  // Fire-and-forget request to warm the cache for an upcoming step. Same `text`
+  // → same server cache key as `speak`, so the later `speak` resolves instantly.
+  const prefetch = useCallback((text: string) => {
+    if (!enabled) return;
+    api.get("/tts", { params: { text }, responseType: "blob" }).catch(() => {});
+  }, [enabled]);
+
+  return { supported: true, enabled, setEnabled, speak, prefetch, cancel };
 }

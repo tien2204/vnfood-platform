@@ -51,10 +51,14 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
 
   const speech = useSpeech();
 
-  // Read "Bước N: <content>" aloud. Plain function (recreated each render) so it
-  // always closes over the latest speech + steps; not in any dependency array.
+  // Build the spoken text for a step. Step content often already begins with
+  // "Bước N:" (canonical recipes), so strip a leading one before adding our own
+  // — otherwise TTS reads "Bước 2. Bước 2. ...". Plain function (recreated each
+  // render) so it always closes over the latest steps; not in any dep array.
+  const stepSpeechText = (i: number) =>
+    `Bước ${i + 1}. ${steps[i].content.replace(/^\s*bước\s*\d+\s*[:.\-]?\s*/i, '')}`;
   const speakStep = (i: number) => {
-    speech.speak(`Bước ${i + 1}: ${steps[i].content}`);
+    speech.speak(stepSpeechText(i));
   };
 
   const voice = useVoiceCommands((cmd) => {
@@ -63,9 +67,13 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
     else if (cmd === 'repeat') speakStep(currentStep);
   });
 
-  // Auto-read on step change and when TTS is (re)enabled.
+  // Auto-read on step change and when TTS is (re)enabled. Also warm the next
+  // step's audio so forward navigation reads near-instantly (no synth latency).
   useEffect(() => {
-    if (speech.supported && speech.enabled) speakStep(currentStep);
+    if (speech.supported && speech.enabled) {
+      speakStep(currentStep);
+      if (currentStep + 1 < total) speech.prefetch(stepSpeechText(currentStep + 1));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, speech.enabled, speech.supported]);
 
