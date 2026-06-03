@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-03 (MNMN crawl→canonical pipeline — code xong, chờ chạy full)
+**Cập nhật lần cuối:** 2026-06-03 (MNMN video YouTube — code xong)
 **Branch:** `feat/canonical-recipes` (đã push remote — local đang ahead nhiều, cần push lại)
-**Task đang làm:** Pipeline crawl-all monngonmoingay → canonical CODE xong + verified trên sample (harness PASS). **Chờ user chạy full** (4 lệnh ở dưới). Còn 3 sub-project: personalization (embedding), substitution (curated+LLM), video. Chi tiết milestone ở cuối file.
+**Task đang làm:** MNMN crawl→canonical + **video YouTube** CODE xong, verified sample. **Chờ user chạy full crawl** (cần cào lại để bắt video_url + 2 fix trước). Còn 2 sub-project: personalization (embedding), substitution (curated+LLM). Chi tiết cuối file.
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -667,3 +667,17 @@ $env:PYTHONUTF8=1; .venv\Scripts\python.exe -m scripts.canonicalize_mnmn
 $env:PYTHONUTF8=1; .venv\Scripts\python.exe -m scripts.verify_canonical_subset
 ```
 Dự kiến: +~2481 recipe browse; canonical 405 → ~1500-2300 (in `new=` vs `replaced=`). Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-{expand-canonical-everyday-dishes-design,mnmn-crawl-canonical}`.
+
+**Bugfix crawler (user review từng trang):**
+- `json.loads(strict=False)` — JSON-LD MNMN có newline thật trong string → trước skip nhầm RẤT NHIỀU trang.
+- Tách section-blob: MNMN gom cả mục vào 1 HowToStep (name=tiêu đề, text=các bước con inline) → `parse_steps` tách theo "<Nhãn>:" + giữ tiêu đề mục → đúng "Sơ Chế + Pha bột/Xào nhân/..." thay vì 3 blob.
+- ⚠️ Vì đổi parser → **xóa `mnmn_all.json` rồi cào lại** để lấy bản tách-bước + video.
+
+### ✅ MNMN video YouTube (sub-project #5 Video, phần MNMN) — 2026-06-03
+Mỗi recipe MNMN có video YouTube trong JSON-LD `Recipe.video.contentUrl`. 5 task subagent, tsc sạch.
+- `crawl_mnmn.parse_video` → `video_url` (YouTube watch URL) vào record.
+- **Migration 0010** `recipes.video_url VARCHAR(500)` + model field.
+- `import_mnmn`/`canonicalize_mnmn` mang theo `video_url`.
+- `RecipeDetailOut.video_url` + builder.
+- Frontend `components/recipes/RecipeVideo.tsx` (trích id YouTube watch/youtu.be/embed → iframe 16:9 responsive, null-safe), render trong `app/recipes/[id]/page.tsx` sau description. `types.ts` thêm `video_url`.
+- Chỉ món MNMN có video; recipe khác null → không hiện. Embed YouTube (không tải). Spec... fold trong `docs/superpowers/plans/2026-06-03-mnmn-video.md`.
