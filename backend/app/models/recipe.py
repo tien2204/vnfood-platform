@@ -58,6 +58,7 @@ class Recipe(Base):
     refinement_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_manually_reviewed: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False)
     meal_types: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
+    video_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     # Relationships
     author: Mapped["User"] = relationship(  # noqa: F821
