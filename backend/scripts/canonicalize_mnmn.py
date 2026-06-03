@@ -136,7 +136,7 @@ async def main() -> None:
                     description=(refined.get("description") or "")[:1000],
                     cooking_time=refined.get("cooking_time") or winner.cooking_time,
                     servings=refined.get("servings") or winner.servings,
-                    difficulty=refined.get("difficulty") or "medium",
+                    difficulty=refined.get("difficulty") or winner.difficulty or "medium",
                     image_url=winner.image_url,
                     video_url=winner.video_url,
                     keyword=winner.keyword,

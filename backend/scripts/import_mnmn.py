@@ -58,6 +58,9 @@ async def main() -> None:
                 canonical_dish_slug=slug,
                 image_url=rec.get("image_url") or None,
                 video_url=rec.get("video_url"),
+                cooking_time=rec.get("cooking_time"),
+                servings=rec.get("servings"),
+                difficulty=rec.get("difficulty"),
                 is_canonical=False,
                 is_dessert=False,
             ))

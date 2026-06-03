@@ -148,6 +148,41 @@ def parse_video(node):
     return None
 
 
+def parse_servings(node):
+    ry = node.get("recipeYield")
+    if isinstance(ry, list):
+        ry = ry[0] if ry else None
+    if ry is None:
+        return None
+    mt = re.search(r"\d+", str(ry))
+    return int(mt.group()) if mt else None
+
+
+def parse_minutes(node):
+    for k in ("totalTime", "cookTime", "performTime"):
+        v = node.get(k)
+        if isinstance(v, str):
+            h = re.search(r"(\d+)H", v)
+            mi = re.search(r"(\d+)M", v)
+            mins = (int(h.group(1)) * 60 if h else 0) + (int(mi.group(1)) if mi else 0)
+            if mins:
+                return mins
+    return None
+
+
+_DIFF_MAP = {"dễ": "easy", "de": "easy", "trung bình": "medium",
+             "trung binh": "medium", "khó": "hard", "kho": "hard"}
+_DIFF_RE = re.compile(r"Đ[ộo]\s*kh[oó]\s*:?\s*</span>\s*<strong>(.*?)</strong>", re.I | re.S)
+
+
+def parse_difficulty(html):
+    mt = _DIFF_RE.search(html)
+    if not mt:
+        return None
+    raw = re.sub(r"<[^>]+>", "", mt.group(1)).strip().lower()
+    return _DIFF_MAP.get(raw)
+
+
 def scrape(client: httpx.Client, url: str) -> dict | None:
     html = get(client, url)
     if not html:
@@ -175,6 +210,9 @@ def scrape(client: httpx.Client, url: str) -> dict | None:
             "instructions": parse_steps(node),
             "image_url": parse_image(node),
             "video_url": parse_video(node),
+            "servings": parse_servings(node),
+            "cooking_time": parse_minutes(node),
+            "difficulty": parse_difficulty(html),
             "description": (node.get("description") or "")[:2000],
             "src": "monngonmoingay",
         }
