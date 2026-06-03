@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-03 (TTS đổi sang edge-tts giọng Việt native)
-**Branch:** `feat/canonical-recipes` (đã push remote — local đang ahead, cần push lại)
-**Task đang làm:** Cooking mode + voice + TTS (edge-tts HoaiMy) xong, ready-to-merge. Cần `pip install` đã làm + **restart uvicorn** để load engine mới. Còn 3 sub-project: personalization engine (embedding), substitution (curated+LLM), video. Chi tiết milestone ở cuối file.
+**Cập nhật lần cuối:** 2026-06-03 (MNMN crawl→canonical pipeline — code xong, chờ chạy full)
+**Branch:** `feat/canonical-recipes` (đã push remote — local đang ahead nhiều, cần push lại)
+**Task đang làm:** Pipeline crawl-all monngonmoingay → canonical CODE xong + verified trên sample (harness PASS). **Chờ user chạy full** (4 lệnh ở dưới). Còn 3 sub-project: personalization (embedding), substitution (curated+LLM), video. Chi tiết milestone ở cuối file.
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -639,3 +639,31 @@ Nâng cấp cooking mode (Prompt 15 cơ bản) thành rảnh tay. **Frontend-onl
 - edge-tts hay `NoAudioReceived` lúc connect đầu (transient) → **phải retry** mới ổn cho production.
 
 **Còn lại:** restart uvicorn → browser nghe giọng HoaiMy. Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-edge-tts*`.
+
+---
+
+### ✅ MNMN crawl → canonical expansion (CODE) — 2026-06-03 (branch `feat/canonical-recipes`)
+
+Cào **toàn bộ monngonmoingay.com** (~2481 công thức, `monan-sitemap1..13`) → import thô → auto-discover món MỚI → LLM judge+refine thành canonical + `meal_types`; **trùng 405 → thay thế** (demote cũ, giữ slug). Lookup-only. 6 task subagent-driven, opus review replace-path, **harness PASS** (409 canonical sample, 103/103 AI, 0 dup).
+
+**Đã làm (code, verified trên sample nhỏ):**
+- **Migration 0009** `recipes.meal_types ARRAY(String)` nullable + model field.
+- `scripts/crawl_mnmn.py` — httpx, `sitemap_index→monan-sitemap*` (KHÔNG cachnau=12), parse JSON-LD `Recipe` (HowToStep/HowToSection, fallback `.name`), lọc trang không-Recipe, resumable `mnmn_all.json`, `MNMN_LIMIT`. (Live: 2312 URL, scrape OK.)
+- `scripts/import_mnmn.py` — import `source=monngonmoingay`, `canonical_dish_slug=slugify(title)[:80]`, idempotent qua `cookpad_url`.
+- `scripts/canonicalize_mnmn.py` — gom theo slug, reuse `pipe.judge_candidates/refine_recipe`, `classify_meal_types` (gpt-4o-mini), promote canonical; **slug∈405 → demote cũ (is_canonical=False, KHÔNG xóa) + promote MNMN** (atomic 1 txn); idempotent `_mnmn_canon_done.json` (self-heal qua `existing_canonical_id` source-agnostic); per-slug try/except; cost ceiling.
+- `RecipeDetailOut.meal_types` + builder kwarg.
+
+**Key learnings:**
+- MNMN recipe nằm ở `monan-sitemap*` (~2481), KHÔNG phải `cachnau` (12 video). `thong-tin-huu-ich-*` = bài viết → rớt ở filter JSON-LD Recipe.
+- MNMN curated (1 recipe/món) → 1 bản đủ làm canonical sau refine; không cần ngưỡng ≥3 như Cookpad UGC.
+- Replace-on-overlap an toàn: demote (không xóa) giữ FK + slug → AI⊆lookup + 1-canonical/slug. Idempotency self-heal vì `existing_canonical_id` match cả llm-canonical cũ.
+- context-mode chặn curl/WebFetch → dùng `ctx_execute` (JS fetch) để verify sitemap.
+
+**Chờ user chạy FULL** (từ `backend/`, ~hàng giờ + OpenAI cost, đều resumable):
+```
+$env:PYTHONUTF8=1; .venv\Scripts\python.exe -m scripts.crawl_mnmn
+$env:PYTHONUTF8=1; .venv\Scripts\python.exe -m scripts.import_mnmn
+$env:PYTHONUTF8=1; .venv\Scripts\python.exe -m scripts.canonicalize_mnmn
+$env:PYTHONUTF8=1; .venv\Scripts\python.exe -m scripts.verify_canonical_subset
+```
+Dự kiến: +~2481 recipe browse; canonical 405 → ~1500-2300 (in `new=` vs `replaced=`). Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-{expand-canonical-everyday-dishes-design,mnmn-crawl-canonical}`.
