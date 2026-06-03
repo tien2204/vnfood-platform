@@ -98,10 +98,14 @@ def parse_steps(node) -> list[str]:
             elif isinstance(it, dict):
                 if it.get("@type") == "HowToSection":
                     for st in it.get("itemListElement") or []:
-                        if isinstance(st, dict) and (st.get("text") or "").strip():
-                            out.append(st["text"].strip())
-                elif (it.get("text") or "").strip():
-                    out.append(it["text"].strip())
+                        if isinstance(st, dict):
+                            txt = (st.get("text") or st.get("name") or "").strip()
+                            if txt:
+                                out.append(txt)
+                else:
+                    txt = (it.get("text") or it.get("name") or "").strip()
+                    if txt:
+                        out.append(txt)
     return out
 
 
