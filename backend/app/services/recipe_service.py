@@ -1,3 +1,4 @@
+import re
 import uuid
 from typing import Optional
 
@@ -153,6 +154,78 @@ async def list_recipes(
     total_pages = (total + limit - 1) // limit if total > 0 else 0
     pagination = PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
     return cards, pagination
+
+
+def _title_or_tsquery(title: str) -> str:
+    """OR tsquery from a title's word tokens (>=2 chars), deduped, e.g. 'pho | bo'."""
+    toks = [t for t in re.findall(r"[0-9a-zA-Zà-ỹÀ-Ỹ]+", (title or "").lower()) if len(t) >= 2]
+    return " | ".join(dict.fromkeys(toks))
+
+
+async def get_related_recipes(
+    db: AsyncSession,
+    recipe_id: uuid.UUID,
+    limit: int = 6,
+    current_user: Optional[User] = None,
+) -> list[RecipeCardOut]:
+    """Canonical recipes similar to `recipe_id` by title FTS + slug/keyword boost."""
+    limit = min(max(limit, 1), 12)
+    recipe = (await db.execute(select(Recipe).where(Recipe.id == recipe_id))).scalar_one_or_none()
+    if recipe is None:
+        return []
+
+    orq = _title_or_tsquery(recipe.title)
+    slug = recipe.canonical_dish_slug or ""
+    kw = recipe.keyword or ""
+
+    rows: list = []
+    seen: set[uuid.UUID] = {recipe.id}
+
+    def _collect(result_rows) -> None:
+        for r in result_rows:
+            if r[0].id in seen:
+                continue
+            seen.add(r[0].id)
+            rows.append(r)
+
+    def _base():
+        return _base_approved_query().where(
+            Recipe.is_canonical.is_(True),
+            Recipe.is_dessert.is_(False),
+            Recipe.id != recipe.id,
+        )
+
+    if orq:
+        stmt = (
+            _base()
+            .where(
+                text("to_tsvector('simple', recipes.title) @@ to_tsquery('simple', :worq)").bindparams(worq=orq)
+            )
+            .order_by(
+                text("(recipes.canonical_dish_slug = :bslug) DESC").bindparams(bslug=slug),
+                text("(recipes.keyword IS NOT NULL AND recipes.keyword = :bkw) DESC").bindparams(bkw=kw),
+                text(
+                    "ts_rank(to_tsvector('simple', recipes.title), to_tsquery('simple', :borq)) DESC"
+                ).bindparams(borq=orq),
+                Recipe.save_count.desc(),
+            )
+            .limit(limit)
+        )
+        _collect((await db.execute(stmt)).all())
+
+    if len(rows) < limit and slug:
+        fb = _base().where(Recipe.id.notin_(list(seen)), Recipe.canonical_dish_slug == slug).limit(limit - len(rows))
+        _collect((await db.execute(fb)).all())
+    if len(rows) < limit and kw:
+        fb = _base().where(Recipe.id.notin_(list(seen)), Recipe.keyword == kw).limit(limit - len(rows))
+        _collect((await db.execute(fb)).all())
+    if len(rows) < limit:
+        fb = _base().where(Recipe.id.notin_(list(seen))).order_by(Recipe.save_count.desc()).limit(limit - len(rows))
+        _collect((await db.execute(fb)).all())
+
+    rows = rows[:limit]
+    saved_ids = await _get_saved_ids(db, [r[0].id for r in rows], current_user)
+    return [_build_recipe_card(r[0], r[1], saved_ids, current_user) for r in rows]
 
 
 async def get_recipe_detail(
