@@ -57,6 +57,7 @@ async def main() -> None:
                 cookpad_url=url,
                 canonical_dish_slug=slug,
                 image_url=rec.get("image_url") or None,
+                video_url=rec.get("video_url"),
                 is_canonical=False,
                 is_dessert=False,
             ))

@@ -138,6 +138,7 @@ async def main() -> None:
                     servings=refined.get("servings") or winner.servings,
                     difficulty=refined.get("difficulty") or "medium",
                     image_url=winner.image_url,
+                    video_url=winner.video_url,
                     keyword=winner.keyword,
                     source="llm-canonical",
                     status="approved",
