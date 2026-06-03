@@ -127,7 +127,9 @@ def scrape(client: httpx.Client, url: str) -> dict | None:
         return None
     for block in LDJSON_RE.findall(html):
         try:
-            data = json.loads(block.strip())
+            # strict=False: MNMN's JSON-LD has raw newlines/tabs inside string
+            # literals (e.g. recipeInstructions) which strict JSON rejects.
+            data = json.loads(block.strip(), strict=False)
         except Exception:
             continue
         node = find_recipe_node(data)
