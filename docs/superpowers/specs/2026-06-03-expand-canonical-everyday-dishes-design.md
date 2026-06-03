@@ -1,102 +1,91 @@
-# Thiết kế — Mở rộng catalog canonical: ~200 món Việt hằng ngày
+# Thiết kế — Mở rộng catalog canonical bằng crawl toàn bộ monngonmoingay.com
 
 **Ngày:** 2026-06-03
 **Branch:** `feat/canonical-recipes`
-**Bối cảnh:** Catalog tra cứu hiện có **405 canonical** (mỗi món 1 công thức authoritative), trong đó 103 món AI nhận diện ⊆ canonical. User muốn **cào + chuẩn hóa thêm ~200 món Việt hằng ngày** (ăn sáng/trưa/tối) để tăng độ phủ phần tra cứu. Tái dùng pipeline canonical sẵn có.
+**Bối cảnh:** Catalog tra cứu hiện có **405 canonical** (mỗi món 1 công thức authoritative; 103 món AI ⊆ canonical). User muốn **cào toàn bộ monngonmoingay.com** (MNMN) — nguồn curated chuyên nghiệp, món Việt hằng ngày — rồi auto-discover + chuẩn hóa thành canonical mới. Tăng độ phủ phần tra cứu, lookup-only.
+
+> **Pivot (đã thống nhất):** ban đầu định curated ~200 món + Cookpad. Đổi sang **crawl-all MNMN + auto-discover** vì MNMN structured (JSON-LD), server-rendered (httpx, không Playwright), **curated 1 công thức/món** nên mỗi recipe MNMN authoritative → đủ làm canonical sau khi LLM polish. Cookpad supplement HOÃN.
 
 ---
 
 ## 1. Mục tiêu
-Thêm **~200 món Việt phổ biến hằng ngày** vào catalog canonical (mỗi món 1 công thức chuẩn), ưu tiên món nấu cho **bữa sáng / trưa / tối**. Mỗi món mới gắn thuộc tính **`meal_types`** (sáng/trưa/tối) để sau lọc/gợi ý theo bữa.
+Cào **toàn bộ** công thức MNMN (~2000+), import thô (browse), và **auto-discover** các món **MỚI** (chưa có trong 405 canonical) → mỗi món 1 canonical (LLM refine bản MNMN) + gắn **`meal_types`** (sáng/trưa/tối). Lookup-only.
 
 ## 2. Quyết định đã chốt (với user)
-- **Cách chọn danh sách:** curated — Claude sinh danh sách ~200 món, **tự lọc trùng** với 405 canonical + 103 AI-class; user duyệt/chỉnh.
-- **Quy mô:** ~200 món (cào trước, dedup có thể giảm số canonical thực tế).
-- **Món cào quá ít candidate (< ngưỡng):** **LLM-curated fallback** (sinh công thức như 10 món curated cũ) — luôn có 1 canonical, không bỏ món.
-- **`meal_types`:** thêm **cột DB mới** (migration), populate cho món mới. 405 cũ để NULL (backfill sau, ngoài scope).
-- **Lookup-only:** món mới KHÔNG nhận diện-bằng-ảnh (model AI giữ 103 class, không retrain). Bất biến **AI ⊆ lookup** vẫn đúng (chỉ THÊM vào lookup).
-- **Tiếp cận:** A — tái dùng pipeline canonical, đổi "driver" (danh sách curated thay vì gap của 103 AI-class).
-- **Nguồn cào: 2 nguồn — monngonmoingay.com ƯU TIÊN, Cookpad bổ sung.** Mỗi món lấy candidate từ MNMN trước (chất lượng cao, structured), thiếu thì bù Cookpad, vẫn thiếu → LLM-curated fallback.
-
-### Nguồn dữ liệu (đã verify trực tiếp 2026-06-03)
-| Nguồn | Vai trò | Lý do |
-|---|---|---|
-| **monngonmoingay.com** | **Primary** | JSON-LD `Recipe` đầy đủ (recipeIngredient/recipeInstructions HowToStep/ảnh), **server-rendered → httpx lấy được, KHÔNG cần Playwright**, có sitemap liệt kê toàn bộ công thức, curated chuyên nghiệp, đúng món hằng ngày. |
-| **Cookpad (cookpad.com/vn)** | Supplement | Volume lớn (UGC); reuse `crawl_general_recipes.py` (Playwright). Dùng khi MNMN thiếu candidate cho món. |
-| cooky.vn | Loại | Cert SSL hỏng (curl fail cả `-k`). |
-| bachhoaxanh.com/vao-bep | Loại (tạm) | robots cho phép nhưng client-rendered (JS) → cần Playwright, chưa cần. |
-| savourydays / esheepkitchen | Loại | Bánh ngọt-only / domain parked. |
+- **Nguồn:** MNMN-only pass này (`monngonmoingay.com`). Cookpad supplement **hoãn** (gần như mỗi món MNMN 1 candidate → bật Cookpad = hàng trăm lượt Playwright, nhiều giờ).
+- **Quy mô:** cào HẾT MNMN; số canonical mới = số món MNMN khác 405 (auto, không cap). Dự kiến +vài trăm món, +~2000 recipe browse. LLM ~$5-15.
+- **Chuẩn hóa:** mỗi recipe MNMN = 1 món (title = tên món, đã sạch). Món MỚI → **LLM refine** (KHÔNG cần ngưỡng ≥3 candidate; MNMN curated là authoritative). Món có >1 recipe MNMN cùng slug → judge+refine chọn bản tốt nhất.
+- **`meal_types`:** cột DB mới (migration), **LLM tag** mỗi món mới (gộp vào call refine).
+- **Lookup-only:** không retrain/đụng model AI; không thêm vào `CLASS_DISPLAY_NAMES`. Bất biến **AI ⊆ lookup** vẫn đúng.
+- **Lọc rác:** chỉ nhận trang có JSON-LD `@type=Recipe` + `recipeIngredient` không rỗng (loại "thực đơn tuần/mẹo vặt").
 
 ### Non-goals
-- Không retrain/đụng model AI; món mới không thêm vào `CLASS_DISPLAY_NAMES`.
-- Không xây UI lọc-theo-bữa trong task này (chỉ LƯU `meal_types` + expose ở schema; trang lọc/gợi ý = việc sau).
-- Không backfill `meal_types` cho 405 món cũ.
-- Không đụng frontend ngoài việc schema trả thêm `meal_types`.
+- Không Cookpad pass này; không curated-200 list (món đến từ MNMN).
+- Không retrain AI; không backfill `meal_types` cho 405 cũ.
+- Không xây UI lọc-theo-bữa (chỉ LƯU + expose schema).
+- Không đụng canonical cũ (món MNMN trùng 405 → skip, giữ raw).
+
+### Nguồn dữ liệu (đã verify trực tiếp 2026-06-03)
+| Nguồn | Vai trò | Bằng chứng |
+|---|---|---|
+| **monngonmoingay.com** | **Engine** | JSON-LD `Recipe` đầy đủ (recipeIngredient/recipeInstructions HowToStep/ảnh/rating); server-rendered → httpx OK, không Playwright; `sitemap_index.xml` (recipe ở `cachnau-sitemap*.xml`); robots chỉ chặn `/wp-admin/`. |
+| Cookpad | Hoãn | UGC/Playwright; để đợt sau nếu cần bù món MNMN thiếu. |
+| cooky.vn / bachhoaxanh / savourydays / esheep | Loại | cert hỏng / JS-rendered / bánh ngọt-only / parked. |
 
 ## 3. Kiến trúc & components
 
-### 3.1 Danh sách curated — `backend/scripts/data/new_dishes.py`
-- `NEW_DISHES: list[dict]`, mỗi phần tử `{ "slug": str, "name": str, "meals": list[str] }` với `meals ⊆ {"sang","trua","toi"}`.
-- ~200 món Việt hằng ngày, nhóm theo bữa khi soạn (cơm/kho/xào/canh/luộc/chiên; bún/phở/cháo/xôi/bánh mì ăn sáng; món nhậu/lẩu bữa tối…).
-- `slug` = slugify tên (NFKD strip dấu, `đ→d`, kebab-case). **Tự lọc trùng**: bỏ slug đã ∈ 405 canonical hoặc ∈ `CLASS_DISPLAY_NAMES` (so khớp normalized name).
-- File này user review trước khi crawl.
-
-### 3.2 Migration + model — `meal_types`
+### 3.1 Migration + model — `meal_types`
 - **Migration 0009** (`down_revision="0008"`): `op.add_column("recipes", sa.Column("meal_types", postgresql.ARRAY(sa.String()), nullable=True))`.
-- `backend/app/models/recipe.py`: `meal_types: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)`.
+- `app/models/recipe.py`: `meal_types: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)`.
 
-### 3.3a Crawl PRIMARY — `backend/scripts/crawl_mnmn.py` (monngonmoingay)
-- **Index 1 lần:** tải `sitemap_index.xml` → lọc các sitemap chứa công thức (vd `cachnau-sitemap*.xml`) → gom toàn bộ URL công thức → build `slug→url` (cache `cookpad_recipe/_mnmn_index.json`).
-- **Match món:** với mỗi `NEW_DISHES` món, tìm URL có slug khớp tên chuẩn hóa (normalized prefix/substring; lấy tối đa `MAX_PER_DISH=15` URL khớp).
-- **Scrape:** httpx GET (UA Chrome) từng URL → parse **JSON-LD `Recipe`** (`name`, `recipeIngredient[]`, `recipeInstructions[].text` (HowToStep), `image`, `description`). KHÔNG cần Playwright.
-- Lưu `cookpad_recipe/new_<slug>.json` với mỗi record gắn `"src":"monngonmoingay"` + `url`. **Resumable** per-file. `SLEEP_SEC=2` (polite). Robots chỉ chặn `/wp-admin/` → OK.
+### 3.2 Crawl — `backend/scripts/crawl_mnmn.py` (httpx, không Playwright)
+- **Enumerate:** GET `sitemap_index.xml` → chọn sub-sitemap công thức (`cachnau-sitemap*.xml`; nếu không chắc, fetch các sub-sitemap rồi lọc bằng JSON-LD Recipe ở bước scrape) → gom toàn bộ `<loc>` URL. Cache `cookpad_recipe/_mnmn_urls.json`.
+- **Scrape:** với mỗi URL: httpx GET (UA Chrome, timeout, retry nhẹ) → trích block `<script type="application/ld+json">` → parse JSON (xử lý cả `@graph`) → tìm node `@type` chứa `Recipe`. Lấy `name`, `recipeIngredient[]`, `recipeInstructions[].text` (HowToStep; cũng hỗ trợ chuỗi/HTML), `image`, `description`.
+- **Lọc:** bỏ trang không có Recipe hoặc `recipeIngredient` rỗng.
+- **Lưu:** ghi dần `cookpad_recipe/mnmn_all.json` (list record: `{name, url, ingredients[], instructions[], image, description, src:"monngonmoingay"}`). **Resumable** (skip url đã có). `SLEEP_SEC≈1.5` (polite).
 
-### 3.3b Crawl SUPPLEMENT — `backend/scripts/crawl_new_dishes.py` (Cookpad)
-- Chỉ chạy cho món mà MNMN trả **< `MIN_REAL=3`** candidate.
-- Phỏng theo `crawl_missing_dishes.py`, driver = các món thiếu: `search_all_recipes(page, name)` (Playwright) → `title_matches` → scrape tối đa `MAX_PER_DISH` → **append** vào cùng `cookpad_recipe/new_<slug>.json` với `"src":"cookpad"`. Resumable, `SLEEP_SEC=4`, warm-up homepage.
+### 3.3 Import thô — `backend/scripts/import_mnmn.py`
+- Đọc `mnmn_all.json`; mỗi record insert `Recipe`: `source="monngonmoingay"`, `cookpad_url=<MNMN url>` (tái dùng cột làm khóa dedup), `is_canonical=False`, `canonical_dish_slug = slugify(name)`. Parse ingredients (RecipeIngredient rows) + steps (RecipeStep rows) như import hiện có.
+- **Idempotent** qua `cookpad_url` (rerun không nhân đôi).
+- `slugify`: NFKD strip dấu, `đ→d`, lowercase, `[^a-z0-9]+ → -`, trim/collapse.
 
-### 3.4 Import thô — `backend/scripts/import_new_crawled.py`
-- Đọc `new_<slug>.json` (gồm cả record `src=monngonmoingay` lẫn `cookpad`), insert `Recipe`: `source` = `"monngonmoingay"` | `"cookpad"` theo record, `canonical_dish_slug=slug`, `is_canonical=False`. Idempotent qua URL gốc (`cookpad_url`/`source_url`). Parse ingredients/steps theo format mỗi nguồn (MNMN: list JSON-LD; Cookpad: như import cũ).
+### 3.4 Auto-discover + canonical — `backend/scripts/canonicalize_mnmn.py`
+- Tải set slug đã canonical (405) + slug AI (`CLASS_DISPLAY_NAMES`) → `existing`.
+- Gom recipe MNMN theo `canonical_dish_slug`. Với mỗi slug **∉ existing**:
+  - Candidates = recipe MNMN (1+ bản) cùng slug.
+  - **LLM refine** (reuse logic `fill_missing_canonical`/`select_canonical_recipes`): judge+chọn bản tốt nhất (nếu >1) + refine title/ingredients/steps về chuẩn; cùng call trả **`meal_types`** (subset `["sang","trua","toi"]`).
+  - Insert/đánh dấu 1 canonical: `is_canonical=True`, `source="llm-canonical"`, `canonical_dish_slug=slug`, `meal_types`, `refinement_notes`, `llm_judge_score/reason`.
+  - **Idempotent:** skip slug đã có canonical.
+- Cost cap + log tiến độ; resumable (DB là nguồn trạng thái).
 
-### 3.5 Chuẩn hóa — `backend/scripts/canonicalize_new_dishes.py`
-- Phỏng theo `fill_missing_canonical.py`: cho mỗi slug ∈ NEW_DISHES:
-  - Gom candidate = recipes `canonical_dish_slug==slug AND is_canonical==False`.
-  - **≥ `MIN_REAL=3` candidate** → LLM **judge+refine** (reuse logic trong `fill_missing_canonical`/`select_canonical_recipes`) → chọn+refine 1 canonical, `source="llm-canonical"`.
-  - **< MIN_REAL** → **LLM-curated fallback**: sinh công thức mới (như `generate_dish_recipes`), insert `source="curated-canonical"`.
-  - Set `is_canonical=True`, `canonical_dish_slug=slug`, **`meal_types`** từ `NEW_DISHES[slug].meals`.
-  - Idempotent: skip slug đã có canonical.
-
-### 3.6 Schema expose (tối thiểu)
-- `backend/app/schemas/recipe.py`: thêm `meal_types: list[str] | None = None` vào **`RecipeDetailOut`** (chỉ detail, không thêm vào card để giữ nhẹ). Builder detail truyền field từ `recipe.meal_types`. **Không** thêm endpoint/filter mới.
+### 3.5 Schema expose (tối thiểu)
+- `app/schemas/recipe.py`: thêm `meal_types: list[str] | None = None` vào **`RecipeDetailOut`**; builder detail truyền `recipe.meal_types`. Không thêm endpoint/filter.
 
 ## 4. Data flow
 ```
-new_dishes.py (curated, deduped)
-  → crawl_mnmn.py (PRIMARY)      → new_<slug>.json (src=monngonmoingay, JSON-LD)
-  → crawl_new_dishes.py (SUPP.)  → append new_<slug>.json (src=cookpad) chỉ cho món < MIN_REAL
-  → import_new_crawled.py        → Recipe rows (source=monngonmoingay|cookpad, tag slug, is_canonical=False)
-  → canonicalize_new_dishes.py   → 1 canonical/slug (judge+refine real, ≥MIN_REAL) | LLM-curated fallback (<MIN_REAL) + meal_types
-  → verify_canonical_subset.py (+ count mới) PASS
+sitemap_index.xml
+  → crawl_mnmn.py     → cookpad_recipe/mnmn_all.json  (~2000+, JSON-LD, đã lọc Recipe)
+  → import_mnmn.py    → Recipe rows (source=monngonmoingay, slug=slugify(title), is_canonical=False)
+  → canonicalize_mnmn.py → mỗi slug MỚI (∉405∪103): LLM refine → 1 canonical (llm-canonical) + meal_types
+  → verify_canonical_subset.py (+ count) PASS
 ```
-Thứ tự candidate khi canonicalize: gộp mọi record cùng slug (MNMN + Cookpad); judge+refine ưu tiên bản MNMN làm gốc nếu chất lượng tương đương (structured, sạch hơn).
 
 ## 5. Dedup & bất biến
-- Slug mới ∉ {405 canonical slugs} ∪ {103 AI slugs} (lọc ở 3.1).
+- Slug MNMN trùng 405 hoặc 103 → **skip canonical** (raw vẫn import để browse).
 - Sau pipeline: **0 trùng slug canonical**, **0 trùng tên canonical** (normalized), **103 AI ⊆ canonical** vẫn đúng (`verify_canonical_subset.py` PASS).
-- `meal_types` chỉ set cho món mới; 405 cũ NULL.
+- `meal_types` chỉ set cho canonical mới; 405 cũ NULL.
 
 ## 6. Error handling
-- MNMN: httpx timeout/HTTP lỗi → skip URL, tiếp; trang không có JSON-LD `Recipe` hoặc thiếu `recipeIngredient` → bỏ qua record. Sitemap index cache để rerun không tải lại.
-- Crawl Cookpad: resumable per-file; Cookpad chặn/timeout → skip recipe, sleep, tiếp; warm-up cookies.
-- LLM: judge+refine có cost cap (≈$ vài đô cho ~200 món); fallback curated khi thiếu data; idempotent skip để rerun an toàn.
-- Import: idempotent qua `cookpad_url` (không nhân đôi khi rerun).
-- Món crawl 0 kết quả thật → vẫn ra canonical nhờ curated fallback.
+- MNMN scrape: httpx timeout/HTTP lỗi → skip URL, tiếp; không có JSON-LD Recipe / thiếu ingredient → bỏ record. URL list + mnmn_all.json cache để rerun không tải lại.
+- Import: idempotent qua `cookpad_url`; record thiếu field → skip.
+- LLM: cost cap; idempotent skip slug đã canonical → rerun an toàn; lỗi 1 slug không chặn slug khác (try/except per slug, log).
+- Slug rỗng/không hợp lệ sau slugify → skip.
 
 ## 7. Verification
-- Sau mỗi giai đoạn: đếm file crawl, số recipe import, số canonical mới.
-- `verify_canonical_subset.py` PASS (subset + 0 dup-title + children).
-- Query: `canonical count` (405 → ~5xx), `count where meal_types is not null` ≈ số món mới, 0 slug canonical trùng.
-- Spot-check vài canonical mới (judge score, refinement_notes, meal_types đúng).
+- Đếm: URL trong sitemap, record `mnmn_all.json`, recipe import (`source=monngonmoingay`), canonical mới.
+- `verify_canonical_subset.py` PASS.
+- Query: `canonical count` (405 → 4xx/5xx), `count(meal_types not null)` ≈ số món mới, `count where source=monngonmoingay`, 0 slug canonical trùng.
+- Spot-check vài canonical mới: refinement_notes, meal_types hợp lý, ingredients/steps đầy đủ.
 
 ## 8. Vị trí
-Mở rộng dữ liệu canonical (tiếp nối canonical-subset). Độc lập với 3 sub-project còn lại (personalization, substitution, video).
+Mở rộng dữ liệu canonical (tiếp nối canonical-subset). Độc lập 3 sub-project còn lại (personalization, substitution, video). Cookpad supplement = đợt sau (optional).
