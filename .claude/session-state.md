@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-03 (Server-side Vietnamese TTS qua OpenAI)
+**Cập nhật lần cuối:** 2026-06-03 (TTS đổi sang edge-tts giọng Việt native)
 **Branch:** `feat/canonical-recipes` (đã push remote — local đang ahead, cần push lại)
-**Task đang làm:** Sub-project 4/6 (cooking mode + voice) + OpenAI TTS xong, ready-to-merge. Cần restart uvicorn để load `/api/v1/tts` + 2 setting TTS. Còn 3 sub-project: personalization engine (embedding), substitution (curated+LLM), video. Chi tiết milestone ở cuối file.
+**Task đang làm:** Cooking mode + voice + TTS (edge-tts HoaiMy) xong, ready-to-merge. Cần `pip install` đã làm + **restart uvicorn** để load engine mới. Còn 3 sub-project: personalization engine (embedding), substitution (curated+LLM), video. Chi tiết milestone ở cuối file.
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
@@ -617,3 +617,25 @@ Nâng cấp cooking mode (Prompt 15 cơ bản) thành rảnh tay. **Frontend-onl
 - Cache 2 tầng (file server theo hash nội dung + browser Cache-Control) → recipe step ổn định nên gần như không re-synth/cost.
 
 **Còn lại:** restart uvicorn (load router + 2 setting mới) rồi browser smoke: cooking mode (đã login) → nghe **giọng Việt OpenAI**; đổi bước không chồng tiếng; tắt loa. Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-openai-tts*`.
+
+**Bugfix sau đó (user feedback):**
+- Đọc đôi "Bước 2 Bước 2…": content bước **đã có sẵn** prefix "Bước N:" (dish_recipes.json/canonical), code thêm prefix nữa. Fix `CookingMode.stepSpeechText`: strip `/^\s*bước\s*\d+\s*[:.\-]?\s*/i` rồi thêm 1 lần.
+- Trễ ~2s khi đổi bước: synth latency bước chưa cache. Fix: `useSpeech.prefetch(text)` warm cache bước kế khi vào bước hiện tại → forward nav gần tức thì (bước đầu vẫn ~2s cold).
+
+---
+
+### ✅ Đổi TTS engine OpenAI → edge-tts (giọng Việt native) — 2026-06-03 (branch `feat/canonical-recipes`)
+
+**Lý do:** giọng OpenAI (alloy/gpt-4o-mini-tts) đọc tiếng Việt kém tự nhiên (voice thiết kế cho tiếng Anh). User thấy "dở". Đổi sang **edge-tts** (Microsoft Edge neural, giọng vi-VN **native**, miễn phí, không cần key). 2 task subagent-driven.
+
+**Đã làm (chỉ backend, endpoint + frontend KHÔNG đổi):**
+- `requirements.txt` + cài `edge-tts` (7.2.8). `config.py`: bỏ `OPENAI_TTS_MODEL/VOICE`, thêm `EDGE_TTS_VOICE="vi-VN-HoaiMyNeural"` (nữ; `vi-VN-NamMinhNeural` cho nam). Giữ `OPENAI_API_KEY` (vision/dish).
+- `tts_service.synthesize_vi`: `edge_tts.Communicate(text, voice).save(tmp)` → mp3 native; cache key `edge|voice|text`; **retry 3 lần** trên `NoAudioReceived` (flake websocket Edge TTS lúc connect đầu — smoke gặp thật) backoff [0.5,1.5]s, dọn `.tmp` giữa các lần. Smoke OK: 16128 bytes mp3, cache hit.
+- `tts.py`: bỏ nhánh `RuntimeError→503` (edge-tts không cần key); giữ 400/502.
+
+**Key learnings:**
+- OpenAI TTS mạnh tiếng Anh, **kém tự nhiên tiếng Việt**; giọng bản địa (edge-tts vi-VN HoaiMy/NamMinh) nghe như người Việt. Cô lập synth trong `tts_service` nên đổi engine chỉ sửa 1 file.
+- `edge-tts` API: `edge_tts.Communicate(text, voice)` + `await .save(path)` → mp3, không key (gọi endpoint Microsoft không chính thức, cần internet).
+- edge-tts hay `NoAudioReceived` lúc connect đầu (transient) → **phải retry** mới ổn cho production.
+
+**Còn lại:** restart uvicorn → browser nghe giọng HoaiMy. Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-edge-tts*`.
