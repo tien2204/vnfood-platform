@@ -10,6 +10,7 @@ import { ServingsScaler } from './ServingsScaler';
 import { CookingMode } from './CookingMode';
 import { scaleQuantity } from '@/lib/scaleRecipe';
 import type { RecipeDetail } from '@/lib/types';
+import RelatedRecipes from "./RelatedRecipes";
 
 const DIFFICULTY_LABEL = {
   easy: 'Dễ',
@@ -41,6 +42,9 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin 
 
   const factor = currentServings / originalServings;
   const hasSteps = (recipe.steps?.length ?? 0) > 0;
+  const TIP_RE = /^\s*mách nhỏ\s*[:.]/i;
+  const tipSteps = recipe.steps.filter((s) => TIP_RE.test(s.content));
+  const normalSteps = recipe.steps.filter((s) => !TIP_RE.test(s.content));
 
   return (
     <>
@@ -54,7 +58,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin 
                 Nguyên liệu ({recipe.ingredients.length})
               </TabsTrigger>
               <TabsTrigger value="steps" className={TAB_TRIGGER}>
-                Các bước ({recipe.steps.length})
+                Các bước ({normalSteps.length})
               </TabsTrigger>
               <TabsTrigger value="comments" className={TAB_TRIGGER}>
                 Bình luận
@@ -101,9 +105,9 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin 
 
             {/* ── Steps ── */}
             <TabsContent value="steps">
-              {recipe.steps.length > 0 ? (
+              {normalSteps.length > 0 ? (
                 <div className="space-y-6 pb-4">
-                  {recipe.steps.map((step, idx) => (
+                  {normalSteps.map((step, idx) => (
                     <div key={step.step_number} className="flex gap-4">
                       <div
                         className="flex-shrink-0 w-12 h-12 rounded-full bg-[#E85D26]/10 flex items-center justify-center font-bold text-xl text-[#E85D26]"
@@ -141,6 +145,18 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin 
               ) : (
                 <p className="text-[#7C6A56] py-4">Chưa có thông tin các bước.</p>
               )}
+              {tipSteps.length > 0 && (
+                <div className="mt-6 rounded-xl border border-[#E8DDD4] bg-[#F7F0E8] p-4">
+                  <h3 className="font-semibold text-[#2D2417] mb-2">💡 Mách nhỏ</h3>
+                  <div className="space-y-2">
+                    {tipSteps.map((s, i) => (
+                      <p key={i} className="text-[#1C1209] leading-relaxed">
+                        {s.content.replace(TIP_RE, "").trim()}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             {/* ── Comments ── */}
@@ -153,6 +169,8 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin 
               />
             </TabsContent>
           </Tabs>
+
+          <RelatedRecipes recipeId={recipe.id} />
 
           {/* Desktop action bar */}
           <div className="hidden lg:flex items-center gap-3 pt-6 border-t border-[#E8DDD4]">
