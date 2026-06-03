@@ -10,6 +10,14 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 
 **Verify AI⊆lookup sau MNMN (2026-06-03):** `ai_service._find_canonical_for_class(slug)` query `canonical_dish_slug==slug AND is_canonical` → trả `canonical_recipe` (có `id`); frontend `RecognitionResult` link `/recipes/<id>`. Khớp theo SLUG động → sau MNMN tự trỏ canonical mới. Kiểm: **103/103 AI slug resolve** (nguồn: llm-canonical 76 + monngonmoingay 17 + curated 10), 0 đứt link.
 
+### ✅ Sub-project 1/3 — Món tương tự + mục "Mách nhỏ" riêng — 2026-06-03 (lấp gap so MNMN)
+3 task subagent-driven, reviewed, tsc/smoke OK.
+- Backend `recipe_service.get_related_recipes(db, recipe_id, limit=6, current_user)`: canonical-only, OR-tsquery từ token title (`to_tsvector('simple')`) + boost `canonical_dish_slug`/`keyword` + fallback (same-slug→same-keyword→popular), reuse `_build_recipe_card/_get_saved_ids`. Smoke phở→6 canonical OK.
+- Endpoint `GET /api/v1/recipes/{id}/related` (get_optional_current_user, limit cap 12).
+- Frontend `RelatedRecipes.tsx` (SWR lazy, reuse `RecipeGrid`, ẩn nếu rỗng) ở cuối trang detail.
+- **Mách nhỏ riêng** (frontend-only): tách bước khớp `/^\s*mách nhỏ\s*[:.]/i` ra callout 💡 sau danh sách bước, bước đánh số dùng `idx+1` → re-number không hở; món không có → ẩn.
+- Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-related-recipes-tips*`. **Còn 2 sub-project:** 2/3 lọc theo bữa (+backfill `meal_types`), 3/3 facet filter (crawl taxonomy MNMN + UI).
+
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
 - [x] normalize_ingredients.py (chuẩn hóa ingredients)
