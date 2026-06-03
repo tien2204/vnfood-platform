@@ -14,16 +14,17 @@ Cào **toàn bộ** công thức MNMN (~2000+), import thô (browse), và **auto
 ## 2. Quyết định đã chốt (với user)
 - **Nguồn:** MNMN-only pass này (`monngonmoingay.com`). Cookpad supplement **hoãn** (gần như mỗi món MNMN 1 candidate → bật Cookpad = hàng trăm lượt Playwright, nhiều giờ).
 - **Quy mô:** cào HẾT MNMN; số canonical mới = số món MNMN khác 405 (auto, không cap). Dự kiến +vài trăm món, +~2000 recipe browse. LLM ~$5-15.
-- **Chuẩn hóa:** mỗi recipe MNMN = 1 món (title = tên món, đã sạch). Món MỚI → **LLM refine** (KHÔNG cần ngưỡng ≥3 candidate; MNMN curated là authoritative). Món có >1 recipe MNMN cùng slug → judge+refine chọn bản tốt nhất.
+- **Chuẩn hóa:** mỗi recipe MNMN = 1 món (title = tên món, đã sạch). Món → **LLM refine** (KHÔNG cần ngưỡng ≥3 candidate; MNMN curated là authoritative). Món có >1 recipe MNMN cùng slug → judge+refine chọn bản tốt nhất.
+- **Trùng 405 (slug đã canonical) → THAY THẾ (MNMN thắng):** demote canonical cũ `is_canonical=False`, promote bản MNMN-refined làm canonical, **giữ nguyên `canonical_dish_slug`**. **KHÔNG xóa** row cũ (giữ FK saves/ratings/comments/meal-plan/AI-log; nó thành recipe thường, vẫn browse được). Áp dụng cả cho 103 AI-class (slug giữ nguyên → AI lookup vẫn trỏ đúng canonical mới).
 - **`meal_types`:** cột DB mới (migration), **LLM tag** mỗi món mới (gộp vào call refine).
 - **Lookup-only:** không retrain/đụng model AI; không thêm vào `CLASS_DISPLAY_NAMES`. Bất biến **AI ⊆ lookup** vẫn đúng.
 - **Lọc rác:** chỉ nhận trang có JSON-LD `@type=Recipe` + `recipeIngredient` không rỗng (loại "thực đơn tuần/mẹo vặt").
 
 ### Non-goals
 - Không Cookpad pass này; không curated-200 list (món đến từ MNMN).
-- Không retrain AI; không backfill `meal_types` cho 405 cũ.
+- Không retrain AI; không backfill `meal_types` cho 405 cũ (chỉ set cho canonical do pass này tạo/thay).
 - Không xây UI lọc-theo-bữa (chỉ LƯU + expose schema).
-- Không đụng canonical cũ (món MNMN trùng 405 → skip, giữ raw).
+- Không XÓA recipe cũ khi thay thế (chỉ demote `is_canonical=False`).
 
 ### Nguồn dữ liệu (đã verify trực tiếp 2026-06-03)
 | Nguồn | Vai trò | Bằng chứng |
@@ -50,13 +51,13 @@ Cào **toàn bộ** công thức MNMN (~2000+), import thô (browse), và **auto
 - `slugify`: NFKD strip dấu, `đ→d`, lowercase, `[^a-z0-9]+ → -`, trim/collapse.
 
 ### 3.4 Auto-discover + canonical — `backend/scripts/canonicalize_mnmn.py`
-- Tải set slug đã canonical (405) + slug AI (`CLASS_DISPLAY_NAMES`) → `existing`.
-- Gom recipe MNMN theo `canonical_dish_slug`. Với mỗi slug **∉ existing**:
+- Map slug → canonical_recipe_id hiện có (405) + set slug AI (`CLASS_DISPLAY_NAMES`).
+- Gom recipe MNMN theo `canonical_dish_slug`. Với **mỗi slug** có recipe MNMN:
   - Candidates = recipe MNMN (1+ bản) cùng slug.
-  - **LLM refine** (reuse logic `fill_missing_canonical`/`select_canonical_recipes`): judge+chọn bản tốt nhất (nếu >1) + refine title/ingredients/steps về chuẩn; cùng call trả **`meal_types`** (subset `["sang","trua","toi"]`).
-  - Insert/đánh dấu 1 canonical: `is_canonical=True`, `source="llm-canonical"`, `canonical_dish_slug=slug`, `meal_types`, `refinement_notes`, `llm_judge_score/reason`.
-  - **Idempotent:** skip slug đã có canonical.
-- Cost cap + log tiến độ; resumable (DB là nguồn trạng thái).
+  - **LLM refine** (reuse logic `fill_missing_canonical`/`select_canonical_recipes`): judge+chọn bản tốt nhất (nếu >1) + refine title/ingredients/steps về chuẩn; cùng call trả **`meal_types`** (subset `["sang","trua","toi"]`). Bản refine = 1 canonical mới `source="llm-canonical"`, `canonical_dish_slug=slug`, `is_canonical=True`, + `meal_types`, `refinement_notes`, `llm_judge_score/reason`.
+  - **Nếu slug ∈ 405 (trùng):** trước khi promote bản mới, **demote canonical cũ** (`UPDATE recipes SET is_canonical=False WHERE id=<old_canonical_id>`); KHÔNG xóa. Slug giữ nguyên → AI lookup vẫn đúng.
+  - **Nếu slug mới:** chỉ promote bản mới.
+- **Idempotent:** đánh dấu đã xử lý (vd cờ/`refinement_notes` chứa "mnmn") để rerun skip slug đã thay; tránh thay vòng lặp. Cost cap + log; per-slug try/except (lỗi 1 slug không chặn slug khác).
 
 ### 3.5 Schema expose (tối thiểu)
 - `app/schemas/recipe.py`: thêm `meal_types: list[str] | None = None` vào **`RecipeDetailOut`**; builder detail truyền `recipe.meal_types`. Không thêm endpoint/filter.
@@ -66,14 +67,15 @@ Cào **toàn bộ** công thức MNMN (~2000+), import thô (browse), và **auto
 sitemap_index.xml
   → crawl_mnmn.py     → cookpad_recipe/mnmn_all.json  (~2000+, JSON-LD, đã lọc Recipe)
   → import_mnmn.py    → Recipe rows (source=monngonmoingay, slug=slugify(title), is_canonical=False)
-  → canonicalize_mnmn.py → mỗi slug MỚI (∉405∪103): LLM refine → 1 canonical (llm-canonical) + meal_types
+  → canonicalize_mnmn.py → mỗi slug: LLM refine → canonical (llm-canonical) + meal_types
+                            (slug trùng 405 → demote canonical cũ rồi promote bản MNMN; slug mới → thêm)
   → verify_canonical_subset.py (+ count) PASS
 ```
 
 ## 5. Dedup & bất biến
-- Slug MNMN trùng 405 hoặc 103 → **skip canonical** (raw vẫn import để browse).
-- Sau pipeline: **0 trùng slug canonical**, **0 trùng tên canonical** (normalized), **103 AI ⊆ canonical** vẫn đúng (`verify_canonical_subset.py` PASS).
-- `meal_types` chỉ set cho canonical mới; 405 cũ NULL.
+- Slug MNMN trùng 405/103 → **thay thế** (demote cũ + promote MNMN), giữ **đúng 1 canonical/slug**. Slug mới → thêm canonical.
+- Bất biến giữ nguyên: **0 trùng slug canonical**, **0 trùng tên canonical** (normalized), **103 AI ⊆ canonical** vẫn đúng (mỗi slug AI vẫn có đúng 1 canonical — chỉ đổi bản) → `verify_canonical_subset.py` PASS.
+- `meal_types` set cho mọi canonical pass này tạo/thay; 405 không-bị-thay vẫn NULL.
 
 ## 6. Error handling
 - MNMN scrape: httpx timeout/HTTP lỗi → skip URL, tiếp; không có JSON-LD Recipe / thiếu ingredient → bỏ record. URL list + mnmn_all.json cache để rerun không tải lại.
@@ -82,10 +84,10 @@ sitemap_index.xml
 - Slug rỗng/không hợp lệ sau slugify → skip.
 
 ## 7. Verification
-- Đếm: URL trong sitemap, record `mnmn_all.json`, recipe import (`source=monngonmoingay`), canonical mới.
-- `verify_canonical_subset.py` PASS.
-- Query: `canonical count` (405 → 4xx/5xx), `count(meal_types not null)` ≈ số món mới, `count where source=monngonmoingay`, 0 slug canonical trùng.
-- Spot-check vài canonical mới: refinement_notes, meal_types hợp lý, ingredients/steps đầy đủ.
+- Đếm: URL sitemap, record `mnmn_all.json`, recipe import (`source=monngonmoingay`), canonical **mới** vs **thay thế**.
+- `verify_canonical_subset.py` PASS — **mỗi slug đúng 1 canonical** (sau thay thế không sinh 2), 103 AI ⊆ canonical.
+- Query: `canonical count` (405 → 4xx/5xx), `count(meal_types not null)`, `count where source=monngonmoingay`, **0 slug có >1 canonical**, demoted cũ = `is_canonical=False` (không xóa).
+- Spot-check: vài món thay thế (canonical mới là bản MNMN, slug giữ nguyên, AI-class lookup OK) + vài món mới (meal_types, ingredients/steps đầy đủ).
 
 ## 8. Vị trí
 Mở rộng dữ liệu canonical (tiếp nối canonical-subset). Độc lập 3 sub-project còn lại (personalization, substitution, video). Cookpad supplement = đợt sau (optional).
