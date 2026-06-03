@@ -17,8 +17,6 @@ async def tts_endpoint(text: str, current_user=Depends(get_current_user)):
         audio = await synthesize_vi(text)
     except ValueError:
         raise HTTPException(status_code=400, detail="text rỗng")
-    except RuntimeError:
-        raise HTTPException(status_code=503, detail="TTS chưa cấu hình")
     except Exception:
         logger.exception("TTS synthesis failed")
         raise HTTPException(status_code=502, detail="TTS lỗi")
