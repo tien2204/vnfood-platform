@@ -137,6 +137,17 @@ def parse_image(node):
     return None
 
 
+def parse_video(node):
+    v = node.get("video")
+    if isinstance(v, list):
+        v = v[0] if v else None
+    if isinstance(v, dict):
+        return v.get("contentUrl") or v.get("embedUrl")
+    if isinstance(v, str):
+        return v
+    return None
+
+
 def scrape(client: httpx.Client, url: str) -> dict | None:
     html = get(client, url)
     if not html:
@@ -163,6 +174,7 @@ def scrape(client: httpx.Client, url: str) -> dict | None:
             "ingredients_display": ings,
             "instructions": parse_steps(node),
             "image_url": parse_image(node),
+            "video_url": parse_video(node),
             "description": (node.get("description") or "")[:2000],
             "src": "monngonmoingay",
         }
