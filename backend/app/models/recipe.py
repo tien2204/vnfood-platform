@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Boolean, Float, Index, Integer, String, Text, ForeignKey
+from sqlalchemy import ARRAY, Boolean, Float, Index, Integer, String, Text, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
@@ -57,6 +57,7 @@ class Recipe(Base):
     derived_from_recipe_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("recipes.id"), nullable=True)
     refinement_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_manually_reviewed: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False)
+    meal_types: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
 
     # Relationships
     author: Mapped["User"] = relationship(  # noqa: F821
