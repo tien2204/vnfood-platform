@@ -40,7 +40,7 @@ Cào **toàn bộ** công thức MNMN (~2000+), import thô (browse), và **auto
 - `app/models/recipe.py`: `meal_types: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)`.
 
 ### 3.2 Crawl — `backend/scripts/crawl_mnmn.py` (httpx, không Playwright)
-- **Enumerate:** GET `sitemap_index.xml` → chọn sub-sitemap công thức (`cachnau-sitemap*.xml`; nếu không chắc, fetch các sub-sitemap rồi lọc bằng JSON-LD Recipe ở bước scrape) → gom toàn bộ `<loc>` URL. Cache `cookpad_recipe/_mnmn_urls.json`.
+- **Enumerate:** GET `sitemap_index.xml` → chọn sub-sitemap công thức **`monan-sitemap*.xml`** (≈**2481** URL trên ~13 file — verify trực tiếp 2026-06-03; KHÔNG phải `cachnau-sitemap` chỉ 12 video). `thong-tin-huu-ich-*` (~1300) là bài viết mẹo → tự rớt ở bước lọc JSON-LD Recipe. Gom toàn bộ `<loc>`, cache `cookpad_recipe/_mnmn_urls.json`.
 - **Scrape:** với mỗi URL: httpx GET (UA Chrome, timeout, retry nhẹ) → trích block `<script type="application/ld+json">` → parse JSON (xử lý cả `@graph`) → tìm node `@type` chứa `Recipe`. Lấy `name`, `recipeIngredient[]`, `recipeInstructions[].text` (HowToStep; cũng hỗ trợ chuỗi/HTML), `image`, `description`.
 - **Lọc:** bỏ trang không có Recipe hoặc `recipeIngredient` rỗng.
 - **Lưu:** ghi dần `cookpad_recipe/mnmn_all.json` (list record: `{name, url, ingredients[], instructions[], image, description, src:"monngonmoingay"}`). **Resumable** (skip url đã có). `SLEEP_SEC≈1.5` (polite).

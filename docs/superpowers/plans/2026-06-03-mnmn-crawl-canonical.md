@@ -158,10 +158,15 @@ def collect_recipe_urls(client: httpx.Client) -> list[str]:
     if URLS_CACHE.exists():
         return json.loads(URLS_CACHE.read_text(encoding="utf-8"))
     idx = get(client, SITEMAP_INDEX) or ""
-    subs = [u for u in LOC_RE.findall(idx) if "cachnau-sitemap" in u]
+    # Recipes live in monan-sitemap*.xml ("món ăn") — ~2481 URLs across ~13 files
+    # (verified 2026-06-03). NOT cachnau-sitemap (only 12 video posts). The
+    # thong-tin-huu-ich-* sitemaps are tip articles, dropped later by the
+    # JSON-LD Recipe filter in scrape().
+    subs = [u for u in LOC_RE.findall(idx) if "monan-sitemap" in u]
     if not subs:
         # Fallback: pull every sub-sitemap that isn't an obvious non-recipe one.
-        skip = ("page-", "banner-", "gioi-thieu", "khao-sat", "khna-cau", "lich-phat-song", "dinhduong-", "gia-vi-")
+        skip = ("page-", "banner-", "gioi-thieu", "khao-sat", "khna-cau", "lich-phat-song",
+                "lich_mon_an_thang", "ebooklet-", "hoi-dau-bep", "tu-van-")
         subs = [u for u in LOC_RE.findall(idx) if u.endswith(".xml") and not any(k in u for k in skip)]
     urls: list[str] = []
     for s in subs:
@@ -287,14 +292,14 @@ if __name__ == "__main__":
 $env:MNMN_LIMIT="5"; $env:PYTHONUTF8=1; .venv\Scripts\python.exe -m scripts.crawl_mnmn; Remove-Item Env:\MNMN_LIMIT
 ```
 
-Expected: it collects candidate URLs (prints a count in the hundreds/thousands), scrapes 5, and prints at least a few `+ <dish name> (<n> ing)` lines. Confirm `cookpad_recipe/mnmn_all.json` exists and the first record has non-empty `ingredients_display` and `instructions`:
+Expected: it collects candidate URLs (~2481 from `monan-sitemap*`), scrapes 5, and prints at least a few `+ <dish name> (<n> ing)` lines. Confirm `cookpad_recipe/mnmn_all.json` exists and the first record has non-empty `ingredients_display` and `instructions`:
 
 ```bash
 $env:PYTHONUTF8=1; .venv\Scripts\python.exe -c "import json; d=json.load(open('../cookpad_recipe/mnmn_all.json',encoding='utf-8')); r=d[0]; print(r['name'], '| ing', len(r['ingredients_display']), '| steps', len(r['instructions']))"
 ```
 
 Expected: a dish name with `ing > 0` and `steps > 0`.
-- If `collect_recipe_urls` returns 0 URLs (sitemap structure differs), report DONE_WITH_CONCERNS with the printed sub-sitemap list so the controller can adjust the `cachnau-sitemap` filter. If the sandbox has no network, report DONE_WITH_CONCERNS (code correct, couldn't reach MNMN).
+- If `collect_recipe_urls` returns 0 URLs (sitemap structure changed), report DONE_WITH_CONCERNS with the printed sub-sitemap list so the controller can adjust the `monan-sitemap` filter. If the sandbox has no network, report DONE_WITH_CONCERNS (code correct, couldn't reach MNMN).
 
 - [ ] **Step 3: Commit (script only — NOT the crawled JSON)**
 
