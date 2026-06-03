@@ -278,6 +278,7 @@ async def get_recipe_detail(
         variant_label=recipe.variant_label,
         refinement_notes=recipe.refinement_notes,
         is_manually_reviewed=recipe.is_manually_reviewed,
+        meal_types=recipe.meal_types,
         variants=variants,
     )
 

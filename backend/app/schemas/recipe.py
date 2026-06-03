@@ -191,6 +191,7 @@ class RecipeDetailOut(BaseModel):
     variant_label: str | None = None
     refinement_notes: str | None = None
     is_manually_reviewed: bool = False
+    meal_types: list[str] | None = None
     variants: list[RecipeMiniOut] = []
 
     model_config = {"from_attributes": True}
