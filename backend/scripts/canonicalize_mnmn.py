@@ -1,11 +1,13 @@
-"""Auto-discover canonical dishes from imported monngonmoingay recipes.
+"""Promote imported monngonmoingay recipes to canonical AS-IS (verbatim).
 
-Per MNMN dish slug:
-  - judge+refine the MNMN candidate(s) -> a new canonical (source='llm-canonical')
-    with meal_types (LLM-classified sang/trua/toi).
-  - If the slug already has a canonical (one of the 405): demote the old one
-    (is_canonical=False, NOT deleted) and promote the MNMN one (same slug) so
-    AI<=lookup and 1-canonical-per-slug invariants hold.
+MNMN is already curated, so we do NOT LLM-rewrite its content — the original
+Nguyên liệu / Sơ chế / Thực hiện / Cách dùng / Mách nhỏ is kept exactly. Per dish
+slug:
+  - pick the richest MNMN candidate, flip is_canonical=True in place + tag
+    meal_types (sang/trua/toi — a label only, does not touch the recipe content).
+  - if the slug already has a canonical (one of the 405): demote the old one
+    (is_canonical=False, NOT deleted) so the slug keeps exactly one canonical
+    (AI<=lookup + 1-canonical-per-slug invariants hold; slug never changes).
 Idempotent via a done-slug state file. Set MNMN_LIMIT=N to cap (testing).
 
 Run from backend:
@@ -15,7 +17,6 @@ import asyncio
 import json
 import os
 import sys
-import uuid
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -25,8 +26,8 @@ from sqlalchemy import select, update  # noqa: E402
 from sqlalchemy.orm import selectinload  # noqa: E402
 from app.core.config import settings  # noqa: E402
 from app.core.database import AsyncSessionLocal  # noqa: E402
-from app.models.recipe import Recipe, RecipeIngredient, RecipeStep  # noqa: E402
-import scripts.select_canonical_recipes as pipe  # noqa: E402
+from app.models.recipe import Recipe  # noqa: E402
+import scripts.select_canonical_recipes as pipe  # noqa: E402  (get_admin_user only)
 
 DONE_FILE = Path(__file__).resolve().parents[2] / "cookpad_recipe" / "_mnmn_canon_done.json"
 LIMIT = int(os.environ.get("MNMN_LIMIT", "0"))
@@ -42,7 +43,7 @@ def save_done(done: set[str]) -> None:
 
 
 async def classify_meal_types(client: AsyncOpenAI, title: str) -> list[str]:
-    """One cheap call: which of sang/trua/toi this Vietnamese dish suits."""
+    """One cheap call to tag which of sang/trua/toi the dish suits (label only)."""
     try:
         resp = await client.chat.completions.create(
             model="gpt-4o-mini",
@@ -82,7 +83,6 @@ async def candidates_for(db, slug: str) -> list[Recipe]:
             Recipe.is_canonical.is_(False),
             Recipe.canonical_dish_slug == slug,
         )
-        .limit(5)
     )).scalars().all()
     return list(res)
 
@@ -91,6 +91,10 @@ async def existing_canonical_id(db, slug: str):
     return (await db.execute(
         select(Recipe.id).where(Recipe.is_canonical.is_(True), Recipe.canonical_dish_slug == slug)
     )).scalar_one_or_none()
+
+
+def _richness(r: Recipe) -> int:
+    return len(r.ingredients) + len(r.steps)
 
 
 async def main() -> None:
@@ -104,82 +108,39 @@ async def main() -> None:
         print(f"Slugs to canonicalize: {len(slugs)}")
         new_count = replaced = 0
         for slug in slugs:
-            if pipe.estimated_cost > pipe.COST_CEILING_USD:
-                print(f"COST CEILING ${pipe.estimated_cost:.2f} reached, stopping")
-                break
             try:
                 cands = await candidates_for(db, slug)
                 if not cands:
                     done.add(slug)
                     continue
-                display = cands[0].title
-                judged = await pipe.judge_candidates(display, cands)
-                if not judged:
-                    done.add(slug)
-                    continue
-                sel_idx, score, reason = judged
-                winner = cands[sel_idx]
-                refined = await pipe.refine_recipe(winner)
-                if not refined:
-                    done.add(slug)
-                    continue
-                meals = await classify_meal_types(client, refined.get("title") or display)
+                winner = max(cands, key=_richness)  # richest MNMN recipe for this dish
+                meals = await classify_meal_types(client, winner.title)
 
                 old_id = await existing_canonical_id(db, slug)
-                if old_id is not None:
+                if old_id is not None and old_id != winner.id:
+                    # MNMN wins on overlap: demote the old canonical (keep slug).
                     await db.execute(update(Recipe).where(Recipe.id == old_id).values(is_canonical=False))
 
-                nid = uuid.uuid4()
-                db.add(Recipe(
-                    id=nid,
-                    title=(refined.get("title") or winner.title)[:500],
-                    description=(refined.get("description") or "")[:1000],
-                    cooking_time=refined.get("cooking_time") or winner.cooking_time,
-                    servings=refined.get("servings") or winner.servings,
-                    difficulty=refined.get("difficulty") or winner.difficulty or "medium",
-                    image_url=winner.image_url,
-                    video_url=winner.video_url,
-                    keyword=winner.keyword,
-                    source="llm-canonical",
-                    status="approved",
-                    author_id=admin_id,
+                # Promote the MNMN recipe in place — content (ingredients/steps) untouched.
+                await db.execute(update(Recipe).where(Recipe.id == winner.id).values(
                     is_canonical=True,
-                    canonical_dish_slug=slug,
-                    variant_label=None,
-                    is_dessert=False,
-                    llm_judge_score=score,
-                    llm_judge_reason=reason,
-                    derived_from_recipe_id=winner.id,
-                    refinement_notes=refined.get("refinement_notes"),
                     meal_types=meals,
+                    author_id=admin_id,
                 ))
-                await db.flush()
-                for i, item in enumerate(refined.get("ingredients") or []):
-                    txt = item if isinstance(item, str) else (
-                        item.get("display_text")
-                        or " ".join(x for x in [item.get("quantity"), item.get("ingredient_name")] if x)
-                    )
-                    if txt:
-                        db.add(RecipeIngredient(id=uuid.uuid4(), recipe_id=nid, display_text=txt[:1000], order_index=i))
-                for i, item in enumerate(refined.get("steps") or [], start=1):
-                    content = item if isinstance(item, str) else (item.get("content") or item.get("instruction") or "")
-                    if content:
-                        num = i if isinstance(item, str) else int(item.get("step_number") or i)
-                        db.add(RecipeStep(id=uuid.uuid4(), recipe_id=nid, step_number=num, content=content[:4000]))
                 await db.commit()
                 done.add(slug)
                 save_done(done)
-                if old_id is not None:
+                if old_id is not None and old_id != winner.id:
                     replaced += 1
-                    print(f"  ~ replaced canonical {slug} (score={score:.1f}, meals={meals})")
+                    print(f"  ~ replaced canonical {slug} (meals={meals})")
                 else:
                     new_count += 1
-                    print(f"  + new canonical {slug} (score={score:.1f}, meals={meals})")
+                    print(f"  + new canonical {slug} (meals={meals})")
             except Exception as e:
                 await db.rollback()
                 print(f"  [ERR] {slug}: {e}")
         save_done(done)
-        print(f"\nDONE. new={new_count} replaced={replaced} est.cost ${pipe.estimated_cost:.2f}")
+        print(f"\nDONE. new={new_count} replaced={replaced} (verbatim promote, no LLM rewrite)")
 
 
 if __name__ == "__main__":
