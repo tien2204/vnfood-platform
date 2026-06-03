@@ -3,6 +3,12 @@
 import { useCallback, useRef, useState } from "react";
 import api from "@/lib/api";
 
+// Cache-bust token appended to TTS requests. The endpoint sends a long
+// Cache-Control, so the browser would otherwise replay audio cached under the
+// previous engine/voice for the same `text` URL. Bump this whenever the
+// backend TTS engine or voice changes (currently edge-tts vi-VN-HoaiMyNeural).
+const TTS_VERSION = "edge-hoaimy-1";
+
 export interface UseSpeech {
   supported: boolean;
   enabled: boolean;
@@ -51,7 +57,7 @@ export function useSpeech(): UseSpeech {
       abortRef.current = controller;
       api
         .get("/tts", {
-          params: { text },
+          params: { text, v: TTS_VERSION },
           responseType: "blob",
           signal: controller.signal,
         })
@@ -78,7 +84,7 @@ export function useSpeech(): UseSpeech {
   // → same server cache key as `speak`, so the later `speak` resolves instantly.
   const prefetch = useCallback((text: string) => {
     if (!enabled) return;
-    api.get("/tts", { params: { text }, responseType: "blob" }).catch(() => {});
+    api.get("/tts", { params: { text, v: TTS_VERSION }, responseType: "blob" }).catch(() => {});
   }, [enabled]);
 
   return { supported: true, enabled, setEnabled, speak, prefetch, cancel };
