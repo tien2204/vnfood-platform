@@ -689,3 +689,5 @@ Cào thêm Khẩu phần/Thời gian/Độ khó (KHÔNG migration — cột đã
 - Verify: bánh khọt 4/45/easy, ba chỉ 4/30/easy.
 
 ⚠️ **Re-crawl từ đầu** (record đổi format nhiều lần): `Remove-Item ..\cookpad_recipe\mnmn_all.json` rồi chạy lại crawl→import→canonicalize→verify. Data crawl trước CHƯA vào DB (chỉ crawl) nên xóa sạch; vài row sample mình test đã vào DB (negligible, hoặc xóa `where source='monngonmoingay'` trước import nếu muốn pristine).
+
+**✅ ĐÃ CHẠY FULL (2026-06-03):** dedup `mnmn_all.json` 2299→2257 (loại 42 trùng tên); import 2257; `canonicalize_mnmn` (bản **verbatim promote** — KHÔNG LLM rewrite, giữ nguyên Nguyên liệu/Sơ chế/Thực hiện/Cách dùng/Mách nhỏ + video + servings/time/difficulty): **new=2211, replaced=43**. Sau đó verify FAIL 4 dup-title (MNMN trùng tên 405 nhưng khác slug) → fix one-off: MNMN+video thắng cả 4, 3 cụm AI re-slug về AI slug giữ coverage. **Canonical cuối = 2615** (monngonmoingay 2257 + llm-canonical 348 + curated 10), harness **PASS**, 103/103 AI. Edge đã biết: `canonicalize_mnmn` replace theo SLUG; món MNMN trùng TÊN 405 mà khác slug → tạo dup-title (cần fix tay như trên nếu re-run sinh thêm).
