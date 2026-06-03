@@ -681,3 +681,11 @@ Mỗi recipe MNMN có video YouTube trong JSON-LD `Recipe.video.contentUrl`. 5 t
 - `RecipeDetailOut.video_url` + builder.
 - Frontend `components/recipes/RecipeVideo.tsx` (trích id YouTube watch/youtu.be/embed → iframe 16:9 responsive, null-safe), render trong `app/recipes/[id]/page.tsx` sau description. `types.ts` thêm `video_url`.
 - Chỉ món MNMN có video; recipe khác null → không hiện. Embed YouTube (không tải). Spec... fold trong `docs/superpowers/plans/2026-06-03-mnmn-video.md`.
+
+### ✅ MNMN metadata: servings/cooking_time/difficulty — 2026-06-03
+Cào thêm Khẩu phần/Thời gian/Độ khó (KHÔNG migration — cột đã có sẵn trên Recipe).
+- `crawl_mnmn`: `parse_servings` (recipeYield "4 người"→4), `parse_minutes` (ISO8601 totalTime/cookTime "PT45M"→45, "PT1H30M"→90), `parse_difficulty(html)` (`<strong>` sau "Độ khó:" → map Dễ/Trung bình/Khó → easy/medium/hard). 3 field vào record.
+- `import_mnmn`: set cooking_time/servings/difficulty. `canonicalize_mnmn`: difficulty fallback `winner.difficulty` (time/servings đã fallback winner) → canonical dùng số THẬT thay vì LLM đoán.
+- Verify: bánh khọt 4/45/easy, ba chỉ 4/30/easy.
+
+⚠️ **Re-crawl từ đầu** (record đổi format nhiều lần): `Remove-Item ..\cookpad_recipe\mnmn_all.json` rồi chạy lại crawl→import→canonicalize→verify. Data crawl trước CHƯA vào DB (chỉ crawl) nên xóa sạch; vài row sample mình test đã vào DB (negligible, hoặc xóa `where source='monngonmoingay'` trước import nếu muốn pristine).
