@@ -145,3 +145,14 @@ async def get_recipe_detail(
 
     background_tasks.add_task(recipe_service.increment_view_count, db, recipe_id)
     return {"success": True, "data": detail.model_dump()}
+
+
+@router.get("/{recipe_id}/related")
+async def get_related(
+    recipe_id: uuid.UUID,
+    limit: int = 6,
+    db: AsyncSession = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user),
+):
+    cards = await recipe_service.get_related_recipes(db, recipe_id, limit=limit, current_user=current_user)
+    return {"success": True, "data": cards}
