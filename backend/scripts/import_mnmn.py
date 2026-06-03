@@ -27,7 +27,7 @@ def slugify(t: str) -> str:
     t = "".join(c for c in t if not unicodedata.combining(c))
     t = t.lower().replace("đ", "d").replace("Đ", "d")
     t = re.sub(r"[^a-z0-9]+", "-", t).strip("-")
-    return t
+    return t[:80].rstrip("-")
 
 
 async def main() -> None:
