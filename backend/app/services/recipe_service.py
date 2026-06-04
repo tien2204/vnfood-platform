@@ -107,6 +107,7 @@ async def list_recipes(
     difficulty: Optional[str] = None,
     sort: str = "newest",
     search: Optional[str] = None,
+    meal: Optional[str] = None,
     current_user: Optional[User] = None,
     show_all: bool = False,
 ) -> tuple[list[RecipeCardOut], PaginationOut]:
@@ -125,6 +126,8 @@ async def list_recipes(
         stmt = stmt.where(Recipe.source == source)
     if difficulty:
         stmt = stmt.where(Recipe.difficulty == difficulty)
+    if meal in ("sang", "trua", "toi"):
+        stmt = stmt.where(text(":meal = ANY(recipes.meal_types)").bindparams(meal=meal))
     if search:
         stmt = stmt.where(
             text(
