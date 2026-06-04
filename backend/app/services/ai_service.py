@@ -3,6 +3,7 @@ import base64
 import io
 import json
 import logging
+import unicodedata
 import uuid
 from typing import Optional
 
@@ -223,6 +224,11 @@ async def _find_canonical_for_class(
     return main, variants
 
 
+def _norm_title(title: Optional[str]) -> str:
+    """Normalized key for collapsing same-title recipes (NFC, casefolded, single-spaced)."""
+    return " ".join(unicodedata.normalize("NFC", (title or "").strip().lower()).split())
+
+
 async def _find_suggested_recipes(
     db: AsyncSession,
     predicted_class: Optional[str],
@@ -254,12 +260,16 @@ async def _find_suggested_recipes(
         fallback_result = await db.execute(fallback_q)
         recipes = recipes + list(fallback_result.scalars().all())
 
+    # Dedup by normalized title (not just id): Cookpad has many distinct rows
+    # sharing one title (e.g. several "Bánh đa cua Hải Phòng"). Recipes are
+    # rating-sorted, so the first row per title is the best one to keep.
     seen: set = set()
     output: list[dict] = []
     for r in recipes:
-        if r.id in seen:
+        key = _norm_title(r.title)
+        if key in seen:
             continue
-        seen.add(r.id)
+        seen.add(key)
         output.append({
             "id": str(r.id),
             "title": r.title,
