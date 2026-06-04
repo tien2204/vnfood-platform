@@ -18,6 +18,13 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 - **Mách nhỏ riêng** (frontend-only): tách bước khớp `/^\s*mách nhỏ\s*[:.]/i` ra callout 💡 sau danh sách bước, bước đánh số dùng `idx+1` → re-number không hở; món không có → ẩn.
 - Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-related-recipes-tips*`. **Còn 2 sub-project:** 2/3 lọc theo bữa (+backfill `meal_types`), 3/3 facet filter (crawl taxonomy MNMN + UI).
 
+### ✅ Sub-project 2/3 — Lọc theo bữa (sáng/trưa/tối) + backfill meal_types — 2026-06-03
+3 task subagent-driven, reviewed, smoke OK. Không migration (cột 0009 đã có).
+- **Backfill** `scripts/backfill_meal_types.py`: 358 canonical NULL (348 llm + 10 curated) → reuse `classify_meal_types` (gpt-4o-mini) → **backfilled 358/358, NULL→0**. Giờ toàn bộ 2615 canonical có meal_types. Idempotent.
+- **API** `list_recipes(meal=...)`: `where ":meal = ANY(recipes.meal_types)"` (whitelist sang/trua/toi, bindparam injection-safe, NULL rows tự loại) + `GET /recipes?meal=` forward. Smoke `meal=sang`→263 total, all chứa 'sang'.
+- **Frontend** `RecipeBrowse.tsx`: chip single-select Sáng/Trưa/Tối, sync `?meal=`, AND keyword, toggle-off khi bấm lại, `meal` trong effect deps (refetch). "Xóa bộ lọc" clear luôn.
+- Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-meal-filter*`. **Còn sub-project 3/3:** facet filter (vùng miền/dịp/loại/chế độ ăn — crawl taxonomy MNMN vungmien/dipnau/loaimon/dinhduong-sitemap + tag + UI).
+
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
 - [x] normalize_ingredients.py (chuẩn hóa ingredients)
