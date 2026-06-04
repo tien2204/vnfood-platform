@@ -42,6 +42,12 @@ const SORTS = [
   { label: "Đánh giá cao", value: "top_rated" },
 ];
 
+const MEALS = [
+  { label: "Sáng", value: "sang" },
+  { label: "Trưa", value: "trua" },
+  { label: "Tối", value: "toi" },
+];
+
 export default function RecipeBrowse() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -58,6 +64,7 @@ export default function RecipeBrowse() {
   const difficulty: string = searchParams.get("difficulty") ?? "";
   const sort: string = searchParams.get("sort") ?? "newest";
   const search: string = searchParams.get("search") ?? "";
+  const meal: string = searchParams.get("meal") ?? "";
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -87,6 +94,7 @@ export default function RecipeBrowse() {
     if (keyword) params.keyword = keyword;
     if (difficulty) params.difficulty = difficulty;
     if (search) params.search = search;
+    if (meal) params.meal = meal;
 
     async function loadRecipes() {
       setLoading(true);
@@ -111,9 +119,9 @@ export default function RecipeBrowse() {
     return () => {
       cancelled = true;
     };
-  }, [page, keyword, difficulty, sort, search]);
+  }, [page, keyword, difficulty, sort, search, meal]);
 
-  const hasFilters = keyword || difficulty || search;
+  const hasFilters = keyword || difficulty || search || meal;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -252,6 +260,27 @@ export default function RecipeBrowse() {
               }`}
             >
               {k.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Meal chips */}
+      <div className="flex flex-wrap items-center gap-2 mb-6">
+        <span className="text-sm font-medium text-[#6b5344] mr-1">Bữa:</span>
+        {MEALS.map((m) => {
+          const active = meal === m.value;
+          return (
+            <button
+              key={m.value}
+              onClick={() => updateParam("meal", active ? "" : m.value)}
+              className={`border-2 px-3.5 py-1.5 text-sm font-bold transition-all ${
+                active
+                  ? "border-[#2c1810] bg-[#2D6A4F] text-white shadow-block-sm"
+                  : "border-[#2c1810] bg-[#fff5e6] text-[#2c1810] shadow-block-sm hover:bg-[#2D6A4F] hover:text-white"
+              }`}
+            >
+              {m.label}
             </button>
           );
         })}
