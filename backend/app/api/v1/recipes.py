@@ -119,6 +119,10 @@ async def list_recipes(
     sort: str = Query(default="newest", pattern="^(newest|popular|top_rated)$"),
     search: Optional[str] = Query(default=None),
     meal: Optional[str] = Query(default=None),
+    region: Optional[str] = Query(default=None),
+    occasion: Optional[str] = Query(default=None),
+    dish_type: Optional[str] = Query(default=None),
+    diet: Optional[str] = Query(default=None),
     show_all: bool = Query(default=False, description="Include non-canonical recipes (Cookpad pool)"),
     db: AsyncSession = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
@@ -128,6 +132,7 @@ async def list_recipes(
         page=page, limit=limit,
         keyword=keyword, source=source, difficulty=difficulty,
         sort=sort, search=search, meal=meal,
+        region=region, occasion=occasion, dish_type=dish_type, diet=diet,
         current_user=current_user, show_all=show_all,
     )
     return {"success": True, "data": [c.model_dump() for c in cards], "pagination": pagination.model_dump()}

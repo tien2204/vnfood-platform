@@ -3,7 +3,7 @@ import uuid
 from typing import Optional
 
 from fastapi import HTTPException, status
-from sqlalchemy import delete, func, or_, select, text, update
+from sqlalchemy import ARRAY, String, bindparam, delete, func, or_, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -108,6 +108,10 @@ async def list_recipes(
     sort: str = "newest",
     search: Optional[str] = None,
     meal: Optional[str] = None,
+    region: Optional[str] = None,
+    occasion: Optional[str] = None,
+    dish_type: Optional[str] = None,
+    diet: Optional[str] = None,
     current_user: Optional[User] = None,
     show_all: bool = False,
 ) -> tuple[list[RecipeCardOut], PaginationOut]:
@@ -128,6 +132,20 @@ async def list_recipes(
         stmt = stmt.where(Recipe.difficulty == difficulty)
     if meal in ("sang", "trua", "toi"):
         stmt = stmt.where(text(":meal = ANY(recipes.meal_types)").bindparams(meal=meal))
+    for _param, _col in (
+        (region, "regions"),
+        (occasion, "occasions"),
+        (dish_type, "dish_types"),
+        (diet, "diets"),
+    ):
+        if _param:
+            _vals = [v for v in _param.split(",") if v]
+            if _vals:
+                stmt = stmt.where(
+                    text(f"recipes.{_col} && :facet_{_col}").bindparams(
+                        bindparam(f"facet_{_col}", value=_vals, type_=ARRAY(String))
+                    )
+                )
     if search:
         stmt = stmt.where(
             text(
