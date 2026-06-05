@@ -1,4 +1,4 @@
-"""Crawl monngonmoingay.com taxonomy sitemaps (vungmien/dipnau/loaimon/dinhduong),
+"""Crawl monngonmoingay.com taxonomy sitemaps (vungmien/dipnau/loaimon/dinhduong/nguyenlieu/cachnau),
 derive a raw-term vocab per facet, and tag canonical recipes.
 
 For each facet sitemap -> term pages (e.g. /mon-ngon-mien-nam/) -> recipe URLs.
@@ -14,7 +14,7 @@ URL structure discovered from live site:
 
 Outputs:
   - cookpad_recipe/facet_vocab.json : {facet: [{"value": slug, "label": text}, ...]}
-  - tags recipes.regions / occasions / dish_types / diets for canonicals.
+  - tags recipes.main_ingredients / cooking_methods / regions / occasions / dish_types / diets for canonicals.
 
 Idempotent: each canonical's facet column is rebuilt as the union of all crawled
 terms for that canonical (overwrites, no duplicate accumulation).
@@ -44,6 +44,8 @@ OUT = Path(__file__).resolve().parents[2] / "cookpad_recipe" / "facet_vocab.json
 
 # facet -> (sitemap substring, DB column)
 FACETS = {
+    "main_ingredient": ("nguyenlieu", "main_ingredients"),
+    "cooking_method": ("cachnau", "cooking_methods"),
     "region": ("vungmien", "regions"),
     "occasion": ("dipnau", "occasions"),
     "dish_type": ("loaimon", "dish_types"),
@@ -52,7 +54,7 @@ FACETS = {
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"}
 
 # Taxonomy index page slugs to skip (they are category root pages, not term pages)
-TAXONOMY_INDEX_SLUGS = {"vungmien", "dipnau", "loaimon", "dinhduong"}
+TAXONOMY_INDEX_SLUGS = {"vungmien", "dipnau", "loaimon", "dinhduong", "nguyenlieu", "cachnau"}
 
 # A recipe article URL: single-segment path matching known MNMN article pattern
 # (same as crawl_mnmn.py ARTICLE_RE — lowercase alphanumeric + hyphens)
