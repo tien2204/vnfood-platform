@@ -34,7 +34,7 @@ export interface Step {
 }
 
 export interface DishRecipe {
-  source: "curated" | "ai-generated";
+  source: "curated" | "ai-generated" | "canonical";
   title: string;
   description?: string | null;
   ingredients: string[];

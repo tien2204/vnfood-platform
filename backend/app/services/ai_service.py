@@ -12,6 +12,7 @@ from openai import AsyncOpenAI
 from PIL import Image
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.ai.class_names import CLASS_DISPLAY_NAMES, get_keyword_from_class
 from app.core.config import settings
@@ -101,7 +102,11 @@ async def recognize_image(
     # (defensive — should not happen after the canonical gap-fill).
     dish_recipe = None
     if predicted_class and predicted_class != "unknown" and model_used == "vnfood":
-        if canonical_recipe is None:
+        if canonical_recipe is not None:
+            # Inline the canonical recipe's real ingredients/steps so the card
+            # matches the linked detail page (source of truth = canonical row).
+            dish_recipe = await _build_dish_recipe_from_canonical(db, canonical_recipe["id"])
+        else:
             dish_recipe = dish_recipe_service.get_curated(predicted_class)
     elif model_used == "openai" and display_name and display_name not in ("Không nhận diện được", "unknown"):
         dish_recipe = await dish_recipe_service.get_or_generate_ai(db, display_name, user_id=user_id)
@@ -195,6 +200,32 @@ def _serialize_recipe_for_ai(r: Recipe) -> dict:
         "rating_count": r.rating_count,
         "source": r.source,
         "is_canonical": r.is_canonical,
+    }
+
+
+async def _build_dish_recipe_from_canonical(db: AsyncSession, recipe_id) -> Optional[dict]:
+    """Build a dish_recipe payload (DishRecipeOut shape) from a canonical recipe's
+    OWN ingredients/steps, so the inline 'Công thức chuẩn' card matches the detail
+    page it links to exactly (same rows: display_text + step content)."""
+    rid = recipe_id if isinstance(recipe_id, uuid.UUID) else uuid.UUID(str(recipe_id))
+    row = (await db.execute(
+        select(Recipe)
+        .options(selectinload(Recipe.ingredients), selectinload(Recipe.steps))
+        .where(Recipe.id == rid)
+    )).scalar_one_or_none()
+    if row is None:
+        return None
+    ingredients = [i.display_text for i in sorted(row.ingredients, key=lambda x: x.order_index)]
+    steps = [s.content for s in sorted(row.steps, key=lambda x: x.step_number)]
+    return {
+        "source": "canonical",
+        "title": row.title,
+        "description": row.description,
+        "ingredients": ingredients,
+        "steps": steps,
+        "cooking_time_minutes": row.cooking_time,
+        "servings": row.servings,
+        "difficulty": row.difficulty,
     }
 
 

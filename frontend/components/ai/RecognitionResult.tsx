@@ -198,6 +198,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
               </div>
             </div>
           </Link>
+          {result.dish_recipe && <DishRecipeCard recipe={result.dish_recipe} />}
         </section>
       )}
 
@@ -243,7 +244,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
         </section>
       )}
 
-      {!isUnknown && result.dish_recipe && (
+      {!isUnknown && !result.canonical_recipe && result.dish_recipe && (
         <DishRecipeCard recipe={result.dish_recipe} />
       )}
     </div>
