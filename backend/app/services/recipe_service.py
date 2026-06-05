@@ -7,6 +7,7 @@ from sqlalchemy import ARRAY, String, bindparam, delete, func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.core import roles
 from app.models.recipe import Recipe, RecipeIngredient, RecipeStep
 from app.models.social import Rating, SavedRecipe
 from app.models.user import User
@@ -14,6 +15,7 @@ from app.schemas.recipe import (
     AuthorDetailOut,
     AuthorOut,
     IngredientOut,
+    MyRecipeCardOut,
     PaginationOut,
     RecipeCardOut,
     RecipeCardWithStatus,
@@ -77,6 +79,11 @@ def _build_recipe_card(recipe: Recipe, author: Optional[User], saved_ids: set, u
     )
 
 
+def _build_my_recipe_card(recipe: Recipe, author: Optional[User]) -> "MyRecipeCardOut":
+    base = _build_recipe_card(recipe, author, set(), None)
+    return MyRecipeCardOut(**base.model_dump(), status=recipe.status, reject_reason=recipe.reject_reason)
+
+
 def _build_recipe_mini(recipe: Recipe) -> RecipeMiniOut:
     return RecipeMiniOut(
         id=recipe.id,
@@ -122,7 +129,7 @@ async def list_recipes(
 
     if not show_all:
         stmt = stmt.where(
-            Recipe.is_canonical.is_(True),
+            or_(Recipe.is_canonical.is_(True), Recipe.source == "user"),
             Recipe.is_dessert.is_(False),
         )
 
@@ -275,11 +282,12 @@ async def get_recipe_detail(
     if author and not author.is_active:
         return None
 
-    # Only non-approved recipes visible to owner/admin
+    # Only non-approved recipes visible to owner / collaborator / admin
     if recipe.status != "approved":
         if not current_user:
             return None
-        if current_user.role != "admin" and (author is None or current_user.id != author.id):
+        is_owner = author is not None and current_user.id == author.id
+        if not is_owner and not roles.role_at_least(current_user.role, roles.COLLABORATOR):
             return None
 
     # Author detail (follow feature removed in refocus branch — table dropped)
@@ -410,7 +418,7 @@ async def search_recipes(
 
     if not show_all:
         stmt = stmt.where(
-            Recipe.is_canonical.is_(True),
+            or_(Recipe.is_canonical.is_(True), Recipe.source == "user"),
             Recipe.is_dessert.is_(False),
         )
 
@@ -469,7 +477,7 @@ async def get_featured_recipes(
 
     if not show_all:
         base = base.where(
-            Recipe.is_canonical.is_(True),
+            or_(Recipe.is_canonical.is_(True), Recipe.source == "user"),
             Recipe.is_dessert.is_(False),
         )
 
@@ -866,3 +874,42 @@ async def get_my_recipes(
     total_pages = (total + limit - 1) // limit if total > 0 else 0
     pagination = PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
     return cards, pagination
+
+
+async def list_my_recipes(
+    db: AsyncSession, user: User, page: int = 1, limit: int = 20,
+) -> tuple[list, PaginationOut]:
+    """The current user's own recipes, all statuses, newest-updated first."""
+    limit = min(limit, 50)
+    base = (
+        select(Recipe, User)
+        .outerjoin(User, Recipe.author_id == User.id)
+        .where(Recipe.author_id == user.id)
+    )
+    total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
+    rows = (await db.execute(
+        base.order_by(Recipe.updated_at.desc()).offset((page - 1) * limit).limit(limit)
+    )).all()
+    cards = [_build_my_recipe_card(r[0], r[1]) for r in rows]
+    total_pages = (total + limit - 1) // limit if total > 0 else 0
+    return cards, PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
+
+
+async def list_review_queue(
+    db: AsyncSession, stage: str, page: int = 1, limit: int = 20,
+) -> tuple[list, PaginationOut]:
+    """Recipes awaiting review at a stage: 'collaborator' or 'admin' (FIFO)."""
+    target = {"collaborator": "pending_collaborator", "admin": "pending_admin"}[stage]
+    limit = min(limit, 50)
+    base = (
+        select(Recipe, User)
+        .outerjoin(User, Recipe.author_id == User.id)
+        .where(Recipe.status == target)
+    )
+    total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
+    rows = (await db.execute(
+        base.order_by(Recipe.updated_at.asc()).offset((page - 1) * limit).limit(limit)
+    )).all()
+    cards = [_build_my_recipe_card(r[0], r[1]) for r in rows]
+    total_pages = (total + limit - 1) // limit if total > 0 else 0
+    return cards, PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
