@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-03 (MNMN full run xong + verify AI→recipe link)
+**Cập nhật lần cuối:** 2026-06-05 (sub-project 3/3 facet filter xong + 2 fix recognize)
 **Branch:** `feat/canonical-recipes` (push lại — local ahead ~54 commit)
-**Task đang làm:** MNMN crawl→canonical FULL đã chạy: **2615 canonical** (verbatim+video+metadata), harness PASS, đã fix 4 dup-title. **AI recognize→/recipes link verified 103/103** (17 món AI giờ trỏ canonical MNMN). Cần restart uvicorn để API trả data mới. Còn: thesis muc-luc cập nhật (cooking-mode/voice usecase + sửa "30 món"→103); 2 sub-project chưa làm: personalization (embedding), substitution (curated+LLM). Chi tiết cuối file.
+**Task đang làm:** **Sub-project 3/3 (facet filter) XONG** — 6 task subagent-driven, reviewed, final review "ready to merge". Cần restart uvicorn + `npm run dev` để thấy chip facet + recognize fix mới. Trước đó: MNMN crawl→canonical FULL đã chạy: **2615 canonical** (verbatim+video+metadata), harness PASS, đã fix 4 dup-title. **AI recognize→/recipes link verified 103/103** (17 món AI giờ trỏ canonical MNMN). Cần restart uvicorn để API trả data mới. Còn: thesis muc-luc cập nhật (cooking-mode/voice usecase + sửa "30 món"→103); 2 sub-project chưa làm: personalization (embedding), substitution (curated+LLM). Chi tiết cuối file.
 
 **Verify AI⊆lookup sau MNMN (2026-06-03):** `ai_service._find_canonical_for_class(slug)` query `canonical_dish_slug==slug AND is_canonical` → trả `canonical_recipe` (có `id`); frontend `RecognitionResult` link `/recipes/<id>`. Khớp theo SLUG động → sau MNMN tự trỏ canonical mới. Kiểm: **103/103 AI slug resolve** (nguồn: llm-canonical 76 + monngonmoingay 17 + curated 10), 0 đứt link.
 
@@ -23,7 +23,21 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 - **Backfill** `scripts/backfill_meal_types.py`: 358 canonical NULL (348 llm + 10 curated) → reuse `classify_meal_types` (gpt-4o-mini) → **backfilled 358/358, NULL→0**. Giờ toàn bộ 2615 canonical có meal_types. Idempotent.
 - **API** `list_recipes(meal=...)`: `where ":meal = ANY(recipes.meal_types)"` (whitelist sang/trua/toi, bindparam injection-safe, NULL rows tự loại) + `GET /recipes?meal=` forward. Smoke `meal=sang`→263 total, all chứa 'sang'.
 - **Frontend** `RecipeBrowse.tsx`: chip single-select Sáng/Trưa/Tối, sync `?meal=`, AND keyword, toggle-off khi bấm lại, `meal` trong effect deps (refetch). "Xóa bộ lọc" clear luôn.
-- Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-meal-filter*`. **Còn sub-project 3/3:** facet filter (vùng miền/dịp/loại/chế độ ăn — crawl taxonomy MNMN vungmien/dipnau/loaimon/dinhduong-sitemap + tag + UI).
+- Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-03-meal-filter*`.
+
+### ✅ Sub-project 3/3 — Facet filter (vùng miền/dịp nấu/loại món/chế độ ăn) — 2026-06-05
+6 task subagent-driven, mỗi task spec+code review, final review "ready to merge". Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-04-facet-filter*`.
+- **Schema** migration `0011_recipe_facets.py`: +4 cột `regions/occasions/dish_types/diets` `ARRAY(String)` nullable (mirror meal_types/0009). (0010 đã bị `recipe_video_url` chiếm → dùng 0011.)
+- **Crawl** `scripts/crawl_facets.py`: crawl 4 taxonomy sitemap monngonmoingay (vungmien/dipnau/loaimon/dinhduong) → `cookpad_recipe/facet_vocab.json` (raw term slug, KHÔNG commit) + tag canonical qua join `cookpad_url`(source=monngonmoingay)→`canonical_dish_slug`→canonical, union term. Term page single-segment + `/page/N/` pagination. Tagged 2240 canonical. **Quyết định: adopt raw MNMN term slugs** (label = slug title-cased → hơi thô, vd "Mon Ngon Mien Bac"; region trộn cả mon-a/mon-au).
+- **Backfill** `scripts/backfill_facets.py`: LLM-fill (gpt-4o-mini) canonical NULL per facet vào ĐÚNG vocab crawl (allowed-labels), lưu `[]` nếu không chắc. Idempotent (NULL-only, commit/50). **Toàn bộ 2615 canonical giờ NULL=0 cả 4 facet.** (1 lần crash giữa chừng do Docker bị tắt nhầm — Postgres ACID, resume OK, không hỏng data.)
+- **Vocab UI** `scripts/gen_facets_ts.py` → `frontend/lib/facets.ts` (CÓ commit; 43 term: region 5/occasion 13/dish_type 5/diet 20).
+- **API** `list_recipes(region/occasion/dish_type/diet=...)`: comma-list, Postgres `&&` array-overlap (OR-within), AND-across + AND keyword/meal. `bindparam ARRAY(String)` injection-safe, cột từ allow-list cố định. Endpoint forward 4 param. Smoke: region/dish_type AND = 433, đúng.
+- **Frontend** `RecipeBrowse.tsx`: 4 nhóm chip multi-select (OR trong facet), URL comma param, "Xem thêm" khi >12 term, facet rỗng→ẩn, hasFilters + effect deps + "Xóa bộ lọc" gộp đủ.
+- **Follow-up đề xuất (chưa làm):** map slug→label tiếng Việt đẹp cho chip (và cân nhắc bỏ mon-a/mon-au khỏi "Vùng miền").
+
+### ✅ Fix recognize (2026-06-05, ngoài 3 sub-project)
+- **Dedup gợi ý**: `_find_suggested_recipes` dedup theo normalized title (không chỉ id) — Cookpad nhiều row trùng title (vd nhiều "Bánh đa cua Hải Phòng"); 73/106 carousel bị trùng → fix, giữ row rating cao nhất/title.
+- **Inline công thức chuẩn**: khi có canonical, build `dish_recipe` từ chính ingredients(`display_text`)/steps(`content`) của canonical → render trong section "Công thức chuẩn" dưới link `/recipes/{id}`; KHỚP detail (verified banh-chung/banh-da-cua/pho/com-tam). Curated/AI card chỉ dùng khi không có canonical. `DishRecipe.source` thêm `"canonical"`.
 
 ### Đã hoàn thành
 - [x] Thiết kế spec toàn bộ usecase
