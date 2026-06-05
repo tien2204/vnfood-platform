@@ -16,6 +16,7 @@ import RecipeGrid from "@/components/recipes/RecipeGrid";
 import SearchBar from "@/components/common/SearchBar";
 import api from "@/lib/api";
 import type { PaginatedResponse, RecipeCard } from "@/lib/types";
+import { FACETS } from "@/lib/facets";
 
 const KEYWORDS = [
   { label: "Tất cả", value: "" },
@@ -58,6 +59,7 @@ export default function RecipeBrowse() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  const [expandedFacets, setExpandedFacets] = useState<Set<string>>(new Set());
 
   const page = Number(searchParams.get("page") ?? "1");
   const keyword: string = searchParams.get("keyword") ?? "";
@@ -65,6 +67,10 @@ export default function RecipeBrowse() {
   const sort: string = searchParams.get("sort") ?? "newest";
   const search: string = searchParams.get("search") ?? "";
   const meal: string = searchParams.get("meal") ?? "";
+  const region: string = searchParams.get("region") ?? "";
+  const occasion: string = searchParams.get("occasion") ?? "";
+  const dishType: string = searchParams.get("dish_type") ?? "";
+  const diet: string = searchParams.get("diet") ?? "";
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -83,6 +89,26 @@ export default function RecipeBrowse() {
     [searchParams, router]
   );
 
+  const toggleFacet = useCallback(
+    (param: string, value: string) => {
+      const current = (searchParams.get(param) ?? "").split(",").filter(Boolean);
+      const next = current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value];
+      updateParam(param, next.join(","));
+    },
+    [searchParams, updateParam]
+  );
+
+  const toggleExpand = useCallback((key: string) => {
+    setExpandedFacets((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -95,6 +121,10 @@ export default function RecipeBrowse() {
     if (difficulty) params.difficulty = difficulty;
     if (search) params.search = search;
     if (meal) params.meal = meal;
+    if (region) params.region = region;
+    if (occasion) params.occasion = occasion;
+    if (dishType) params.dish_type = dishType;
+    if (diet) params.diet = diet;
 
     async function loadRecipes() {
       setLoading(true);
@@ -119,9 +149,10 @@ export default function RecipeBrowse() {
     return () => {
       cancelled = true;
     };
-  }, [page, keyword, difficulty, sort, search, meal]);
+  }, [page, keyword, difficulty, sort, search, meal, region, occasion, dishType, diet]);
 
-  const hasFilters = keyword || difficulty || search || meal;
+  const hasFilters =
+    keyword || difficulty || search || meal || region || occasion || dishType || diet;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -285,6 +316,43 @@ export default function RecipeBrowse() {
           );
         })}
       </div>
+
+      {/* Facet chips (region / occasion / dish-type / diet) */}
+      {FACETS.map((f) => {
+        if (f.terms.length === 0) return null;
+        const selected = (searchParams.get(f.param) ?? "").split(",").filter(Boolean);
+        const expanded = expandedFacets.has(f.key);
+        const shown = expanded ? f.terms : f.terms.slice(0, 12);
+        return (
+          <div key={f.key} className="flex flex-wrap items-center gap-2 mb-4">
+            <span className="text-sm font-medium text-[#6b5344] mr-1">{f.label}:</span>
+            {shown.map((t) => {
+              const active = selected.includes(t.value);
+              return (
+                <button
+                  key={t.value}
+                  onClick={() => toggleFacet(f.param, t.value)}
+                  className={`border-2 px-3 py-1 text-sm font-bold transition-all ${
+                    active
+                      ? "border-[#2c1810] bg-[#2D6A4F] text-white shadow-block-sm"
+                      : "border-[#2c1810] bg-[#fff5e6] text-[#2c1810] shadow-block-sm hover:bg-[#2D6A4F] hover:text-white"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              );
+            })}
+            {f.terms.length > 12 && (
+              <button
+                onClick={() => toggleExpand(f.key)}
+                className="text-sm font-bold text-[#ff6b35] hover:underline"
+              >
+                {expanded ? "Thu gọn" : `Xem thêm (${f.terms.length - 12})`}
+              </button>
+            )}
+          </div>
+        );
+      })}
 
       {/* Results */}
       <RecipeGrid recipes={loading ? undefined : recipes} loading={loading} />
