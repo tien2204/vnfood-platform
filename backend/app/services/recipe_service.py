@@ -112,6 +112,8 @@ async def list_recipes(
     occasion: Optional[str] = None,
     dish_type: Optional[str] = None,
     diet: Optional[str] = None,
+    main_ingredient: Optional[str] = None,
+    cooking_method: Optional[str] = None,
     current_user: Optional[User] = None,
     show_all: bool = False,
 ) -> tuple[list[RecipeCardOut], PaginationOut]:
@@ -137,6 +139,8 @@ async def list_recipes(
         (occasion, "occasions"),
         (dish_type, "dish_types"),
         (diet, "diets"),
+        (main_ingredient, "main_ingredients"),
+        (cooking_method, "cooking_methods"),
     ):
         if param:
             vals = [v.strip() for v in param.split(",") if v.strip()]
