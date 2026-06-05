@@ -162,11 +162,6 @@ class RecipeCardWithStatus(RecipeCardOut):
     model_config = {"from_attributes": True}
 
 
-class MyRecipeCardOut(RecipeCardOut):
-    status: str
-    reject_reason: str | None = None
-
-
 class RejectBody(BaseModel):
     reason: str
 

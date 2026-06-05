@@ -15,7 +15,6 @@ from app.schemas.recipe import (
     AuthorDetailOut,
     AuthorOut,
     IngredientOut,
-    MyRecipeCardOut,
     PaginationOut,
     RecipeCardOut,
     RecipeCardWithStatus,
@@ -77,11 +76,6 @@ def _build_recipe_card(recipe: Recipe, author: Optional[User], saved_ids: set, u
         is_canonical=recipe.is_canonical,
         variant_label=recipe.variant_label,
     )
-
-
-def _build_my_recipe_card(recipe: Recipe, author: Optional[User]) -> "MyRecipeCardOut":
-    base = _build_recipe_card(recipe, author, set(), None)
-    return MyRecipeCardOut(**base.model_dump(), status=recipe.status, reject_reason=recipe.reject_reason)
 
 
 def _build_recipe_mini(recipe: Recipe) -> RecipeMiniOut:
@@ -876,30 +870,20 @@ async def get_my_recipes(
     return cards, pagination
 
 
-async def list_my_recipes(
-    db: AsyncSession, user: User, page: int = 1, limit: int = 20,
-) -> tuple[list, PaginationOut]:
-    """The current user's own recipes, all statuses, newest-updated first."""
-    limit = min(limit, 50)
-    base = (
-        select(Recipe, User)
-        .outerjoin(User, Recipe.author_id == User.id)
-        .where(Recipe.author_id == user.id)
-    )
-    total = (await db.execute(select(func.count()).select_from(base.subquery()))).scalar_one()
-    rows = (await db.execute(
-        base.order_by(Recipe.updated_at.desc()).offset((page - 1) * limit).limit(limit)
-    )).all()
-    cards = [_build_my_recipe_card(r[0], r[1]) for r in rows]
-    total_pages = (total + limit - 1) // limit if total > 0 else 0
-    return cards, PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
+_REVIEW_STAGE_STATUS = {"collaborator": "pending_collaborator", "admin": "pending_admin"}
 
 
 async def list_review_queue(
     db: AsyncSession, stage: str, page: int = 1, limit: int = 20,
-) -> tuple[list, PaginationOut]:
-    """Recipes awaiting review at a stage: 'collaborator' or 'admin' (FIFO)."""
-    target = {"collaborator": "pending_collaborator", "admin": "pending_admin"}[stage]
+) -> tuple[list[RecipeCardWithStatus], PaginationOut]:
+    """Recipes awaiting review at a stage: 'collaborator' or 'admin' (FIFO).
+
+    Reuses the existing RecipeCardWithStatus shape (status + reject_reason) — the
+    owner-facing 'my recipes' list already lives in get_my_recipes / GET /users/me/recipes.
+    """
+    target = _REVIEW_STAGE_STATUS.get(stage)
+    if target is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="stage không hợp lệ")
     limit = min(limit, 50)
     base = (
         select(Recipe, User)
@@ -910,6 +894,6 @@ async def list_review_queue(
     rows = (await db.execute(
         base.order_by(Recipe.updated_at.asc()).offset((page - 1) * limit).limit(limit)
     )).all()
-    cards = [_build_my_recipe_card(r[0], r[1]) for r in rows]
+    cards = [_build_recipe_card_with_status(r[0], r[1]) for r in rows]
     total_pages = (total + limit - 1) // limit if total > 0 else 0
     return cards, PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
