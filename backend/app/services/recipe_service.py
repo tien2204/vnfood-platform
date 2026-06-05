@@ -132,18 +132,18 @@ async def list_recipes(
         stmt = stmt.where(Recipe.difficulty == difficulty)
     if meal in ("sang", "trua", "toi"):
         stmt = stmt.where(text(":meal = ANY(recipes.meal_types)").bindparams(meal=meal))
-    for _param, _col in (
+    for param, col in (
         (region, "regions"),
         (occasion, "occasions"),
         (dish_type, "dish_types"),
         (diet, "diets"),
     ):
-        if _param:
-            _vals = [v for v in _param.split(",") if v]
-            if _vals:
+        if param:
+            vals = [v.strip() for v in param.split(",") if v.strip()]
+            if vals:
                 stmt = stmt.where(
-                    text(f"recipes.{_col} && :facet_{_col}").bindparams(
-                        bindparam(f"facet_{_col}", value=_vals, type_=ARRAY(String))
+                    text(f"recipes.{col} && :facet_{col}").bindparams(
+                        bindparam(f"facet_{col}", value=vals, type_=ARRAY(String))
                     )
                 )
     if search:
