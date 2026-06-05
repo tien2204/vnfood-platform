@@ -4,9 +4,9 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-05 (sub-project 3/3 facet filter xong + 2 fix recognize)
+**Cập nhật lần cuối:** 2026-06-05 (facet filter v2 — parity 6 hạng mục MNMN — XONG)
 **Branch:** `feat/canonical-recipes` (push lại — local ahead ~54 commit)
-**Task đang làm:** **Sub-project 3/3 (facet filter) XONG** — 6 task subagent-driven, reviewed, final review "ready to merge". Cần restart uvicorn + `npm run dev` để thấy chip facet + recognize fix mới. Trước đó: MNMN crawl→canonical FULL đã chạy: **2615 canonical** (verbatim+video+metadata), harness PASS, đã fix 4 dup-title. **AI recognize→/recipes link verified 103/103** (17 món AI giờ trỏ canonical MNMN). Cần restart uvicorn để API trả data mới. Còn: thesis muc-luc cập nhật (cooking-mode/voice usecase + sửa "30 món"→103); 2 sub-project chưa làm: personalization (embedding), substitution (curated+LLM). Chi tiết cuối file.
+**Task đang làm:** **Facet filter v2 (parity 6 hạng mục MNMN) XONG** — 6 task subagent-driven, reviewed, final review "ready to merge". Thêm 2 facet (Nguyên liệu, Cách nấu) → đủ 6 hạng mục như monngonmoingay.com; UI dropdown grouped-checkbox + nút "Lọc thông tin"; label tiếng Việt chuẩn. Tất cả 2615 canonical NULL=0 cả 6 facet. Cần restart uvicorn + `npm run dev`. Trước đó: **Sub-project 3/3 (facet filter v1) XONG** — 6 task subagent-driven, reviewed, final review "ready to merge". Cần restart uvicorn + `npm run dev` để thấy chip facet + recognize fix mới. Trước đó: MNMN crawl→canonical FULL đã chạy: **2615 canonical** (verbatim+video+metadata), harness PASS, đã fix 4 dup-title. **AI recognize→/recipes link verified 103/103** (17 món AI giờ trỏ canonical MNMN). Cần restart uvicorn để API trả data mới. Còn: thesis muc-luc cập nhật (cooking-mode/voice usecase + sửa "30 món"→103); 2 sub-project chưa làm: personalization (embedding), substitution (curated+LLM). Chi tiết cuối file.
 
 **Verify AI⊆lookup sau MNMN (2026-06-03):** `ai_service._find_canonical_for_class(slug)` query `canonical_dish_slug==slug AND is_canonical` → trả `canonical_recipe` (có `id`); frontend `RecognitionResult` link `/recipes/<id>`. Khớp theo SLUG động → sau MNMN tự trỏ canonical mới. Kiểm: **103/103 AI slug resolve** (nguồn: llm-canonical 76 + monngonmoingay 17 + curated 10), 0 đứt link.
 
@@ -33,7 +33,16 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 - **Vocab UI** `scripts/gen_facets_ts.py` → `frontend/lib/facets.ts` (CÓ commit; 43 term: region 5/occasion 13/dish_type 5/diet 20).
 - **API** `list_recipes(region/occasion/dish_type/diet=...)`: comma-list, Postgres `&&` array-overlap (OR-within), AND-across + AND keyword/meal. `bindparam ARRAY(String)` injection-safe, cột từ allow-list cố định. Endpoint forward 4 param. Smoke: region/dish_type AND = 433, đúng.
 - **Frontend** `RecipeBrowse.tsx`: 4 nhóm chip multi-select (OR trong facet), URL comma param, "Xem thêm" khi >12 term, facet rỗng→ẩn, hasFilters + effect deps + "Xóa bộ lọc" gộp đủ.
-- **Follow-up đề xuất (chưa làm):** map slug→label tiếng Việt đẹp cho chip (và cân nhắc bỏ mon-a/mon-au khỏi "Vùng miền").
+- **Follow-up đề xuất (chưa làm):** map slug→label tiếng Việt đẹp cho chip (và cân nhắc bỏ mon-a/mon-au khỏi "Vùng miền"). **→ ĐÃ LÀM ở v2 bên dưới.**
+
+### ✅ Facet filter v2 — parity 6 hạng mục MNMN — 2026-06-05
+Spec/Plan: `docs/superpowers/{specs,plans}/2026-06-05-facet-filter-v2*`. 6 task subagent-driven, mỗi task spec+code review, final review "ready to merge". Điều tra: `sitemap_index.xml` có ĐÚNG 6 taxonomy sitemap khớp 6 hạng mục UI MNMN; v1 mới crawl 4 → v2 thêm **nguyenlieu** (Nguyên liệu, 24 term) + **cachnau** (Cách nấu, 12 term).
+- **Schema** migration `0012_recipe_facets_v2.py`: +2 cột `main_ingredients`, `cooking_methods` ARRAY(String) (tránh đụng bảng `recipe_ingredients`).
+- **Crawl/Backfill** mở rộng `crawl_facets.py`/`backfill_facets.py` thêm 2 facet → tag + LLM-fill. **Toàn bộ 2615 canonical NULL=0 cả 6 facet** (crawl tag main_ingredients 2176/cooking_methods 2198, backfill phần còn lại).
+- **API** `list_recipes` +2 param `main_ingredient`/`cooking_method` (cùng vòng `&&` overlap → 6 facet). Param `meal` backend GIỮ (chỉ frontend ngừng gửi). Smoke: main_ingredient=cac-loai-rau→618, AND với region→426.
+- **Vocab UI** `gen_facets_ts.py` viết lại: CONFIG hand-authored (6 hạng mục, nhóm con Thịt/Hải Sản…, **label tiếng Việt chuẩn** từ screenshot MNMN), cross-check slug với crawl vocab (`missing slugs: 0`). → `frontend/lib/facets.ts` grouped (type `FacetGroup{label?,terms}`), 70 term.
+- **UI** `frontend/components/recipes/FacetDropdown.tsx` (mới) + `RecipeBrowse.tsx` viết lại: hàng **6 nút category → dropdown grouped-checkbox + nút "Lọc thông tin" (Apply model)** + counter "Hiện Bộ Lọc: N". **Bỏ chip meal** (trùng Dịp lễ→Ngày). Giữ keyword/search/sort. Fix flicker khi đổi panel (stopPropagation trên trigger mousedown).
+- **Verify correctness vs MNMN (trả lời câu hỏi user):** canonical từ MNMN khớp crawl = authoritative; ~non-MNMN = LLM-fill (best-effort). UI slug ∉ crawl vocab = 0 (data contract chặt). 9 slug crawl không hiện UI (mon-a/au vẫn giữ; an-chay/an-kieng… không vào panel dinh dưỡng) — chấp nhận theo curation MNMN.
 
 ### ✅ Fix recognize (2026-06-05, ngoài 3 sub-project)
 - **Dedup gợi ý**: `_find_suggested_recipes` dedup theo normalized title (không chỉ id) — Cookpad nhiều row trùng title (vd nhiều "Bánh đa cua Hải Phòng"); 73/106 carousel bị trùng → fix, giữ row rating cao nhất/title.
