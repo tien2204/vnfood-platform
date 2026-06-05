@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import roles
 from app.core.database import get_db
 from app.core.deps import require_admin
 from app.models.user import User
@@ -167,8 +168,8 @@ async def update_user_role(
 ):
     if str(current_admin.id) == user_id:
         raise HTTPException(400, detail="Không thể tự thay đổi role của mình")
-    if body.role not in ("user", "admin"):
-        raise HTTPException(400, detail="Role không hợp lệ (user | admin)")
+    if body.role not in roles.ROLES:
+        raise HTTPException(400, detail="Role không hợp lệ (user | collaborator | admin)")
 
     user = await admin_service.update_user_role(db, user_id, body.role)
     if not user:
