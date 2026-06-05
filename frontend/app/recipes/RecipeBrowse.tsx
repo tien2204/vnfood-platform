@@ -17,6 +17,7 @@ import SearchBar from "@/components/common/SearchBar";
 import api from "@/lib/api";
 import type { PaginatedResponse, RecipeCard } from "@/lib/types";
 import { FACETS } from "@/lib/facets";
+import FacetDropdown from "@/components/recipes/FacetDropdown";
 
 const KEYWORDS = [
   { label: "Tất cả", value: "" },
@@ -43,11 +44,6 @@ const SORTS = [
   { label: "Đánh giá cao", value: "top_rated" },
 ];
 
-const MEALS = [
-  { label: "Sáng", value: "sang" },
-  { label: "Trưa", value: "trua" },
-  { label: "Tối", value: "toi" },
-];
 
 export default function RecipeBrowse() {
   const router = useRouter();
@@ -59,18 +55,13 @@ export default function RecipeBrowse() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
-  const [expandedFacets, setExpandedFacets] = useState<Set<string>>(new Set());
+  const [openFacet, setOpenFacet] = useState<string | null>(null);
 
   const page = Number(searchParams.get("page") ?? "1");
   const keyword: string = searchParams.get("keyword") ?? "";
   const difficulty: string = searchParams.get("difficulty") ?? "";
   const sort: string = searchParams.get("sort") ?? "newest";
   const search: string = searchParams.get("search") ?? "";
-  const meal: string = searchParams.get("meal") ?? "";
-  const region: string = searchParams.get("region") ?? "";
-  const occasion: string = searchParams.get("occasion") ?? "";
-  const dishType: string = searchParams.get("dish_type") ?? "";
-  const diet: string = searchParams.get("diet") ?? "";
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -89,25 +80,10 @@ export default function RecipeBrowse() {
     [searchParams, router]
   );
 
-  const toggleFacet = useCallback(
-    (param: string, value: string) => {
-      const current = (searchParams.get(param) ?? "").split(",").filter(Boolean);
-      const next = current.includes(value)
-        ? current.filter((v) => v !== value)
-        : [...current, value];
-      updateParam(param, next.join(","));
-    },
-    [searchParams, updateParam]
+  const applyFacet = useCallback(
+    (param: string, values: string[]) => updateParam(param, values.join(",")),
+    [updateParam]
   );
-
-  const toggleExpand = useCallback((key: string) => {
-    setExpandedFacets((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -120,11 +96,10 @@ export default function RecipeBrowse() {
     if (keyword) params.keyword = keyword;
     if (difficulty) params.difficulty = difficulty;
     if (search) params.search = search;
-    if (meal) params.meal = meal;
-    if (region) params.region = region;
-    if (occasion) params.occasion = occasion;
-    if (dishType) params.dish_type = dishType;
-    if (diet) params.diet = diet;
+    FACETS.forEach((f) => {
+      const v = searchParams.get(f.param);
+      if (v) params[f.param] = v;
+    });
 
     async function loadRecipes() {
       setLoading(true);
@@ -149,10 +124,13 @@ export default function RecipeBrowse() {
     return () => {
       cancelled = true;
     };
-  }, [page, keyword, difficulty, sort, search, meal, region, occasion, dishType, diet]);
+  }, [page, keyword, difficulty, sort, search, searchParams]);
 
-  const hasFilters =
-    keyword || difficulty || search || meal || region || occasion || dishType || diet;
+  const facetCount = FACETS.reduce(
+    (n, f) => n + (searchParams.get(f.param) ?? "").split(",").filter(Boolean).length,
+    0
+  );
+  const hasFilters = keyword || difficulty || search || facetCount > 0;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -296,63 +274,25 @@ export default function RecipeBrowse() {
         })}
       </div>
 
-      {/* Meal chips */}
-      <div className="flex flex-wrap items-center gap-2 mb-6">
-        <span className="text-sm font-medium text-[#6b5344] mr-1">Bữa:</span>
-        {MEALS.map((m) => {
-          const active = meal === m.value;
-          return (
-            <button
-              key={m.value}
-              onClick={() => updateParam("meal", active ? "" : m.value)}
-              className={`border-2 px-3.5 py-1.5 text-sm font-bold transition-all ${
-                active
-                  ? "border-[#2c1810] bg-[#2D6A4F] text-white shadow-block-sm"
-                  : "border-[#2c1810] bg-[#fff5e6] text-[#2c1810] shadow-block-sm hover:bg-[#2D6A4F] hover:text-white"
-              }`}
-            >
-              {m.label}
-            </button>
-          );
-        })}
+      {/* Facet dropdown bar (MNMN parity) */}
+      <div className="mb-6 flex flex-wrap items-center gap-2">
+        {FACETS.map((f) => (
+          <FacetDropdown
+            key={f.key}
+            facet={f}
+            selected={(searchParams.get(f.param) ?? "").split(",").filter(Boolean)}
+            open={openFacet === f.key}
+            onToggleOpen={() => setOpenFacet((cur) => (cur === f.key ? null : f.key))}
+            onClose={() => setOpenFacet(null)}
+            onApply={(vals) => applyFacet(f.param, vals)}
+          />
+        ))}
+        {facetCount > 0 && (
+          <span className="ml-1 text-sm font-bold text-[#ff6b35]">
+            Hiện Bộ Lọc: {facetCount}
+          </span>
+        )}
       </div>
-
-      {/* Facet chips (region / occasion / dish-type / diet) */}
-      {FACETS.map((f) => {
-        if (f.terms.length === 0) return null;
-        const selected = (searchParams.get(f.param) ?? "").split(",").filter(Boolean);
-        const expanded = expandedFacets.has(f.key);
-        const shown = expanded ? f.terms : f.terms.slice(0, 12);
-        return (
-          <div key={f.key} className="flex flex-wrap items-center gap-2 mb-4">
-            <span className="text-sm font-medium text-[#6b5344] mr-1">{f.label}:</span>
-            {shown.map((t) => {
-              const active = selected.includes(t.value);
-              return (
-                <button
-                  key={t.value}
-                  onClick={() => toggleFacet(f.param, t.value)}
-                  className={`border-2 px-3 py-1 text-sm font-bold transition-all ${
-                    active
-                      ? "border-[#2c1810] bg-[#2D6A4F] text-white shadow-block-sm"
-                      : "border-[#2c1810] bg-[#fff5e6] text-[#2c1810] shadow-block-sm hover:bg-[#2D6A4F] hover:text-white"
-                  }`}
-                >
-                  {t.label}
-                </button>
-              );
-            })}
-            {f.terms.length > 12 && (
-              <button
-                onClick={() => toggleExpand(f.key)}
-                className="text-sm font-bold text-[#ff6b35] hover:underline"
-              >
-                {expanded ? "Thu gọn" : `Xem thêm (${f.terms.length - 12})`}
-              </button>
-            )}
-          </div>
-        );
-      })}
 
       {/* Results */}
       <RecipeGrid recipes={loading ? undefined : recipes} loading={loading} />
