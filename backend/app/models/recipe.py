@@ -63,6 +63,8 @@ class Recipe(Base):
     occasions: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
     dish_types: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
     diets: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
+    main_ingredients: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
+    cooking_methods: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
 
     # Relationships
     author: Mapped["User"] = relationship(  # noqa: F821
