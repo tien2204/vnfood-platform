@@ -653,13 +653,16 @@ async def update_recipe(
         if recipe.author_id != current_user.id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền sửa công thức này")
 
-    was_approved = recipe.status == "approved"
+    # Editing content that was already reviewed (published, or collaborator-approved
+    # and waiting on admin) must re-enter the collaborator queue so the change is
+    # re-reviewed. Editing while private/pending_collaborator/rejected keeps its status.
+    needs_rereview = recipe.status in ("approved", "pending_admin")
 
     update_data = data.model_dump(exclude_none=True, exclude={"ingredients", "steps"})
     for field, value in update_data.items():
         setattr(recipe, field, value)
 
-    if was_approved and current_user.role != "admin":
+    if needs_rereview and current_user.role != "admin":
         recipe.status = "pending_collaborator"
         recipe.reject_reason = None
 
@@ -717,10 +720,7 @@ async def approve_recipe(
     recipe_id: uuid.UUID,
     data: RecipeStatusUpdate,
 ) -> Recipe:
-    result = await db.execute(select(Recipe).where(Recipe.id == recipe_id))
-    recipe = result.scalar_one_or_none()
-    if recipe is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Công thức không tồn tại")
+    recipe = await _get_recipe_or_404(db, recipe_id)
 
     recipe.status = data.status
     recipe.reject_reason = data.reject_reason if data.status == "rejected" else None
