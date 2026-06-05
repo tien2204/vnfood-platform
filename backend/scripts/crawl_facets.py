@@ -56,15 +56,14 @@ TAXONOMY_INDEX_SLUGS = {"vungmien", "dipnau", "loaimon", "dinhduong"}
 
 # A recipe article URL: single-segment path matching known MNMN article pattern
 # (same as crawl_mnmn.py ARTICLE_RE — lowercase alphanumeric + hyphens)
-ARTICLE_RE = re.compile(r"^https://monngonmoingay\.com/([a-z0-9][a-z0-9-]*)/?$")
-
-# Pagination link pattern: /<term>/page/<N>/
-PAGE_RE = re.compile(r"^https://monngonmoingay\.com/[a-z0-9][a-z0-9-]*/page/(\d+)/?$")
+ARTICLE_RE = re.compile(r"^https://monngonmoingay\.com/[a-z0-9][a-z0-9-]*/?$")
 
 # Non-recipe slugs to exclude (navigation/static pages that appear as recipe-like links)
+# Note: taxonomy index slugs (vungmien/dipnau/loaimon/dinhduong) are already in
+# TAXONOMY_INDEX_SLUGS and checked separately — no duplication here.
 NON_RECIPE_SLUGS = {
     "chinh-sach-bao-ve-du-lieu-ca-nhan", "dieu-khoan-su-dung", "ke-hoach-nau-an",
-    "lay-lai-mat-khau", "gia-vi-ban-can", "vungmien", "dipnau", "loaimon", "dinhduong",
+    "lay-lai-mat-khau", "gia-vi-ban-can",
     "dang-nhap", "dang-ky", "lien-he", "gioi-thieu", "sitemap",
 }
 
@@ -104,8 +103,6 @@ def extract_recipe_links_from_html(html: str) -> list[str]:
 
 def get_max_page(html: str) -> int:
     """Find the highest page number linked from a paginated term page."""
-    pages = PAGE_RE.findall(html) if False else []  # fallback
-    # Actually extract from href patterns
     nums = re.findall(r'href="[^"]+/page/(\d+)/?[^"]*"', html)
     if not nums:
         return 1
