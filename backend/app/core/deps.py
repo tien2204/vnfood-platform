@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.core.security import decode_token
 from app.models.user import User
+from app.core import roles
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=False)
@@ -40,8 +41,14 @@ async def get_current_active_user(user: User = Depends(get_current_user)) -> Use
 
 
 async def require_admin(user: User = Depends(get_current_active_user)) -> User:
-    if user.role != "admin":
+    if not roles.role_at_least(user.role, roles.ADMIN):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập")
+    return user
+
+
+async def require_collaborator(user: User = Depends(get_current_active_user)) -> User:
+    if not roles.role_at_least(user.role, roles.COLLABORATOR):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cần quyền cộng tác viên")
     return user
 
 
