@@ -23,6 +23,8 @@ VOCAB_FILE = Path(__file__).resolve().parents[2] / "cookpad_recipe" / "facet_voc
 
 # facet label (for the prompt) + DB column
 FACETS = {
+    "main_ingredient": ("nguyên liệu chính (thịt/hải sản/rau củ/tinh bột/trứng/đậu hũ...)", "main_ingredients"),
+    "cooking_method": ("cách nấu (chiên/nướng/xào/kho/hấp/hầm/lẩu/gỏi/quay/om/canh...)", "cooking_methods"),
     "region": ("vùng miền (Bắc/Trung/Nam...)", "regions"),
     "occasion": ("dịp nấu (hằng ngày/đãi tiệc/lễ tết/ăn vặt...)", "occasions"),
     "dish_type": ("loại món (canh/kho/xào/nướng/chiên/gỏi/lẩu...)", "dish_types"),
