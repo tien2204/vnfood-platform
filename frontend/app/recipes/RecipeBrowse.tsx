@@ -85,6 +85,8 @@ export default function RecipeBrowse() {
     [updateParam]
   );
 
+  const closeFacet = useCallback(() => setOpenFacet(null), []);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -283,7 +285,7 @@ export default function RecipeBrowse() {
             selected={(searchParams.get(f.param) ?? "").split(",").filter(Boolean)}
             open={openFacet === f.key}
             onToggleOpen={() => setOpenFacet((cur) => (cur === f.key ? null : f.key))}
-            onClose={() => setOpenFacet(null)}
+            onClose={closeFacet}
             onApply={(vals) => applyFacet(f.param, vals)}
           />
         ))}

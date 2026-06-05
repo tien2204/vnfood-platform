@@ -41,6 +41,9 @@ export default function FacetDropdown({
     <div ref={ref} className="relative">
       <button
         type="button"
+        // stop mousedown from reaching the document outside-click handler of
+        // another open panel — switching facets should not flicker close→open
+        onMouseDown={(e) => e.stopPropagation()}
         onClick={onToggleOpen}
         className={`border-2 border-[#2c1810] px-3.5 py-1.5 text-sm font-bold shadow-block-sm transition-all ${
           count > 0
