@@ -605,7 +605,7 @@ async def create_recipe(
         difficulty=data.difficulty,
         keyword=data.keyword,
         source="user",
-        status="pending",
+        status="private",
         author_id=author_id,
     )
     db.add(recipe)
@@ -660,7 +660,7 @@ async def update_recipe(
         setattr(recipe, field, value)
 
     if was_approved and current_user.role != "admin":
-        recipe.status = "pending"
+        recipe.status = "pending_collaborator"
         recipe.reject_reason = None
 
     if data.ingredients is not None:
@@ -727,6 +727,87 @@ async def approve_recipe(
     await db.commit()
     await db.refresh(recipe)
     return recipe
+
+
+async def _get_recipe_or_404(db: AsyncSession, recipe_id: uuid.UUID) -> Recipe:
+    r = (await db.execute(select(Recipe).where(Recipe.id == recipe_id))).scalar_one_or_none()
+    if r is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Công thức không tồn tại")
+    return r
+
+
+def _assert_status(recipe: Recipe, expected: tuple[str, ...], action: str) -> None:
+    if recipe.status not in expected:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Sai trạng thái duyệt ('{recipe.status}') — không thể {action}",
+        )
+
+
+async def submit_recipe(db: AsyncSession, recipe_id: uuid.UUID, user: User) -> Recipe:
+    r = await _get_recipe_or_404(db, recipe_id)
+    if r.author_id != user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền")
+    _assert_status(r, ("private", "rejected"), "gửi duyệt")
+    r.status = "pending_collaborator"
+    r.reject_reason = None
+    await db.commit()
+    await db.refresh(r)
+    return r
+
+
+async def withdraw_recipe(db: AsyncSession, recipe_id: uuid.UUID, user: User) -> Recipe:
+    r = await _get_recipe_or_404(db, recipe_id)
+    if r.author_id != user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền")
+    _assert_status(r, ("pending_collaborator",), "thu hồi")
+    r.status = "private"
+    await db.commit()
+    await db.refresh(r)
+    return r
+
+
+async def collaborator_approve(db: AsyncSession, recipe_id: uuid.UUID) -> Recipe:
+    r = await _get_recipe_or_404(db, recipe_id)
+    _assert_status(r, ("pending_collaborator",), "CTV duyệt")
+    r.status = "pending_admin"
+    await db.commit()
+    await db.refresh(r)
+    return r
+
+
+async def collaborator_reject(db: AsyncSession, recipe_id: uuid.UUID, reason: str) -> Recipe:
+    r = await _get_recipe_or_404(db, recipe_id)
+    _assert_status(r, ("pending_collaborator",), "CTV từ chối")
+    r.status = "rejected"
+    r.reject_reason = reason
+    await db.commit()
+    await db.refresh(r)
+    return r
+
+
+async def admin_publish(db: AsyncSession, recipe_id: uuid.UUID) -> Recipe:
+    r = await _get_recipe_or_404(db, recipe_id)
+    _assert_status(r, ("pending_admin",), "admin đăng")
+    r.status = "approved"
+    r.source = "user"
+    if not r.original_author_name and r.author_id:
+        name = (await db.execute(select(User.full_name).where(User.id == r.author_id))).scalar_one_or_none()
+        if name:
+            r.original_author_name = name
+    await db.commit()
+    await db.refresh(r)
+    return r
+
+
+async def admin_reject(db: AsyncSession, recipe_id: uuid.UUID, reason: str) -> Recipe:
+    r = await _get_recipe_or_404(db, recipe_id)
+    _assert_status(r, ("pending_admin",), "admin từ chối")
+    r.status = "rejected"
+    r.reject_reason = reason
+    await db.commit()
+    await db.refresh(r)
+    return r
 
 
 async def get_pending_recipes(
