@@ -69,11 +69,18 @@ export interface RecipeCard {
   variant_label?: string | null;
 }
 
+export type RecipeStatus =
+  | "private"
+  | "pending_collaborator"
+  | "pending_admin"
+  | "approved"
+  | "rejected";
+
 export interface RecipeDetail extends RecipeCard {
   description: string | null;
   cookpad_url: string | null;
   keyword: string | null;
-  status: "pending" | "approved" | "rejected";
+  status: RecipeStatus;
   view_count: number;
   author: AuthorDetail | null;
   ingredients: Ingredient[];
@@ -146,7 +153,7 @@ export interface RecipeCreate {
 export type RecipeUpdate = Partial<RecipeCreate>;
 
 export interface RecipeCardWithStatus extends RecipeCard {
-  status: "pending" | "approved" | "rejected";
+  status: RecipeStatus;
   reject_reason: string | null;
   created_at: string;
   is_manually_reviewed?: boolean;

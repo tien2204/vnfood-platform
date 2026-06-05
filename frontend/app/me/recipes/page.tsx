@@ -12,12 +12,14 @@ import type { PaginatedResponse, RecipeCardWithStatus } from "@/lib/types";
 
 const TABS = [
   { value: "", label: "Tất cả" },
-  { value: "pending", label: "Chờ duyệt" },
-  { value: "approved", label: "Đã duyệt" },
+  { value: "private", label: "Riêng tư" },
+  { value: "pending_collaborator", label: "Chờ CTV" },
+  { value: "pending_admin", label: "Chờ Admin" },
+  { value: "approved", label: "Đã đăng" },
   { value: "rejected", label: "Bị từ chối" },
 ] as const;
 
-type TabValue = "" | "pending" | "approved" | "rejected";
+type TabValue = "" | "private" | "pending_collaborator" | "pending_admin" | "approved" | "rejected";
 
 function cacheKey(status: TabValue, page: number) {
   return `/users/me/recipes?status=${status}&page=${page}`;
@@ -38,6 +40,7 @@ export default function MyRecipesPage() {
   const [tab, setTab] = useState<TabValue>("");
   const [page, setPage] = useState(1);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [acting, setActing] = useState<string | null>(null);
 
   const key = cacheKey(tab, page);
   const { data, isLoading } = useSWR(key, fetcher);
@@ -53,6 +56,19 @@ export default function MyRecipesPage() {
       toast.error("Xóa thất bại");
     } finally {
       setDeleting(null);
+    }
+  }
+
+  async function handleAction(id: string, path: string, okMsg: string) {
+    setActing(id);
+    try {
+      await api.post(`/recipes/${id}/${path}`);
+      toast.success(okMsg);
+      mutate(key);
+    } catch {
+      toast.error("Thao tác thất bại");
+    } finally {
+      setActing(null);
     }
   }
 
@@ -184,6 +200,24 @@ export default function MyRecipesPage() {
                     </div>
 
                     <div className="flex items-center gap-2 mt-2.5">
+                      {(recipe.status === "private" || recipe.status === "rejected") && (
+                        <button
+                          onClick={() => handleAction(recipe.id, "submit", "Đã gửi duyệt")}
+                          disabled={acting === recipe.id}
+                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#2D6A4F] text-xs font-medium text-white hover:bg-[#245a43] transition-colors disabled:opacity-50"
+                        >
+                          Gửi duyệt
+                        </button>
+                      )}
+                      {recipe.status === "pending_collaborator" && (
+                        <button
+                          onClick={() => handleAction(recipe.id, "withdraw", "Đã thu hồi")}
+                          disabled={acting === recipe.id}
+                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#E8DDD4] text-xs text-[#7C6A56] hover:border-[#E85D26]/50 hover:text-[#E85D26] transition-colors disabled:opacity-50"
+                        >
+                          Thu hồi
+                        </button>
+                      )}
                       {recipe.source !== "cookpad" && (
                         <Link
                           href={`/recipes/${recipe.id}/edit`}

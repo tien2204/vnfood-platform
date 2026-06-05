@@ -75,11 +75,10 @@ export default function RecipeCard({ recipe, onSaveChange }: Props) {
           )}
 
           {/* User recipe: community badge */}
-          {recipe.source === "user" && (
+          {!recipe.is_canonical && recipe.source === "user" && (
             <div className="absolute top-2 left-2 z-10">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#4a7c59] text-[10px] font-bold uppercase tracking-wide text-white border-2 border-[#2c1810]">
-                <span className="w-1 h-1 rounded-full bg-white" />
-                Cộng đồng
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#2D6A4F]/20 bg-[#2D6A4F]/10 px-2 py-0.5 text-[10px] font-medium text-[#2D6A4F]">
+                Cộng đồng{recipe.original_author_name ? ` · ${recipe.original_author_name}` : ""}
               </span>
             </div>
           )}
