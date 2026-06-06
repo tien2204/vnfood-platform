@@ -671,6 +671,8 @@ async def update_recipe(
     if needs_rereview and current_user.role != "admin":
         recipe.status = "pending_collaborator"
         recipe.reject_reason = None
+        recipe.claimed_by = None  # re-enters queue fresh — no stale claim
+        recipe.claimed_at = None
 
     if data.ingredients is not None:
         await db.execute(delete(RecipeIngredient).where(RecipeIngredient.recipe_id == recipe_id))
@@ -730,6 +732,8 @@ async def approve_recipe(
 
     recipe.status = data.status
     recipe.reject_reason = data.reject_reason if data.status == "rejected" else None
+    recipe.claimed_by = None  # legacy admin status-setter: never leave a stale claim
+    recipe.claimed_at = None
     await db.commit()
     await db.refresh(recipe)
     return recipe
