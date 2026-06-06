@@ -154,10 +154,11 @@ class RecipeCardOut(BaseModel):
 
 
 class RecipeCardWithStatus(RecipeCardOut):
-    """RecipeCard extended with moderation fields — for owner/admin views."""
+    """RecipeCard extended with moderation fields — for owner/admin/reviewer views."""
     status: str
     reject_reason: str | None = None
     created_at: datetime
+    claimed_by_name: str | None = None
 
     model_config = {"from_attributes": True}
 

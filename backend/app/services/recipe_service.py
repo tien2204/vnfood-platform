@@ -1,5 +1,6 @@
 import re
 import uuid
+from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import HTTPException, status
@@ -566,7 +567,9 @@ async def get_user_recipes(
 
 # ── CRUD ──────────────────────────────────────────────────────────────────────
 
-def _build_recipe_card_with_status(recipe: Recipe, author: Optional[User]) -> RecipeCardWithStatus:
+def _build_recipe_card_with_status(
+    recipe: Recipe, author: Optional[User], claimed_by_name: Optional[str] = None
+) -> RecipeCardWithStatus:
     author_out = None
     if author:
         author_out = AuthorOut(
@@ -589,6 +592,7 @@ def _build_recipe_card_with_status(recipe: Recipe, author: Optional[User]) -> Re
         status=recipe.status,
         reject_reason=recipe.reject_reason,
         created_at=recipe.created_at,
+        claimed_by_name=claimed_by_name,
     )
 
 
@@ -746,6 +750,55 @@ def _assert_status(recipe: Recipe, expected: tuple[str, ...], action: str) -> No
         )
 
 
+def _assert_claimer(recipe: Recipe, user: User, action: str) -> None:
+    """Gate approve/reject: caller must hold the claim, unless admin (bypass)."""
+    if roles.role_at_least(user.role, roles.ADMIN):
+        return
+    if recipe.claimed_by is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Hãy nhận xử lý công thức trước khi {action}",
+        )
+    if recipe.claimed_by != user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Công thức đang được cộng tác viên khác xử lý",
+        )
+
+
+async def claim_recipe(db: AsyncSession, recipe_id: uuid.UUID, user: User) -> Recipe:
+    r = await _get_recipe_or_404(db, recipe_id)
+    _assert_status(r, ("pending_collaborator",), "nhận xử lý")
+    is_admin = roles.role_at_least(user.role, roles.ADMIN)
+    if r.claimed_by is not None and r.claimed_by != user.id and not is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Công thức đang được cộng tác viên khác xử lý",
+        )
+    r.claimed_by = user.id
+    r.claimed_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(r)
+    return r
+
+
+async def release_claim(db: AsyncSession, recipe_id: uuid.UUID, user: User) -> Recipe:
+    r = await _get_recipe_or_404(db, recipe_id)
+    if r.claimed_by is None:
+        return r  # already free — idempotent
+    is_admin = roles.role_at_least(user.role, roles.ADMIN)
+    if r.claimed_by != user.id and not is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Chỉ người đang xử lý hoặc admin mới được nhả",
+        )
+    r.claimed_by = None
+    r.claimed_at = None
+    await db.commit()
+    await db.refresh(r)
+    return r
+
+
 async def submit_recipe(db: AsyncSession, recipe_id: uuid.UUID, user: User) -> Recipe:
     r = await _get_recipe_or_404(db, recipe_id)
     if r.author_id != user.id:
@@ -764,25 +817,33 @@ async def withdraw_recipe(db: AsyncSession, recipe_id: uuid.UUID, user: User) ->
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền")
     _assert_status(r, ("pending_collaborator",), "thu hồi")
     r.status = "private"
+    r.claimed_by = None
+    r.claimed_at = None
     await db.commit()
     await db.refresh(r)
     return r
 
 
-async def collaborator_approve(db: AsyncSession, recipe_id: uuid.UUID) -> Recipe:
+async def collaborator_approve(db: AsyncSession, recipe_id: uuid.UUID, user: User) -> Recipe:
     r = await _get_recipe_or_404(db, recipe_id)
     _assert_status(r, ("pending_collaborator",), "CTV duyệt")
+    _assert_claimer(r, user, "duyệt")
     r.status = "pending_admin"
+    r.claimed_by = None
+    r.claimed_at = None
     await db.commit()
     await db.refresh(r)
     return r
 
 
-async def collaborator_reject(db: AsyncSession, recipe_id: uuid.UUID, reason: str) -> Recipe:
+async def collaborator_reject(db: AsyncSession, recipe_id: uuid.UUID, user: User, reason: str) -> Recipe:
     r = await _get_recipe_or_404(db, recipe_id)
     _assert_status(r, ("pending_collaborator",), "CTV từ chối")
+    _assert_claimer(r, user, "từ chối")
     r.status = "rejected"
     r.reject_reason = reason
+    r.claimed_by = None
+    r.claimed_at = None
     await db.commit()
     await db.refresh(r)
     return r
@@ -894,6 +955,16 @@ async def list_review_queue(
     rows = (await db.execute(
         base.order_by(Recipe.updated_at.asc()).offset((page - 1) * limit).limit(limit)
     )).all()
-    cards = [_build_recipe_card_with_status(r[0], r[1]) for r in rows]
+    claimer_ids = {r[0].claimed_by for r in rows if r[0].claimed_by is not None}
+    name_map: dict[uuid.UUID, str | None] = {}
+    if claimer_ids:
+        name_rows = (await db.execute(
+            select(User.id, User.full_name).where(User.id.in_(claimer_ids))
+        )).all()
+        name_map = {uid: full_name for uid, full_name in name_rows}
+    cards = [
+        _build_recipe_card_with_status(r[0], r[1], name_map.get(r[0].claimed_by))
+        for r in rows
+    ]
     total_pages = (total + limit - 1) // limit if total > 0 else 0
     return cards, PaginationOut(page=page, limit=limit, total=total, total_pages=total_pages)
