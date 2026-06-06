@@ -4,9 +4,16 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-06 (RBAC SP1+SP2+SP2b XONG; đang làm RBAC 3 tầng — 6 sub-project)
-**Branch:** `feat/canonical-recipes` (push lại — local ahead ~54 commit)
-**Task đang làm:** **RBAC 3 tầng (user/cộng tác viên/admin)** — **6 sub-project** build tuần tự. **SP1 XONG** (role foundation). **SP2 XONG** (pipeline duyệt 2 tầng). **SP2b XONG** (CTV change-request hệ thống — final review ready-to-merge). **Tiếp: SP3** (claim-lock đơn giản review recipe user của SP2 — bỏ co-review). Còn: SP4 variant-from-saved, SP5 portal CTV/admin (gồm màn admin duyệt CR + queue review). Mỗi SP có spec/plan `docs/superpowers/{specs,plans}/2026-06-0X-rbac-sp*`.
+**Cập nhật lần cuối:** 2026-06-06 (RBAC SP1+SP2+SP2b+SP3 XONG; đang làm RBAC 3 tầng — 6 sub-project)
+**Branch:** `feat/canonical-recipes` (push lại — local ahead ~60 commit)
+**Task đang làm:** **RBAC 3 tầng (user/cộng tác viên/admin)** — **6 sub-project** build tuần tự. **SP1 XONG** (role foundation). **SP2 XONG** (pipeline duyệt 2 tầng). **SP2b XONG** (CTV change-request hệ thống). **SP3 XONG** (claim-lock review queue — backend only, final review ready-to-merge). **Tiếp: SP5 portal CTV/admin** (role context-switcher Người dùng↔CTV↔Admin kiểu Jira/Trello + màn review queue dùng endpoint claim/approve/reject SP3 + màn admin duyệt CR + dashboards) — user đã xác nhận thứ tự "SP3 backend now → SP5 portal next". Còn: SP4 variant-from-saved. Mỗi SP có spec/plan `docs/superpowers/{specs,plans}/2026-06-0X-rbac-sp*`.
+
+### ✅ RBAC SP3 — claim-lock review queue (backend only) — 2026-06-06
+Spec/plan `2026-06-06-rbac-sp3-claim-lock*`. 4 task subagent-driven, final holistic review (opus) ready-to-merge. Smoke 13/13 (self-cleaning `_smoke_sp3.py`, đã xóa). Quyết định: **explicit claim first** (CTV bấm "Nhận xử lý" để khóa, chỉ claimer duyệt/từ chối được); **admin bypass** (duyệt/từ chối/nhả bất kể claim); **stale = admin nhả bất kỳ** (claimer tự nhả, KHÔNG TTL).
+- **Migration 0014** (head 0013→0014): `recipes` += `claimed_by` (UUID FK users SET NULL) + `claimed_at` (timestamptz), index `ix_recipes_claimed_by`. Claim chỉ có nghĩa khi `status='pending_collaborator'`.
+- **Service** `recipe_service.py`: `claim_recipe(db,id,user)` (409 nếu không pending / đã claim người khác), `release_claim(db,id,user)` (idempotent khi free, 403 nếu không phải claimer/admin), helper `_assert_claimer(recipe,user,action)` (admin bypass→return; None→409 "Hãy nhận xử lý…"; người khác→403). `collaborator_approve`/`collaborator_reject` **đổi chữ ký +user param** + claim gate + clear claim. **Invariant "claimed_by non-null ⟹ đang trong queue"**: clear claim ở MỌI transition rời pending_collaborator — approve/reject/withdraw + (defense-in-depth) admin_publish/admin_reject + **update_recipe re-review + approve_recipe (legacy admin status-setter)** (2 cái cuối thêm sau holistic review). `claim_recipe` = optimistic lock (no SELECT FOR UPDATE, last-writer-wins — OK ở scale này). Queue: `RecipeCardWithStatus` += `claimed_by_name` (None ở chỗ khác); `list_review_queue` batch-fetch tên claimer (1 query IN, no N+1).
+- **Routes** `recipes.py`: `POST /{id}/review/claim` + `/{id}/review/release` (require_collaborator; release claimer-or-admin enforce trong service); `/{id}/review/approve|reject` đổi `_`→`current_user` truyền vào service. Đặt trên catch-all `/{recipe_id}`.
+- **Reviewer UI (nút Nhận xử lý/Nhả/duyệt/từ chối + màn queue) = SP5.** Claim/release route trả dict gọn `{id,status,claimed_by}` (SP5 sẽ align về card schema nếu cần).
 
 ### ✅ RBAC SP2b — CTV change-request recipe hệ thống — 2026-06-06
 Spec/plan `2026-06-06-rbac-sp2b*`. 4 task subagent-driven, final review ready-to-merge (smoke 6/6).
