@@ -11,9 +11,12 @@ export default function ProposeEditPage({ params }: { params: Promise<{ id: stri
   const { id } = use(params);
   const router = useRouter();
   const [recipe, setRecipe] = useState<RecipeDetail | null>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    api.get<ApiResponse<RecipeDetail>>(`/recipes/${id}`).then((r) => setRecipe(r.data.data)).catch(() => setRecipe(null));
+    api.get<ApiResponse<RecipeDetail>>(`/recipes/${id}`)
+      .then((r) => setRecipe(r.data.data))
+      .catch(() => setFailed(true));
   }, [id]);
 
   async function submit(payload: RecipeCreate) {
@@ -22,6 +25,7 @@ export default function ProposeEditPage({ params }: { params: Promise<{ id: stri
     router.push("/me/change-requests");
   }
 
+  if (failed) return <p className="p-8 text-[#7C6A56]">Không tải được công thức. <a href="/recipes" className="text-[#E85D26] underline">Quay lại</a></p>;
   if (!recipe) return <p className="p-8 text-[#7C6A56]">Đang tải…</p>;
   return (
     <main className="min-h-screen bg-[#FFFBF5] py-8 px-4">

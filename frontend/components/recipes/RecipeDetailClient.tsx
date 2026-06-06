@@ -198,8 +198,12 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
                 <button
                   onClick={async () => {
                     if (!confirm("Đề xuất xóa công thức hệ thống này?")) return;
-                    await api.post("/recipe-change-requests", { type: "delete", target_recipe_id: recipe.id });
-                    toast.success("Đã gửi đề xuất xóa — chờ admin duyệt");
+                    try {
+                      await api.post("/recipe-change-requests", { type: "delete", target_recipe_id: recipe.id });
+                      toast.success("Đã gửi đề xuất xóa — chờ admin duyệt");
+                    } catch {
+                      toast.error("Không thể gửi đề xuất xóa");
+                    }
                   }}
                   className="px-3 py-1.5 rounded-lg border border-[#E8DDD4] text-sm text-red-500 hover:border-red-300"
                 >Đề xuất xóa</button>
