@@ -1,3 +1,4 @@
+import secrets
 from datetime import datetime, timedelta, timezone
 
 from jose import JWTError, jwt
@@ -14,6 +15,11 @@ def hash_password(plain: str) -> str:
 
 def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
+
+
+def generate_temp_password(length: int = 12) -> str:
+    """URL-safe temp password for admin-created accounts (shown once)."""
+    return secrets.token_urlsafe(length)[:length]
 
 
 def create_access_token(user_id: str, role: str) -> str:

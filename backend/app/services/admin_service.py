@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime, timedelta, timezone
 
+from fastapi import HTTPException
 from sqlalchemy import Date, cast, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -446,3 +447,60 @@ async def set_manual_review(db: AsyncSession, recipe_id: uuid.UUID, is_reviewed:
             "updated": result.rowcount,
         },
     }
+
+
+# ── Account lifecycle (SP5) ────────────────────────────────────────────────────
+
+async def create_admin_user(
+    db: AsyncSession, email: str, full_name: str, role: str, hashed_password: str
+) -> User:
+    exists = (await db.execute(select(User).where(User.email == email))).scalar_one_or_none()
+    if exists is not None:
+        raise HTTPException(status_code=409, detail="Email đã tồn tại")
+    user = User(
+        id=uuid.uuid4(), email=email, full_name=full_name,
+        role=role, hashed_password=hashed_password, is_active=True,
+    )
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+
+async def update_admin_user(
+    db: AsyncSession, user_id: str, full_name: str | None, email: str | None
+) -> User | None:
+    user = (await db.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
+    if user is None:
+        return None
+    if email is not None and email != user.email:
+        clash = (await db.execute(select(User).where(User.email == email))).scalar_one_or_none()
+        if clash is not None:
+            raise HTTPException(status_code=409, detail="Email đã tồn tại")
+        user.email = email
+    if full_name is not None:
+        user.full_name = full_name
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+
+async def reset_admin_user_password(db: AsyncSession, user_id: str, hashed_password: str) -> User | None:
+    user = (await db.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
+    if user is None:
+        return None
+    user.hashed_password = hashed_password
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+
+async def delete_admin_user(db: AsyncSession, user_id: str) -> bool:
+    from sqlalchemy import delete as sa_delete
+    try:
+        uid = uuid.UUID(user_id)
+    except ValueError:
+        return False
+    result = await db.execute(sa_delete(User).where(User.id == uid))
+    await db.commit()
+    return result.rowcount > 0

@@ -8,7 +8,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core import roles
 from app.core.database import get_db
 from app.core.deps import require_admin
+from app.core.security import generate_temp_password, hash_password
 from app.models.user import User
+from app.schemas.admin import AdminUserCreate, AdminUserOut, AdminUserUpdate, CreatedUserOut, TempPasswordOut
 from app.schemas.recipe import RecipeStatusUpdate
 from app.services import admin_service, recipe_service
 
@@ -176,6 +178,64 @@ async def update_user_role(
         raise HTTPException(404, detail="User không tồn tại")
 
     return {"success": True, "data": {"id": str(user.id), "role": user.role}}
+
+
+@router.post("/users")
+async def create_user(
+    body: AdminUserCreate,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    if body.role not in roles.ROLES:
+        raise HTTPException(400, detail="Role không hợp lệ (user | collaborator | admin)")
+    temp = generate_temp_password()
+    user = await admin_service.create_admin_user(
+        db, email=str(body.email), full_name=body.full_name, role=body.role,
+        hashed_password=hash_password(temp),
+    )
+    return {"success": True, "data": CreatedUserOut(user=AdminUserOut.model_validate(user), temp_password=temp).model_dump(mode="json")}
+
+
+@router.patch("/users/{user_id}")
+async def edit_user(
+    user_id: str,
+    body: AdminUserUpdate,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    user = await admin_service.update_admin_user(
+        db, user_id, full_name=body.full_name, email=str(body.email) if body.email else None
+    )
+    if not user:
+        raise HTTPException(404, detail="User không tồn tại")
+    return {"success": True, "data": AdminUserOut.model_validate(user).model_dump(mode="json")}
+
+
+@router.post("/users/{user_id}/reset-password")
+async def reset_user_password(
+    user_id: str,
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    temp = generate_temp_password()
+    user = await admin_service.reset_admin_user_password(db, user_id, hash_password(temp))
+    if not user:
+        raise HTTPException(404, detail="User không tồn tại")
+    return {"success": True, "data": TempPasswordOut(temp_password=temp).model_dump(mode="json")}
+
+
+@router.delete("/users/{user_id}")
+async def delete_user(
+    user_id: str,
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(require_admin),
+):
+    if str(current_admin.id) == user_id:
+        raise HTTPException(400, detail="Không thể xóa chính mình")
+    ok = await admin_service.delete_admin_user(db, user_id)
+    if not ok:
+        raise HTTPException(404, detail="User không tồn tại")
+    return {"success": True, "message": "Đã xóa tài khoản"}
 
 
 # ── Comments ───────────────────────────────────────────────────────────────────
