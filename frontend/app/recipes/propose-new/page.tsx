@@ -11,7 +11,7 @@ export default function ProposeNewPage() {
   async function submit(payload: RecipeCreate) {
     await api.post("/recipe-change-requests", { type: "create", payload });
     toast.success("Đã gửi đề xuất công thức hệ thống mới — chờ admin duyệt");
-    router.push("/me/change-requests");
+    router.push("/staff/proposals");
   }
   return (
     <main className="min-h-screen bg-[#FFFBF5] py-8 px-4">

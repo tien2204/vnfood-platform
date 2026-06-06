@@ -22,7 +22,7 @@ export default function ProposeEditPage({ params }: { params: Promise<{ id: stri
   async function submit(payload: RecipeCreate) {
     await api.post("/recipe-change-requests", { type: "edit", target_recipe_id: id, payload });
     toast.success("Đã gửi đề xuất sửa — chờ admin duyệt");
-    router.push("/me/change-requests");
+    router.push("/staff/proposals");
   }
 
   if (failed) return <p className="p-8 text-[#7C6A56]">Không tải được công thức. <a href="/recipes" className="text-[#E85D26] underline">Quay lại</a></p>;
