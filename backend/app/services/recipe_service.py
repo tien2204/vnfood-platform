@@ -854,6 +854,8 @@ async def admin_publish(db: AsyncSession, recipe_id: uuid.UUID) -> Recipe:
     _assert_status(r, ("pending_admin",), "admin đăng")
     r.status = "approved"
     r.source = "user"
+    r.claimed_by = None  # defense-in-depth: terminal transition leaves no lingering claim
+    r.claimed_at = None
     if not r.original_author_name and r.author_id:
         name = (await db.execute(select(User.full_name).where(User.id == r.author_id))).scalar_one_or_none()
         if name:
@@ -868,6 +870,8 @@ async def admin_reject(db: AsyncSession, recipe_id: uuid.UUID, reason: str) -> R
     _assert_status(r, ("pending_admin",), "admin từ chối")
     r.status = "rejected"
     r.reject_reason = reason
+    r.claimed_by = None  # defense-in-depth: terminal transition leaves no lingering claim
+    r.claimed_at = None
     await db.commit()
     await db.refresh(r)
     return r
