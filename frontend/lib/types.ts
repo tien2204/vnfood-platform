@@ -157,6 +157,8 @@ export interface RecipeCardWithStatus extends RecipeCard {
   reject_reason: string | null;
   created_at: string;
   is_manually_reviewed?: boolean;
+  claimed_by_name?: string | null;
+  claimed_by?: string | null;
 }
 
 export interface ChangeRequest {
@@ -168,6 +170,7 @@ export interface ChangeRequest {
   reject_reason: string | null;
   requested_by_name: string | null;
   created_at: string;
+  payload?: RecipeCreate | null;
 }
 
 export interface UploadResponse {
@@ -417,4 +420,31 @@ export interface GroceryList {
   items: GroceryItem[];
   total_items: number;
   checked_count: number;
+}
+
+// ── Admin/Staff user management types ─────────────────────────────────────────
+
+export interface AdminUserDetailLite {
+  id: string;
+  email: string;
+  full_name: string | null;
+  role: "user" | "collaborator" | "admin";
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface AdminUserCreate {
+  email: string;
+  full_name: string;
+  role: "user" | "collaborator" | "admin";
+}
+
+export interface CreatedUserResponse {
+  user: AdminUserDetailLite;
+  temp_password: string;
+}
+
+export interface AdminUserUpdate {
+  full_name?: string;
+  email?: string;
 }

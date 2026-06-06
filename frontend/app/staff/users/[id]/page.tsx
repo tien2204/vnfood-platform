@@ -21,7 +21,7 @@ interface UserDetail {
     full_name: string | null;
     avatar_url: string | null;
     bio: string | null;
-    role: "user" | "admin";
+    role: "user" | "collaborator" | "admin";
     is_active: boolean;
     created_at: string;
     updated_at: string;
@@ -146,7 +146,7 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
     return (
       <div className="text-center py-16">
         <p className="text-[#7C6A56]">Không tìm thấy người dùng</p>
-        <Link href="/admin/users" className="text-sm text-[#E85D26] mt-2 inline-block">← Quay lại</Link>
+        <Link href="/staff/users" className="text-sm text-[#E85D26] mt-2 inline-block">← Quay lại</Link>
       </div>
     );
   }
@@ -164,7 +164,7 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
       )}
 
       {/* Back */}
-      <Link href="/admin/users" className="inline-flex items-center gap-1.5 text-sm text-[#7C6A56] hover:text-[#1C1209] transition-colors">
+      <Link href="/staff/users" className="inline-flex items-center gap-1.5 text-sm text-[#7C6A56] hover:text-[#1C1209] transition-colors">
         <ArrowLeft className="w-4 h-4" />
         Danh sách người dùng
       </Link>

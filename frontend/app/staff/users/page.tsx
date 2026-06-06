@@ -13,7 +13,7 @@ interface AdminUser {
   email: string;
   full_name: string | null;
   avatar_url: string | null;
-  role: "user" | "admin";
+  role: "user" | "collaborator" | "admin";
   is_active: boolean;
   created_at: string;
   stats: { recipe_count: number; comment_count: number; follower_count: number };
@@ -270,7 +270,7 @@ export default function AdminUsersPage() {
                 {/* Actions */}
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <Link
-                    href={`/admin/users/${user.id}`}
+                    href={`/staff/users/${user.id}`}
                     className="p-1.5 rounded-lg border border-[#E8DDD4] text-[#7C6A56] hover:text-[#E85D26] hover:border-[#E85D26]/50 transition-colors"
                     title="Xem chi tiết"
                   >

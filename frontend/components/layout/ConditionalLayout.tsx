@@ -7,9 +7,9 @@ import MobileBottomNav from "./MobileBottomNav";
 
 export default function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAdmin = pathname.startsWith("/admin");
+  const isStaff = pathname.startsWith("/staff");
 
-  if (isAdmin) {
+  if (isStaff) {
     return <>{children}</>;
   }
 
