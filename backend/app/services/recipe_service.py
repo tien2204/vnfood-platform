@@ -771,6 +771,8 @@ def _assert_claimer(recipe: Recipe, user: User, action: str) -> None:
 
 
 async def claim_recipe(db: AsyncSession, recipe_id: uuid.UUID, user: User) -> Recipe:
+    # Optimistic lock by design (no SELECT FOR UPDATE): a simultaneous double-claim
+    # resolves last-writer-wins, acceptable at this app's scale per the SP3 spec.
     r = await _get_recipe_or_404(db, recipe_id)
     _assert_status(r, ("pending_collaborator",), "nhận xử lý")
     is_admin = roles.role_at_least(user.role, roles.ADMIN)
