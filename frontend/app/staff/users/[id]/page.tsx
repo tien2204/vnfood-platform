@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { use } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeft, Shield, ShieldOff, UserCog,
   BookOpen, MessageSquare, Users, Star, Brain, Calendar,
@@ -11,6 +12,7 @@ import {
 import { toast } from "sonner";
 import useSWR, { mutate as globalMutate } from "swr";
 import api from "@/lib/api";
+import { useUser } from "@/lib/hooks/useUser";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -103,8 +105,13 @@ function ConfirmModal({ title, desc, confirmText, danger, onConfirm, onClose }: 
 
 export default function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const router = useRouter();
+  const { user: currentUser } = useUser();
   const [tab, setTab] = useState<"recipes" | "comments">("recipes");
   const [modal, setModal] = useState<"ban" | "unban" | "promote" | "demote" | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
 
   const key = cacheKey(id);
   const { data, isLoading } = useSWR(key, fetcher);
@@ -123,6 +130,37 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
       toast.error(msg);
     }
     setModal(null);
+  }
+
+  async function saveEdit() {
+    try {
+      await api.patch(`/admin/users/${id}`, { full_name: fullName || undefined, email: editEmail || undefined });
+      toast.success("Đã cập nhật");
+      setEditing(false);
+      globalMutate(key);
+    } catch (e) {
+      toast.error((e as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? "Cập nhật thất bại");
+    }
+  }
+
+  async function resetPassword() {
+    try {
+      const res = await api.post<{ data: { temp_password: string } }>(`/admin/users/${id}/reset-password`);
+      window.prompt("Mật khẩu tạm mới (copy gửi cho người dùng):", res.data.data.temp_password);
+    } catch {
+      toast.error("Đặt lại mật khẩu thất bại");
+    }
+  }
+
+  async function deleteUser() {
+    if (!window.confirm("Xóa vĩnh viễn tài khoản này?")) return;
+    try {
+      await api.delete(`/admin/users/${id}`);
+      toast.success("Đã xóa tài khoản");
+      router.push("/staff/users");
+    } catch (e) {
+      toast.error((e as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? "Xóa thất bại");
+    }
   }
 
   const MODAL_CONFIG: Record<string, { title: string; desc: string; confirmText: string; danger: boolean }> = {
@@ -221,6 +259,27 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
               {user.role === "admin" ? "Hạ quyền" : "Thăng Admin"}
             </button>
           </div>
+        </div>
+
+        {/* CRUD controls */}
+        <div className="mt-4 pt-4 border-t border-[#F7F0E8]">
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => { setEditing(true); setFullName(user.full_name ?? ""); setEditEmail(user.email ?? ""); }} className="px-3 py-1.5 text-sm rounded-lg border border-[#E8DDD4] text-[#1C1209] hover:border-[#E85D26]/50">Sửa</button>
+            <button onClick={resetPassword} className="px-3 py-1.5 text-sm rounded-lg border border-[#E8DDD4] text-[#1C1209] hover:border-[#E85D26]/50">Đặt lại mật khẩu</button>
+            {currentUser?.id !== id && (
+              <button onClick={deleteUser} className="px-3 py-1.5 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700">Xóa tài khoản</button>
+            )}
+          </div>
+          {editing && (
+            <div className="mt-3 space-y-2 max-w-sm">
+              <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Họ tên" className="w-full border border-[#E8DDD4] rounded-lg px-3 py-2 text-sm" />
+              <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} placeholder="Email" className="w-full border border-[#E8DDD4] rounded-lg px-3 py-2 text-sm" />
+              <div className="flex gap-2">
+                <button onClick={saveEdit} className="px-3 py-1.5 text-sm rounded-lg bg-[#E85D26] text-white">Lưu</button>
+                <button onClick={() => setEditing(false)} className="px-3 py-1.5 text-sm rounded-lg text-[#7C6A56]">Hủy</button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Stats */}

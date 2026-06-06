@@ -168,6 +168,7 @@ export default function AdminUsersPage() {
           <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Người dùng</h1>
           <p className="text-sm text-[#7C6A56] mt-0.5">{pagination ? `${pagination.total} người dùng` : ""}</p>
         </div>
+        <Link href="/staff/users/new" className="px-3 py-1.5 text-sm rounded-lg bg-[#E85D26] text-white whitespace-nowrap">+ Tạo tài khoản</Link>
       </div>
 
       {/* Filters */}
