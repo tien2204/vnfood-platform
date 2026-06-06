@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useCallback } from "react";
-import { Search, ScanLine, UtensilsCrossed, X, ChevronDown, LogOut, UserRound, Bookmark, Newspaper, ChefHat, Settings, CalendarDays } from "lucide-react";
+import { Search, ScanLine, UtensilsCrossed, X, ChevronDown, LogOut, UserRound, Bookmark, Newspaper, ChefHat, Settings, CalendarDays, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -169,6 +169,15 @@ export default function Navbar() {
                       <CalendarDays className="w-4 h-4 text-[#7C6A56]" />
                       Meal Plan
                     </DropdownMenuItem>
+                    {(user.role === "collaborator" || user.role === "admin") && (
+                      <DropdownMenuItem
+                        className="gap-2 cursor-pointer"
+                        onClick={() => router.push("/me/change-requests")}
+                      >
+                        <ClipboardList className="w-4 h-4 text-[#6b5344]" />
+                        Đề xuất của tôi
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/me/profile")}

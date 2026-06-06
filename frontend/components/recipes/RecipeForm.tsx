@@ -21,6 +21,7 @@ interface Props {
   initial?: Partial<RecipeDetail>;
   recipeId?: string;
   mode: "create" | "edit";
+  submitOverride?: (payload: RecipeCreate) => Promise<void>;
 }
 
 interface BasicInfo {
@@ -77,7 +78,7 @@ function StepIndicator({ current }: { current: number }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export default function RecipeForm({ initial, recipeId, mode }: Props) {
+export default function RecipeForm({ initial, recipeId, mode, submitOverride }: Props) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -195,6 +196,11 @@ export default function RecipeForm({ initial, recipeId, mode }: Props) {
           timer_seconds: s.timer_seconds ?? undefined,
         })),
       };
+
+      if (submitOverride) {
+        await submitOverride(payload);
+        return;
+      }
 
       if (mode === "create") {
         await api.post("/recipes", payload);

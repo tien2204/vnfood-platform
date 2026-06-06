@@ -2,7 +2,7 @@ export interface User {
   id: string;
   email: string;
   full_name: string;
-  role: "user" | "admin";
+  role: "user" | "collaborator" | "admin";
   avatar_url: string | null;
   bio?: string | null;
 }
@@ -157,6 +157,17 @@ export interface RecipeCardWithStatus extends RecipeCard {
   reject_reason: string | null;
   created_at: string;
   is_manually_reviewed?: boolean;
+}
+
+export interface ChangeRequest {
+  id: string;
+  type: "create" | "edit" | "delete";
+  target_recipe_id: string | null;
+  target_title: string | null;
+  status: "pending" | "approved" | "rejected";
+  reject_reason: string | null;
+  requested_by_name: string | null;
+  created_at: string;
 }
 
 export interface UploadResponse {

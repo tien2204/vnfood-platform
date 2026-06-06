@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Clock, ChefHat, ExternalLink } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SaveButton from './SaveButton';
@@ -9,6 +10,8 @@ import CommentSection from './CommentSection';
 import { ServingsScaler } from './ServingsScaler';
 import { CookingMode } from './CookingMode';
 import { scaleQuantity } from '@/lib/scaleRecipe';
+import { toast } from 'sonner';
+import api from '@/lib/api';
 import type { RecipeDetail } from '@/lib/types';
 import RelatedRecipes from "./RelatedRecipes";
 
@@ -33,9 +36,10 @@ interface Props {
   isLoggedIn: boolean;
   currentUserId?: string;
   isAdmin: boolean;
+  userRole?: string;
 }
 
-export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin }: Props) {
+export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin, userRole }: Props) {
   const originalServings = recipe.servings ?? 2;
   const [cookingMode, setCookingMode] = useState(false);
   const [currentServings, setCurrentServings] = useState(originalServings);
@@ -188,6 +192,19 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin 
               initialCount={recipe.save_count}
               variant="action"
             />
+            {(userRole === "collaborator" || userRole === "admin") && (
+              <div className="flex gap-2">
+                <Link href={`/recipes/${recipe.id}/propose-edit`} className="px-3 py-1.5 rounded-lg border border-[#E8DDD4] text-sm text-[#7C6A56] hover:text-[#E85D26]">Đề xuất sửa</Link>
+                <button
+                  onClick={async () => {
+                    if (!confirm("Đề xuất xóa công thức hệ thống này?")) return;
+                    await api.post("/recipe-change-requests", { type: "delete", target_recipe_id: recipe.id });
+                    toast.success("Đã gửi đề xuất xóa — chờ admin duyệt");
+                  }}
+                  className="px-3 py-1.5 rounded-lg border border-[#E8DDD4] text-sm text-red-500 hover:border-red-300"
+                >Đề xuất xóa</button>
+              </div>
+            )}
             {recipe.source === 'cookpad' && recipe.cookpad_url && (
               <a
                 href={recipe.cookpad_url}

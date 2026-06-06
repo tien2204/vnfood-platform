@@ -90,6 +90,7 @@ export default async function RecipeDetailPage({
   const isLoggedIn = !!jwtPayload?.sub;
   const currentUserId = jwtPayload?.sub;
   const isAdmin = jwtPayload?.role === "admin";
+  const userRole = jwtPayload?.role;
 
   const recipe = await getRecipe(id, accessToken);
   if (!recipe) notFound();
@@ -348,6 +349,7 @@ export default async function RecipeDetailPage({
         isLoggedIn={isLoggedIn}
         currentUserId={currentUserId}
         isAdmin={isAdmin}
+        userRole={userRole}
       />
 
       {recipe.variants && recipe.variants.length > 0 && (
