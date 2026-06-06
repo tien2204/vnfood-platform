@@ -21,6 +21,7 @@ from app.api.v1.ingredients import router as ingredients_router
 from app.api.v1.ratings import router as ratings_router
 from app.api.v1.recipes import router as recipes_router
 from app.api.v1.saved import router as saved_router
+from app.api.v1.recipe_change_requests import router as change_requests_router
 from app.api.v1.tts import router as tts_router
 from app.api.v1.upload import router as upload_router
 from app.api.v1.users import router as users_router
@@ -97,6 +98,7 @@ app.include_router(ai_router, prefix="/api/v1/ai", tags=["ai"])
 app.include_router(meal_plans_router, prefix="/api/v1/meal-plans", tags=["meal-plans"])
 app.include_router(grocery_router, prefix="/api/v1", tags=["grocery"])
 app.include_router(tts_router, prefix="/api/v1", tags=["tts"])
+app.include_router(change_requests_router, prefix="/api/v1/recipe-change-requests", tags=["change-requests"])
 
 
 @app.get("/health")
