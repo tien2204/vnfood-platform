@@ -187,9 +187,9 @@ async def withdraw_recipe_route(
 async def collaborator_approve_route(
     recipe_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    _: User = Depends(require_collaborator),
+    current_user: User = Depends(require_collaborator),
 ):
-    r = await recipe_service.collaborator_approve(db, recipe_id)
+    r = await recipe_service.collaborator_approve(db, recipe_id, current_user)
     return {"success": True, "data": {"id": str(r.id), "status": r.status}, "message": "CTV đã duyệt"}
 
 
@@ -198,10 +198,40 @@ async def collaborator_reject_route(
     recipe_id: uuid.UUID,
     body: RejectBody,
     db: AsyncSession = Depends(get_db),
-    _: User = Depends(require_collaborator),
+    current_user: User = Depends(require_collaborator),
 ):
-    r = await recipe_service.collaborator_reject(db, recipe_id, body.reason)
+    r = await recipe_service.collaborator_reject(db, recipe_id, current_user, body.reason)
     return {"success": True, "data": {"id": str(r.id), "status": r.status}, "message": "CTV đã từ chối"}
+
+
+@router.post("/{recipe_id}/review/claim")
+async def claim_recipe_route(
+    recipe_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_collaborator),
+):
+    r = await recipe_service.claim_recipe(db, recipe_id, current_user)
+    return {
+        "success": True,
+        "data": {"id": str(r.id), "status": r.status,
+                 "claimed_by": str(r.claimed_by) if r.claimed_by else None},
+        "message": "Đã nhận xử lý",
+    }
+
+
+@router.post("/{recipe_id}/review/release")
+async def release_claim_route(
+    recipe_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_collaborator),
+):
+    r = await recipe_service.release_claim(db, recipe_id, current_user)
+    return {
+        "success": True,
+        "data": {"id": str(r.id),
+                 "claimed_by": str(r.claimed_by) if r.claimed_by else None},
+        "message": "Đã nhả công thức",
+    }
 
 
 @router.post("/{recipe_id}/publish")
