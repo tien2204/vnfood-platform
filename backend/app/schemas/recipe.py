@@ -159,6 +159,7 @@ class RecipeCardWithStatus(RecipeCardOut):
     reject_reason: str | None = None
     created_at: datetime
     claimed_by_name: str | None = None
+    claimed_by: str | None = None
 
     model_config = {"from_attributes": True}
 

@@ -21,6 +21,7 @@ class ChangeRequestOut(BaseModel):
     status: str
     reject_reason: Optional[str] = None
     requested_by_name: Optional[str] = None
+    payload: Optional[dict] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

@@ -55,7 +55,7 @@ def _to_out(cr: RecipeChangeRequest, target_title: str | None, requester_name: s
     return ChangeRequestOut(
         id=cr.id, type=cr.type, target_recipe_id=cr.target_recipe_id,
         target_title=target_title, status=cr.status, reject_reason=cr.reject_reason,
-        requested_by_name=requester_name, created_at=cr.created_at,
+        requested_by_name=requester_name, payload=cr.payload, created_at=cr.created_at,
     )
 
 

@@ -593,6 +593,7 @@ def _build_recipe_card_with_status(
         reject_reason=recipe.reject_reason,
         created_at=recipe.created_at,
         claimed_by_name=claimed_by_name,
+        claimed_by=str(recipe.claimed_by) if recipe.claimed_by else None,
     )
 
 
