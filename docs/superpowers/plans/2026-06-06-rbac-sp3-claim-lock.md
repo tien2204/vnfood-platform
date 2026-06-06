@@ -439,9 +439,10 @@ SUFFIX = uuid.uuid4().hex[:8]
 
 
 def _user(role: str, name: str) -> User:
+    slug = name.lower().replace(" ", "_")  # key email off name (two collaborators share a role)
     return User(
         id=uuid.uuid4(),
-        email=f"sp3_{role}_{SUFFIX}@test.local",
+        email=f"sp3_{slug}_{SUFFIX}@test.local",
         hashed_password="x",
         full_name=name,
         role=role,
