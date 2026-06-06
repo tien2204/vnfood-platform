@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/lib/hooks/useUser";
+import ContextSwitcher from "./ContextSwitcher";
 
 function getInitials(name: string) {
   return name
@@ -97,6 +98,8 @@ export default function Navbar() {
               )}
             </button>
           )}
+
+          {!isLoading && isLoggedIn && <ContextSwitcher />}
 
           {/* AI Scan */}
           <Link href="/recognize">
