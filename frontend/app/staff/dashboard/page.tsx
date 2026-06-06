@@ -135,13 +135,13 @@ function RecipeStatusPie({ stats }: { stats: { approved: number; pending: number
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} label={({ name, percent }) => `${STATUS_LABELS[name]} ${(percent * 100).toFixed(0)}%`} labelLine={false} fontSize={10}>
+            <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} label={({ name, percent }: { name?: string; percent?: number }) => `${STATUS_LABELS[name ?? ""] ?? name ?? ""} ${((percent ?? 0) * 100).toFixed(0)}%`} labelLine={false} fontSize={10}>
               {data.map((entry) => (
                 <Cell key={entry.name} fill={STATUS_COLORS[entry.name] ?? "#ccc"} />
               ))}
             </Pie>
             <Tooltip
-              formatter={(value, name) => [value.toLocaleString("vi-VN"), STATUS_LABELS[String(name)]]}
+              formatter={(value, name) => [(value as number)?.toLocaleString?.("vi-VN") ?? String(value ?? 0), STATUS_LABELS[String(name)] ?? String(name)]}
               contentStyle={{ background: "white", border: "1px solid #E8DDD4", borderRadius: 12, fontSize: 12 }}
             />
           </PieChart>

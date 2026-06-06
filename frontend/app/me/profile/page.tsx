@@ -76,7 +76,7 @@ export default function EditProfilePage() {
       });
       await refreshUser();
       toast.success("Cập nhật hồ sơ thành công");
-      router.push(`/users/${user.id}`);
+      router.push(`/users/${user?.id}`);
     } catch {
       toast.error("Cập nhật thất bại, thử lại");
     } finally {

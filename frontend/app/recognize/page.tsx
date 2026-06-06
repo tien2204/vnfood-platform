@@ -46,6 +46,8 @@ export default function RecognizePage() {
     setState("idle");
   }, [preview]);
 
+  const isLoading = state === "loading";
+
   return (
     <main className="min-h-screen bg-[#FFFBF5]">
       {/* Hero */}
@@ -68,7 +70,7 @@ export default function RecognizePage() {
       <section className="max-w-4xl mx-auto px-4 pb-16 flex flex-col items-center gap-10">
         {/* Upload area — always visible when idle/error */}
         {(state === "idle" || state === "error") && (
-          <ImageDropzone onSelect={handleSelect} disabled={state === "loading"} />
+          <ImageDropzone onSelect={handleSelect} disabled={isLoading} />
         )}
 
         {/* Loading */}
