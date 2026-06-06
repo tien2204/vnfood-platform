@@ -1,7 +1,7 @@
 import uuid
 
 from fastapi import HTTPException, status
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.class_names import CLASS_DISPLAY_NAMES
@@ -33,10 +33,10 @@ async def create_change_request(
 ) -> RecipeChangeRequest:
     if data.type in ("edit", "delete"):
         if data.target_recipe_id is None:
-            raise HTTPException(status_code=422, detail="Thiếu target_recipe_id")
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Thiếu target_recipe_id")
         await _get_recipe_or_404(db, data.target_recipe_id)  # 404 if missing
     if data.type in ("create", "edit") and data.payload is None:
-        raise HTTPException(status_code=422, detail="Thiếu payload công thức")
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Thiếu payload công thức")
     cr = RecipeChangeRequest(
         id=uuid.uuid4(),
         type=data.type,
@@ -127,9 +127,8 @@ async def approve_change_request(db: AsyncSession, cr_id: uuid.UUID, admin) -> R
         target.servings = data.servings
         target.difficulty = data.difficulty
         target.keyword = data.keyword
-        from sqlalchemy import delete as sa_delete
-        await db.execute(sa_delete(RecipeIngredient).where(RecipeIngredient.recipe_id == target.id))
-        await db.execute(sa_delete(RecipeStep).where(RecipeStep.recipe_id == target.id))
+        await db.execute(delete(RecipeIngredient).where(RecipeIngredient.recipe_id == target.id))
+        await db.execute(delete(RecipeStep).where(RecipeStep.recipe_id == target.id))
         await _write_ingredients_steps(db, target.id, data)
 
     elif cr.type == "delete":
