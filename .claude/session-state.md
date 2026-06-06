@@ -4,9 +4,16 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-06 (RBAC SP1+SP2 XONG; đang làm RBAC 3 tầng — 6 sub-project)
+**Cập nhật lần cuối:** 2026-06-06 (RBAC SP1+SP2+SP2b XONG; đang làm RBAC 3 tầng — 6 sub-project)
 **Branch:** `feat/canonical-recipes` (push lại — local ahead ~54 commit)
-**Task đang làm:** **RBAC 3 tầng (user/cộng tác viên/admin)** — **6 sub-project** build tuần tự (thêm SP2b sau khi user yêu cầu CTV change-request hệ thống). **SP1 XONG** (role foundation: `app/core/roles.py` USER/COLLABORATOR/ADMIN + `role_at_least`, `require_collaborator`, admin gán role). **SP2 XONG** (pipeline duyệt 2 tầng — final review ready-to-merge). **Tiếp: SP2b** (CTV change-request create/edit/delete recipe hệ thống, staged → admin duyệt). Còn: SP3 claim-lock đơn giản (bỏ co-review), SP4 variant-from-saved, SP5 portal CTV/admin.
+**Task đang làm:** **RBAC 3 tầng (user/cộng tác viên/admin)** — **6 sub-project** build tuần tự. **SP1 XONG** (role foundation). **SP2 XONG** (pipeline duyệt 2 tầng). **SP2b XONG** (CTV change-request hệ thống — final review ready-to-merge). **Tiếp: SP3** (claim-lock đơn giản review recipe user của SP2 — bỏ co-review). Còn: SP4 variant-from-saved, SP5 portal CTV/admin (gồm màn admin duyệt CR + queue review). Mỗi SP có spec/plan `docs/superpowers/{specs,plans}/2026-06-0X-rbac-sp*`.
+
+### ✅ RBAC SP2b — CTV change-request recipe hệ thống — 2026-06-06
+Spec/plan `2026-06-06-rbac-sp2b*`. 4 task subagent-driven, final review ready-to-merge (smoke 6/6).
+- **Model** `RecipeChangeRequest` (migration 0013): id/type(create|edit|delete)/target_recipe_id/payload(JSONB RecipeCreate)/requested_by/status(pending|approved|rejected)/reject_reason/reviewed_by. (head 0012→0013.)
+- **Service** `change_request_service.py`: create (validate 404/422) / list_my / list_pending / approve (APPLY) / reject. **Apply:** create→Recipe(is_canonical=True,status=approved,source="collaborator",author=CTV)+ing/steps; edit→overwrite content fields + thay ing/steps (KHÔNG đụng canonical meta/slug/status); delete→hard-delete NHƯNG **block 409 nếu là canonical DUY NHẤT cho slug AI** (`CLASS_DISPLAY_NAMES` keys). approve/reject chỉ khi pending (409).
+- **Routes** `/api/v1/recipe-change-requests`: `POST ""`+`GET /mine` (require_collaborator), `GET ""`(queue)+`/{id}/approve`+`/{id}/reject` (require_admin). Đăng ký main.py.
+- **Frontend CTV**: `RecipeForm` thêm prop `submitOverride` (submit ra change-request thay vì recipe); trang `/recipes/[id]/propose-edit` + `/recipes/propose-new` (reuse RecipeForm); nút "Đề xuất sửa/xóa" trên recipe detail (gate role≥collaborator, lấy từ JWT→RecipeDetailClient); `/me/change-requests` list; navbar link; **TS `User.role` += `collaborator`** (đã làm follow-up của SP2). Màn admin duyệt CR = SP5.
 Quyết định RBAC: admin⊇collab⊇user; CTV do admin gán; SP3 claim-lock đơn giản; SP2 create=private→Submit→CTV→admin→approved (community lên browse); recipe hệ thống edit/delete = staged proposal (SP2b).
 
 ### ✅ RBAC SP2 — pipeline duyệt 2 tầng — 2026-06-06
