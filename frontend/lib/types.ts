@@ -95,6 +95,8 @@ export interface RecipeDetail extends RecipeCard {
   is_manually_reviewed: boolean;
   variants: RecipeMini[];
   video_url?: string | null;
+  derived_from?: RecipeMini | null;
+  derived_variants?: RecipeMini[];
 }
 
 export interface Pagination {
@@ -148,6 +150,8 @@ export interface RecipeCreate {
   keyword?: string;
   ingredients: IngredientCreate[];
   steps: StepCreate[];
+  derived_from_recipe_id?: string;
+  variant_label?: string;
 }
 
 export type RecipeUpdate = Partial<RecipeCreate>;
