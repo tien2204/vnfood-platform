@@ -33,6 +33,8 @@ class RecipeCreate(BaseModel):
     servings: Optional[int] = Field(None, ge=1, le=50)
     difficulty: Optional[str] = None
     keyword: Optional[str] = None
+    derived_from_recipe_id: Optional[uuid.UUID] = None
+    variant_label: Optional[str] = Field(None, max_length=80)
     ingredients: list[IngredientCreate] = Field(..., min_length=1, max_length=50)
     steps: list[StepCreate] = Field(..., min_length=1, max_length=30)
 

@@ -602,6 +602,13 @@ async def create_recipe(
     data: RecipeCreate,
     author_id: uuid.UUID,
 ) -> Recipe:
+    if data.derived_from_recipe_id is not None:
+        src = (await db.execute(
+            select(Recipe).where(Recipe.id == data.derived_from_recipe_id)
+        )).scalar_one_or_none()
+        if src is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Công thức gốc không tồn tại")
+
     recipe = Recipe(
         id=uuid.uuid4(),
         title=data.title,
@@ -614,6 +621,8 @@ async def create_recipe(
         source="user",
         status="private",
         author_id=author_id,
+        derived_from_recipe_id=data.derived_from_recipe_id,
+        variant_label=data.variant_label,
     )
     db.add(recipe)
     await db.flush()
