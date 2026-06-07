@@ -7,9 +7,10 @@ import MobileBottomNav from "./MobileBottomNav";
 
 export default function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isStaff = pathname.startsWith("/staff");
+  // Staff console + the staff login page render without the consumer chrome.
+  const bare = pathname.startsWith("/staff") || pathname === "/auth/staff-login";
 
-  if (isStaff) {
+  if (bare) {
     return <>{children}</>;
   }
 
