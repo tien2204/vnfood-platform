@@ -4,10 +4,15 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-07 (RBAC SP1+SP2+SP2b+SP3+SP5 XONG; đang làm RBAC 3 tầng — 6 sub-project)
-**Branch:** `feat/canonical-recipes` (push lại — local ahead ~68 commit)
-**Task đang làm:** **RBAC 3 tầng (user/cộng tác viên/admin)**. **SP1/SP2/SP2b/SP3 XONG**. **SP5 XONG** (staff portal /staff — final holistic review READY TO MERGE; tsc 0 lỗi, `npm run build` OK 35 route, smoke admin 5/5). **Còn lại: SP4 variant-from-saved** (sub-project cuối). Mỗi SP có spec/plan `docs/superpowers/{specs,plans}/2026-06-0X-rbac-sp*`.
-**⚠ Cần làm thủ công sau SP5:** restart `uvicorn` + `npm run dev`; click-through theo checklist (xem cuối mục SP5) để xác nhận UI từng role.
+**Cập nhật lần cuối:** 2026-06-07 (RBAC 3 tầng XONG TOÀN BỘ — SP1/SP2/SP2b/SP3/SP4/SP5)
+**Branch:** `feat/canonical-recipes` (push lại — local ahead ~75 commit)
+**Task đang làm:** **RBAC 3 tầng (user/cộng tác viên/admin) — HOÀN THÀNH cả 6 sub-project.** SP1 (role) · SP2 (pipeline 2 tầng) · SP2b (CTV change-request) · SP3 (claim-lock) · SP5 (staff portal /staff) · **SP4 (variant-from-saved) XONG** (tsc 0 lỗi, `npm run build` OK, smoke create 4/4 + detail 3/3). Roadmap RBAC kết thúc. Mỗi SP có spec/plan `docs/superpowers/{specs,plans}/2026-06-0X-rbac-sp*`.
+**⚠ Cần làm thủ công:** restart `uvicorn` + `npm run dev`; click-through SP5 (per-role) + SP4 (tạo biến thể từ /me/saved & detail → /me/recipes → gửi duyệt → duyệt → hiện "Biến thể từ cộng đồng" trên recipe gốc; "Phỏng theo" trên biến thể).
+
+### ✅ RBAC SP4 — variant-from-saved (recipe remix/fork) — 2026-06-07
+Spec/plan `2026-06-07-rbac-sp4-variant-from-saved*`. 5 task subagent-driven. **KHÔNG migration** (`derived_from_recipe_id` + FK ON DELETE SET NULL đã có sẵn từ migration 0006). tsc 0 lỗi, `npm run build` OK, smoke create 4/4 + detail 3/3.
+- **Backend:** `RecipeCreate += derived_from_recipe_id, variant_label`; `create_recipe` validate nguồn (404 "Công thức gốc không tồn tại") + set 2 field (vẫn private, source=user). `RecipeDetailOut += derived_from (RecipeMiniOut|None), derived_variants (list, CHỈ status=approved)`; `get_recipe_detail` resolve cả hai (reuse `_build_recipe_mini`). Model annotation align `ondelete="SET NULL"`.
+- **Frontend:** `app/recipes/[id]/variant/page.tsx` (load nguồn → prefill `RecipeForm initial=source mode=create` + input "Nhãn biến thể" → submitOverride POST /recipes kèm derived_from_recipe_id+variant_label → /me/recipes). Entry: `RecipeGrid`/`RecipeCard` thêm prop `showVariantAction` (nút "Tạo biến thể" trong card, stopPropagation vì card là Link) bật ở `/me/saved`; nút "Tạo biến thể" trên recipe detail (logged-in). Detail: "Phỏng theo: [nguồn]" link + section "Biến thể từ cộng đồng" (reuse `VariantsAccordion` + prop `title` mới). Types cập nhật. Biến thể chạy pipeline SP2 bình thường.
 
 ### ✅ RBAC SP5 — staff portal (/staff console + role switcher + admin account CRUD) — 2026-06-07
 Spec/plan `2026-06-06-rbac-sp5-staff-portal*`. 8 task subagent-driven, final holistic review (opus) READY TO MERGE. tsc 0 lỗi, `npm run build` OK (35 route), smoke admin CRUD 5/5. Auth enforce server-side mọi path (client gate chỉ là convenience).
