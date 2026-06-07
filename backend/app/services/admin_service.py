@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.ai_log import AILog
 from app.models.recipe import Recipe, RecipeIngredient
-from app.models.social import Comment, Follow, Rating, SavedRecipe
+from app.models.social import Comment, Rating, SavedRecipe
 from app.models.user import User
 
 
@@ -139,7 +139,7 @@ async def list_admin_users(
     user_ids = [u.id for u in users]
     recipe_map = {}
     comment_map = {}
-    follower_map = {}
+    follower_map = {}  # follow feature removed (table dropped) — counts stay 0
     if user_ids:
         for uid, cnt in (await db.execute(
             select(Recipe.author_id, func.count(Recipe.id))
@@ -153,12 +153,6 @@ async def list_admin_users(
             .group_by(Comment.user_id)
         )).all():
             comment_map[uid] = cnt
-        for uid, cnt in (await db.execute(
-            select(Follow.following_id, func.count(Follow.id))
-            .where(Follow.following_id.in_(user_ids))
-            .group_by(Follow.following_id)
-        )).all():
-            follower_map[uid] = cnt
 
     return {
         "data": [{
@@ -191,8 +185,8 @@ async def get_admin_user_detail(db: AsyncSession, user_id: str) -> dict | None:
 
     recipe_count = (await db.execute(select(func.count(Recipe.id)).where(Recipe.author_id == uid))).scalar_one()
     comment_count = (await db.execute(select(func.count(Comment.id)).where(Comment.user_id == uid))).scalar_one()
-    follower_count = (await db.execute(select(func.count(Follow.id)).where(Follow.following_id == uid))).scalar_one()
-    following_count = (await db.execute(select(func.count(Follow.id)).where(Follow.follower_id == uid))).scalar_one()
+    follower_count = 0  # follow feature removed (table dropped)
+    following_count = 0
     rating_count = (await db.execute(select(func.count(Rating.id)).where(Rating.user_id == uid))).scalar_one()
     ai_count = (await db.execute(select(func.count(AILog.id)).where(AILog.user_id == uid))).scalar_one()
     joined_days = (datetime.now(timezone.utc) - user.created_at).days
