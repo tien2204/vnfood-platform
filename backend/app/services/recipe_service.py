@@ -353,8 +353,13 @@ async def get_recipe_detail(
     # SP4 lineage
     derived_from = None
     if recipe.derived_from_recipe_id:
+        # Only surface an approved source (symmetric with derived_variants) so a
+        # public variant page never leaks a later-unapproved source's title/link.
         src = (await db.execute(
-            select(Recipe).where(Recipe.id == recipe.derived_from_recipe_id)
+            select(Recipe).where(
+                Recipe.id == recipe.derived_from_recipe_id,
+                Recipe.status == "approved",
+            )
         )).scalar_one_or_none()
         if src is not None:
             derived_from = _build_recipe_mini(src)
