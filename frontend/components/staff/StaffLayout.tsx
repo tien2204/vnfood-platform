@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { clearTokens } from "@/lib/auth";
 import { useUser } from "@/lib/hooks/useUser";
-import ContextSwitcher from "@/components/layout/ContextSwitcher";
 
 interface NavItem { href: string; label: string; icon: typeof Users; exact?: boolean; }
 
@@ -115,7 +114,6 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
             <Menu className="w-5 h-5" />
           </button>
           <span className="lg:hidden font-semibold text-[#1C1209] font-heading">VNFood {title}</span>
-          <div className="ml-auto"><ContextSwitcher /></div>
         </header>
         <main className="flex-1 p-4 lg:p-8">{children}</main>
       </div>
