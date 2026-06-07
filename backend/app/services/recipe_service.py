@@ -350,6 +350,23 @@ async def get_recipe_detail(
         variant_rows = (await db.execute(variants_q)).scalars().all()
         variants = [_build_recipe_mini(r) for r in variant_rows]
 
+    # SP4 lineage
+    derived_from = None
+    if recipe.derived_from_recipe_id:
+        src = (await db.execute(
+            select(Recipe).where(Recipe.id == recipe.derived_from_recipe_id)
+        )).scalar_one_or_none()
+        if src is not None:
+            derived_from = _build_recipe_mini(src)
+
+    derived_variant_rows = (await db.execute(
+        select(Recipe).where(
+            Recipe.derived_from_recipe_id == recipe.id,
+            Recipe.status == "approved",
+        ).limit(20)
+    )).scalars().all()
+    derived_variants = [_build_recipe_mini(r) for r in derived_variant_rows]
+
     return RecipeDetailOut(
         id=recipe.id,
         title=recipe.title,
@@ -382,6 +399,8 @@ async def get_recipe_detail(
         meal_types=recipe.meal_types,
         video_url=recipe.video_url,
         variants=variants,
+        derived_from=derived_from,
+        derived_variants=derived_variants,
     )
 
 

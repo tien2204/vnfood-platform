@@ -202,5 +202,7 @@ class RecipeDetailOut(BaseModel):
     meal_types: list[str] | None = None
     video_url: str | None = None
     variants: list[RecipeMiniOut] = []
+    derived_from: Optional[RecipeMiniOut] = None
+    derived_variants: list[RecipeMiniOut] = []
 
     model_config = {"from_attributes": True}
