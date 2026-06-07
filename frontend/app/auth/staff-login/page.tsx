@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { UtensilsCrossed } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import { saveTokens } from "@/lib/auth";
 import { refreshUser } from "@/lib/hooks/useUser";
 import type { User } from "@/lib/types";
 
-export default function LoginPage() {
+export default function StaffLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,11 +28,17 @@ export default function LoginPage() {
         refresh_token: string;
         user: User;
       };
+
+      // Role gate BEFORE persisting — a rejected user is never logged in.
+      if (user.role !== "admin" && user.role !== "collaborator") {
+        toast.error("Tài khoản không có quyền truy cập khu vực nhân viên");
+        return;
+      }
+
       await saveTokens(access_token, refresh_token, user);
       await refreshUser();
-      toast.success(`Chào mừng trở lại, ${user.full_name}!`);
-      const next = new URLSearchParams(window.location.search).get("next") || "/";
-      router.push(next);
+      toast.success(`Chào mừng, ${user.full_name}!`);
+      router.push(user.role === "admin" ? "/staff/dashboard" : "/staff/review");
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { error?: { message?: string } } } })
@@ -47,17 +53,11 @@ export default function LoginPage() {
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-[#FFFBF5] px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <UtensilsCrossed className="w-8 h-8 text-[#E85D26]" />
-            <span
-              className="text-2xl font-bold text-[#E85D26]"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              VNFood
-            </span>
-          </Link>
-          <h1 className="text-2xl font-semibold text-[#2D2417]">Đăng nhập</h1>
-          <p className="text-[#7C6A56] mt-1 text-sm">Chào mừng bạn trở lại!</p>
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#1C1209] mb-4">
+            <ShieldCheck className="w-7 h-7 text-[#E85D26]" />
+          </div>
+          <h1 className="text-2xl font-semibold text-[#2D2417]">Đăng nhập nhân viên</h1>
+          <p className="text-[#7C6A56] mt-1 text-sm">Khu vực cộng tác viên &amp; quản trị</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -96,28 +96,15 @@ export default function LoginPage() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#E85D26] hover:bg-[#D44E1E] text-white mt-2"
+            className="w-full bg-[#1C1209] hover:bg-[#2D2417] text-white mt-2"
           >
             {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </Button>
         </form>
 
         <p className="text-center text-sm text-[#7C6A56] mt-6">
-          Chưa có tài khoản?{" "}
-          <Link
-            href="/auth/register"
-            className="text-[#E85D26] hover:underline font-medium"
-          >
-            Đăng ký ngay
-          </Link>
-        </p>
-
-        <p className="text-center text-xs text-[#7C6A56] mt-3">
-          <Link
-            href="/auth/staff-login"
-            className="hover:text-[#E85D26] hover:underline"
-          >
-            Đăng nhập nhân viên
+          <Link href="/auth/login" className="text-[#E85D26] hover:underline font-medium">
+            ← Đăng nhập người dùng
           </Link>
         </p>
       </div>
