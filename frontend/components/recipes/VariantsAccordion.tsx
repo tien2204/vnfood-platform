@@ -11,7 +11,7 @@ function resolveImageUrl(src: string | null): string | null {
   return `${process.env.NEXT_PUBLIC_UPLOAD_URL}/${src}`;
 }
 
-export function VariantsAccordion({ variants }: { variants: RecipeMini[] }) {
+export function VariantsAccordion({ variants, title }: { variants: RecipeMini[]; title?: string }) {
   const [open, setOpen] = useState(false);
   if (variants.length === 0) return null;
 
@@ -21,7 +21,7 @@ export function VariantsAccordion({ variants }: { variants: RecipeMini[] }) {
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 text-lg font-medium w-full text-left text-[#2D2417] hover:text-[#E85D26] transition-colors"
       >
-        <span>Xem {variants.length} biến thể</span>
+        <span>{title ?? `Xem ${variants.length} biến thể`}</span>
         <ChevronDown
           className={`h-5 w-5 ml-auto transition-transform ${open ? "rotate-180" : ""}`}
         />

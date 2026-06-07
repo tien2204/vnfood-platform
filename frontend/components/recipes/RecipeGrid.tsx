@@ -7,6 +7,7 @@ interface Props {
   loading?: boolean;
   skeletonCount?: number;
   onSaveChange?: (recipeId: string, isSaved: boolean, saveCount: number) => void;
+  showVariantAction?: boolean;
 }
 
 export default function RecipeGrid({
@@ -14,6 +15,7 @@ export default function RecipeGrid({
   loading,
   skeletonCount = 8,
   onSaveChange,
+  showVariantAction,
 }: Props) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -31,6 +33,7 @@ export default function RecipeGrid({
                       onSaveChange(recipe.id, isSaved, saveCount)
                   : undefined
               }
+              showVariantAction={showVariantAction}
             />
           ))}
     </div>

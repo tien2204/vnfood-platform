@@ -87,6 +87,7 @@ export default function SavedRecipesPage() {
             loading={isLoading}
             skeletonCount={PAGE_SIZE}
             onSaveChange={handleSaveChange}
+            showVariantAction
           />
 
           {/* Pagination */}

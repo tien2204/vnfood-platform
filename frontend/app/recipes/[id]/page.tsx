@@ -209,6 +209,15 @@ export default async function RecipeDetailPage({
           </div>
         )}
 
+        {recipe.derived_from && (
+          <p className="text-sm text-[#7C6A56] mb-4">
+            Phỏng theo:{" "}
+            <Link href={`/recipes/${recipe.derived_from.id}`} className="text-[#E85D26] underline">
+              {recipe.derived_from.title}
+            </Link>
+          </p>
+        )}
+
         {recipe.refinement_notes && (
           <details className="mb-4 p-3 bg-[#F7F0E8] border border-[#E8DDD4] rounded-xl text-sm">
             <summary className="cursor-pointer font-medium text-[#1C1209]">
@@ -352,8 +361,23 @@ export default async function RecipeDetailPage({
         userRole={userRole}
       />
 
+      {isLoggedIn && (
+        <div className="mt-6">
+          <Link
+            href={`/recipes/${id}/variant`}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-[#E85D26] text-[#E85D26] text-sm font-medium hover:bg-[#E85D26] hover:text-white transition-colors"
+          >
+            Tạo biến thể
+          </Link>
+        </div>
+      )}
+
       {recipe.variants && recipe.variants.length > 0 && (
         <VariantsAccordion variants={recipe.variants} />
+      )}
+
+      {recipe.derived_variants && recipe.derived_variants.length > 0 && (
+        <VariantsAccordion variants={recipe.derived_variants} title="Biến thể từ cộng đồng" />
       )}
     </div>
   );

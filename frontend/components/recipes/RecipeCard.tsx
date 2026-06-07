@@ -29,9 +29,10 @@ function stripEmoji(text: string): string {
 interface Props {
   recipe: RecipeCardType;
   onSaveChange?: (isSaved: boolean, saveCount: number) => void;
+  showVariantAction?: boolean;
 }
 
-export default function RecipeCard({ recipe, onSaveChange }: Props) {
+export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: Props) {
   const router = useRouter();
 
   const imageUrl = recipe.image_url
@@ -191,6 +192,20 @@ export default function RecipeCard({ recipe, onSaveChange }: Props) {
             );
           })()}
           </div>
+
+          {showVariantAction && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/recipes/${recipe.id}/variant`);
+              }}
+              className="mt-3 w-full text-center text-xs font-medium border-2 border-[#2c1810] bg-[#fff5e6] text-[#2c1810] py-1.5 hover:bg-[#ff6b35] hover:text-white transition-colors"
+            >
+              Tạo biến thể
+            </button>
+          )}
 
         </div>
       </article>
