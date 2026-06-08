@@ -28,10 +28,11 @@ export default function LoginPage() {
         refresh_token: string;
         user: User;
       };
-      // Staff accounts log in only through the staff door — reject before persisting.
+      // Staff accounts log in only through the staff door. Reject WITHOUT revealing
+      // that the account exists / is staff — show the same generic error as a bad
+      // password (no redirect, no session) to avoid account enumeration.
       if (user.role === "admin" || user.role === "collaborator") {
-        toast.error("Tài khoản nhân viên — vui lòng đăng nhập tại trang nhân viên");
-        router.push("/auth/staff-login");
+        toast.error("Email hoặc mật khẩu không đúng");
         return;
       }
       await saveTokens(access_token, refresh_token, user);
