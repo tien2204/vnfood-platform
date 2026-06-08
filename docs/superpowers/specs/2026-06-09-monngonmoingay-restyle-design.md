@@ -65,16 +65,28 @@
 Cách xử lý: thay `border-2 border-[#2c1810] shadow-block` → `border border-border shadow-card rounded-xl`;
 `#ff6b35`/`#2c1810` hardcode → class token (`bg-primary`, `text-foreground`...).
 
+## 5b. Page-specific layout fidelity (trích layout thật từng trang trùng chức năng)
+
+Không chỉ đổi màu — các trang trùng chức năng phải khớp BỐ CỤC của site:
+
+- **Recipe detail** (`/canh-oc-chua-cay/` → `app/recipes/[id]`): 2 cột `lg:grid-cols-[1fr_360px]` (main + sidebar related); hàng meta icon (`.flex-recipe`: thời gian/khẩu phần/độ khó, icon đỏ); section title `font-extrabold` + `<strong>` đỏ; khối nguyên liệu nền hồng `#fef6f6` viền hồng `#fbd0d2`; các bước có số thứ tự trong vòng tròn đỏ; related grid dùng `RecipeCard`.
+- **Listing/Search** (`/tim-kiem-mon-ngon/` → `app/recipes`, `app/search`): category chip **pill** (`.tabs-pill` rounded-full, 12px, viền Gray-03, active đỏ); grid 2→4 cột; `.pagination` ô gọn viền 1px.
+- **Meal plan** (`/ke-hoach-nau-an/` → `app/meal-plan`): khung nền hồng `#fef6f6` viền `#fbd0d2`; header hồng `#fbd0d2` chữ đỏ `#ec2028`; item trắng `rounded-xl` bóng mềm; nút "+" tròn 40px nổi, shadow đỏ `0 8px 16px #ec20283d`.
+- **Section title chung toàn site:** `font-weight 800`, 24→32px, từ nhấn `<strong className="text-primary">` đỏ.
+
+→ Thực thi ở Task 7b/7c/7d của plan. Chỉ đổi layout/màu, KHÔNG đổi logic/data.
+
 ## 6. Phạm vi & không làm
 
-- **Trong phạm vi:** màu, font, bóng, bo góc, mega-menu, thẻ recipe, đồng bộ 35 trang (gồm cả khu `/staff`).
-- **Ngoài phạm vi (YAGNI):** thay đổi logic/data, thêm trang mới, animation phức tạp, dark mode.
+- **Trong phạm vi:** màu, font, bóng, bo góc, mega-menu, thẻ recipe, **bố cục các trang trùng chức năng** (detail/listing/meal-plan), đồng bộ 35 trang (gồm cả khu `/staff`).
+- **Ngoài phạm vi (YAGNI):** thay đổi logic/data, thêm trang/chức năng mới (vd meal-plan theo dinh dưỡng của site), animation phức tạp, dark mode.
 
 ## 7. Thứ tự thực thi
 
 1. globals.css (tokens + shadow + redefine class brutalist) — lan tỏa ngay.
-2. layout.tsx (font).
-3. Shared components: Navbar (+mega-menu), Footer, RecipeCard, MobileBottomNav.
+2. layout.tsx (font Open Sans + Lobster).
+3. Shared components: Navbar (+mega-menu), Footer, RecipeCard, MobileBottomNav, ui/button.
 4. Spot-fix homepage + RecipeBrowse.
-5. Quét nốt các trang còn hardcode màu.
-6. `npm run build` / `tsc --noEmit` verify không vỡ.
+5. Page-specific layout: recipe detail, listing/search, meal plan (Task 7b–7d).
+6. Quét nốt các trang còn hardcode màu.
+7. `npm run build` / `tsc --noEmit` verify không vỡ.

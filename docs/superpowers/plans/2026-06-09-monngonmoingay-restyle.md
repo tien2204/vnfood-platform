@@ -358,6 +358,52 @@ const DIFFICULTY_COLOR = {
 
 ---
 
+## Task 7b: Recipe detail layout fidelity (`app/recipes/[id]/page.tsx`)
+
+**Files:** Modify `frontend/app/recipes/[id]/page.tsx` (+ component con của trang detail nếu có).
+
+Mục tiêu: áp bố cục giống `/canh-oc-chua-cay/` — KHÔNG đổi logic/data, chỉ layout/màu.
+
+- [ ] **Step 1: Bố cục 2 cột** — wrap nội dung chính + sidebar: `grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8`. Cột phải (sidebar) chứa: "Công thức liên quan"/đã xem gần đây/CTA lưu — gom các block phụ hiện có vào đây (nếu trang đang 1 cột thì chuyển block phụ sang sidebar).
+- [ ] **Step 2: Hàng meta món (.flex-recipe)** — thời gian / khẩu phần / độ khó thành hàng icon: mỗi item `inline-flex items-center gap-1.5 text-sm text-muted-foreground`, icon lucide (`Clock`/`Users`/`ChefHat`) màu `text-primary`. Đặt ngay dưới H1.
+- [ ] **Step 3: Section title** — tiêu đề "Nguyên liệu", "Cách làm": `text-2xl font-extrabold` với từ nhấn bọc `<strong className="text-primary">`. Optional dùng `.font-display` cho tên món ở hero.
+- [ ] **Step 4: Khối Nguyên liệu** — list nền `bg-[var(--color-brand-pink-bg)]` (#fef6f6) `rounded-xl p-5 border border-[var(--color-brand-pink)]`; mỗi dòng `border-b border-border py-2`.
+- [ ] **Step 5: Các bước (Cách làm)** — mỗi bước: số thứ tự trong vòng tròn đỏ `flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white font-bold shrink-0` + nội dung; khoảng cách `space-y-5`.
+- [ ] **Step 6: Related grid** — dùng `RecipeCard` (đã retheme) trong `grid grid-cols-2 lg:grid-cols-3 gap-4`.
+- [ ] **Step 7: Verify** `npx tsc --noEmit` → no error. Xem `/recipes/<id>`: 2 cột, meta icon đỏ, nguyên liệu nền hồng, bước có số tròn đỏ.
+- [ ] **Step 8: Commit** `git add frontend/app/recipes && git commit -m "style(recipe-detail): 2-col layout, icon meta, pink ingredient box, numbered steps"`
+
+---
+
+## Task 7c: Listing & Search fidelity (`app/recipes/RecipeBrowse.tsx`, `app/search/SearchResults.tsx`)
+
+**Files:** Modify `frontend/app/recipes/RecipeBrowse.tsx`, `frontend/app/search/SearchResults.tsx`, `frontend/components/recipes/FacetDropdown.tsx`.
+
+- [ ] **Step 1: Category chips dạng pill** — filter/facet chip: `inline-flex items-center gap-2 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-medium capitalize hover:border-primary`; chip active: `bg-primary text-white border-primary`.
+- [ ] **Step 2: Grid card** — đảm bảo `grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4` quanh `RecipeCard`.
+- [ ] **Step 3: Pagination** — nút trang: `flex items-center justify-center min-w-9 h-9 rounded border border-border text-sm hover:border-primary`; trang hiện tại `bg-primary text-white border-primary`.
+- [ ] **Step 4: Section heading** — "Hơn N công thức…" `text-2xl font-extrabold` + số nhấn `<strong className="text-primary">`.
+- [ ] **Step 5: Verify** `npx tsc --noEmit` → no error. Xem `/recipes` + `/search`: chip pill, grid đều, pagination gọn.
+- [ ] **Step 6: Commit** `git add frontend/app/recipes frontend/app/search frontend/components/recipes/FacetDropdown.tsx && git commit -m "style(listing,search): pill filter chips, grid, pagination (monngonmoingay)"`
+
+---
+
+## Task 7d: Meal plan fidelity (`app/meal-plan/`)
+
+**Files:** Modify `frontend/app/meal-plan/page.tsx`, `frontend/app/meal-plan/[id]/page.tsx`, `frontend/app/meal-plan/[id]/grocery/page.tsx`.
+
+Mục tiêu: khung kế hoạch nền hồng + header đỏ như `/ke-hoach-nau-an/`.
+
+- [ ] **Step 1: Khung plan** — container mỗi plan: `flex flex-col rounded-xl border border-[var(--color-brand-pink)] bg-[var(--color-brand-pink-bg)] overflow-hidden`.
+- [ ] **Step 2: Header plan** — `bg-[var(--color-brand-pink)] text-primary font-bold px-4 py-2` (nền hồng #fbd0d2, chữ đỏ).
+- [ ] **Step 3: Item món trong plan** — `bg-white rounded-xl border border-border shadow-card p-3 flex items-start gap-3`.
+- [ ] **Step 4: Nút thêm món (floating)** — nút tròn: `flex h-10 w-10 items-center justify-center rounded-full bg-white border border-border text-primary` shadow đỏ `style={{boxShadow:'0 8px 16px #ec20283d'}}`; icon `Plus` 1.25rem.
+- [ ] **Step 5: Grocery list** — danh sách item `rounded-xl border border-border p-4`, checkbox accent `accent-primary`.
+- [ ] **Step 6: Verify** `npx tsc --noEmit` → no error. Xem `/meal-plan` + `/meal-plan/<id>` + grocery.
+- [ ] **Step 7: Commit** `git add frontend/app/meal-plan && git commit -m "style(meal-plan): pink plan frame, red header, floating add button, grocery cards"`
+
+---
+
 ## Task 8: Quét sạch tàn dư + build verify
 
 **Files:** Mọi file còn hex/brutalist sót (search, feed, me/profile, FacetDropdown, common/*, staff/*).
