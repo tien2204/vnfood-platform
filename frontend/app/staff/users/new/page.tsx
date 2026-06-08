@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/lib/api";
@@ -56,6 +57,9 @@ export default function NewUserPage() {
 
   return (
     <div className="max-w-md">
+      <Link href="/staff/users" className="inline-block text-sm text-[#7C6A56] hover:text-[#E85D26] mb-3">
+        ← Quay lại danh sách
+      </Link>
       <h1 className="text-xl font-bold text-[#1C1209] mb-4">Tạo tài khoản</h1>
       <form onSubmit={submit} className="space-y-3">
         <div>
@@ -74,7 +78,10 @@ export default function NewUserPage() {
             <option value="admin">Quản trị</option>
           </select>
         </div>
-        <button disabled={busy} className="px-4 py-2 rounded-lg bg-[#E85D26] text-white disabled:opacity-50">Tạo tài khoản</button>
+        <div className="flex gap-2 pt-1">
+          <button disabled={busy} className="px-4 py-2 rounded-lg bg-[#E85D26] text-white disabled:opacity-50">Tạo tài khoản</button>
+          <button type="button" onClick={() => router.push("/staff/users")} className="px-4 py-2 rounded-lg border border-[#E8DDD4] text-[#7C6A56] hover:bg-[#F7F0E8]">Hủy</button>
+        </div>
       </form>
     </div>
   );

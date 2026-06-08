@@ -20,9 +20,11 @@ export function useUser() {
   );
 
   const logout = async () => {
+    // Staff log back in only through the staff door; consumers return home.
+    const wasStaff = user?.role === "admin" || user?.role === "collaborator";
     await clearTokens();
     await mutate(null, false);
-    router.push("/");
+    router.push(wasStaff ? "/auth/staff-login" : "/");
     router.refresh();
   };
 

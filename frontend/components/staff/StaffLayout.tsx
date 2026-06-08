@@ -53,7 +53,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 
   async function handleLogout() {
     await clearTokens();
-    router.push("/auth/login");
+    router.push("/auth/staff-login");
   }
 
   const SidebarContent = ({ onNav }: { onNav?: () => void }) => (

@@ -28,6 +28,12 @@ export default function LoginPage() {
         refresh_token: string;
         user: User;
       };
+      // Staff accounts log in only through the staff door — reject before persisting.
+      if (user.role === "admin" || user.role === "collaborator") {
+        toast.error("Tài khoản nhân viên — vui lòng đăng nhập tại trang nhân viên");
+        router.push("/auth/staff-login");
+        return;
+      }
       await saveTokens(access_token, refresh_token, user);
       await refreshUser();
       toast.success(`Chào mừng trở lại, ${user.full_name}!`);
@@ -112,14 +118,6 @@ export default function LoginPage() {
           </Link>
         </p>
 
-        <p className="text-center text-xs text-[#7C6A56] mt-3">
-          <Link
-            href="/auth/staff-login"
-            className="hover:text-[#E85D26] hover:underline"
-          >
-            Đăng nhập nhân viên
-          </Link>
-        </p>
       </div>
     </div>
   );

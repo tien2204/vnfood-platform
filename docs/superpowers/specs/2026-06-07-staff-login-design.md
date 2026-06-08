@@ -17,7 +17,7 @@ Today all three roles share `/auth/login` (posts `/auth/login`, saves tokens, re
 
 ## Locked Decisions
 
-1. **Staff page rejects non-staff; both doors stay open.** `/auth/staff-login` refuses a plain `user`; `/auth/login` is unchanged and still serves everyone (including staff).
+1. **Partitioned doors (updated 2026-06-07).** `/auth/staff-login` refuses a plain `user`; `/auth/login` refuses staff (admin/collaborator) and redirects them to `/auth/staff-login`. Each role has exactly one door. Staff logout (console sidebar + navbar) returns to `/auth/staff-login`. The "Đăng nhập nhân viên" cross-link on the consumer login was removed.
 2. **Route under `/auth/`** (`/auth/staff-login`) — `/auth/*` is already public in middleware, so an anonymous staffer can reach it. (`/staff/login` would be blocked by the `/staff`→collaborator+ gate.)
 3. **Reuse the same `/auth/login` backend endpoint** — its response already carries `user.role`. No backend change.
 
