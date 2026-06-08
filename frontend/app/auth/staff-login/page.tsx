@@ -21,7 +21,7 @@ export default function StaffLoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.post("/auth/login", { email, password });
+      const res = await api.post("/auth/staff-login", { email, password });
       const { access_token, refresh_token, user } = res.data.data as {
         access_token: string;
         refresh_token: string;

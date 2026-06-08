@@ -2,6 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import roles
 from app.core.security import (
     create_access_token,
     create_refresh_token,
@@ -30,11 +31,20 @@ async def register_user(
     return user
 
 
-async def login(db: AsyncSession, email: str, password: str) -> dict:
+async def login(db: AsyncSession, email: str, password: str, *, portal: str = "consumer") -> dict:
     result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
 
     if user is None or not verify_password(password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Email hoặc mật khẩu không đúng",
+        )
+
+    # The consumer door must NOT authenticate staff accounts — fail with the exact
+    # same generic 401 as a wrong password so a staff account can't be enumerated
+    # here (no token ever issued, nothing different observable over the network).
+    if portal == "consumer" and roles.role_at_least(user.role, roles.COLLABORATOR):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Email hoặc mật khẩu không đúng",

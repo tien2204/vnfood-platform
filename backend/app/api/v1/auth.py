@@ -39,6 +39,25 @@ async def login(
     }
 
 
+@router.post("/staff-login")
+async def staff_login(
+    body: LoginRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    # Dedicated staff door. Authenticates anyone with valid credentials (the
+    # frontend rejects non-staff with a clear message and never stores the session);
+    # the point of the separate endpoint is that /login refuses staff entirely.
+    result = await auth_service.login(db, body.email, body.password, portal="staff")
+    return {
+        "success": True,
+        "data": TokenResponse(
+            access_token=result["access_token"],
+            refresh_token=result["refresh_token"],
+            user=UserOut.model_validate(result["user"]),
+        ),
+    }
+
+
 @router.post("/refresh")
 async def refresh(body: RefreshRequest, db: AsyncSession = Depends(get_db)):
     access_token = await auth_service.refresh_access_token(db, body.refresh_token)
