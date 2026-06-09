@@ -137,21 +137,21 @@ export default function RecipeBrowse() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       {/* Header */}
-      <div className="mb-8 border border-border bg-[#f5f5f5] p-6 shadow-block sm:p-8">
+      <div className="mb-8 rounded-xl border border-border bg-muted p-6 shadow-card sm:p-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
         <div className="flex-1">
-          <p className="mb-2 text-sm font-bold uppercase tracking-wider text-[#ec2028]">
+          <p className="mb-2 text-sm font-bold uppercase tracking-wider text-primary">
             Our Menu
           </p>
           <h1
-            className="text-3xl font-bold text-[#0a0a0a] sm:text-4xl"
+            className="text-3xl font-extrabold text-foreground sm:text-4xl"
             style={{ fontFamily: "var(--font-heading)" }}
           >
-            Tất cả công thức
+            <span className="border-l-4 border-primary pl-3">Tất cả công thức</span>
           </h1>
           {!loading && (
-            <p className="mt-1 text-sm font-medium text-[#666666]">
-              {total.toLocaleString()} công thức
+            <p className="mt-1 text-sm font-medium text-muted-foreground">
+              <strong className="text-primary">{total.toLocaleString()}</strong> công thức
             </p>
           )}
         </div>
@@ -167,7 +167,7 @@ export default function RecipeBrowse() {
             variant="outline"
             size="sm"
             onClick={() => setShowFilters(!showFilters)}
-            className="gap-1.5 rounded-lg border border-border bg-white shadow-block-sm hover:bg-[#ffffff]"
+            className="gap-1.5 rounded-lg border border-border bg-white shadow-card hover:bg-white"
           >
             <SlidersHorizontal className="w-4 h-4" />
             Lọc
@@ -183,7 +183,7 @@ export default function RecipeBrowse() {
 
       {/* Filter bar */}
       {showFilters && (
-        <div className="mb-6 flex flex-wrap items-center gap-3 border border-border bg-white p-4 shadow-block-sm">
+        <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-border bg-white p-4 shadow-card">
           {/* Sort */}
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-[#666666]">Sắp xếp:</span>
@@ -264,10 +264,10 @@ export default function RecipeBrowse() {
             <button
               key={k.value}
               onClick={() => updateParam("keyword", k.value)}
-              className={`border-2 px-3.5 py-1.5 text-sm font-bold transition-all ${
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
                 active
-                  ? "border-[#0a0a0a] bg-[#ec2028] text-white shadow-block-sm"
-                  : "border-[#0a0a0a] bg-[#f5f5f5] text-[#0a0a0a] shadow-block-sm hover:bg-[#ec2028] hover:text-white"
+                  ? "border-primary bg-primary text-white"
+                  : "border-border bg-white text-foreground hover:border-primary"
               }`}
             >
               {k.label}
@@ -301,7 +301,7 @@ export default function RecipeBrowse() {
 
       {/* Empty state */}
       {!loading && recipes.length === 0 && (
-        <div className="border border-border bg-white py-20 text-center shadow-block">
+        <div className="rounded-xl border border-border bg-white py-20 text-center shadow-card">
           <p className="text-4xl mb-3">🍽️</p>
           <p className="mb-1 text-lg font-bold text-[#0a0a0a]">
             Không tìm thấy công thức nào
@@ -321,7 +321,7 @@ export default function RecipeBrowse() {
             size="sm"
             disabled={page <= 1}
             onClick={() => updateParam("page", String(page - 1))}
-            className="rounded-lg border border-border bg-white shadow-block-sm"
+            className="rounded-lg border border-border bg-white shadow-card"
           >
             ← Trước
           </Button>
@@ -336,7 +336,7 @@ export default function RecipeBrowse() {
             size="sm"
             disabled={page >= totalPages}
             onClick={() => updateParam("page", String(page + 1))}
-            className="rounded-lg border border-border bg-white shadow-block-sm"
+            className="rounded-lg border border-border bg-white shadow-card"
           >
             Sau →
           </Button>
