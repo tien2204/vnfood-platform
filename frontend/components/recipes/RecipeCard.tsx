@@ -15,9 +15,9 @@ const DIFFICULTY_LABEL = {
 } as const;
 
 const DIFFICULTY_COLOR = {
-  easy: "bg-[#4a7c59] text-white",
-  medium: "bg-[#f5f5f5] text-[#0a0a0a]",
-  hard: "bg-[#ec2028] text-white",
+  easy: "bg-[#11ca24] text-white",
+  medium: "bg-secondary text-secondary-foreground",
+  hard: "bg-primary text-white",
 } as const;
 
 function stripEmoji(text: string): string {
@@ -48,7 +48,7 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
       <article className="restaurant-card restaurant-card-hover overflow-hidden h-full flex flex-col">
 
         {/* ── Image ── */}
-        <div className="relative aspect-[4/3] bg-[#f5f5f5] border-b border-border">
+        <div className="relative aspect-[4/3] bg-muted">
           <RecipeImage
             src={imageUrl}
             alt={cleanTitle}
@@ -68,7 +68,7 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
           {/* Cookpad badge */}
           {recipe.source === "cookpad" && (
             <div className="absolute top-2 left-2 z-10">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-white/95 backdrop-blur-sm text-[10px] font-bold uppercase tracking-wide text-[#666666] border border-border">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-sm text-[10px] font-bold uppercase tracking-wide text-muted-foreground border border-border">
                 <span className="w-1 h-1 rounded-full bg-[#ec2028]" />
                 Cookpad
               </span>
@@ -98,7 +98,7 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
           {/* Difficulty badge */}
           {recipe.difficulty && (
             <span
-              className={`absolute bottom-2 left-2 z-10 text-xs px-2 py-0.5 border border-border font-bold ${DIFFICULTY_COLOR[recipe.difficulty]}`}
+              className={`absolute bottom-2 left-2 z-10 text-xs px-2 py-0.5 rounded-full font-semibold ${DIFFICULTY_COLOR[recipe.difficulty]}`}
             >
               {DIFFICULTY_LABEL[recipe.difficulty]}
             </span>
@@ -113,7 +113,7 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
             {recipe.rating_count > 0 ? (
               <>
                 <Star className="w-3.5 h-3.5 fill-[#ec2028] text-[#ec2028]" />
-                <span className="text-sm font-bold text-[#0a0a0a]">
+                <span className="text-sm font-bold text-foreground">
                   {recipe.avg_rating.toFixed(1)}
                 </span>
                 <span className="text-xs text-[#666666]">({recipe.rating_count})</span>
@@ -124,7 +124,7 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
           </div>
 
           {/* Title — reserve 2 lines of height so 1-line and 2-line titles align */}
-          <h3 className="font-bold text-lg text-[#0a0a0a] line-clamp-2 leading-snug mb-3 min-h-[3.25rem]">
+          <h3 className="font-bold text-lg text-foreground line-clamp-2 leading-snug mb-3 min-h-[3.25rem]">
             {cleanTitle}
           </h3>
 
@@ -201,7 +201,7 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
                 e.stopPropagation();
                 router.push(`/recipes/${recipe.id}/variant`);
               }}
-              className="mt-3 w-full text-center text-xs font-medium border border-border bg-[#f5f5f5] text-[#0a0a0a] py-1.5 hover:bg-[#ec2028] hover:text-white transition-colors"
+              className="mt-3 w-full text-center text-xs font-medium rounded-full border border-border bg-muted text-foreground py-1.5 hover:bg-primary hover:text-white transition-colors"
             >
               Tạo biến thể
             </button>
