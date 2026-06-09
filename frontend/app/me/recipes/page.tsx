@@ -13,8 +13,6 @@ import type { PaginatedResponse, RecipeCardWithStatus } from "@/lib/types";
 const TABS = [
   { value: "", label: "Tất cả" },
   { value: "private", label: "Riêng tư" },
-  { value: "pending_collaborator", label: "Chờ CTV" },
-  { value: "pending_admin", label: "Chờ Admin" },
   { value: "approved", label: "Đã đăng" },
   { value: "rejected", label: "Bị từ chối" },
 ] as const;
