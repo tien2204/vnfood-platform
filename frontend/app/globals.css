@@ -174,7 +174,8 @@
   .shadow-block    { box-shadow: 0 4px 14px rgba(10, 10, 10, 0.08); }
   .shadow-block-sm { box-shadow: 0 1px 4px rgba(10, 10, 10, 0.06); }
   .restaurant-card {
-    background: #ffffff;
+    background: var(--card);
+    color: var(--card-foreground);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
     box-shadow: 0 2px 8px rgba(10, 10, 10, 0.06);
