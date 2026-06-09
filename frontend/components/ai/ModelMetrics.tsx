@@ -49,9 +49,9 @@ function MetricCell({
     pct >= 85 ? "text-[#2D6A4F]" : pct >= 70 ? "text-[#C97B16]" : "text-[#9B2C2C]";
 
   return (
-    <div className="flex-1 min-w-[110px] rounded-xl border border-[#f0f0f0] bg-white px-3 py-2.5">
+    <div className="flex-1 min-w-[110px] rounded-xl border border-border bg-white px-3 py-2.5">
       <div className="flex items-center gap-1 mb-1 relative">
-        <span className="text-[10px] uppercase tracking-wider text-[#666666] font-semibold">
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
           {label}
         </span>
         <button
@@ -59,20 +59,17 @@ function MetricCell({
           onClick={() => setOpen((v) => !v)}
           onBlur={() => setOpen(false)}
           aria-label={`Giải thích ${label}`}
-          className="text-[#A69588] hover:text-[#666666] focus:outline-none"
+          className="text-muted-foreground hover:text-foreground focus:outline-none"
         >
           <Info className="w-3 h-3" />
         </button>
         {open && (
-          <div className="absolute left-0 top-5 z-10 w-56 rounded-lg border border-[#f0f0f0] bg-white p-2.5 text-[11px] leading-relaxed text-[#1C1209] shadow-lg">
+          <div className="absolute left-0 top-5 z-10 w-56 rounded-lg border border-border bg-white p-2.5 text-[11px] leading-relaxed text-foreground shadow-lg">
             {tooltip}
           </div>
         )}
       </div>
-      <div
-        className={`text-xl font-bold ${tone}`}
-        style={{ fontFamily: "var(--font-heading)" }}
-      >
+      <div className={`text-xl font-bold ${tone}`}>
         {pct}%
       </div>
     </div>
@@ -88,7 +85,7 @@ export default function ModelMetrics({ metrics, className = "" }: Props) {
         type="button"
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
-        className="inline-flex items-center gap-1.5 text-xs text-[#666666] hover:text-[#E85D26] transition-colors focus:outline-none"
+        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors focus:outline-none"
       >
         <ChevronDown
           className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-180" : ""}`}
@@ -96,7 +93,7 @@ export default function ModelMetrics({ metrics, className = "" }: Props) {
         <span>
           {expanded ? "Ẩn" : "Xem"} hiệu năng mô hình cho món này
         </span>
-        <span className="text-[10px] text-[#A69588]">
+        <span className="text-[10px] text-muted-foreground">
           (test set · {metrics.support} ảnh)
         </span>
       </button>
@@ -113,7 +110,7 @@ export default function ModelMetrics({ metrics, className = "" }: Props) {
               />
             ))}
           </div>
-          <p className="mt-2 text-[11px] leading-relaxed text-[#666666]">
+          <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
             Đây là độ đo đánh giá mô hình trên tập kiểm tra đã có nhãn — phản ánh
             độ tin cậy chung của AI đối với loại món này, không phải cho ảnh bạn
             vừa tải lên (con số đó là &ldquo;Độ tin cậy&rdquo; phía trên).

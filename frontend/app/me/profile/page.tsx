@@ -45,7 +45,7 @@ export default function EditProfilePage() {
   if (isLoading || fetching) {
     return (
       <div className="max-w-lg mx-auto px-4 py-12 flex justify-center">
-        <div className="w-8 h-8 border-2 border-[#E85D26] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -87,16 +87,16 @@ export default function EditProfilePage() {
   return (
     <div className="max-w-lg mx-auto px-4 sm:px-6 py-8 pb-24 lg:pb-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#1C1209]" style={{ fontFamily: "var(--font-playfair)" }}>
+        <h1 className="text-2xl font-bold text-foreground">
           Chỉnh sửa hồ sơ
         </h1>
-        <p className="text-sm text-[#666666] mt-1">Cập nhật thông tin cá nhân của bạn</p>
+        <p className="text-sm text-muted-foreground mt-1">Cập nhật thông tin cá nhân của bạn</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Avatar section */}
-        <div className="bg-white rounded-2xl border border-[#f0f0f0] p-5">
-          <h2 className="font-semibold text-[#1C1209] mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-2xl border border-border p-5">
+          <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <User className="w-4 h-4" />
             Ảnh đại diện
           </h2>
@@ -104,13 +104,13 @@ export default function EditProfilePage() {
           <div className="flex items-center gap-4 mb-4">
             <Avatar className="w-16 h-16 shrink-0">
               <AvatarImage src={previewAvatar} alt={fullName} />
-              <AvatarFallback className="bg-[#E85D26] text-white text-xl font-bold">
+              <AvatarFallback className="bg-primary text-white text-xl font-bold">
                 {fullName?.charAt(0)?.toUpperCase() ?? "?"}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm font-medium text-[#1C1209]">{fullName || "Tên hiển thị"}</p>
-              <p className="text-xs text-[#666666] mt-0.5">Ảnh hiển thị trên toàn bộ trang</p>
+              <p className="text-sm font-medium text-foreground">{fullName || "Tên hiển thị"}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Ảnh hiển thị trên toàn bộ trang</p>
             </div>
           </div>
 
@@ -124,11 +124,11 @@ export default function EditProfilePage() {
         </div>
 
         {/* Profile info */}
-        <div className="bg-white rounded-2xl border border-[#f0f0f0] p-5 space-y-4">
-          <h2 className="font-semibold text-[#1C1209]">Thông tin cá nhân</h2>
+        <div className="bg-white rounded-2xl border border-border p-5 space-y-4">
+          <h2 className="font-semibold text-foreground">Thông tin cá nhân</h2>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-[#1C1209]">
+            <label className="text-sm font-medium text-foreground">
               Tên hiển thị <span className="text-red-500">*</span>
             </label>
             <Input
@@ -136,22 +136,22 @@ export default function EditProfilePage() {
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Nguyễn Văn A"
               maxLength={100}
-              className="border-[#f0f0f0] focus-visible:ring-[#E85D26]"
+              className="border-border focus-visible:ring-primary"
             />
-            <p className="text-xs text-[#666666]">{fullName.length}/100 ký tự</p>
+            <p className="text-xs text-muted-foreground">{fullName.length}/100 ký tự</p>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-[#1C1209]">Giới thiệu bản thân</label>
+            <label className="text-sm font-medium text-foreground">Giới thiệu bản thân</label>
             <Textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder="Tôi yêu thích nấu ăn và khám phá ẩm thực Việt Nam..."
               maxLength={500}
               rows={3}
-              className="resize-none border-[#f0f0f0] focus-visible:ring-[#E85D26]"
+              className="resize-none border-border focus-visible:ring-primary"
             />
-            <p className="text-xs text-[#666666]">{bio.length}/500 ký tự</p>
+            <p className="text-xs text-muted-foreground">{bio.length}/500 ký tự</p>
           </div>
         </div>
 
@@ -161,14 +161,14 @@ export default function EditProfilePage() {
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            className="flex-1 border-[#f0f0f0] text-[#666666]"
+            className="flex-1 border-border text-muted-foreground"
           >
             Hủy
           </Button>
           <Button
             type="submit"
             disabled={saving}
-            className="flex-1 bg-[#E85D26] hover:bg-[#D44E1E] text-white gap-2"
+            className="flex-1 bg-primary hover:bg-[#cc1c22] text-white gap-2"
           >
             {saving ? (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

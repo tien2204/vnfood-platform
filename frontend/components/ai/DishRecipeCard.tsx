@@ -18,16 +18,13 @@ export default function DishRecipeCard({ recipe }: Props) {
   const isAIGenerated = recipe.source === "ai-generated";
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-8 bg-white rounded-2xl shadow-sm border border-[#f0f0f0] p-6">
+    <div className="w-full max-w-4xl mx-auto mt-8 bg-white rounded-2xl shadow-sm border border-border p-6">
       <div className="flex items-start justify-between gap-4 flex-wrap mb-3">
         <div>
-          <p className="text-xs text-[#666666] uppercase tracking-wider mb-1">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
             Công thức gợi ý
           </p>
-          <h3
-            className="text-2xl font-bold text-[#1C1209] leading-tight"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
+          <h3 className="text-2xl font-bold text-foreground leading-tight">
             {recipe.title}
           </h3>
         </div>
@@ -40,37 +37,37 @@ export default function DishRecipeCard({ recipe }: Props) {
       </div>
 
       {recipe.description && (
-        <p className="text-sm text-[#666666] leading-relaxed mb-4">{recipe.description}</p>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-4">{recipe.description}</p>
       )}
 
       <div className="flex flex-wrap gap-2 mb-4">
         {recipe.cooking_time_minutes != null && (
-          <span className="inline-flex items-center gap-1 text-xs text-[#666666] bg-[#F7F0E8] px-2 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
             <Clock className="w-3 h-3" />
             {recipe.cooking_time_minutes} phút
           </span>
         )}
         {recipe.servings != null && (
-          <span className="inline-flex items-center gap-1 text-xs text-[#666666] bg-[#F7F0E8] px-2 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
             <Users className="w-3 h-3" />
             {recipe.servings} người
           </span>
         )}
         {recipe.difficulty && (
-          <span className="inline-flex items-center gap-1 text-xs text-[#666666] bg-[#F7F0E8] px-2 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
             <ChefHat className="w-3 h-3" />
             {DIFFICULTY_LABEL[recipe.difficulty] ?? recipe.difficulty}
           </span>
         )}
       </div>
 
-      <div className="border-t border-[#f0f0f0] pt-6 grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8">
-        <div className="bg-[#F7F0E8] rounded-xl p-4">
-          <p className="text-xs text-[#666666] uppercase tracking-wider mb-2">Nguyên liệu</p>
-          <ul className="space-y-1 text-sm text-[#1C1209]">
+      <div className="border-t border-border pt-6 grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8">
+        <div className="bg-muted rounded-xl p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Nguyên liệu</p>
+          <ul className="space-y-1 text-sm text-foreground">
             {recipe.ingredients.map((item, idx) => (
               <li key={idx} className="flex gap-2">
-                <span className="text-[#E85D26]">•</span>
+                <span className="text-primary">•</span>
                 <span>{item}</span>
               </li>
             ))}
@@ -78,17 +75,14 @@ export default function DishRecipeCard({ recipe }: Props) {
         </div>
 
         <div>
-          <p className="text-xs text-[#666666] uppercase tracking-wider mb-4">Cách làm</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-4">Cách làm</p>
           <div className="space-y-6">
             {recipe.steps.map((step, idx) => (
               <div key={idx} className="flex gap-4">
-                <div
-                  className="flex-shrink-0 w-12 h-12 rounded-full bg-[#E85D26]/10 flex items-center justify-center font-bold text-xl text-[#E85D26]"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center font-bold text-xl text-primary">
                   {idx + 1}
                 </div>
-                <p className="text-[#1C1209] leading-relaxed pt-2">{step}</p>
+                <p className="text-foreground leading-relaxed pt-2">{step}</p>
               </div>
             ))}
           </div>

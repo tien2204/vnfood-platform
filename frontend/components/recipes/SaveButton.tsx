@@ -80,7 +80,7 @@ export default function SaveButton({
         onClick={toggle}
         aria-label={isSaved ? "Bỏ lưu công thức" : "Lưu công thức"}
         className={`flex items-center gap-1 px-2 py-1 rounded-full bg-white/80 backdrop-blur-sm transition-colors ${
-          isSaved ? "text-[#E85D26]" : "text-[#666666] hover:text-[#E85D26]"
+          isSaved ? "text-primary" : "text-muted-foreground hover:text-primary"
         }`}
       >
         <Heart
@@ -101,8 +101,8 @@ export default function SaveButton({
       aria-label={isSaved ? "Bỏ lưu công thức" : "Lưu công thức"}
       className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl border transition-colors ${
         isSaved
-          ? "border-[#E85D26] text-[#E85D26]"
-          : "border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26]"
+          ? "border-primary text-primary"
+          : "border-border text-muted-foreground hover:border-primary hover:text-primary"
       }`}
     >
       <Heart

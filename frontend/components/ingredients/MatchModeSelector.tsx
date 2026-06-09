@@ -14,7 +14,7 @@ interface Props {
 export default function MatchModeSelector({ value, onChange }: Props) {
   return (
     <fieldset>
-      <legend className="text-sm font-medium text-[#1C1209] mb-2">Chế độ tìm kiếm</legend>
+      <legend className="text-sm font-medium text-foreground mb-2">Chế độ tìm kiếm</legend>
       <div className="flex flex-wrap gap-2">
         {MODES.map((mode) => (
           <label
@@ -23,8 +23,8 @@ export default function MatchModeSelector({ value, onChange }: Props) {
             className={[
               "flex items-center gap-2 px-3 py-2 rounded-xl border cursor-pointer transition-all text-sm select-none",
               value === mode.value
-                ? "border-[#E85D26] bg-[#E85D26]/5 text-[#E85D26] font-medium"
-                : "border-[#f0f0f0] bg-white text-[#4A3728] hover:border-[#E85D26]/50",
+                ? "border-primary bg-primary/5 text-primary font-medium"
+                : "border-border bg-white text-foreground hover:border-primary/50",
             ].join(" ")}
           >
             <input
@@ -38,11 +38,11 @@ export default function MatchModeSelector({ value, onChange }: Props) {
             <span
               className={[
                 "w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0",
-                value === mode.value ? "border-[#E85D26]" : "border-[#D0C5BB]",
+                value === mode.value ? "border-primary" : "border-border",
               ].join(" ")}
             >
               {value === mode.value && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#E85D26]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               )}
             </span>
             {mode.label}

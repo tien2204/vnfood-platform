@@ -18,13 +18,10 @@ export function RecipeVideo({ url }: { url?: string | null }) {
   if (!id) return null;
   return (
     <section className="my-6">
-      <h2
-        className="text-lg font-bold text-[#2D2417] mb-3"
-        style={{ fontFamily: "var(--font-playfair)" }}
-      >
+      <h2 className="text-lg font-bold text-foreground mb-3">
         Video hướng dẫn
       </h2>
-      <div className="relative w-full overflow-hidden rounded-xl border border-[#f0f0f0]" style={{ paddingBottom: "56.25%" }}>
+      <div className="relative w-full overflow-hidden rounded-xl border border-border" style={{ paddingBottom: "56.25%" }}>
         <iframe
           className="absolute inset-0 h-full w-full"
           src={`https://www.youtube.com/embed/${id}`}

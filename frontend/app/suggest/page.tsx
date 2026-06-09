@@ -84,41 +84,38 @@ export default function SuggestPage() {
   const visiblePopular = showAllPopular ? popular : popular.slice(0, 18);
 
   return (
-    <main className="min-h-screen bg-[#FFFBF5]">
+    <main className="min-h-screen bg-white">
       {/* ── Hero ── */}
       <section className="max-w-3xl mx-auto px-4 pt-12 pb-6 text-center">
         <div className="inline-flex items-center gap-2 bg-[#2D6A4F]/10 text-[#2D6A4F] px-4 py-1.5 rounded-full text-sm font-medium mb-4">
           <Salad className="w-4 h-4" />
           Gợi ý từ nguyên liệu
         </div>
-        <h1
-          className="text-4xl md:text-5xl font-bold text-[#2D2417] mb-3"
-          style={{ fontFamily: "var(--font-playfair)" }}
-        >
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
           Hôm nay nấu gì?
         </h1>
-        <p className="text-[#666666] text-lg max-w-xl mx-auto">
+        <p className="text-muted-foreground text-lg max-w-xl mx-auto">
           Chọn nguyên liệu bạn đang có — chúng tôi gợi ý công thức phù hợp nhất để nấu ngay hôm nay.
         </p>
       </section>
 
       {/* ── Input panel ── */}
       <section className="max-w-3xl mx-auto px-4 pb-8">
-        <div className="bg-white rounded-2xl border border-[#f0f0f0] shadow-sm p-5 md:p-6 space-y-5">
+        <div className="bg-white rounded-2xl border border-border shadow-sm p-5 md:p-6 space-y-5">
 
           {/* Search autocomplete */}
           <div>
-            <p className="text-sm font-medium text-[#1C1209] mb-2">Tìm thêm nguyên liệu</p>
+            <p className="text-sm font-medium text-foreground mb-2">Tìm thêm nguyên liệu</p>
             <IngredientSearch selectedNames={selectedSet} onAdd={addIngredient} />
           </div>
 
           {/* Popular chips */}
           <div>
-            <p className="text-sm font-medium text-[#1C1209] mb-2.5">Phổ biến</p>
+            <p className="text-sm font-medium text-foreground mb-2.5">Phổ biến</p>
             {loadingPopular ? (
               <div className="flex flex-wrap gap-2">
                 {Array.from({ length: 12 }).map((_, i) => (
-                  <div key={i} className="h-8 w-20 rounded-full bg-[#F7F0E8] animate-pulse" />
+                  <div key={i} className="h-8 w-20 rounded-full bg-muted animate-pulse" />
                 ))}
               </div>
             ) : (
@@ -136,7 +133,7 @@ export default function SuggestPage() {
                   <button
                     type="button"
                     onClick={() => setShowAllPopular((v) => !v)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-dashed border-[#D0C5BB] text-sm text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-dashed border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                   >
                     {showAllPopular ? (
                       <>Thu gọn <ChevronUp className="w-3.5 h-3.5" /></>
@@ -151,7 +148,7 @@ export default function SuggestPage() {
 
           {/* Selected */}
           {selected.length > 0 && (
-            <div className="border-t border-[#F7F0E8] pt-4">
+            <div className="border-t border-muted pt-4">
               <SelectedIngredients
                 selected={selected}
                 onRemove={removeIngredient}
@@ -161,7 +158,7 @@ export default function SuggestPage() {
           )}
 
           {/* Match mode */}
-          <div className="border-t border-[#F7F0E8] pt-4">
+          <div className="border-t border-muted pt-4">
             <MatchModeSelector value={matchMode} onChange={setMatchMode} />
           </div>
 
@@ -173,10 +170,10 @@ export default function SuggestPage() {
             className={[
               "w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-base transition-all duration-200",
               selected.length === 0
-                ? "bg-[#F7F0E8] text-[#B0A090] cursor-not-allowed"
+                ? "bg-muted text-muted-foreground cursor-not-allowed"
                 : searching
-                ? "bg-[#E85D26]/80 text-white cursor-wait"
-                : "bg-[#E85D26] hover:bg-[#D44E1E] text-white shadow-sm hover:shadow active:scale-[0.98]",
+                ? "bg-primary/80 text-white cursor-wait"
+                : "bg-primary hover:bg-[#cc1c22] text-white shadow-sm hover:shadow active:scale-[0.98]",
             ].join(" ")}
             aria-disabled={selected.length === 0 || searching}
           >
@@ -207,21 +204,18 @@ export default function SuggestPage() {
           {/* DB results */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2
-                className="text-2xl font-bold text-[#2D2417]"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
+              <h2 className="text-2xl font-bold text-foreground">
                 Có sẵn trong hệ thống
-                <span className="ml-2 text-lg font-semibold text-[#E85D26]">
+                <span className="ml-2 text-lg font-semibold text-primary">
                   ({result.total_db_results})
                 </span>
               </h2>
             </div>
 
             {result.db_results.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-[#f0f0f0] p-10 text-center">
-                <p className="text-[#666666] text-lg font-medium">Không tìm thấy công thức phù hợp</p>
-                <p className="text-[#B0A090] text-sm mt-1">Thử bớt nguyên liệu hoặc chuyển sang chế độ "Có ít nhất 1"</p>
+              <div className="bg-white rounded-2xl border border-border p-10 text-center">
+                <p className="text-muted-foreground text-lg font-medium">Không tìm thấy công thức phù hợp</p>
+                <p className="text-muted-foreground text-sm mt-1">Thử bớt nguyên liệu hoặc chuyển sang chế độ "Có ít nhất 1"</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -240,16 +234,13 @@ export default function SuggestPage() {
           {result.ai_used && result.ai_suggestions.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <h2
-                  className="text-2xl font-bold text-[#2D2417]"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
+                <h2 className="text-2xl font-bold text-foreground">
                   Gợi ý thêm từ AI
-                  <span className="ml-2 text-lg font-semibold text-[#E85D26]">
+                  <span className="ml-2 text-lg font-semibold text-primary">
                     ({result.ai_suggestions.length})
                   </span>
                 </h2>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#E85D26]/10 text-[#E85D26] text-xs font-semibold border border-[#E85D26]/20">
+                <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
                   GPT-4o mini
                 </span>
               </div>
@@ -265,26 +256,26 @@ export default function SuggestPage() {
 
       {/* ── Mobile sticky bottom bar ── */}
       {selected.length > 0 && !result && (
-        <div className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-white/95 backdrop-blur border-t border-[#f0f0f0] px-4 py-3 safe-b">
+        <div className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-white/95 backdrop-blur border-t border-border px-4 py-3 safe-b">
           <div className="flex items-center gap-3">
             <div className="flex-1 flex flex-wrap gap-1 overflow-hidden max-h-8">
               {selected.slice(0, 5).map((name) => (
                 <span
                   key={name}
-                  className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#E85D26]/10 text-[#E85D26] text-xs font-medium border border-[#E85D26]/20 whitespace-nowrap"
+                  className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium border border-primary/20 whitespace-nowrap"
                 >
                   {name}
                 </span>
               ))}
               {selected.length > 5 && (
-                <span className="text-xs text-[#666666] self-center">+{selected.length - 5}</span>
+                <span className="text-xs text-muted-foreground self-center">+{selected.length - 5}</span>
               )}
             </div>
             <button
               type="button"
               onClick={handleSearch}
               disabled={searching}
-              className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#E85D26] text-white text-sm font-semibold active:scale-95 transition-transform"
+              className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-sm font-semibold active:scale-95 transition-transform"
             >
               {searching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
               Tìm ({selected.length})

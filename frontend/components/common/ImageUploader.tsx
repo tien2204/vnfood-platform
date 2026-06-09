@@ -78,10 +78,10 @@ export default function ImageUploader({
 
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <label className="text-sm font-medium text-[#1C1209]">{label}</label>
+      <label className="text-sm font-medium text-foreground">{label}</label>
 
       {previewSrc ? (
-        <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-[#f0f0f0] bg-[#F7F0E8]">
+        <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border bg-muted">
           <Image src={previewSrc} alt="preview" fill className="object-cover" unoptimized />
           <button
             type="button"
@@ -101,30 +101,30 @@ export default function ImageUploader({
             w-full aspect-video rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-3
             cursor-pointer transition-all duration-150
             ${dragging
-              ? "border-[#E85D26] bg-[#E85D26]/5"
-              : "border-[#f0f0f0] bg-[#F7F0E8] hover:border-[#E85D26]/50 hover:bg-[#E85D26]/5"
+              ? "border-primary bg-primary/5"
+              : "border-border bg-muted hover:border-primary/50 hover:bg-primary/5"
             }
           `}
         >
           {uploading ? (
-            <div className="flex flex-col items-center gap-2 text-[#666666]">
-              <div className="w-8 h-8 border-2 border-[#E85D26] border-t-transparent rounded-full animate-spin" />
+            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               <span className="text-sm">Đang upload...</span>
             </div>
           ) : (
             <>
-              <div className="p-3 rounded-full bg-[#E85D26]/10">
+              <div className="p-3 rounded-full bg-primary/10">
                 {dragging ? (
-                  <ImageIcon className="w-6 h-6 text-[#E85D26]" />
+                  <ImageIcon className="w-6 h-6 text-primary" />
                 ) : (
-                  <Upload className="w-6 h-6 text-[#E85D26]" />
+                  <Upload className="w-6 h-6 text-primary" />
                 )}
               </div>
               <div className="text-center">
-                <p className="text-sm font-medium text-[#1C1209]">
-                  Kéo thả hoặc <span className="text-[#E85D26]">chọn ảnh</span>
+                <p className="text-sm font-medium text-foreground">
+                  Kéo thả hoặc <span className="text-primary">chọn ảnh</span>
                 </p>
-                <p className="text-xs text-[#666666] mt-0.5">JPG, PNG, WEBP — tối đa 10MB</p>
+                <p className="text-xs text-muted-foreground mt-0.5">JPG, PNG, WEBP — tối đa 10MB</p>
               </div>
             </>
           )}

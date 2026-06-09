@@ -8,43 +8,39 @@ export default function NotFound() {
       {/* 404 */}
       <div className="relative mb-6">
         <span
-          className="text-[120px] sm:text-[160px] font-bold text-[#F7F0E8] leading-none select-none"
-          style={{ fontFamily: "var(--font-playfair)" }}
+          className="text-[120px] sm:text-[160px] font-bold text-muted leading-none select-none"
           aria-hidden="true"
         >
           404
         </span>
         <div className="absolute inset-0 flex items-center justify-center">
-          <UtensilsCrossed className="w-16 h-16 sm:w-20 sm:h-20 text-[#E85D26]" aria-hidden="true" />
+          <UtensilsCrossed className="w-16 h-16 sm:w-20 sm:h-20 text-primary" aria-hidden="true" />
         </div>
       </div>
 
-      <h1
-        className="text-2xl sm:text-3xl font-bold text-[#1C1209] mb-3"
-        style={{ fontFamily: "var(--font-playfair)" }}
-      >
+      <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
         Công thức bạn tìm đã bị &ldquo;ăn&rdquo; mất rồi!
       </h1>
-      <p className="text-[#666666] max-w-md leading-relaxed mb-8">
+      <p className="text-muted-foreground max-w-md leading-relaxed mb-8">
         Trang này không tồn tại hoặc đã bị xóa. Hãy thử tìm kiếm món ăn khác hoặc khám phá kho công thức của chúng tôi.
       </p>
 
       {/* CTAs */}
       <div className="flex flex-wrap gap-3 justify-center">
         <Link href="/">
-          <Button className="gap-2 bg-[#E85D26] hover:bg-[#D44E1E] text-white">
+          <Button className="gap-2 bg-primary hover:bg-[#cc1c22] text-white">
             <Home className="w-4 h-4" aria-hidden="true" />
             Về trang chủ
           </Button>
         </Link>
         <Link href="/recipes">
-          <Button variant="outline" className="gap-2 border-[#E85D26] text-[#E85D26] hover:bg-[#E85D26] hover:text-white">
+          <Button variant="outline" className="gap-2 border-primary text-primary hover:bg-primary hover:text-white">
             <BookOpen className="w-4 h-4" aria-hidden="true" />
             Khám phá công thức
           </Button>
         </Link>
         <Link href="/search">
-          <Button variant="outline" className="gap-2 border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26]">
+          <Button variant="outline" className="gap-2 border-border text-muted-foreground hover:border-primary hover:text-primary">
             <Search className="w-4 h-4" aria-hidden="true" />
             Tìm kiếm
           </Button>

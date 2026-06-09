@@ -51,25 +51,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-[#FFFBF5] px-4 py-12">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-white px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <UtensilsCrossed className="w-8 h-8 text-[#E85D26]" />
-            <span
-              className="text-2xl font-bold text-[#E85D26]"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
+            <UtensilsCrossed className="w-8 h-8 text-primary" />
+            <span className="text-2xl font-bold text-primary">
               VNFood
             </span>
           </Link>
-          <h1 className="text-2xl font-semibold text-[#2D2417]">Đăng nhập</h1>
-          <p className="text-[#666666] mt-1 text-sm">Chào mừng bạn trở lại!</p>
+          <h1 className="text-2xl font-semibold text-foreground">Đăng nhập</h1>
+          <p className="text-muted-foreground mt-1 text-sm">Chào mừng bạn trở lại!</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="email" className="text-sm font-medium text-[#2D2417]">
+            <label htmlFor="email" className="text-sm font-medium text-foreground">
               Email
             </label>
             <Input
@@ -80,12 +77,12 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="bg-white border-[#f0f0f0] focus-visible:ring-[#E85D26]"
+              className="bg-white border-border focus-visible:ring-primary"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="password" className="text-sm font-medium text-[#2D2417]">
+            <label htmlFor="password" className="text-sm font-medium text-foreground">
               Mật khẩu
             </label>
             <Input
@@ -96,24 +93,24 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="bg-white border-[#f0f0f0] focus-visible:ring-[#E85D26]"
+              className="bg-white border-border focus-visible:ring-primary"
             />
           </div>
 
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#E85D26] hover:bg-[#D44E1E] text-white mt-2"
+            className="w-full bg-primary hover:bg-[#cc1c22] text-white mt-2"
           >
             {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </Button>
         </form>
 
-        <p className="text-center text-sm text-[#666666] mt-6">
+        <p className="text-center text-sm text-muted-foreground mt-6">
           Chưa có tài khoản?{" "}
           <Link
             href="/auth/register"
-            className="text-[#E85D26] hover:underline font-medium"
+            className="text-primary hover:underline font-medium"
           >
             Đăng ký ngay
           </Link>

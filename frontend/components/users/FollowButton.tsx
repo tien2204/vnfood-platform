@@ -63,8 +63,8 @@ export default function FollowButton({ userId, initialFollowing, initialCount, i
       size="sm"
       className={
         following
-          ? "border-[#E85D26] text-[#E85D26] hover:bg-[#E85D26] hover:text-white gap-1.5"
-          : "bg-[#E85D26] hover:bg-[#D44E1E] text-white gap-1.5"
+          ? "border-primary text-primary hover:bg-primary hover:text-white gap-1.5"
+          : "bg-primary hover:bg-[#cc1c22] text-white gap-1.5"
       }
     >
       {following ? (

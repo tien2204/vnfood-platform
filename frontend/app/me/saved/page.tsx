@@ -52,24 +52,21 @@ export default function SavedRecipesPage() {
       <div className="mb-8">
         <Link
           href="/recipes"
-          className="inline-flex items-center gap-1.5 text-sm text-[#666666] hover:text-[#E85D26] mb-4 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary mb-4 transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
           Khám phá công thức
         </Link>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#E85D26]/10 flex items-center justify-center">
-            <Bookmark className="w-5 h-5 text-[#E85D26]" />
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <Bookmark className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1
-              className="text-2xl sm:text-3xl font-bold text-[#1C1209]"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
               Công thức đã lưu
             </h1>
             {pagination && !isLoading && (
-              <p className="text-sm text-[#666666] mt-0.5">
+              <p className="text-sm text-muted-foreground mt-0.5">
                 {pagination.total} công thức
               </p>
             )}
@@ -96,7 +93,7 @@ export default function SavedRecipesPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="p-2 rounded-lg border border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 aria-label="Trang trước"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -118,7 +115,7 @@ export default function SavedRecipesPage() {
                 }, [])
                 .map((item, i) =>
                   item === "…" ? (
-                    <span key={`ellipsis-${i}`} className="px-2 text-[#666666]">
+                    <span key={`ellipsis-${i}`} className="px-2 text-muted-foreground">
                       …
                     </span>
                   ) : (
@@ -127,8 +124,8 @@ export default function SavedRecipesPage() {
                       onClick={() => setPage(item as number)}
                       className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
                         item === page
-                          ? "bg-[#E85D26] text-white"
-                          : "border border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26]"
+                          ? "bg-primary text-white"
+                          : "border border-border text-muted-foreground hover:border-primary hover:text-primary"
                       }`}
                     >
                       {item}
@@ -139,7 +136,7 @@ export default function SavedRecipesPage() {
               <button
                 onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
                 disabled={page === pagination.total_pages}
-                className="p-2 rounded-lg border border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 aria-label="Trang sau"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -155,23 +152,20 @@ export default function SavedRecipesPage() {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div className="w-24 h-24 rounded-full bg-[#F7F0E8] flex items-center justify-center mb-6">
-        <BookmarkX className="w-12 h-12 text-[#f0f0f0]" />
+      <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center mb-6">
+        <BookmarkX className="w-12 h-12 text-border" />
       </div>
-      <h2
-        className="text-xl font-semibold text-[#1C1209] mb-2"
-        style={{ fontFamily: "var(--font-heading)" }}
-      >
+      <h2 className="text-xl font-semibold text-foreground mb-2">
         Bạn chưa lưu công thức nào
       </h2>
-      <p className="text-[#666666] mb-8 max-w-sm leading-relaxed">
+      <p className="text-muted-foreground mb-8 max-w-sm leading-relaxed">
         Khám phá hàng ngàn công thức Việt Nam và nhấn{" "}
-        <span className="text-[#E85D26] font-medium">♥</span> để lưu lại
+        <span className="text-primary font-medium">♥</span> để lưu lại
         những món yêu thích.
       </p>
       <Link
         href="/recipes"
-        className="inline-flex items-center gap-2 px-6 py-3 bg-[#E85D26] hover:bg-[#D44E1E] text-white rounded-xl font-semibold transition-colors"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-[#cc1c22] text-white rounded-xl font-semibold transition-colors"
       >
         Khám phá công thức
       </Link>

@@ -49,20 +49,17 @@ export default function RecognizePage() {
   const isLoading = state === "loading";
 
   return (
-    <main className="min-h-screen bg-[#FFFBF5]">
+    <main className="min-h-screen bg-white">
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-4 pt-12 pb-6 text-center">
-        <div className="inline-flex items-center gap-2 bg-[#E85D26]/10 text-[#E85D26] px-4 py-1.5 rounded-full text-sm font-medium mb-4">
+        <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-4">
           <ScanLine className="w-4 h-4" />
           AI Nhận diện món ăn
         </div>
-        <h1
-          className="text-4xl md:text-5xl font-bold text-[#2D2417] mb-3"
-          style={{ fontFamily: "var(--font-playfair)" }}
-        >
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
           Nhận diện món Việt
         </h1>
-        <p className="text-[#666666] text-lg max-w-xl mx-auto">
+        <p className="text-muted-foreground text-lg max-w-xl mx-auto">
           Chụp hoặc tải ảnh món ăn lên — AI sẽ nhận diện và gợi ý công thức cho bạn nấu tại nhà.
         </p>
       </section>
@@ -84,8 +81,8 @@ export default function RecognizePage() {
                 className="w-48 h-48 object-cover rounded-2xl opacity-70 shadow"
               />
             )}
-            <div className="flex items-center gap-2 text-[#666666]">
-              <Loader2 className="w-5 h-5 animate-spin text-[#E85D26]" />
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Loader2 className="w-5 h-5 animate-spin text-primary" />
               <span className="font-medium">Đang nhận diện...</span>
             </div>
           </div>
@@ -96,13 +93,13 @@ export default function RecognizePage() {
           <>
             <RecognitionResult result={result} imagePreview={preview} />
 
-            <div className="w-full border-t border-[#f0f0f0]" />
+            <div className="w-full border-t border-border" />
 
             <RecipeCarousel recipes={result.suggested_recipes} />
 
             <button
               onClick={handleReset}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors text-sm font-medium"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors text-sm font-medium"
             >
               <RefreshCw className="w-4 h-4" />
               Thử ảnh khác
