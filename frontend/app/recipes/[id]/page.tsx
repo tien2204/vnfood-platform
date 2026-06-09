@@ -361,17 +361,6 @@ export default async function RecipeDetailPage({
         userRole={userRole}
       />
 
-      {isLoggedIn && (
-        <div className="mt-6">
-          <Link
-            href={`/recipes/${id}/variant`}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-primary text-primary text-sm font-medium hover:bg-primary hover:text-white transition-colors"
-          >
-            Tạo biến thể
-          </Link>
-        </div>
-      )}
-
       {recipe.variants && recipe.variants.length > 0 && (
         <VariantsAccordion variants={recipe.variants} />
       )}

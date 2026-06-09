@@ -12,7 +12,7 @@ interface Props {
   recipeId: string;
   initialSaved: boolean;
   initialCount: number;
-  variant?: "card" | "action";
+  variant?: "card" | "action" | "sidebar";
   onChange?: (isSaved: boolean, saveCount: number) => void;
 }
 
@@ -91,6 +91,23 @@ export default function SaveButton({
         {saveCount > 0 && (
           <span className="text-[10px] font-medium leading-none">{saveCount}</span>
         )}
+      </button>
+    );
+  }
+
+  if (variant === "sidebar") {
+    return (
+      <button
+        onClick={toggle}
+        aria-label={isSaved ? "Bỏ lưu công thức" : "Lưu công thức"}
+        className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-semibold transition-colors"
+      >
+        <Heart
+          className={`w-5 h-5 transition-transform duration-150 ${isAnimating ? "scale-125" : "scale-100"} ${isSaved ? "text-primary" : ""}`}
+          fill={isSaved ? "currentColor" : "none"}
+          stroke="currentColor"
+        />
+        <span>{isSaved ? "Đã lưu công thức" : "Lưu công thức"}</span>
       </button>
     );
   }

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, ChefHat, ExternalLink } from 'lucide-react';
+import { Clock, ChefHat, ExternalLink, Users } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SaveButton from './SaveButton';
 import CommentSection from './CommentSection';
@@ -172,10 +172,8 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
             </TabsContent>
           </Tabs>
 
-          <RelatedRecipes recipeId={recipe.id} />
-
-          {/* Desktop action bar */}
-          <div className="hidden lg:flex items-center gap-3 pt-6 border-t border-border">
+          {/* Desktop action bar — above related recipes */}
+          <div className="hidden lg:flex items-center gap-3 pb-8 mb-8 border-b border-border">
             <button
               onClick={() => setCookingMode(true)}
               disabled={!hasSteps}
@@ -184,12 +182,14 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
               <ChefHat className="w-5 h-5" />
               Bắt đầu nấu
             </button>
-            <SaveButton
-              recipeId={recipe.id}
-              initialSaved={recipe.is_saved ?? false}
-              initialCount={recipe.save_count}
-              variant="action"
-            />
+            {isLoggedIn && (
+              <Link
+                href={`/recipes/${recipe.id}/variant`}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors"
+              >
+                Tạo biến thể
+              </Link>
+            )}
             {(userRole === "collaborator" || userRole === "admin") && (
               <div className="flex gap-2">
                 <Link href={`/recipes/${recipe.id}/propose-edit`} className="px-3 py-1.5 rounded-lg border border-border text-sm text-muted-foreground hover:text-primary">Đề xuất sửa</Link>
@@ -219,41 +219,46 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
               </a>
             )}
           </div>
+
+          <RelatedRecipes recipeId={recipe.id} />
         </div>
 
         {/* Sticky sidebar (desktop only) */}
         <aside className="hidden lg:block">
           <div className="sticky top-24 space-y-4">
-            <div className="bg-muted rounded-xl p-5 border border-border shadow-card">
-              <h3 className="text-base font-extrabold text-foreground mb-3">
-                Thông tin <strong className="text-primary">món ăn</strong>
-              </h3>
-              <dl className="space-y-2 text-sm">
-                {recipe.cooking_time && (
-                  <div className="flex justify-between">
-                    <dt className="text-muted-foreground">Thời gian</dt>
-                    <dd className="font-medium text-foreground">{recipe.cooking_time} phút</dd>
-                  </div>
-                )}
-                {recipe.servings && (
-                  <div className="flex justify-between">
-                    <dt className="text-muted-foreground">Khẩu phần</dt>
-                    <dd className="font-medium text-foreground">{currentServings} người</dd>
-                  </div>
-                )}
-                {recipe.difficulty && (
-                  <div className="flex justify-between">
-                    <dt className="text-muted-foreground">Độ khó</dt>
-                    <dd className="font-medium text-foreground">{difficultyLabel(recipe.difficulty)}</dd>
-                  </div>
-                )}
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Nguồn</dt>
-                  <dd className="font-medium text-foreground">
-                    {recipe.source === 'cookpad' ? 'Cookpad' : 'Cộng đồng'}
-                  </dd>
+            {/* Dark info card (image-2 format): 3 icon stats + save button */}
+            <div className="rounded-xl bg-[#1e1e1e] p-5 shadow-card">
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="flex flex-col items-center gap-1">
+                  <Users className="w-5 h-5 text-primary" />
+                  <span className="text-[11px] leading-tight text-white/60">Khẩu Phần</span>
+                  <span className="text-sm font-bold text-white">
+                    {recipe.servings ? `${currentServings} người` : '—'}
+                  </span>
                 </div>
-              </dl>
+                <div className="flex flex-col items-center gap-1">
+                  <Clock className="w-5 h-5 text-primary" />
+                  <span className="text-[11px] leading-tight text-white/60">Thời gian thực hiện</span>
+                  <span className="text-sm font-bold text-white">
+                    {recipe.cooking_time ? `${recipe.cooking_time} phút` : '—'}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <ChefHat className="w-5 h-5 text-primary" />
+                  <span className="text-[11px] leading-tight text-white/60">Độ khó</span>
+                  <span className="text-sm font-bold text-white">
+                    {recipe.difficulty ? difficultyLabel(recipe.difficulty) : '—'}
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <SaveButton
+                  recipeId={recipe.id}
+                  initialSaved={recipe.is_saved ?? false}
+                  initialCount={recipe.save_count}
+                  variant="sidebar"
+                />
+              </div>
             </div>
 
             <div className="bg-white rounded-xl p-5 border border-border shadow-card">
