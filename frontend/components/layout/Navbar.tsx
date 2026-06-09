@@ -16,6 +16,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/lib/hooks/useUser";
 
+const CATEGORY_GROUPS = [
+  { title: "Nguyên liệu", items: [
+    { label: "Thịt bò", href: "/search?q=b%C3%B2" },
+    { label: "Thịt heo", href: "/search?q=heo" },
+    { label: "Thịt gà", href: "/search?q=g%C3%A0" },
+    { label: "Hải sản", href: "/search?q=h%E1%BA%A3i%20s%E1%BA%A3n" },
+    { label: "Rau củ", href: "/search?q=rau" },
+  ]},
+  { title: "Cách nấu", items: [
+    { label: "Món canh", href: "/search?q=canh" },
+    { label: "Món xào", href: "/search?q=x%C3%A0o" },
+    { label: "Món kho", href: "/search?q=kho" },
+    { label: "Món nướng", href: "/search?q=n%C6%B0%E1%BB%9Bng" },
+    { label: "Món chiên", href: "/search?q=chi%C3%AAn" },
+  ]},
+  { title: "Bữa & dịp", items: [
+    { label: "Bữa sáng", href: "/search?q=s%C3%A1ng" },
+    { label: "Cơm gia đình", href: "/recipes" },
+    { label: "Món chay", href: "/search?q=chay" },
+    { label: "Ăn vặt", href: "/search?q=%C4%83n%20v%E1%BA%B7t" },
+    { label: "Tết", href: "/search?q=t%E1%BA%BFt" },
+  ]},
+] as const;
+
 function getInitials(name: string) {
   return name
     .split(" ")
@@ -52,20 +76,38 @@ export default function Navbar() {
     : undefined;
 
   return (
-    <header className="sticky top-0 z-50 bg-[#ffffff]/95 backdrop-blur-sm border-b border-border">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="flex h-10 w-10 items-center justify-center border border-border bg-[#ec2028] shadow-block-sm">
+          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary shadow-sm">
             <UtensilsCrossed className="w-5 h-5 text-white" />
           </span>
-          <span
-            className="text-xl font-bold tracking-wide text-[#0a0a0a]"
-            style={{ fontFamily: "var(--font-playfair)" }}
-          >
+          <span className="text-2xl text-primary font-display leading-none">
             VNFood
           </span>
         </Link>
+
+        {/* Danh mục mega-menu — desktop only */}
+        <div className="hidden lg:block relative group">
+          <button className="flex items-center gap-1 px-3 h-16 text-sm font-semibold text-foreground hover:text-primary transition-colors">
+            Danh mục <ChevronDown className="w-3.5 h-3.5" />
+          </button>
+          <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all absolute left-0 top-full w-[640px] bg-white border border-border rounded-xl shadow-warm p-5 grid grid-cols-3 gap-x-6 gap-y-4 z-50">
+            {CATEGORY_GROUPS.map((g) => (
+              <div key={g.title}>
+                <p className="text-xs font-bold uppercase tracking-wide text-primary mb-2">{g.title}</p>
+                <ul className="space-y-1">
+                  {g.items.map((it) => (
+                    <li key={it.label}>
+                      <Link href={it.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">{it.label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Desktop Search — hidden on /search to avoid stacked search boxes */}
         {!hideSearchBar && (
@@ -73,12 +115,12 @@ export default function Navbar() {
             onSubmit={handleSearch}
             className="hidden md:flex flex-1 max-w-lg mx-auto relative"
           >
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#ec2028]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
             <Input
               placeholder="Tìm kiếm món ăn..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-9 bg-white border border-border rounded-lg shadow-block-sm focus-visible:ring-[#ec2028]"
+              className="pl-9 bg-muted border border-border rounded-full focus-visible:ring-primary"
             />
           </form>
         )}
@@ -103,7 +145,7 @@ export default function Navbar() {
             <Button
               variant="outline"
               size="sm"
-              className="hidden sm:flex items-center gap-1.5 rounded-lg border border-border bg-[#f5f5f5] text-[#0a0a0a] shadow-block-sm hover:bg-[#ec2028] hover:text-white"
+              className="hidden sm:flex items-center gap-1.5 rounded-lg border-2 border-primary bg-white text-primary font-bold hover:bg-primary hover:text-white"
             >
               <ScanLine className="w-4 h-4" />
               <span>AI Nhận diện</span>
@@ -118,7 +160,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger className="flex items-center gap-1.5 border border-transparent pl-1 pr-2 py-1 hover:border-[#0a0a0a] hover:bg-[#f5f5f5] transition-colors cursor-pointer outline-none">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={avatarSrc} alt={user.full_name} />
-                      <AvatarFallback className="bg-[#ec2028] text-white text-xs font-semibold">
+                      <AvatarFallback className="bg-primary text-white text-xs font-semibold">
                         {getInitials(user.full_name)}
                       </AvatarFallback>
                     </Avatar>
@@ -202,7 +244,7 @@ export default function Navbar() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="hidden sm:flex rounded-lg border border-border bg-white text-[#0a0a0a] shadow-block-sm hover:bg-[#0a0a0a] hover:text-[#ffffff]"
+                      className="hidden sm:flex rounded-lg border-2 border-primary bg-white text-primary font-bold hover:bg-primary hover:text-white"
                     >
                       Đăng nhập
                     </Button>
@@ -210,7 +252,7 @@ export default function Navbar() {
                   <Link href="/auth/register">
                     <Button
                       size="sm"
-                      className="rounded-lg border border-border bg-[#ec2028] text-white shadow-block-sm hover:bg-[#cc1c22]"
+                      className="rounded-lg border-2 border-primary bg-primary text-white font-bold hover:bg-[#cc1c22] hover:border-[#cc1c22]"
                     >
                       <span className="sm:hidden">Đăng nhập</span>
                       <span className="hidden sm:inline">Đăng ký</span>
@@ -230,13 +272,13 @@ export default function Navbar() {
           className="md:hidden px-4 pb-3 border-b border-border"
         >
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#ec2028]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
             <Input
               autoFocus
               placeholder="Tìm kiếm món ăn..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-9 bg-white border border-border rounded-lg"
+              className="pl-9 bg-muted border border-border rounded-full focus-visible:ring-primary"
             />
           </div>
         </form>
