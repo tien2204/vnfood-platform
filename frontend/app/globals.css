@@ -47,56 +47,61 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* VNFood restaurant theme */
-  --color-brand-primary: #ff6b35;
-  --color-brand-primary-hover: #e55a2b;
-  --color-brand-secondary: #8b4513;
-  --color-brand-accent: #4a7c59;
-  --color-warm-bg: #fffaf0;
-  --color-warm-muted: #fff5e6;
-  --color-warm-border: #e8ddd4;
+  /* VNFood theme — monngonmoingay (real tokens) */
+  --color-brand-primary: #ec2028;
+  --color-brand-primary-hover: #cc1c22;
+  --color-brand-ink: #330002;        /* maroon heading emphasis */
+  --color-brand-amber: #ec9a20;      /* secondary accent */
+  --color-brand-pink: #fbd0d2;       /* soft border/tag */
+  --color-brand-pink-bg: #fef6f6;    /* section background */
+  --color-brand-cream: #fbead0;
+  --color-healthy: #11ca24;          /* nutrition tag */
+  --color-warm-bg: #ffffff;
+  --color-warm-muted: #f5f5f5;
+  --color-warm-border: #f0f0f0;
 
   /* VNFood fonts — actual font CSS variables injected at <html> via next/font
      (Playfair Display heading + Be Vietnam Pro body, both vietnamese subset).
      Values here = fallback if next/font fails to load. */
-  --font-heading: "Playfair Display", "Be Vietnam Pro", Georgia, "Times New Roman", serif;
-  --font-body: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Lobster", "Be Vietnam Pro", cursive;
+  --font-heading: "Open Sans", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Open Sans", "Segoe UI", system-ui, sans-serif;
 }
 
 :root {
   color-scheme: light;
-  --background: #fffaf0;
-  --foreground: #2c1810;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
   --card: #ffffff;
-  --card-foreground: #2c1810;
+  --card-foreground: #0a0a0a;
   --popover: #ffffff;
-  --popover-foreground: #2c1810;
-  --primary: #ff6b35;
+  --popover-foreground: #0a0a0a;
+  --primary: #ec2028;
   --primary-foreground: #ffffff;
-  --secondary: #8b4513;
-  --secondary-foreground: #ffffff;
-  --muted: #fff5e6;
-  --muted-foreground: #6b5344;
-  --accent: #4a7c59;
-  --accent-foreground: #ffffff;
+  --secondary: #ec9a20;
+  --secondary-foreground: #331f00;
+  --muted: #f5f5f5;
+  --muted-foreground: #666666;
+  --accent: #fef6f6;
+  --accent-foreground: #ec2028;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #e8ddd4;
-  --input: #e8ddd4;
-  --ring: #ff6b35;
-  --chart-1: #ff6b35;
-  --chart-2: #8b4513;
-  --chart-3: #4a7c59;
+  --border: #f0f0f0;
+  --input: #f0f0f0;
+  --ring: #ec2028;
+  --chart-1: #ec2028;
+  --chart-2: #ec9a20;
+  --chart-3: #11ca24;
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.375rem;
-  --sidebar: #fff5e6;
-  --sidebar-foreground: #2c1810;
-  --sidebar-primary: #ff6b35;
+  --radius: 0.5rem;
+  --sidebar: #fef6f6;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #ec2028;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #4a7c59;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #e8ddd4;
-  --sidebar-ring: #ff6b35;
+  --sidebar-accent: #ec9a20;
+  --sidebar-accent-foreground: #331f00;
+  --sidebar-border: #f0f0f0;
+  --sidebar-ring: #ec2028;
 }
 
 @layer base {
@@ -109,33 +114,33 @@
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
-    letter-spacing: 0.02em;
+    letter-spacing: -0.01em;
+    font-weight: 800;
   }
+  .font-display { font-family: var(--font-display); font-weight: 400; }
 }
 
 @layer utilities {
-  .shadow-warm {
-    box-shadow: 0 8px 30px rgba(44, 24, 16, 0.12);
-  }
-  .shadow-card {
-    box-shadow: 0 4px 16px rgba(44, 24, 16, 0.08);
-  }
-  .shadow-block {
-    box-shadow: 6px 6px 0 #2c1810;
-  }
-  .shadow-block-sm {
-    box-shadow: 4px 4px 0 #2c1810;
-  }
+  .shadow-warm   { box-shadow: 0 8px 24px rgba(236, 32, 40, 0.08); }
+  .shadow-card   { box-shadow: 0 2px 8px rgba(10, 10, 10, 0.06); }
+  /* brutalist shadows neutralized → soft */
+  .shadow-block    { box-shadow: 0 4px 14px rgba(10, 10, 10, 0.08); }
+  .shadow-block-sm { box-shadow: 0 1px 4px rgba(10, 10, 10, 0.06); }
   .restaurant-card {
     background: #ffffff;
-    border: 2px solid #2c1810;
-    box-shadow: 6px 6px 0 #2c1810;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(10, 10, 10, 0.06);
     transition: all 200ms ease;
   }
-  .restaurant-card-hover {
-    &:hover {
-      transform: translate(2px, 2px);
-      box-shadow: 4px 4px 0 #2c1810;
-    }
+  .restaurant-card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(10, 10, 10, 0.12);
+  }
+  /* hero search signature: thick soft-pink border + red-tinted glow */
+  .searchform-hero {
+    border: 6px solid rgba(251, 208, 210, 0.5);
+    box-shadow: 0 8px 24px rgba(236, 32, 40, 0.08);
+    border-radius: 9999px;
   }
 }
