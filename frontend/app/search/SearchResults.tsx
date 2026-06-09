@@ -141,7 +141,7 @@ export default function SearchResults() {
             size="sm"
             disabled={page <= 1}
             onClick={() => goToPage(page - 1)}
-            className="rounded-lg border border-border bg-white hover:border-primary transition-colors"
+            className="rounded-lg border border-border bg-card hover:border-primary transition-colors"
           >
             ← Trước
           </Button>
@@ -156,7 +156,7 @@ export default function SearchResults() {
             size="sm"
             disabled={page >= totalPages}
             onClick={() => goToPage(page + 1)}
-            className="rounded-lg border border-border bg-white hover:border-primary transition-colors"
+            className="rounded-lg border border-border bg-card hover:border-primary transition-colors"
           >
             Sau →
           </Button>

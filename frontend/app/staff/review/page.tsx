@@ -57,7 +57,7 @@ export default function ReviewQueuePage() {
           const mine = r.claimed_by && user && r.claimed_by === user.id;
           const claimedOther = r.claimed_by && !mine;
           return (
-            <div key={r.id} className="bg-white border border-border rounded-xl p-4 flex items-center gap-3">
+            <div key={r.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3">
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-foreground truncate">{r.title}</p>
                 <p className="text-xs text-muted-foreground">

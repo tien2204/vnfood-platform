@@ -163,7 +163,7 @@ export default function CommentSection({
             placeholder="Viết bình luận của bạn..."
             rows={2}
             maxLength={1000}
-            className="flex-1 resize-none rounded-xl border border-border bg-white px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+            className="flex-1 resize-none rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
           />
           <button
             type="submit"
@@ -270,7 +270,7 @@ export default function CommentSection({
                     <MoreHorizontal className="w-4 h-4" />
                   </button>
                   {menuOpenId === comment.id && (
-                    <div className="absolute right-0 top-8 z-10 bg-white border border-border rounded-xl shadow-lg py-1 min-w-[120px]">
+                    <div className="absolute right-0 top-8 z-10 bg-card border border-border rounded-xl shadow-lg py-1 min-w-[120px]">
                       {comment.is_mine && (
                         <button
                           onClick={() => startEdit(comment)}
@@ -298,7 +298,7 @@ export default function CommentSection({
             <button
               onClick={() => loadPage(page + 1)}
               disabled={loadingMore}
-              className="w-full py-2.5 text-sm text-primary border border-border rounded-xl hover:border-primary hover:bg-[#fef6f6] disabled:opacity-50 transition-colors"
+              className="w-full py-2.5 text-sm text-primary border border-border rounded-xl hover:border-primary hover:bg-[var(--color-brand-pink-bg)] disabled:opacity-50 transition-colors"
             >
               {loadingMore ? "Đang tải..." : "Xem thêm bình luận"}
             </button>

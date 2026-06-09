@@ -59,12 +59,12 @@ export default function SearchBar({
   return (
     <form onSubmit={handleSubmit} className={className}>
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#ec2028]" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          className="pl-12 pr-4 h-12 text-base bg-white border border-border focus-visible:ring-[#ec2028] rounded-lg shadow-block-sm placeholder:text-[#666666]"
+          className="pl-12 pr-4 h-12 text-base bg-card border border-border focus-visible:ring-primary rounded-lg shadow-block-sm placeholder:text-muted-foreground"
         />
       </div>
     </form>

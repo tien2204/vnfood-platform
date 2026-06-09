@@ -28,7 +28,7 @@ export default function ProposeEditPage({ params }: { params: Promise<{ id: stri
   if (failed) return <p className="p-8 text-muted-foreground">Không tải được công thức. <a href="/recipes" className="text-primary underline">Quay lại</a></p>;
   if (!recipe) return <p className="p-8 text-muted-foreground">Đang tải…</p>;
   return (
-    <main className="min-h-screen bg-white py-8 px-4">
+    <main className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-xl font-bold text-foreground mb-4">Đề xuất sửa: {recipe.title}</h1>
         <RecipeForm initial={recipe} recipeId={id} mode="edit" submitOverride={submit} />

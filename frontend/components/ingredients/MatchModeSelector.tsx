@@ -24,7 +24,7 @@ export default function MatchModeSelector({ value, onChange }: Props) {
               "flex items-center gap-2 px-3 py-2 rounded-xl border cursor-pointer transition-all text-sm select-none",
               value === mode.value
                 ? "border-primary bg-primary/5 text-primary font-medium"
-                : "border-border bg-white text-foreground hover:border-primary/50",
+                : "border-border bg-card text-foreground hover:border-primary/50",
             ].join(" ")}
           >
             <input

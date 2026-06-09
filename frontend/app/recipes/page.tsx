@@ -9,7 +9,7 @@ export default function RecipesPage() {
   return (
     <Suspense
       fallback={
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 text-center text-[#666666]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 text-center text-muted-foreground">
           Đang tải...
         </div>
       }

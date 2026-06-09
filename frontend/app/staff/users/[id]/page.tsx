@@ -84,7 +84,7 @@ function ConfirmModal({ title, desc, confirmText, danger, onConfirm, onClose }: 
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
+      <div className="bg-card rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
         <h3 className="font-semibold text-foreground">{title}</h3>
         <p className="text-sm text-muted-foreground">{desc}</p>
         <div className="flex justify-end gap-2">
@@ -208,7 +208,7 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
       </Link>
 
       {/* Profile card */}
-      <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
+      <div className="bg-card rounded-2xl border border-border shadow-sm p-6">
         <div className="flex flex-col sm:flex-row gap-5">
           {/* Avatar */}
           <div className="shrink-0">
@@ -294,7 +294,7 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
         <div className="flex border-b border-border">
           {([["recipes", "Công thức gần đây", BookOpen], ["comments", "Bình luận gần đây", MessageSquare]] as const).map(([val, label, Icon]) => (
             <button

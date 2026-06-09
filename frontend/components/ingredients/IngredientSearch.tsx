@@ -67,7 +67,7 @@ export default function IngredientSearch({ selectedNames, onAdd }: Props) {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => suggestions.length > 0 && setOpen(true)}
           placeholder="Tìm nguyên liệu..."
-          className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+          className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
           aria-label="Tìm nguyên liệu"
           aria-expanded={open}
           aria-autocomplete="list"
@@ -80,7 +80,7 @@ export default function IngredientSearch({ selectedNames, onAdd }: Props) {
       {open && suggestions.length > 0 && (
         <ul
           role="listbox"
-          className="absolute z-50 top-full mt-1.5 w-full bg-white border border-border rounded-xl shadow-lg overflow-hidden max-h-56 overflow-y-auto"
+          className="absolute z-50 top-full mt-1.5 w-full bg-card border border-border rounded-xl shadow-lg overflow-hidden max-h-56 overflow-y-auto"
         >
           {suggestions.map((item) => {
             const already = selectedNames.has(item.name);
@@ -94,7 +94,7 @@ export default function IngredientSearch({ selectedNames, onAdd }: Props) {
                     "w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors",
                     already
                       ? "text-muted-foreground bg-muted cursor-default"
-                      : "text-foreground hover:bg-[#fef6f6] hover:text-primary cursor-pointer",
+                      : "text-foreground hover:bg-[var(--color-brand-pink-bg)] hover:text-primary cursor-pointer",
                   ].join(" ")}
                 >
                   <span>{item.name}</span>

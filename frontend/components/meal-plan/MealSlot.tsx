@@ -39,7 +39,7 @@ export default function MealSlot({ mealType, items, onAdd, onDelete, onUpdateSer
         </span>
         <button
           onClick={onAdd}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white border border-border text-primary hover:scale-110 transition-transform"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-card border border-border text-primary hover:scale-110 transition-transform"
           style={{ boxShadow: '0 8px 16px #ec20283d' }}
           title="Thêm món"
         >
@@ -59,7 +59,7 @@ export default function MealSlot({ mealType, items, onAdd, onDelete, onUpdateSer
       ) : (
         <div className="flex flex-col gap-1">
           {items.map((item) => (
-            <div key={item.item_id} className="bg-white rounded-xl border border-border shadow-card overflow-hidden">
+            <div key={item.item_id} className="bg-card rounded-xl border border-border shadow-card overflow-hidden">
               <div className="flex items-center gap-1.5 p-1.5">
                 {item.recipe?.image_url && (
                   <div className="w-8 h-8 rounded overflow-hidden shrink-0">

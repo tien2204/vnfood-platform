@@ -156,9 +156,9 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
     : null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-white shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background shrink-0">
         <button
           onClick={onClose}
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors font-medium"
@@ -289,7 +289,7 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
       )}
 
       {/* Footer navigation */}
-      <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-white shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-background shrink-0">
         <button
           onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
           disabled={currentStep === 0}

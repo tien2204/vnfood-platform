@@ -81,7 +81,7 @@ export default function MyRecipesPage() {
   const pagination = data?.pagination;
 
   return (
-    <main className="min-h-screen bg-white py-10 px-4">
+    <main className="min-h-screen bg-background py-10 px-4">
       <div className="max-w-4xl mx-auto">
 
         {/* Header */}
@@ -109,7 +109,7 @@ export default function MyRecipesPage() {
               className={`
                 flex-1 min-w-fit px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all
                 ${tab === value
-                  ? "bg-white text-primary shadow-sm"
+                  ? "bg-card text-primary shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
                 }
               `}
@@ -151,7 +151,7 @@ export default function MyRecipesPage() {
               return (
                 <article
                   key={recipe.id}
-                  className="bg-white border border-border rounded-2xl overflow-hidden flex gap-0"
+                  className="bg-card border border-border rounded-2xl overflow-hidden flex gap-0"
                 >
                   {/* Thumbnail */}
                   <div className="relative w-28 shrink-0 bg-muted">

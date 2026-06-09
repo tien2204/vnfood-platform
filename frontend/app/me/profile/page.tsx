@@ -95,7 +95,7 @@ export default function EditProfilePage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Avatar section */}
-        <div className="bg-white rounded-2xl border border-border p-5">
+        <div className="bg-card rounded-2xl border border-border p-5">
           <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <User className="w-4 h-4" />
             Ảnh đại diện
@@ -124,7 +124,7 @@ export default function EditProfilePage() {
         </div>
 
         {/* Profile info */}
-        <div className="bg-white rounded-2xl border border-border p-5 space-y-4">
+        <div className="bg-card rounded-2xl border border-border p-5 space-y-4">
           <h2 className="font-semibold text-foreground">Thông tin cá nhân</h2>
 
           <div className="space-y-1.5">

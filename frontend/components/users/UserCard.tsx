@@ -25,7 +25,7 @@ export default function UserCard({ user, currentUserId }: Props) {
   const isSelf = currentUserId === user.id;
 
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-border hover:border-primary/30 transition-colors">
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border hover:border-primary/30 transition-colors">
       <Link href={`/users/${user.id}`} className="shrink-0">
         <Avatar className="w-11 h-11">
           <AvatarImage src={avatarSrc} alt={user.full_name ?? "User"} />

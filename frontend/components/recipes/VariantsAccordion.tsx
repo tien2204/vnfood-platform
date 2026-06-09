@@ -35,7 +35,7 @@ export function VariantsAccordion({ variants, title }: { variants: RecipeMini[];
               <Link
                 key={v.id}
                 href={`/recipes/${v.id}`}
-                className="block rounded-md border border-border bg-white overflow-hidden hover:shadow transition-shadow"
+                className="block rounded-md border border-border bg-card overflow-hidden hover:shadow transition-shadow"
               >
                 <div className="aspect-[4/3] relative bg-muted">
                   <RecipeImage

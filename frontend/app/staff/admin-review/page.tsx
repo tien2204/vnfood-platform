@@ -17,7 +17,7 @@ export default function AdminReviewPage() {
       {items.length === 0 && <p className="text-muted-foreground">Không có công thức chờ đăng.</p>}
       <div className="space-y-3">
         {items.map((r) => (
-          <div key={r.id} className="bg-white border border-border rounded-xl p-4 flex items-center gap-3">
+          <div key={r.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3">
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-foreground truncate">{r.title}</p>
               <p className="text-xs text-muted-foreground">CTV đã duyệt · chờ đăng</p>

@@ -101,7 +101,7 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-24 lg:pb-8">
 
       {/* ── Profile Hero ── */}
-      <div className="bg-white rounded-2xl border border-border overflow-hidden mb-6">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden mb-6">
         {/* Cover gradient */}
         <div className="h-32 sm:h-40 bg-gradient-to-br from-primary/20 via-[#F4A261]/20 to-[#2D6A4F]/10" />
 
@@ -109,7 +109,7 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
         <div className="px-6 pb-6">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 -mt-12 sm:-mt-14">
             {/* Avatar */}
-            <Avatar className="w-24 h-24 sm:w-28 sm:h-28 border-4 border-white shadow-md shrink-0">
+            <Avatar className="w-24 h-24 sm:w-28 sm:h-28 border-4 border-card shadow-md shrink-0">
               <AvatarImage src={avatarSrc} alt={profile.full_name ?? "User"} />
               <AvatarFallback className="bg-primary text-white text-3xl font-bold">
                 {profile.full_name?.charAt(0)?.toUpperCase() ?? "?"}

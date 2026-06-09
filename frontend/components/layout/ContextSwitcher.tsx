@@ -29,8 +29,8 @@ export default function ContextSwitcher() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-1.5 border border-border bg-white px-2.5 py-1.5 text-sm font-medium text-[#0a0a0a] shadow-block-sm hover:bg-[#f5f5f5] outline-none cursor-pointer">
-        <LayoutGrid className="w-4 h-4 text-[#ec2028]" />
+      <DropdownMenuTrigger className="flex items-center gap-1.5 border border-border bg-card px-2.5 py-1.5 text-sm font-medium text-foreground shadow-block-sm hover:bg-muted outline-none cursor-pointer">
+        <LayoutGrid className="w-4 h-4 text-primary" />
         <span className="hidden sm:inline">{current.label}</span>
         <ChevronDown className="w-3.5 h-3.5" />
       </DropdownMenuTrigger>
@@ -41,7 +41,7 @@ export default function ContextSwitcher() {
             className="gap-2 cursor-pointer"
             onClick={() => router.push(c.href)}
           >
-            <Check className={`w-4 h-4 ${c.key === currentKey ? "text-[#ec2028]" : "opacity-0"}`} />
+            <Check className={`w-4 h-4 ${c.key === currentKey ? "text-primary" : "opacity-0"}`} />
             {c.label}
           </DropdownMenuItem>
         ))}

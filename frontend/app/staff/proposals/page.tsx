@@ -38,7 +38,7 @@ export default function StaffProposalsPage() {
           {items.map((cr) => {
             const st = STATUS[cr.status] ?? { label: cr.status, cls: "bg-gray-100 text-gray-700" };
             return (
-              <li key={cr.id} className="border border-border bg-white rounded-xl p-4">
+              <li key={cr.id} className="border border-border bg-card rounded-xl p-4">
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-medium text-foreground">
                     {TYPE_LABEL[cr.type]} · {cr.target_title ?? "(công thức mới)"}

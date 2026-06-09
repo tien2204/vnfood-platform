@@ -147,7 +147,7 @@ export default function MealPlanListPage() {
             <Link
               key={plan.id}
               href={`/meal-plan/${plan.id}`}
-              className="block border border-border rounded-xl p-4 bg-white hover:border-primary hover:shadow-card transition-all group"
+              className="block border border-border rounded-xl p-4 bg-card hover:border-primary hover:shadow-card transition-all group"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0">

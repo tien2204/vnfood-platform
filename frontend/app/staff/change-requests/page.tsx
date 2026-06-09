@@ -39,7 +39,7 @@ export default function ChangeRequestReviewPage() {
       {items.length === 0 && <p className="text-muted-foreground">Không có đề xuất chờ duyệt.</p>}
       <div className="space-y-3">
         {items.map((cr) => (
-          <div key={cr.id} className="bg-white border border-border rounded-xl p-4">
+          <div key={cr.id} className="bg-card border border-border rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="px-2 py-0.5 text-xs rounded bg-muted text-muted-foreground">{TYPE_LABEL[cr.type] ?? cr.type}</span>
               <span className="text-sm font-semibold text-foreground">{cr.payload?.title ?? cr.target_title ?? "—"}</span>

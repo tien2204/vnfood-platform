@@ -94,7 +94,7 @@ export default function Navbar() {
           <button className="flex items-center gap-1 px-3 h-16 text-sm font-semibold text-foreground hover:text-primary transition-colors">
             Danh mục <ChevronDown className="w-3.5 h-3.5" />
           </button>
-          <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all absolute left-0 top-full w-[640px] bg-white border border-border rounded-xl shadow-warm p-5 grid grid-cols-3 gap-x-6 gap-y-4 z-50">
+          <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all absolute left-0 top-full w-[640px] bg-card border border-border rounded-xl shadow-warm p-5 grid grid-cols-3 gap-x-6 gap-y-4 z-50">
             {CATEGORY_GROUPS.map((g) => (
               <div key={g.title}>
                 <p className="text-xs font-bold uppercase tracking-wide text-primary mb-2">{g.title}</p>
@@ -161,58 +161,58 @@ export default function Navbar() {
             <>
               {isLoggedIn && user ? (
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1.5 border border-transparent pl-1 pr-2 py-1 hover:border-[#0a0a0a] hover:bg-[#f5f5f5] transition-colors cursor-pointer outline-none">
+                  <DropdownMenuTrigger className="flex items-center gap-1.5 border border-transparent pl-1 pr-2 py-1 hover:border-border hover:bg-muted transition-colors cursor-pointer outline-none">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={avatarSrc} alt={user.full_name} />
                       <AvatarFallback className="bg-primary text-white text-xs font-semibold">
                         {getInitials(user.full_name)}
                       </AvatarFallback>
                     </Avatar>
-                    <ChevronDown className="w-3.5 h-3.5 text-[#666666] hidden sm:block" />
+                    <ChevronDown className="w-3.5 h-3.5 text-muted-foreground hidden sm:block" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
                     className="w-auto min-w-[200px]"
                   >
-                    <div className="px-2 py-2.5 border-b border-[#f0f0f0]">
-                      <p className="font-semibold text-sm text-[#0a0a0a] truncate">
+                    <div className="px-2 py-2.5 border-b border-border">
+                      <p className="font-semibold text-sm text-foreground truncate">
                         {user.full_name}
                       </p>
-                      <p className="text-xs text-[#666666] truncate">{user.email}</p>
+                      <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push(`/users/${user.id}`)}
                     >
-                      <UserRound className="w-4 h-4 text-[#666666]" />
+                      <UserRound className="w-4 h-4 text-muted-foreground" />
                       Trang cá nhân
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/feed")}
                     >
-                      <Newspaper className="w-4 h-4 text-[#666666]" />
+                      <Newspaper className="w-4 h-4 text-muted-foreground" />
                       Bảng tin
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/me/recipes")}
                     >
-                      <ChefHat className="w-4 h-4 text-[#666666]" />
+                      <ChefHat className="w-4 h-4 text-muted-foreground" />
                       Công thức của tôi
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/me/saved")}
                     >
-                      <Bookmark className="w-4 h-4 text-[#666666]" />
+                      <Bookmark className="w-4 h-4 text-muted-foreground" />
                       Đã lưu
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/meal-plan")}
                     >
-                      <CalendarDays className="w-4 h-4 text-[#666666]" />
+                      <CalendarDays className="w-4 h-4 text-muted-foreground" />
                       Meal Plan
                     </DropdownMenuItem>
                     {(user.role === "collaborator" || user.role === "admin") && (
@@ -220,7 +220,7 @@ export default function Navbar() {
                         className="gap-2 cursor-pointer"
                         onClick={() => router.push("/me/change-requests")}
                       >
-                        <ClipboardList className="w-4 h-4 text-[#666666]" />
+                        <ClipboardList className="w-4 h-4 text-muted-foreground" />
                         Đề xuất của tôi
                       </DropdownMenuItem>
                     )}
@@ -228,7 +228,7 @@ export default function Navbar() {
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/me/profile")}
                     >
-                      <Settings className="w-4 h-4 text-[#666666]" />
+                      <Settings className="w-4 h-4 text-muted-foreground" />
                       Cài đặt hồ sơ
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -248,7 +248,7 @@ export default function Navbar() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="hidden sm:flex rounded-lg border-2 border-primary bg-white text-primary font-bold hover:bg-primary hover:text-white"
+                      className="hidden sm:flex rounded-lg border-2 border-primary bg-card text-primary font-bold hover:bg-primary hover:text-white"
                     >
                       Đăng nhập
                     </Button>

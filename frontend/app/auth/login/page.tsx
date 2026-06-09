@@ -51,7 +51,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-white px-4 py-12">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
@@ -77,7 +77,7 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="bg-white border-border focus-visible:ring-primary"
+              className="bg-card border-border focus-visible:ring-primary"
             />
           </div>
 
@@ -93,7 +93,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="bg-white border-border focus-visible:ring-primary"
+              className="bg-card border-border focus-visible:ring-primary"
             />
           </div>
 

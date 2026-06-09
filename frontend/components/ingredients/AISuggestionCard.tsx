@@ -12,7 +12,7 @@ export default function AISuggestionCard({ suggestion }: Props) {
   const router = useRouter();
 
   return (
-    <article className="bg-white rounded-2xl border border-border p-4 flex flex-col gap-3 hover:border-primary/30 hover:shadow-sm transition-all duration-200">
+    <article className="bg-card rounded-2xl border border-border p-4 flex flex-col gap-3 hover:border-primary/30 hover:shadow-sm transition-all duration-200">
       {/* Header */}
       <div className="flex items-start gap-3">
         <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">

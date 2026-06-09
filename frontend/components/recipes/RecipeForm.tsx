@@ -275,7 +275,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
               onChange={(e) => setBasic({ ...basic, title: e.target.value })}
               placeholder="Ví dụ: Bánh xèo miền Tây giòn rụm..."
               maxLength={200}
-              className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm"
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm"
             />
             {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
           </div>
@@ -288,7 +288,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
               placeholder="Giới thiệu ngắn về món ăn..."
               maxLength={2000}
               rows={3}
-              className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm resize-none"
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm resize-none"
             />
             {errors.description && <p className="mt-1 text-xs text-red-500">{errors.description}</p>}
           </div>
@@ -309,7 +309,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
                 onChange={(e) => setBasic({ ...basic, cooking_time: e.target.value })}
                 min={1} max={600}
                 placeholder="45"
-                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm"
               />
               {errors.cooking_time && <p className="mt-1 text-xs text-red-500">{errors.cooking_time}</p>}
             </div>
@@ -321,7 +321,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
                 onChange={(e) => setBasic({ ...basic, servings: e.target.value })}
                 min={1} max={50}
                 placeholder="4"
-                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm"
               />
               {errors.servings && <p className="mt-1 text-xs text-red-500">{errors.servings}</p>}
             </div>
@@ -333,7 +333,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
               <select
                 value={basic.difficulty}
                 onChange={(e) => setBasic({ ...basic, difficulty: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground text-sm appearance-none"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground text-sm appearance-none"
               >
                 <option value="">-- Chọn độ khó --</option>
                 {RECIPE_DIFFICULTIES.map((d) => (
@@ -346,7 +346,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
               <select
                 value={basic.keyword}
                 onChange={(e) => setBasic({ ...basic, keyword: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground text-sm appearance-none"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground text-sm appearance-none"
               >
                 <option value="">-- Chọn nhóm --</option>
                 {RECIPE_KEYWORDS.map((k) => (
@@ -384,7 +384,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
                       value={ing.display_text}
                       onChange={(e) => updateIngredient(idx, "display_text", e.target.value)}
                       placeholder="200g bột gạo..."
-                      className="w-full px-3 py-2 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm text-foreground placeholder:text-muted-foreground"
+                      className="w-full px-3 py-2 rounded-lg border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                   <div className="col-span-2">
@@ -393,7 +393,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
                       value={ing.quantity ?? ""}
                       onChange={(e) => updateIngredient(idx, "quantity", e.target.value)}
                       placeholder="Số lượng"
-                      className="w-full px-3 py-2 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm text-foreground placeholder:text-muted-foreground"
+                      className="w-full px-3 py-2 rounded-lg border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                 </div>
@@ -436,7 +436,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
 
           <div className="space-y-4">
             {steps.map((s, idx) => (
-              <div key={idx} className="p-4 bg-white border border-border rounded-2xl space-y-3">
+              <div key={idx} className="p-4 bg-card border border-border rounded-2xl space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold">
                     {idx + 1}
@@ -468,7 +468,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
                       onChange={(e) => updateStep(idx, "timer_seconds", e.target.value ? parseInt(e.target.value) : undefined)}
                       min={0}
                       placeholder="Timer (giây)"
-                      className="w-full px-3 py-1.5 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm text-foreground placeholder:text-muted-foreground"
+                      className="w-full px-3 py-1.5 rounded-lg border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                 </div>
@@ -499,7 +499,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
       {/* ── Step 3: Preview ── */}
       {step === 3 && (
         <div className="space-y-5">
-          <div className="bg-white border border-border rounded-2xl overflow-hidden">
+          <div className="bg-card border border-border rounded-2xl overflow-hidden">
             {basic.image_url && (
               <div className="relative aspect-video w-full bg-muted">
                 <Image

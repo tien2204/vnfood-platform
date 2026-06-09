@@ -48,7 +48,7 @@ export default function FacetDropdown({
         className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
           count > 0
             ? "bg-primary text-white border-primary"
-            : "bg-white text-foreground border-border hover:border-primary"
+            : "bg-card text-foreground border-border hover:border-primary"
         }`}
       >
         {facet.label}
@@ -56,7 +56,7 @@ export default function FacetDropdown({
       </button>
 
       {open && (
-        <div className="absolute left-0 z-30 mt-1 w-[min(92vw,28rem)] rounded-xl border border-border bg-white p-4 shadow-warm">
+        <div className="absolute left-0 z-30 mt-1 w-[min(92vw,28rem)] rounded-xl border border-border bg-card p-4 shadow-warm">
           {facet.groups.map((g, gi) => (
             <div key={gi} className="mb-3 last:mb-0">
               {g.label && (

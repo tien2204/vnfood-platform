@@ -69,7 +69,7 @@ function MergeModal({ initial, onClose, onDone }: MergeModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+      <div className="bg-card rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
         <h3 className="font-semibold text-foreground flex items-center gap-2">
           <GitMerge className="w-4 h-4 text-primary" />
           Gộp nguyên liệu
@@ -160,7 +160,7 @@ function RenameModal({ ingredient, onClose, onDone }: RenameModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
+      <div className="bg-card rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
         <h3 className="font-semibold text-foreground flex items-center gap-2">
           <Pencil className="w-4 h-4 text-primary" />
           Đổi tên nguyên liệu
@@ -260,7 +260,7 @@ export default function AdminIngredientsPage() {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Tìm nguyên liệu..."
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
         <button type="submit" className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-medium hover:bg-[#cc1c22]">
@@ -278,7 +278,7 @@ export default function AdminIngredientsPage() {
       </form>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="space-y-0">
             {Array.from({ length: 10 }).map((_, i) => (

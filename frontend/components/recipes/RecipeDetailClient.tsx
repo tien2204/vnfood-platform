@@ -261,7 +261,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-border shadow-card">
+            <div className="bg-card rounded-xl p-5 border border-border shadow-card">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Hành động nhanh</p>
               <div className="space-y-2.5">
                 <button className="w-full text-left text-sm text-foreground hover:text-primary transition-colors">
@@ -280,7 +280,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
       </div>
 
       {/* Mobile bottom action bar */}
-      <div className="lg:hidden fixed bottom-16 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-border px-4 py-3 z-40 flex items-center gap-3">
+      <div className="lg:hidden fixed bottom-16 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border px-4 py-3 z-40 flex items-center gap-3">
         <button
           onClick={() => setCookingMode(true)}
           disabled={!hasSteps}

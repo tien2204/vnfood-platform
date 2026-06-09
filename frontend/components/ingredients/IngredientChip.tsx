@@ -20,7 +20,7 @@ export default function IngredientChip({ name, usageCount, selected, onToggle }:
         "active:scale-95 touch-manipulation",
         selected
           ? "bg-primary border-primary text-white shadow-sm"
-          : "bg-white border-border text-foreground hover:border-primary hover:text-primary",
+          : "bg-card border-border text-foreground hover:border-primary hover:text-primary",
       ].join(" ")}
       aria-pressed={selected}
     >

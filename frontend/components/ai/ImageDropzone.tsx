@@ -60,8 +60,8 @@ export default function ImageDropzone({ onSelect, disabled }: Props) {
           disabled
             ? "opacity-50 cursor-not-allowed border-border bg-muted"
             : isDragging
-            ? "cursor-copy border-primary bg-[#fef6f6] scale-[1.02] shadow-lg"
-            : "cursor-pointer border-border bg-muted hover:border-primary hover:bg-[#fef6f6]",
+            ? "cursor-copy border-primary bg-[var(--color-brand-pink-bg)] scale-[1.02] shadow-lg"
+            : "cursor-pointer border-border bg-muted hover:border-primary hover:bg-[var(--color-brand-pink-bg)]",
         ].join(" ")}
       >
         <input

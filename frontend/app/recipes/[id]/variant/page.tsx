@@ -30,7 +30,7 @@ export default function VariantPage({ params }: { params: Promise<{ id: string }
   if (!source) return <p className="p-8 text-muted-foreground">Đang tải…</p>;
 
   return (
-    <main className="min-h-screen bg-white py-8 px-4">
+    <main className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-xl font-bold text-foreground mb-1">Tạo biến thể</h1>
         <p className="text-sm text-muted-foreground mb-4">Phỏng theo: {source.title}</p>

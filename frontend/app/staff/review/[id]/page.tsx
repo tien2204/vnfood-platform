@@ -49,7 +49,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
       <p className="text-xs text-muted-foreground mb-4">Trạng thái: {r.status}</p>
       <RecipeContent recipe={r} />
 
-      <div className="sticky bottom-0 mt-6 bg-white border-t border-border py-3 flex gap-2">
+      <div className="sticky bottom-0 mt-6 bg-card border-t border-border py-3 flex gap-2">
         {r.status === "pending_collaborator" && (
           <>
             <button disabled={busy} onClick={() => act("review/approve", {}, "Đã chuyển chờ admin", "/staff/review")} className="px-4 py-2 rounded-lg bg-[#2e7d32] text-white disabled:opacity-50">Duyệt</button>
@@ -69,7 +69,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
 
       {rejecting && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setRejecting(false)}>
-          <div className="bg-white rounded-xl p-4 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-card rounded-xl p-4 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-bold text-foreground mb-2">Lý do từ chối</h3>
             <textarea value={reason} onChange={(e) => setReason(e.target.value)} className="w-full border border-border rounded-lg p-2 text-sm" rows={3} />
             <div className="flex justify-end gap-2 mt-3">

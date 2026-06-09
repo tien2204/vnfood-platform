@@ -38,10 +38,10 @@ export default function NewUserPage() {
     return (
       <div className="max-w-md">
         <h1 className="text-xl font-bold text-foreground mb-3">Tài khoản đã tạo</h1>
-        <div className="bg-white border border-border rounded-xl p-4 space-y-2">
+        <div className="bg-card border border-border rounded-xl p-4 space-y-2">
           <p className="text-sm"><b>Email:</b> {created.user.email}</p>
           <p className="text-sm"><b>Vai trò:</b> {created.user.role}</p>
-          <div className="bg-[#fef6f6] border border-primary/40 rounded-lg p-3">
+          <div className="bg-[var(--color-brand-pink-bg)] border border-primary/40 rounded-lg p-3">
             <p className="text-xs text-muted-foreground mb-1">Mật khẩu tạm (chỉ hiển thị 1 lần — gửi cho người dùng):</p>
             <code className="text-sm font-mono text-foreground break-all">{created.temp_password}</code>
             <button onClick={() => { navigator.clipboard.writeText(created.temp_password); toast.success("Đã copy"); }} className="ml-2 text-xs text-primary underline">Copy</button>

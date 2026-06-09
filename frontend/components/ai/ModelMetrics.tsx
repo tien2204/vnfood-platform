@@ -49,7 +49,7 @@ function MetricCell({
     pct >= 85 ? "text-[#2D6A4F]" : pct >= 70 ? "text-[#C97B16]" : "text-[#9B2C2C]";
 
   return (
-    <div className="flex-1 min-w-[110px] rounded-xl border border-border bg-white px-3 py-2.5">
+    <div className="flex-1 min-w-[110px] rounded-xl border border-border bg-card px-3 py-2.5">
       <div className="flex items-center gap-1 mb-1 relative">
         <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
           {label}
@@ -64,7 +64,7 @@ function MetricCell({
           <Info className="w-3 h-3" />
         </button>
         {open && (
-          <div className="absolute left-0 top-5 z-10 w-56 rounded-lg border border-border bg-white p-2.5 text-[11px] leading-relaxed text-foreground shadow-lg">
+          <div className="absolute left-0 top-5 z-10 w-56 rounded-lg border border-border bg-card p-2.5 text-[11px] leading-relaxed text-foreground shadow-lg">
             {tooltip}
           </div>
         )}

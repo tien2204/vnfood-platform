@@ -57,7 +57,7 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             unoptimized
             fallback={
-              <div className="absolute inset-0 flex items-center justify-center text-[#f0f0f0]">
+              <div className="absolute inset-0 flex items-center justify-center text-border">
                 <svg className="w-14 h-14" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.17-15.03-8.17-15.03 0h15.03zM1.02 17h15v2h-15z" />
                 </svg>
@@ -68,8 +68,8 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
           {/* Cookpad badge */}
           {recipe.source === "cookpad" && (
             <div className="absolute top-2 left-2 z-10">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-sm text-[10px] font-bold uppercase tracking-wide text-muted-foreground border border-border">
-                <span className="w-1 h-1 rounded-full bg-[#ec2028]" />
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-card/95 backdrop-blur-sm text-[10px] font-bold uppercase tracking-wide text-muted-foreground border border-border">
+                <span className="w-1 h-1 rounded-full bg-primary" />
                 Cookpad
               </span>
             </div>
@@ -112,11 +112,11 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
           <div className="flex items-center gap-1 mb-1.5 min-h-[1.25rem]">
             {recipe.rating_count > 0 ? (
               <>
-                <Star className="w-3.5 h-3.5 fill-[#ec2028] text-[#ec2028]" />
+                <Star className="w-3.5 h-3.5 fill-primary text-primary" />
                 <span className="text-sm font-bold text-foreground">
                   {recipe.avg_rating.toFixed(1)}
                 </span>
-                <span className="text-xs text-[#666666]">({recipe.rating_count})</span>
+                <span className="text-xs text-muted-foreground">({recipe.rating_count})</span>
               </>
             ) : (
               <span className="text-xs text-muted-foreground">Chưa có đánh giá</span>
@@ -129,7 +129,7 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
           </h3>
 
           {/* Meta — reserve row even when both time & servings null */}
-          <div className="flex items-center gap-3 text-xs font-medium text-[#666666] mb-4 min-h-[1.125rem]">
+          <div className="flex items-center gap-3 text-xs font-medium text-muted-foreground mb-4 min-h-[1.125rem]">
             {recipe.cooking_time != null && (
               <span className="flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />
@@ -163,7 +163,7 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
                     {initials}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-xs text-[#666666] truncate">{displayName}</span>
+                <span className="text-xs text-muted-foreground truncate">{displayName}</span>
               </div>
             );
 

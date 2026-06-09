@@ -52,7 +52,7 @@ function StatsCard({ icon, label, value, sub, trend, trendText, accent = "#ec202
   const trendColor = trend === "up" ? "text-green-600" : trend === "down" ? "text-red-500" : "text-muted-foreground";
 
   return (
-    <div className="bg-white rounded-2xl border border-border p-5 flex items-start gap-4 shadow-sm">
+    <div className="bg-card rounded-2xl border border-border p-5 flex items-start gap-4 shadow-sm">
       <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${accent}18` }}>
         <span style={{ color: accent }}>{icon}</span>
       </div>
@@ -92,7 +92,7 @@ function LineChartCard({ title, data, dataKey, color }: {
   const formatted = data.map(d => ({ ...d, date: d.date.slice(5) }));
 
   return (
-    <div className="bg-white rounded-2xl border border-border p-5 shadow-sm">
+    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
       <h3 className="text-sm font-semibold text-foreground mb-4">{title}</h3>
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">
@@ -130,7 +130,7 @@ function RecipeStatusPie({ stats }: { stats: { approved: number; pending: number
   ].filter(d => d.value > 0);
 
   return (
-    <div className="bg-white rounded-2xl border border-border p-5 shadow-sm">
+    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
       <h3 className="text-sm font-semibold text-foreground mb-4">Công thức theo trạng thái</h3>
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">
@@ -161,7 +161,7 @@ function RecipeStatusPie({ stats }: { stats: { approved: number; pending: number
 
 function TopKeywordsBar({ data }: { data: { keyword: string; count: number }[] }) {
   return (
-    <div className="bg-white rounded-2xl border border-border p-5 shadow-sm">
+    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
       <h3 className="text-sm font-semibold text-foreground mb-4">Top 10 từ khóa</h3>
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">

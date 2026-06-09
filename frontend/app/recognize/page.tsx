@@ -49,7 +49,7 @@ export default function RecognizePage() {
   const isLoading = state === "loading";
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-background">
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-4 pt-12 pb-6 text-center">
         <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-4">

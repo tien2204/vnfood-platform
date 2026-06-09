@@ -24,7 +24,7 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-border pb-safe">
+    <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-card border-t border-border pb-safe">
       <div className="flex items-center justify-around h-16">
         {allItems.map(({ href, icon: Icon, label, highlight }) => {
           const active = pathname === href || (href !== "/" && pathname.startsWith(href));

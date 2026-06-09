@@ -132,7 +132,7 @@ export default function AdminCommentsPage() {
             <button
               key={value}
               onClick={() => handleFilterChange(value)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isHiddenFilter === value ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isHiddenFilter === value ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
             >
               {label}
             </button>
@@ -147,7 +147,7 @@ export default function AdminCommentsPage() {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Tìm nội dung..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
           <button type="submit" className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-medium hover:bg-[#cc1c22]">
@@ -157,7 +157,7 @@ export default function AdminCommentsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="space-y-0">
             {Array.from({ length: 8 }).map((_, i) => (

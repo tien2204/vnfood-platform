@@ -50,7 +50,7 @@ export default function StaffLoginPage() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#5b6b7c] px-4 py-12">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 sm:p-10">
+      <div className="w-full max-w-md bg-card rounded-2xl shadow-2xl p-8 sm:p-10">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-foreground mb-4">
@@ -76,7 +76,7 @@ export default function StaffLoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
-                className="w-full rounded-xl border border-border bg-white py-3 pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-foreground focus:ring-2 focus:ring-foreground/10"
+                className="w-full rounded-xl border border-border bg-card py-3 pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-foreground focus:ring-2 focus:ring-foreground/10"
               />
             </div>
           </div>
@@ -96,7 +96,7 @@ export default function StaffLoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
-                className="w-full rounded-xl border border-border bg-white py-3 pl-11 pr-11 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-foreground focus:ring-2 focus:ring-foreground/10"
+                className="w-full rounded-xl border border-border bg-card py-3 pl-11 pr-11 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-foreground focus:ring-2 focus:ring-foreground/10"
               />
               <button
                 type="button"

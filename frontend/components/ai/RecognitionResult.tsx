@@ -160,7 +160,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
           </h2>
           <Link
             href={`/recipes/${result.canonical_recipe.id}`}
-            className="block rounded-2xl border border-border bg-white overflow-hidden hover:shadow-lg transition-shadow"
+            className="block rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow"
           >
             <div className="grid grid-cols-1 md:grid-cols-3">
               <div className="aspect-square md:aspect-auto relative bg-muted md:min-h-[200px]">
@@ -206,7 +206,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
               <Link
                 key={v.id}
                 href={`/recipes/${v.id}`}
-                className="block rounded-xl border border-border bg-white overflow-hidden hover:shadow transition-shadow"
+                className="block rounded-xl border border-border bg-card overflow-hidden hover:shadow transition-shadow"
               >
                 <div className="aspect-[4/3] relative bg-muted">
                   <RecipeImage

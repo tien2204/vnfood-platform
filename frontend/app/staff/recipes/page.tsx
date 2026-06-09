@@ -67,7 +67,7 @@ function RejectModal({ recipeId, title, onClose, onDone }: RejectModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+      <div className="bg-card rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
         <h3 className="text-base font-semibold text-foreground">Từ chối công thức</h3>
         <p className="text-sm text-muted-foreground line-clamp-2">{stripEmoji(title)}</p>
         <div>
@@ -164,7 +164,7 @@ export default function AdminRecipesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white py-10 px-4">
+    <main className="min-h-screen bg-background py-10 px-4">
       {rejectTarget && (
         <RejectModal
           recipeId={rejectTarget.id}
@@ -192,7 +192,7 @@ export default function AdminRecipesPage() {
               className={`
                 flex-1 min-w-fit px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all
                 ${tab === value
-                  ? "bg-white text-primary shadow-sm"
+                  ? "bg-card text-primary shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
                 }
               `}
@@ -227,7 +227,7 @@ export default function AdminRecipesPage() {
               return (
                 <div
                   key={recipe.id}
-                  className="bg-white border border-border rounded-2xl overflow-hidden flex items-stretch"
+                  className="bg-card border border-border rounded-2xl overflow-hidden flex items-stretch"
                 >
                   {/* Thumbnail */}
                   <div className="relative w-24 shrink-0 bg-muted">
@@ -319,7 +319,7 @@ export default function AdminRecipesPage() {
                           className={`text-xs px-2 py-1 rounded-lg border transition-colors disabled:opacity-50 whitespace-nowrap ${
                             recipe.is_manually_reviewed
                               ? "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-50"
-                              : "bg-white text-muted-foreground border-border hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200"
+                              : "bg-card text-muted-foreground border-border hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200"
                           }`}
                           title={recipe.is_manually_reviewed ? "Đã review (bấm để hủy)" : "Đánh dấu đã review"}
                         >

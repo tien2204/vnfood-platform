@@ -37,7 +37,7 @@ export default function RecipeMatchCard({ match, totalIngredients }: Props) {
 
   return (
     <Link href={`/recipes/${recipe.id}`} className="group block">
-      <article className="bg-white rounded-2xl overflow-hidden border border-border transition-all duration-200 hover:scale-[1.02] hover:shadow-warm h-full flex flex-col">
+      <article className="bg-card rounded-2xl overflow-hidden border border-border transition-all duration-200 hover:scale-[1.02] hover:shadow-warm h-full flex flex-col">
         {/* Image */}
         <div className="relative aspect-video bg-muted shrink-0">
           {imageUrl ? (
@@ -60,7 +60,7 @@ export default function RecipeMatchCard({ match, totalIngredients }: Props) {
           {/* Source badge */}
           <div className="absolute top-2 left-2 z-10">
             {recipe.source === "cookpad" ? (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 text-[10px] font-medium text-muted-foreground border border-border/50">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-card/95 text-[10px] font-medium text-muted-foreground border border-border/50">
                 <span className="w-1 h-1 rounded-full bg-primary" />
                 Cookpad
               </span>

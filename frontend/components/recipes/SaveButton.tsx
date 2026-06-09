@@ -79,7 +79,7 @@ export default function SaveButton({
       <button
         onClick={toggle}
         aria-label={isSaved ? "Bỏ lưu công thức" : "Lưu công thức"}
-        className={`flex items-center gap-1 px-2 py-1 rounded-full bg-white/80 backdrop-blur-sm transition-colors ${
+        className={`flex items-center gap-1 px-2 py-1 rounded-full bg-card/80 backdrop-blur-sm transition-colors ${
           isSaved ? "text-primary" : "text-muted-foreground hover:text-primary"
         }`}
       >

@@ -157,7 +157,7 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
                 type="checkbox"
                 checked={showAll}
                 onChange={(e) => setShowAll(e.target.checked)}
-                className="w-3.5 h-3.5 accent-[#ec2028] cursor-pointer"
+                className="w-3.5 h-3.5 accent-primary cursor-pointer"
               />
               Hiện tất cả công thức (mặc định chỉ công thức chuẩn)
             </label>
@@ -314,7 +314,7 @@ function SelectedRow({
   onServingsChange: (delta: number) => void;
 }) {
   return (
-    <div className="flex items-center gap-3 px-3 py-2 bg-white rounded-xl border border-border">
+    <div className="flex items-center gap-3 px-3 py-2 bg-card rounded-xl border border-border">
       {item.recipe.image_url && (
         <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0">
           <Image

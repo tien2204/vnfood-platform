@@ -18,7 +18,7 @@ export default function DishRecipeCard({ recipe }: Props) {
   const isAIGenerated = recipe.source === "ai-generated";
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-8 bg-white rounded-2xl shadow-sm border border-border p-6">
+    <div className="w-full max-w-4xl mx-auto mt-8 bg-card rounded-2xl shadow-sm border border-border p-6">
       <div className="flex items-start justify-between gap-4 flex-wrap mb-3">
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">

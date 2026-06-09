@@ -92,14 +92,14 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
   );
 
   return (
-    <div className="min-h-screen bg-white flex">
-      <aside className="hidden lg:flex lg:flex-col w-56 shrink-0 bg-white border-r border-border fixed inset-y-0 left-0 z-30">
+    <div className="min-h-screen bg-background flex">
+      <aside className="hidden lg:flex lg:flex-col w-56 shrink-0 bg-card border-r border-border fixed inset-y-0 left-0 z-30">
         <SidebarContent />
       </aside>
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-border flex flex-col transform transition-transform duration-200 lg:hidden ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border flex flex-col transform transition-transform duration-200 lg:hidden ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
           <span className="font-bold text-foreground font-heading">{title}</span>
           <button onClick={() => setSidebarOpen(false)} className="p-1.5 rounded-lg hover:bg-muted">
@@ -109,7 +109,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
         <div className="flex-1 overflow-y-auto"><SidebarContent onNav={() => setSidebarOpen(false)} /></div>
       </aside>
       <div className="flex-1 lg:ml-56 flex flex-col min-h-screen">
-        <header className="sticky top-0 z-20 bg-white border-b border-border px-4 py-3 flex items-center gap-3">
+        <header className="sticky top-0 z-20 bg-card border-b border-border px-4 py-3 flex items-center gap-3">
           <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-1.5 rounded-lg hover:bg-muted text-muted-foreground">
             <Menu className="w-5 h-5" />
           </button>

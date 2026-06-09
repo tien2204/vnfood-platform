@@ -210,7 +210,7 @@ function GroceryItemRow({
 }) {
   const [shopOpen, setShopOpen] = useState(false);
   return (
-    <div className={`rounded-xl border transition-colors ${item.is_checked ? "border-border bg-muted opacity-70" : "border-border bg-white shadow-card"}`}>
+    <div className={`rounded-xl border transition-colors ${item.is_checked ? "border-border bg-muted opacity-70" : "border-border bg-card shadow-card"}`}>
       <div className="flex items-center gap-3 px-3 py-2.5">
         <input
           type="checkbox"
@@ -223,7 +223,7 @@ function GroceryItemRow({
             {item.ingredient_name}
           </span>
           {item.quantity && (
-            <span className="text-xs text-[#666666] ml-1.5">{item.quantity}</span>
+            <span className="text-xs text-muted-foreground ml-1.5">{item.quantity}</span>
           )}
         </div>
         <div className="flex items-center gap-1 shrink-0">
@@ -256,7 +256,7 @@ function GroceryItemRow({
             {shopOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShopOpen(false)} />
-                <div className="absolute right-0 top-full mt-1 z-20 w-40 rounded-lg border border-border bg-white shadow-card py-1">
+                <div className="absolute right-0 top-full mt-1 z-20 w-40 rounded-lg border border-border bg-card shadow-card py-1">
                   {SHOPPING_PLATFORMS.map((p) => (
                     <button
                       key={p.id}

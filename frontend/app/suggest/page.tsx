@@ -84,7 +84,7 @@ export default function SuggestPage() {
   const visiblePopular = showAllPopular ? popular : popular.slice(0, 18);
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-background">
       {/* ── Hero ── */}
       <section className="max-w-3xl mx-auto px-4 pt-12 pb-6 text-center">
         <div className="inline-flex items-center gap-2 bg-[#2D6A4F]/10 text-[#2D6A4F] px-4 py-1.5 rounded-full text-sm font-medium mb-4">
@@ -101,7 +101,7 @@ export default function SuggestPage() {
 
       {/* ── Input panel ── */}
       <section className="max-w-3xl mx-auto px-4 pb-8">
-        <div className="bg-white rounded-2xl border border-border shadow-sm p-5 md:p-6 space-y-5">
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-5 md:p-6 space-y-5">
 
           {/* Search autocomplete */}
           <div>
@@ -213,7 +213,7 @@ export default function SuggestPage() {
             </div>
 
             {result.db_results.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-border p-10 text-center">
+              <div className="bg-card rounded-2xl border border-border p-10 text-center">
                 <p className="text-muted-foreground text-lg font-medium">Không tìm thấy công thức phù hợp</p>
                 <p className="text-muted-foreground text-sm mt-1">Thử bớt nguyên liệu hoặc chuyển sang chế độ "Có ít nhất 1"</p>
               </div>
@@ -256,7 +256,7 @@ export default function SuggestPage() {
 
       {/* ── Mobile sticky bottom bar ── */}
       {selected.length > 0 && !result && (
-        <div className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-white/95 backdrop-blur border-t border-border px-4 py-3 safe-b">
+        <div className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-card/95 backdrop-blur border-t border-border px-4 py-3 safe-b">
           <div className="flex items-center gap-3">
             <div className="flex-1 flex flex-wrap gap-1 overflow-hidden max-h-8">
               {selected.slice(0, 5).map((name) => (
