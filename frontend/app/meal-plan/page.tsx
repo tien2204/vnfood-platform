@@ -17,7 +17,6 @@ import api from "@/lib/api";
 import { toast } from "sonner";
 import type { MealPlanSummary, PaginatedResponse } from "@/lib/types";
 
-const DAY_LABELS = ["Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7","CN"];
 const VI_MONTHS = ["Th1","Th2","Th3","Th4","Th5","Th6","Th7","Th8","Th9","Th10","Th11","Th12"];
 
 function fmtWeekRange(weekStart: string) {
@@ -27,26 +26,11 @@ function fmtWeekRange(weekStart: string) {
   return `${d} ${VI_MONTHS[m-1]} — ${end.getDate()} ${VI_MONTHS[end.getMonth()]} ${end.getFullYear()}`;
 }
 
-function getMonday(d: Date): string {
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  const monday = new Date(d);
-  monday.setDate(d.getDate() + diff);
-  return monday.toISOString().split("T")[0];
-}
-
-function getMondayOptions(): { value: string; label: string }[] {
-  const options = [];
-  const today = new Date();
-  for (let w = -4; w <= 8; w++) {
-    const monday = new Date(today);
-    monday.setDate(today.getDate() + w * 7 - (today.getDay() === 0 ? 6 : today.getDay() - 1));
-    const iso = monday.toISOString().split("T")[0];
-    const [y, m, d] = iso.split("-").map(Number);
-    const label = w === 0 ? `Tuần này (${d} ${VI_MONTHS[m-1]})` : w < 0 ? `${Math.abs(w)} tuần trước (${d} ${VI_MONTHS[m-1]})` : `${w} tuần tới (${d} ${VI_MONTHS[m-1]})`;
-    options.push({ value: iso, label });
-  }
-  return options;
+// Local ISO date (YYYY-MM-DD) — avoids the UTC shift that toISOString() causes
+// in UTC+7 (which previously turned a local Monday into Sunday).
+function todayISO(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function fetcher(url: string) {
@@ -57,7 +41,7 @@ export default function MealPlanListPage() {
   const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
   const [planName, setPlanName] = useState("Meal Plan tuần này");
-  const [weekStart, setWeekStart] = useState(getMonday(new Date()));
+  const [weekStart, setWeekStart] = useState(todayISO());
   const [creating, setCreating] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -67,7 +51,6 @@ export default function MealPlanListPage() {
   );
 
   const plans = data?.data ?? [];
-  const mondayOptions = getMondayOptions();
 
   async function handleCreate() {
     setCreating(true);
@@ -197,16 +180,16 @@ export default function MealPlanListPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-foreground block mb-1.5">Tuần bắt đầu</label>
-              <select
+              <label className="text-sm font-medium text-foreground block mb-1.5">Ngày bắt đầu</label>
+              <input
+                type="date"
                 value={weekStart}
                 onChange={(e) => setWeekStart(e.target.value)}
                 className="w-full rounded-md border border-border bg-muted px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                {mondayOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Plan gồm 7 ngày kể từ ngày này. Ngày đã qua sẽ ở chế độ chỉ xem.
+              </p>
             </div>
             <Button
               onClick={handleCreate}

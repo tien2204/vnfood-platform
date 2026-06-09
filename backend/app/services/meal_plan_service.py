@@ -64,9 +64,7 @@ async def _aggregate_from_items(db: AsyncSession, plan_id: uuid.UUID) -> dict:
 
 
 async def create_meal_plan(db: AsyncSession, user_id: uuid.UUID, name: str, week_start: date) -> MealPlan:
-    if week_start.weekday() != 0:
-        raise HTTPException(400, detail="week_start phải là Thứ 2 (Monday)")
-
+    # Plan spans 7 days from any chosen start date — no weekday restriction.
     existing = await db.execute(
         select(MealPlan).where(
             MealPlan.user_id == user_id,
@@ -188,6 +186,9 @@ async def add_meal_plan_item(
     if not (plan.week_start <= data.date <= plan.week_start + timedelta(days=6)):
         raise HTTPException(400, detail="Ngày không nằm trong tuần của plan")
 
+    if data.date < date.today():
+        raise HTTPException(400, detail="Không thể thêm món cho ngày đã qua")
+
     item = MealPlanItem(
         meal_plan_id=plan_id,
         recipe_id=uuid.UUID(data.recipe_id),
@@ -220,6 +221,9 @@ async def update_meal_plan_item(
     item = item_q.scalar_one_or_none()
     if not item:
         raise HTTPException(404, detail="Item không tồn tại")
+
+    if item.date < date.today():
+        raise HTTPException(400, detail="Không thể sửa món của ngày đã qua")
 
     if data.servings is not None:
         item.servings = data.servings

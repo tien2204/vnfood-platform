@@ -8,8 +8,20 @@ import api from "@/lib/api";
 import { toast } from "sonner";
 
 const MEAL_TYPES: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
-const DAY_LABELS = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "CN"];
+const WEEKDAY_VI = ["CN", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
 const VI_MONTHS = ["tháng 1","tháng 2","tháng 3","tháng 4","tháng 5","tháng 6","tháng 7","tháng 8","tháng 9","tháng 10","tháng 11","tháng 12"];
+
+// Weekday label derived from the real date (start day can be anything now).
+function viWeekday(isoDate: string) {
+  const [y, m, d] = isoDate.split("-").map(Number);
+  return WEEKDAY_VI[new Date(y, m - 1, d).getDay()];
+}
+
+// Local "today" as YYYY-MM-DD for past-day comparison (string compare is safe for ISO).
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 function fmtShort(isoDate: string) {
   const [, m, d] = isoDate.split("-");
@@ -35,6 +47,7 @@ interface ActiveSlot {
 export default function WeeklyCalendar({ planId, days, onRefresh }: WeeklyCalendarProps) {
   const [activeSlot, setActiveSlot] = useState<ActiveSlot | null>(null);
   const dayKeys = Object.keys(days).sort();
+  const today = todayISO();
 
   async function handleDelete(itemId: string) {
     try {
@@ -61,12 +74,19 @@ export default function WeeklyCalendar({ planId, days, onRefresh }: WeeklyCalend
       <div className="hidden md:block overflow-x-auto">
         <div className="min-w-[900px]">
           <div className="grid grid-cols-7 gap-2 mb-2">
-            {dayKeys.map((dayKey, i) => (
-              <div key={dayKey} className="rounded-xl border border-[var(--color-brand-pink)] bg-[var(--color-brand-pink-bg)] text-center py-1.5">
-                <div className="text-xs font-bold text-primary">{DAY_LABELS[i]}</div>
-                <div className="text-sm font-extrabold text-foreground">{fmtShort(dayKey)}</div>
-              </div>
-            ))}
+            {dayKeys.map((dayKey) => {
+              const isPast = dayKey < today;
+              return (
+                <div
+                  key={dayKey}
+                  className={`rounded-xl border border-[var(--color-brand-pink)] bg-[var(--color-brand-pink-bg)] text-center py-1.5 ${isPast ? "opacity-50" : ""}`}
+                >
+                  <div className="text-xs font-bold text-primary">{viWeekday(dayKey)}</div>
+                  <div className="text-sm font-extrabold text-foreground">{fmtShort(dayKey)}</div>
+                  {isPast && <div className="text-[10px] text-muted-foreground">đã qua</div>}
+                </div>
+              );
+            })}
           </div>
 
           {MEAL_TYPES.map((mealType) => (
@@ -76,6 +96,7 @@ export default function WeeklyCalendar({ planId, days, onRefresh }: WeeklyCalend
                   key={`${dayKey}-${mealType}`}
                   mealType={mealType}
                   items={days[dayKey][mealType]}
+                  disabled={dayKey < today}
                   onAdd={() => setActiveSlot({ date: dayKey, mealType })}
                   onDelete={handleDelete}
                   onUpdateServings={handleUpdateServings}
@@ -88,12 +109,13 @@ export default function WeeklyCalendar({ planId, days, onRefresh }: WeeklyCalend
 
       {/* Mobile: vertical accordion per day */}
       <div className="md:hidden flex flex-col gap-3">
-        {dayKeys.map((dayKey, i) => (
+        {dayKeys.map((dayKey) => (
           <MobileDay
             key={dayKey}
             dayKey={dayKey}
-            dayLabel={DAY_LABELS[i]}
+            dayLabel={viWeekday(dayKey)}
             longLabel={fmtLong(dayKey)}
+            isPast={dayKey < today}
             daySlots={days[dayKey]}
             onAdd={(mealType) => setActiveSlot({ date: dayKey, mealType })}
             onDelete={handleDelete}
@@ -119,6 +141,7 @@ function MobileDay({
   dayKey,
   dayLabel,
   longLabel,
+  isPast,
   daySlots,
   onAdd,
   onDelete,
@@ -127,6 +150,7 @@ function MobileDay({
   dayKey: string;
   dayLabel: string;
   longLabel: string;
+  isPast: boolean;
   daySlots: Record<MealType, any[]>;
   onAdd: (mealType: MealType) => void;
   onDelete: (itemId: string) => void;
@@ -136,14 +160,16 @@ function MobileDay({
   const totalItems = MEAL_TYPES.reduce((sum, mt) => sum + daySlots[mt].length, 0);
 
   return (
-    <div className="rounded-xl border border-[var(--color-brand-pink)] bg-[var(--color-brand-pink-bg)] overflow-hidden">
+    <div className={`rounded-xl border border-[var(--color-brand-pink)] bg-[var(--color-brand-pink-bg)] overflow-hidden ${isPast ? "opacity-60" : ""}`}>
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-3 bg-[var(--color-brand-pink)] hover:brightness-95 transition-all"
       >
         <div className="flex items-center gap-3">
           <div className="text-left">
-            <div className="font-bold text-primary text-sm">{dayLabel}</div>
+            <div className="font-bold text-primary text-sm">
+              {dayLabel}{isPast && <span className="font-normal text-primary/60"> · đã qua</span>}
+            </div>
             <div className="text-xs text-primary/70">{longLabel}</div>
           </div>
           {totalItems > 0 && (
@@ -162,6 +188,7 @@ function MobileDay({
               key={mealType}
               mealType={mealType}
               items={daySlots[mealType]}
+              disabled={isPast}
               onAdd={() => onAdd(mealType)}
               onDelete={onDelete}
               onUpdateServings={onUpdateServings}
