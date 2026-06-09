@@ -105,14 +105,14 @@ export default function MealPlanListPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#2D2417]" style={{ fontFamily: "var(--font-playfair)" }}>
-            Meal Plan
+          <h1 className="text-2xl md:text-3xl font-extrabold text-foreground">
+            Kế hoạch nấu ăn
           </h1>
-          <p className="text-sm text-[#666666] mt-1">Lên kế hoạch bữa ăn theo tuần</p>
+          <p className="text-sm text-muted-foreground mt-1">Lên kế hoạch bữa ăn theo tuần</p>
         </div>
         <Button
           onClick={() => setShowCreate(true)}
-          className="bg-[#E85D26] hover:bg-[#D44E1E] text-white gap-2"
+          className="bg-primary hover:bg-[var(--color-brand-primary-hover)] text-white gap-2"
         >
           <Plus className="w-4 h-4" />
           Tạo plan mới
@@ -122,20 +122,20 @@ export default function MealPlanListPage() {
       {/* Plans list */}
       {!data ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="w-8 h-8 animate-spin text-[#E85D26]" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : plans.length === 0 ? (
         <div className="text-center py-16 flex flex-col items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-[#F7F0E8] flex items-center justify-center">
-            <UtensilsCrossed className="w-10 h-10 text-[#E85D26]" />
+          <div className="w-20 h-20 rounded-full bg-[var(--color-brand-pink-bg)] border border-[var(--color-brand-pink)] flex items-center justify-center">
+            <UtensilsCrossed className="w-10 h-10 text-primary" />
           </div>
           <div>
-            <p className="font-semibold text-[#2D2417] text-lg">Chưa có meal plan nào</p>
-            <p className="text-sm text-[#666666] mt-1">Tạo plan đầu tiên để bắt đầu lên lịch bữa ăn!</p>
+            <p className="font-semibold text-foreground text-lg">Chưa có meal plan nào</p>
+            <p className="text-sm text-muted-foreground mt-1">Tạo plan đầu tiên để bắt đầu lên lịch bữa ăn!</p>
           </div>
           <Button
             onClick={() => setShowCreate(true)}
-            className="bg-[#E85D26] hover:bg-[#D44E1E] text-white gap-2 mt-2"
+            className="bg-primary hover:bg-[var(--color-brand-primary-hover)] text-white gap-2 mt-2"
           >
             <Plus className="w-4 h-4" />
             Tạo plan mới
@@ -147,32 +147,32 @@ export default function MealPlanListPage() {
             <Link
               key={plan.id}
               href={`/meal-plan/${plan.id}`}
-              className="block border border-[#f0f0f0] rounded-xl p-4 bg-white hover:border-[#E85D26] hover:shadow-md transition-all group"
+              className="block border border-border rounded-xl p-4 bg-white hover:border-primary hover:shadow-card transition-all group"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-[#F7F0E8] flex items-center justify-center shrink-0">
-                    <Calendar className="w-5 h-5 text-[#E85D26]" />
+                  <div className="w-10 h-10 rounded-lg bg-[var(--color-brand-pink-bg)] border border-[var(--color-brand-pink)] flex items-center justify-center shrink-0">
+                    <Calendar className="w-5 h-5 text-primary" />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-semibold text-[#2D2417] truncate">{plan.name}</p>
-                    <p className="text-xs text-[#666666] mt-0.5">{fmtWeekRange(plan.week_start)}</p>
+                    <p className="font-semibold text-foreground truncate">{plan.name}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{fmtWeekRange(plan.week_start)}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-2">
-                  <span className="text-xs text-[#666666] hidden sm:block">
+                  <span className="text-xs text-muted-foreground hidden sm:block">
                     {plan.items_count} món
                   </span>
                   <button
                     onClick={(e) => { e.preventDefault(); handleDelete(plan.id); }}
-                    className="p-1.5 text-[#B8A898] hover:text-red-500 transition-colors"
+                    className="p-1.5 text-muted-foreground hover:text-red-500 transition-colors"
                   >
                     {deletingId === plan.id
                       ? <Loader2 className="w-4 h-4 animate-spin" />
                       : <Trash2 className="w-4 h-4" />
                     }
                   </button>
-                  <ChevronRight className="w-4 h-4 text-[#B8A898] group-hover:text-[#E85D26] transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
               </div>
             </Link>
@@ -184,24 +184,24 @@ export default function MealPlanListPage() {
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-[#2D2417]">Tạo Meal Plan mới</DialogTitle>
+            <DialogTitle className="text-foreground">Tạo Meal Plan mới</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4 pt-2">
             <div>
-              <label className="text-sm font-medium text-[#2D2417] block mb-1.5">Tên plan</label>
+              <label className="text-sm font-medium text-foreground block mb-1.5">Tên plan</label>
               <Input
                 value={planName}
                 onChange={(e) => setPlanName(e.target.value)}
                 placeholder="VD: Tuần này"
-                className="bg-[#F7F0E8] border-[#f0f0f0] focus-visible:ring-[#E85D26]"
+                className="bg-muted border-border focus-visible:ring-primary"
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-[#2D2417] block mb-1.5">Tuần bắt đầu</label>
+              <label className="text-sm font-medium text-foreground block mb-1.5">Tuần bắt đầu</label>
               <select
                 value={weekStart}
                 onChange={(e) => setWeekStart(e.target.value)}
-                className="w-full rounded-md border border-[#f0f0f0] bg-[#F7F0E8] px-3 py-2 text-sm text-[#2D2417] focus:outline-none focus:ring-2 focus:ring-[#E85D26]"
+                className="w-full rounded-md border border-border bg-muted px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {mondayOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -211,7 +211,7 @@ export default function MealPlanListPage() {
             <Button
               onClick={handleCreate}
               disabled={creating || !planName.trim()}
-              className="bg-[#E85D26] hover:bg-[#D44E1E] text-white w-full mt-1"
+              className="bg-primary hover:bg-[var(--color-brand-primary-hover)] text-white w-full mt-1"
             >
               {creating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               Tạo plan

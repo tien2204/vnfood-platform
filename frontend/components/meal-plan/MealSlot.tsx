@@ -12,11 +12,12 @@ const MEAL_LABELS: Record<MealType, string> = {
   snack: "Phụ",
 };
 
+// Pink frame for all slots — unified monngonmoingay style
 const MEAL_COLORS: Record<MealType, string> = {
-  breakfast: "bg-amber-50 border-amber-200",
-  lunch: "bg-green-50 border-green-200",
-  dinner: "bg-orange-50 border-orange-200",
-  snack: "bg-purple-50 border-purple-200",
+  breakfast: "bg-[var(--color-brand-pink-bg)] border-[var(--color-brand-pink)]",
+  lunch: "bg-[var(--color-brand-pink-bg)] border-[var(--color-brand-pink)]",
+  dinner: "bg-[var(--color-brand-pink-bg)] border-[var(--color-brand-pink)]",
+  snack: "bg-[var(--color-brand-pink-bg)] border-[var(--color-brand-pink)]",
 };
 
 interface MealSlotProps {
@@ -31,24 +32,26 @@ export default function MealSlot({ mealType, items, onAdd, onDelete, onUpdateSer
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   return (
-    <div className={`rounded-lg border p-2 min-h-[80px] flex flex-col gap-1.5 ${MEAL_COLORS[mealType]}`}>
-      <div className="flex items-center justify-between mb-0.5">
-        <span className="text-xs font-semibold text-[#666666] uppercase tracking-wide">
+    <div className={`rounded-xl border overflow-hidden flex flex-col ${MEAL_COLORS[mealType]}`}>
+      <div className="flex items-center justify-between px-2 py-1.5 bg-[var(--color-brand-pink)]">
+        <span className="text-xs font-bold text-primary uppercase tracking-wide">
           {MEAL_LABELS[mealType]}
         </span>
         <button
           onClick={onAdd}
-          className="w-5 h-5 rounded-full bg-white border border-[#f0f0f0] flex items-center justify-center hover:bg-[#E85D26] hover:border-[#E85D26] hover:text-white transition-colors"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-white border border-border text-primary hover:scale-110 transition-transform"
+          style={{ boxShadow: '0 8px 16px #ec20283d' }}
           title="Thêm món"
         >
-          <Plus className="w-3 h-3" />
+          <Plus className="w-5 h-5" />
         </button>
       </div>
+      <div className="p-2 flex flex-col gap-1.5 min-h-[60px]">
 
       {items.length === 0 ? (
         <button
           onClick={onAdd}
-          className="flex-1 flex flex-col items-center justify-center gap-1 text-[#B8A898] hover:text-[#E85D26] transition-colors py-2"
+          className="flex-1 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-primary transition-colors py-2"
         >
           <Plus className="w-4 h-4" />
           <span className="text-xs">Thêm món</span>
@@ -56,7 +59,7 @@ export default function MealSlot({ mealType, items, onAdd, onDelete, onUpdateSer
       ) : (
         <div className="flex flex-col gap-1">
           {items.map((item) => (
-            <div key={item.item_id} className="bg-white rounded border border-[#f0f0f0] overflow-hidden">
+            <div key={item.item_id} className="bg-white rounded-xl border border-border shadow-card overflow-hidden">
               <div className="flex items-center gap-1.5 p-1.5">
                 {item.recipe?.image_url && (
                   <div className="w-8 h-8 rounded overflow-hidden shrink-0">
@@ -70,21 +73,21 @@ export default function MealSlot({ mealType, items, onAdd, onDelete, onUpdateSer
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-[#2D2417] truncate leading-tight">
+                  <p className="text-xs font-medium text-foreground truncate leading-tight">
                     {item.recipe?.title ?? "Recipe đã bị xóa"}
                   </p>
-                  <p className="text-[10px] text-[#666666]">{item.servings} người</p>
+                  <p className="text-[10px] text-muted-foreground">{item.servings} người</p>
                 </div>
                 <div className="flex items-center gap-0.5 shrink-0">
                   <button
                     onClick={() => setExpandedItem(expandedItem === item.item_id ? null : item.item_id)}
-                    className="p-0.5 hover:text-[#E85D26] text-[#666666] transition-colors"
+                    className="p-0.5 hover:text-primary text-muted-foreground transition-colors"
                   >
                     {expandedItem === item.item_id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                   </button>
                   <button
                     onClick={() => onDelete(item.item_id)}
-                    className="p-0.5 hover:text-red-500 text-[#666666] transition-colors"
+                    className="p-0.5 hover:text-red-500 text-muted-foreground transition-colors"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -92,25 +95,25 @@ export default function MealSlot({ mealType, items, onAdd, onDelete, onUpdateSer
               </div>
 
               {expandedItem === item.item_id && (
-                <div className="px-1.5 pb-1.5 border-t border-[#F0E8E0]">
+                <div className="px-1.5 pb-1.5 border-t border-border">
                   <div className="flex items-center gap-1.5 pt-1.5">
-                    <span className="text-[10px] text-[#666666]">Khẩu phần:</span>
+                    <span className="text-[10px] text-muted-foreground">Khẩu phần:</span>
                     <button
                       onClick={() => onUpdateServings(item.item_id, Math.max(1, item.servings - 1))}
-                      className="w-4 h-4 rounded border border-[#f0f0f0] flex items-center justify-center text-xs hover:bg-[#F7F0E8]"
+                      className="w-4 h-4 rounded border border-border flex items-center justify-center text-xs hover:bg-muted"
                     >
                       −
                     </button>
                     <span className="text-xs font-semibold w-4 text-center">{item.servings}</span>
                     <button
                       onClick={() => onUpdateServings(item.item_id, Math.min(20, item.servings + 1))}
-                      className="w-4 h-4 rounded border border-[#f0f0f0] flex items-center justify-center text-xs hover:bg-[#F7F0E8]"
+                      className="w-4 h-4 rounded border border-border flex items-center justify-center text-xs hover:bg-muted"
                     >
                       +
                     </button>
                   </div>
                   {item.note && (
-                    <p className="text-[10px] text-[#666666] mt-1 italic">{item.note}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1 italic">{item.note}</p>
                   )}
                 </div>
               )}
@@ -118,6 +121,7 @@ export default function MealSlot({ mealType, items, onAdd, onDelete, onUpdateSer
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

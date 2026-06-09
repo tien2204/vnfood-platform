@@ -62,9 +62,9 @@ export default function WeeklyCalendar({ planId, days, onRefresh }: WeeklyCalend
         <div className="min-w-[900px]">
           <div className="grid grid-cols-7 gap-2 mb-2">
             {dayKeys.map((dayKey, i) => (
-              <div key={dayKey} className="text-center">
-                <div className="text-xs font-semibold text-[#666666]">{DAY_LABELS[i]}</div>
-                <div className="text-sm font-bold text-[#2D2417]">{fmtShort(dayKey)}</div>
+              <div key={dayKey} className="rounded-xl border border-[var(--color-brand-pink)] bg-[var(--color-brand-pink-bg)] text-center py-1.5">
+                <div className="text-xs font-bold text-primary">{DAY_LABELS[i]}</div>
+                <div className="text-sm font-extrabold text-foreground">{fmtShort(dayKey)}</div>
               </div>
             ))}
           </div>
@@ -136,27 +136,27 @@ function MobileDay({
   const totalItems = MEAL_TYPES.reduce((sum, mt) => sum + daySlots[mt].length, 0);
 
   return (
-    <div className="border border-[#f0f0f0] rounded-xl overflow-hidden">
+    <div className="rounded-xl border border-[var(--color-brand-pink)] bg-[var(--color-brand-pink-bg)] overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-[#FFFBF5] hover:bg-[#F7F0E8] transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 bg-[var(--color-brand-pink)] hover:brightness-95 transition-all"
       >
         <div className="flex items-center gap-3">
           <div className="text-left">
-            <div className="font-semibold text-[#2D2417] text-sm">{dayLabel}</div>
-            <div className="text-xs text-[#666666]">{longLabel}</div>
+            <div className="font-bold text-primary text-sm">{dayLabel}</div>
+            <div className="text-xs text-primary/70">{longLabel}</div>
           </div>
           {totalItems > 0 && (
-            <span className="text-xs bg-[#E85D26] text-white rounded-full px-2 py-0.5">
+            <span className="text-xs bg-primary text-white rounded-full px-2 py-0.5">
               {totalItems} món
             </span>
           )}
         </div>
-        <span className="text-[#666666] text-xs">{open ? "▲" : "▼"}</span>
+        <span className="text-primary text-xs">{open ? "▲" : "▼"}</span>
       </button>
 
       {open && (
-        <div className="grid grid-cols-2 gap-2 p-3 bg-white">
+        <div className="grid grid-cols-2 gap-2 p-3 bg-[var(--color-brand-pink-bg)]">
           {MEAL_TYPES.map((mealType) => (
             <MealSlot
               key={mealType}
