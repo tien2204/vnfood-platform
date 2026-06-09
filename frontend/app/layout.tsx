@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Be_Vietnam_Pro } from "next/font/google";
+import { Open_Sans, Lobster } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "@/components/layout/ConditionalLayout";
 import { Toaster } from "@/components/ui/sonner";
 
-const playfair = Playfair_Display({
+const openSans = Open_Sans({
   subsets: ["latin", "latin-ext", "vietnamese"],
   weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-heading",
+  variable: "--font-body",
   display: "swap",
 });
 
-const beVietnam = Be_Vietnam_Pro({
-  subsets: ["latin", "latin-ext", "vietnamese"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-body",
+const lobster = Lobster({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -31,8 +31,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi" className={`${playfair.variable} ${beVietnam.variable}`}>
-      <body className="min-h-screen flex flex-col bg-[#fffaf0] antialiased">
+    <html lang="vi" className={`${openSans.variable} ${lobster.variable}`}>
+      <body className="min-h-screen flex flex-col bg-white antialiased">
         <ConditionalLayout>{children}</ConditionalLayout>
         <Toaster richColors position="top-right" />
       </body>

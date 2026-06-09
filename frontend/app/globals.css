@@ -61,7 +61,7 @@
   --color-warm-border: #f0f0f0;
 
   /* VNFood fonts — actual font CSS variables injected at <html> via next/font
-     (Playfair Display heading + Be Vietnam Pro body, both vietnamese subset).
+     (Open Sans body+heading vietnamese subset, Lobster display latin only).
      Values here = fallback if next/font fails to load. */
   --font-display: "Lobster", "Be Vietnam Pro", cursive;
   --font-heading: "Open Sans", "Segoe UI", system-ui, sans-serif;
