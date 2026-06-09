@@ -74,18 +74,18 @@ export default function SearchResults() {
       {/* Search input */}
       <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666666]" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
           <input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Tìm kiếm món ăn..."
-            className="w-full pl-12 pr-12 h-12 text-base text-[#1C1209] bg-white border border-[#f0f0f0] rounded-xl shadow-sm outline-none focus:border-[#E85D26] focus:ring-2 focus:ring-[#E85D26]/20 placeholder:text-[#666666] transition-colors"
+            className="w-full pl-12 pr-12 h-12 text-base text-foreground bg-muted border border-border rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary focus:border-primary placeholder:text-muted-foreground transition-colors"
           />
           {inputValue && (
             <button
               type="button"
               onClick={() => setInputValue("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#666666] hover:text-[#1C1209]"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               <X className="w-4 h-4" />
             </button>
@@ -97,15 +97,15 @@ export default function SearchResults() {
       {q && (
         <div className="mb-6">
           <h1
-            className="text-2xl font-bold text-[#1C1209]"
+            className="text-2xl font-extrabold text-foreground"
             style={{ fontFamily: "var(--font-heading)" }}
           >
-            Kết quả cho &ldquo;{q}&rdquo;
+            Kết quả cho &ldquo;<strong className="text-primary">{q}</strong>&rdquo;
           </h1>
           {!loading && (
-            <p className="text-sm text-[#666666] mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               {total > 0
-                ? `${total.toLocaleString()} công thức`
+                ? <><strong className="text-primary">{total.toLocaleString()}</strong> công thức</>
                 : "Không tìm thấy công thức nào"}
             </p>
           )}
@@ -114,7 +114,7 @@ export default function SearchResults() {
 
       {/* Empty state — no query */}
       {!q && (
-        <div className="text-center py-20 text-[#666666]">
+        <div className="text-center py-20 text-muted-foreground">
           <Search className="w-12 h-12 mx-auto mb-4 opacity-30" />
           <p className="text-lg">Nhập tên món ăn để tìm kiếm</p>
         </div>
@@ -141,12 +141,12 @@ export default function SearchResults() {
             size="sm"
             disabled={page <= 1}
             onClick={() => goToPage(page - 1)}
-            className="rounded-lg border border-border bg-white shadow-block-sm"
+            className="rounded-lg border border-border bg-white hover:border-primary transition-colors"
           >
             ← Trước
           </Button>
 
-          <span className="px-2 text-sm font-medium text-[#666666]">
+          <span className="px-2 text-sm font-medium text-muted-foreground">
             Trang {page} / {totalPages}
           </span>
 
@@ -156,7 +156,7 @@ export default function SearchResults() {
             size="sm"
             disabled={page >= totalPages}
             onClick={() => goToPage(page + 1)}
-            className="rounded-lg border border-border bg-white shadow-block-sm"
+            className="rounded-lg border border-border bg-white hover:border-primary transition-colors"
           >
             Sau →
           </Button>
@@ -165,7 +165,7 @@ export default function SearchResults() {
 
       {/* No results */}
       {!loading && q && recipes.length === 0 && (
-        <div className="text-center py-20 text-[#666666]">
+        <div className="text-center py-20 text-muted-foreground">
           <p className="text-lg mb-2">Không tìm thấy &ldquo;{q}&rdquo;</p>
           <p className="text-sm">Thử từ khóa khác hoặc kiểm tra chính tả</p>
         </div>

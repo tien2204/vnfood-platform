@@ -45,10 +45,10 @@ export default function FacetDropdown({
         // another open panel — switching facets should not flicker close→open
         onMouseDown={(e) => e.stopPropagation()}
         onClick={onToggleOpen}
-        className={`border border-border px-3.5 py-1.5 text-sm font-bold shadow-block-sm transition-all ${
+        className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
           count > 0
-            ? "bg-[#2D6A4F] text-white"
-            : "bg-[#f5f5f5] text-[#0a0a0a] hover:bg-[#2D6A4F] hover:text-white"
+            ? "bg-primary text-white border-primary"
+            : "bg-white text-foreground border-border hover:border-primary"
         }`}
       >
         {facet.label}
@@ -56,11 +56,11 @@ export default function FacetDropdown({
       </button>
 
       {open && (
-        <div className="absolute left-0 z-30 mt-1 w-[min(92vw,28rem)] border border-border bg-white p-4 shadow-block">
+        <div className="absolute left-0 z-30 mt-1 w-[min(92vw,28rem)] rounded-xl border border-border bg-white p-4 shadow-warm">
           {facet.groups.map((g, gi) => (
             <div key={gi} className="mb-3 last:mb-0">
               {g.label && (
-                <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-[#666666]">
+                <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                   {g.label}
                 </p>
               )}
@@ -68,13 +68,13 @@ export default function FacetDropdown({
                 {g.terms.map((t) => (
                   <label
                     key={t.value}
-                    className="flex cursor-pointer items-center gap-2 text-sm text-[#0a0a0a]"
+                    className={`flex cursor-pointer items-center gap-2 text-sm hover:bg-muted rounded px-1 -mx-1 transition-colors ${staged.includes(t.value) ? "text-primary font-semibold" : "text-foreground"}`}
                   >
                     <input
                       type="checkbox"
                       checked={staged.includes(t.value)}
                       onChange={() => toggle(t.value)}
-                      className="h-4 w-4 accent-[#2D6A4F]"
+                      className="h-4 w-4 accent-primary"
                     />
                     <span>{t.label}</span>
                   </label>
@@ -88,7 +88,7 @@ export default function FacetDropdown({
               onApply(staged);
               onClose();
             }}
-            className="mt-3 w-full border border-border bg-[#ec2028] py-2 text-sm font-bold text-white shadow-block-sm hover:bg-[#e85d26]"
+            className="mt-3 w-full rounded-lg border border-primary bg-primary py-2 text-sm font-bold text-white hover:opacity-90 transition-opacity"
           >
             Lọc thông tin
           </button>
