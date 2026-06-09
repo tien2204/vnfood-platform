@@ -47,18 +47,18 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* VNFood theme — monngonmoingay (real tokens) */
+  /* VNFood theme — monngonmoingay (theme-aware via :root / .dark) */
   --color-brand-primary: #ec2028;
   --color-brand-primary-hover: #cc1c22;
-  --color-brand-ink: #330002;        /* maroon heading emphasis */
-  --color-brand-amber: #ec9a20;      /* secondary accent */
-  --color-brand-pink: #fbd0d2;       /* soft border/tag */
-  --color-brand-pink-bg: #fef6f6;    /* section background */
-  --color-brand-cream: #fbead0;
-  --color-healthy: #11ca24;          /* nutrition tag */
-  --color-warm-bg: #ffffff;
-  --color-warm-muted: #f5f5f5;
-  --color-warm-border: #f0f0f0;
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-amber: var(--brand-amber);
+  --color-brand-pink: var(--brand-pink);
+  --color-brand-pink-bg: var(--brand-pink-bg);
+  --color-brand-cream: var(--brand-cream);
+  --color-healthy: var(--healthy);
+  --color-warm-bg: var(--background);
+  --color-warm-muted: var(--muted);
+  --color-warm-border: var(--border);
 
   /* VNFood fonts — actual font CSS variables injected at <html> via next/font
      (Open Sans body+heading vietnamese subset, Lobster display latin only).
@@ -102,6 +102,53 @@
   --sidebar-accent-foreground: #331f00;
   --sidebar-border: #f0f0f0;
   --sidebar-ring: #ec2028;
+  /* brand surfaces (light) */
+  --brand-ink: #330002;
+  --brand-amber: #ec9a20;
+  --brand-pink: #fbd0d2;
+  --brand-pink-bg: #fef6f6;
+  --brand-cream: #fbead0;
+  --healthy: #11ca24;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #121212;
+  --foreground: #ededed;
+  --card: #1c1c1c;
+  --card-foreground: #ededed;
+  --popover: #1c1c1c;
+  --popover-foreground: #ededed;
+  --primary: #ff4d52;
+  --primary-foreground: #ffffff;
+  --secondary: #ec9a20;
+  --secondary-foreground: #1a1207;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --accent: #2a1618;
+  --accent-foreground: #ff7a7e;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: #2e2e2e;
+  --input: #2e2e2e;
+  --ring: #ff4d52;
+  --chart-1: #ff4d52;
+  --chart-2: #ec9a20;
+  --chart-3: #11ca24;
+  --sidebar: #161616;
+  --sidebar-foreground: #ededed;
+  --sidebar-primary: #ff4d52;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ec9a20;
+  --sidebar-accent-foreground: #1a1207;
+  --sidebar-border: #2e2e2e;
+  --sidebar-ring: #ff4d52;
+  /* brand surfaces (dark) */
+  --brand-ink: #ededed;
+  --brand-amber: #ec9a20;
+  --brand-pink: #3a2326;
+  --brand-pink-bg: #221416;
+  --brand-cream: #241f17;
+  --healthy: #11ca24;
 }
 
 @layer base {

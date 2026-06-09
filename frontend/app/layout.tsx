@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Open_Sans, Lobster } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "@/components/layout/ConditionalLayout";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 
 const openSans = Open_Sans({
@@ -31,10 +32,21 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi" className={`${openSans.variable} ${lobster.variable}`}>
-      <body className="min-h-screen flex flex-col bg-white antialiased">
-        <ConditionalLayout>{children}</ConditionalLayout>
-        <Toaster richColors position="top-right" />
+    <html
+      lang="vi"
+      suppressHydrationWarning
+      className={`${openSans.variable} ${lobster.variable}`}
+    >
+      <body className="min-h-screen flex flex-col bg-background text-foreground antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ConditionalLayout>{children}</ConditionalLayout>
+          <Toaster richColors position="top-right" />
+        </ThemeProvider>
       </body>
     </html>
   );

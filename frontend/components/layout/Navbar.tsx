@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/lib/hooks/useUser";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const CATEGORY_GROUPS = [
   { title: "Nguyên liệu", items: [
@@ -76,7 +77,7 @@ export default function Navbar() {
     : undefined;
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
@@ -129,7 +130,7 @@ export default function Navbar() {
           {/* Mobile search toggle — also hidden on /search */}
           {!hideSearchBar && (
             <button
-              className="md:hidden p-2 border border-transparent hover:border-[#0a0a0a] hover:bg-[#f5f5f5]"
+              className="md:hidden p-2 rounded-lg border border-transparent hover:border-border hover:bg-muted"
               onClick={() => setSearchOpen(!searchOpen)}
             >
               {searchOpen ? (
@@ -140,12 +141,15 @@ export default function Navbar() {
             </button>
           )}
 
+          {/* Theme toggle */}
+          <ThemeToggle />
+
           {/* AI Scan */}
           <Link href="/recognize">
             <Button
               variant="outline"
               size="sm"
-              className="hidden sm:flex items-center gap-1.5 rounded-lg border-2 border-primary bg-white text-primary font-bold hover:bg-primary hover:text-white"
+              className="hidden sm:flex items-center gap-1.5 rounded-lg border-2 border-primary bg-card text-primary font-bold hover:bg-primary hover:text-white"
             >
               <ScanLine className="w-4 h-4" />
               <span>AI Nhận diện</span>

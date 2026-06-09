@@ -226,27 +226,27 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
         {/* Sticky sidebar (desktop only) */}
         <aside className="hidden lg:block">
           <div className="sticky top-24 space-y-4">
-            {/* Dark info card (image-2 format): 3 icon stats + save button */}
-            <div className="rounded-xl bg-[#1e1e1e] p-5 shadow-card">
+            {/* Info card (image-2 format): 3 icon stats + save button — theme-aware */}
+            <div className="rounded-xl bg-muted border border-border p-5 shadow-card">
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div className="flex flex-col items-center gap-1">
                   <Users className="w-5 h-5 text-primary" />
-                  <span className="text-[11px] leading-tight text-white/60">Khẩu Phần</span>
-                  <span className="text-sm font-bold text-white">
+                  <span className="text-[11px] leading-tight text-muted-foreground">Khẩu Phần</span>
+                  <span className="text-sm font-bold text-foreground">
                     {recipe.servings ? `${currentServings} người` : '—'}
                   </span>
                 </div>
                 <div className="flex flex-col items-center gap-1">
                   <Clock className="w-5 h-5 text-primary" />
-                  <span className="text-[11px] leading-tight text-white/60">Thời gian thực hiện</span>
-                  <span className="text-sm font-bold text-white">
+                  <span className="text-[11px] leading-tight text-muted-foreground">Thời gian thực hiện</span>
+                  <span className="text-sm font-bold text-foreground">
                     {recipe.cooking_time ? `${recipe.cooking_time} phút` : '—'}
                   </span>
                 </div>
                 <div className="flex flex-col items-center gap-1">
                   <ChefHat className="w-5 h-5 text-primary" />
-                  <span className="text-[11px] leading-tight text-white/60">Độ khó</span>
-                  <span className="text-sm font-bold text-white">
+                  <span className="text-[11px] leading-tight text-muted-foreground">Độ khó</span>
+                  <span className="text-sm font-bold text-foreground">
                     {recipe.difficulty ? difficultyLabel(recipe.difficulty) : '—'}
                   </span>
                 </div>
