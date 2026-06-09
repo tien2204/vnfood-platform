@@ -156,18 +156,18 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
     : null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#FFFBF5] flex flex-col">
+    <div className="fixed inset-0 z-50 bg-white flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#f0f0f0] bg-white shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-white shrink-0">
         <button
           onClick={onClose}
-          className="inline-flex items-center gap-1.5 text-sm text-[#666666] hover:text-[#E85D26] transition-colors font-medium"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors font-medium"
         >
           <X className="w-4 h-4" />
           Thoát
         </button>
         <span
-          className="font-bold italic text-[#1C1209] text-base truncate max-w-[50vw] text-center"
+          className="font-bold italic text-foreground text-base truncate max-w-[50vw] text-center"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
           {recipe.title}
@@ -182,7 +182,7 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
               }}
               title={speech.enabled ? 'Tắt đọc bước' : 'Bật đọc bước'}
               aria-pressed={speech.enabled}
-              className={`p-1.5 rounded-lg transition-colors ${speech.enabled ? 'text-[#E85D26] bg-[#E85D26]/10' : 'text-[#666666] hover:text-[#E85D26]'}`}
+              className={`p-1.5 rounded-lg transition-colors ${speech.enabled ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-primary'}`}
             >
               {speech.enabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
             </button>
@@ -192,13 +192,13 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
               onClick={voice.toggle}
               title={voice.listening ? 'Tắt điều khiển giọng nói' : 'Bật điều khiển giọng nói'}
               aria-pressed={voice.listening}
-              className={`inline-flex items-center gap-1 p-1.5 rounded-lg transition-colors ${voice.listening ? 'text-[#2D6A4F] bg-[#2D6A4F]/10' : 'text-[#666666] hover:text-[#2D6A4F]'}`}
+              className={`inline-flex items-center gap-1 p-1.5 rounded-lg transition-colors ${voice.listening ? 'text-[#2D6A4F] bg-[#2D6A4F]/10' : 'text-muted-foreground hover:text-[#2D6A4F]'}`}
             >
               {voice.listening ? <Mic className="w-4 h-4 animate-pulse" /> : <MicOff className="w-4 h-4" />}
               {voice.listening && <span className="text-[10px] font-semibold">Đang nghe</span>}
             </button>
           )}
-          <span className="text-sm text-[#666666]">
+          <span className="text-sm text-muted-foreground">
             {currentStep + 1} / {total}
           </span>
         </div>
@@ -210,7 +210,7 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
           {/* Step number badge */}
           <div className="flex justify-center mb-6">
             <div
-              className="w-16 h-16 rounded-full bg-[#E85D26]/10 flex items-center justify-center text-3xl font-bold text-[#E85D26]"
+              className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-3xl font-bold text-primary"
               style={{ fontFamily: 'var(--font-heading)' }}
             >
               {currentStep + 1}
@@ -218,14 +218,14 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
           </div>
 
           {/* Step content */}
-          <p className="text-xl md:text-2xl leading-relaxed text-[#1C1209] text-center mb-6">
+          <p className="text-xl md:text-2xl leading-relaxed text-foreground text-center mb-6">
             {step.content}
           </p>
 
           {/* Timer badge hint */}
           {stepTimerSeconds > 0 && (
             <div className="flex justify-center mb-2">
-              <span className="inline-flex items-center gap-1.5 text-xs text-[#666666] bg-[#F7F0E8] px-3 py-1 rounded-full border border-[#f0f0f0]">
+              <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted px-3 py-1 rounded-full border border-border">
                 <Clock className="w-3 h-3" />
                 {Math.floor(stepTimerSeconds / 60)}:{String(stepTimerSeconds % 60).padStart(2, '0')} phút
               </span>
@@ -260,7 +260,7 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
       {timer && timer.stepIndex !== currentStep && (
         <button
           onClick={() => setCurrentStep(timer.stepIndex)}
-          className={`fixed bottom-24 right-4 z-50 inline-flex items-center gap-2 px-3 py-2 rounded-full shadow-lg text-sm font-semibold text-white transition-colors ${timer.completed ? 'bg-[#2D6A4F]' : 'bg-[#E85D26]'}`}
+          className={`fixed bottom-24 right-4 z-50 inline-flex items-center gap-2 px-3 py-2 rounded-full shadow-lg text-sm font-semibold text-white transition-colors ${timer.completed ? 'bg-[#2D6A4F]' : 'bg-primary'}`}
         >
           <Clock className="w-4 h-4" />
           Bước {timer.stepIndex + 1} · {Math.floor(timer.remaining / 60)}:{String(timer.remaining % 60).padStart(2, '0')}
@@ -277,10 +277,10 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
               aria-label={`Bước ${i + 1}`}
               className={`h-3 rounded-full transition-all duration-300 touch-manipulation ${
                 i === currentStep
-                  ? 'bg-[#E85D26] w-10'
+                  ? 'bg-primary w-10'
                   : i < currentStep
-                  ? 'bg-[#E85D26]/40 w-3'
-                  : 'bg-[#f0f0f0] w-3'
+                  ? 'bg-primary/40 w-3'
+                  : 'bg-border w-3'
               }`}
               style={{ minWidth: i === currentStep ? 40 : 12 }}
             />
@@ -289,11 +289,11 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
       )}
 
       {/* Footer navigation */}
-      <div className="flex items-center justify-between px-4 py-3 border-t border-[#f0f0f0] bg-white shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-white shrink-0">
         <button
           onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
           disabled={currentStep === 0}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-border text-muted-foreground hover:border-primary hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium text-sm"
         >
           <ChevronLeft className="w-5 h-5" />
           Bước trước
@@ -302,7 +302,7 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
         {currentStep < total - 1 ? (
           <button
             onClick={() => setCurrentStep((s) => Math.min(total - 1, s + 1))}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#E85D26] hover:bg-[#D44E1E] text-white font-semibold transition-colors text-sm"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary hover:bg-[#cc1c22] text-white font-semibold transition-colors text-sm"
           >
             Bước sau
             <ChevronRight className="w-5 h-5" />

@@ -60,15 +60,15 @@ function StepIndicator({ current }: { current: number }) {
         <div key={i} className="flex items-center gap-2 flex-1 last:flex-none">
           <div className={`
             w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0
-            ${i < current ? "bg-[#E85D26] text-white" : i === current ? "bg-[#E85D26] text-white ring-2 ring-[#E85D26]/30" : "bg-[#F7F0E8] text-[#666666]"}
+            ${i < current ? "bg-primary text-white" : i === current ? "bg-primary text-white ring-2 ring-primary/30" : "bg-muted text-muted-foreground"}
           `}>
             {i < current ? <Check className="w-4 h-4" /> : i + 1}
           </div>
-          <span className={`text-sm hidden sm:block ${i === current ? "text-[#1C1209] font-medium" : "text-[#666666]"}`}>
+          <span className={`text-sm hidden sm:block ${i === current ? "text-foreground font-medium" : "text-muted-foreground"}`}>
             {label}
           </span>
           {i < STEPS.length - 1 && (
-            <div className={`flex-1 h-px mx-1 ${i < current ? "bg-[#E85D26]" : "bg-[#f0f0f0]"}`} />
+            <div className={`flex-1 h-px mx-1 ${i < current ? "bg-primary" : "bg-border"}`} />
           )}
         </div>
       ))}
@@ -266,7 +266,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
       {step === 0 && (
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-[#1C1209] mb-1.5">
+            <label className="block text-sm font-medium text-foreground mb-1.5">
               Tiêu đề <span className="text-red-500">*</span>
             </label>
             <input
@@ -275,20 +275,20 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
               onChange={(e) => setBasic({ ...basic, title: e.target.value })}
               placeholder="Ví dụ: Bánh xèo miền Tây giòn rụm..."
               maxLength={200}
-              className="w-full px-4 py-2.5 rounded-xl border border-[#f0f0f0] bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] text-[#1C1209] placeholder:text-[#B5A395] text-sm"
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm"
             />
             {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#1C1209] mb-1.5">Mô tả</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">Mô tả</label>
             <textarea
               value={basic.description}
               onChange={(e) => setBasic({ ...basic, description: e.target.value })}
               placeholder="Giới thiệu ngắn về món ăn..."
               maxLength={2000}
               rows={3}
-              className="w-full px-4 py-2.5 rounded-xl border border-[#f0f0f0] bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] text-[#1C1209] placeholder:text-[#B5A395] text-sm resize-none"
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm resize-none"
             />
             {errors.description && <p className="mt-1 text-xs text-red-500">{errors.description}</p>}
           </div>
@@ -302,26 +302,26 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#1C1209] mb-1.5">Thời gian (phút)</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Thời gian (phút)</label>
               <input
                 type="number"
                 value={basic.cooking_time}
                 onChange={(e) => setBasic({ ...basic, cooking_time: e.target.value })}
                 min={1} max={600}
                 placeholder="45"
-                className="w-full px-4 py-2.5 rounded-xl border border-[#f0f0f0] bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] text-[#1C1209] placeholder:text-[#B5A395] text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm"
               />
               {errors.cooking_time && <p className="mt-1 text-xs text-red-500">{errors.cooking_time}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#1C1209] mb-1.5">Số khẩu phần</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Số khẩu phần</label>
               <input
                 type="number"
                 value={basic.servings}
                 onChange={(e) => setBasic({ ...basic, servings: e.target.value })}
                 min={1} max={50}
                 placeholder="4"
-                className="w-full px-4 py-2.5 rounded-xl border border-[#f0f0f0] bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] text-[#1C1209] placeholder:text-[#B5A395] text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground placeholder:text-muted-foreground text-sm"
               />
               {errors.servings && <p className="mt-1 text-xs text-red-500">{errors.servings}</p>}
             </div>
@@ -329,11 +329,11 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#1C1209] mb-1.5">Độ khó</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Độ khó</label>
               <select
                 value={basic.difficulty}
                 onChange={(e) => setBasic({ ...basic, difficulty: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#f0f0f0] bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] text-[#1C1209] text-sm appearance-none"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground text-sm appearance-none"
               >
                 <option value="">-- Chọn độ khó --</option>
                 {RECIPE_DIFFICULTIES.map((d) => (
@@ -342,11 +342,11 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#1C1209] mb-1.5">Nhóm món</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Nhóm món</label>
               <select
                 value={basic.keyword}
                 onChange={(e) => setBasic({ ...basic, keyword: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#f0f0f0] bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] text-[#1C1209] text-sm appearance-none"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-foreground text-sm appearance-none"
               >
                 <option value="">-- Chọn nhóm --</option>
                 {RECIPE_KEYWORDS.map((k) => (
@@ -361,7 +361,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
       {/* ── Step 1: Ingredients ── */}
       {step === 1 && (
         <div className="space-y-4">
-          <p className="text-sm text-[#666666]">
+          <p className="text-sm text-muted-foreground">
             Thêm nguyên liệu cần thiết ({ingredients.length}/50)
           </p>
 
@@ -374,7 +374,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
           <div className="space-y-2">
             {ingredients.map((ing, idx) => (
               <div key={idx} className="flex items-start gap-2">
-                <div className="mt-2.5 text-[#B5A395] cursor-move">
+                <div className="mt-2.5 text-muted-foreground cursor-move">
                   <GripVertical className="w-4 h-4" />
                 </div>
                 <div className="flex-1 grid grid-cols-5 gap-2">
@@ -384,7 +384,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
                       value={ing.display_text}
                       onChange={(e) => updateIngredient(idx, "display_text", e.target.value)}
                       placeholder="200g bột gạo..."
-                      className="w-full px-3 py-2 rounded-lg border border-[#f0f0f0] bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] text-sm text-[#1C1209] placeholder:text-[#B5A395]"
+                      className="w-full px-3 py-2 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                   <div className="col-span-2">
@@ -393,7 +393,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
                       value={ing.quantity ?? ""}
                       onChange={(e) => updateIngredient(idx, "quantity", e.target.value)}
                       placeholder="Số lượng"
-                      className="w-full px-3 py-2 rounded-lg border border-[#f0f0f0] bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] text-sm text-[#1C1209] placeholder:text-[#B5A395]"
+                      className="w-full px-3 py-2 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                 </div>
@@ -401,7 +401,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
                   type="button"
                   onClick={() => removeIngredient(idx)}
                   disabled={ingredients.length === 1}
-                  className="mt-1.5 p-1.5 rounded-lg text-[#666666] hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="mt-1.5 p-1.5 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -413,7 +413,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
             <button
               type="button"
               onClick={addIngredient}
-              className="flex items-center gap-2 text-sm text-[#E85D26] hover:text-[#D44E1E] font-medium"
+              className="flex items-center gap-2 text-sm text-primary hover:text-[#cc1c22] font-medium"
             >
               <Plus className="w-4 h-4" /> Thêm nguyên liệu
             </button>
@@ -424,7 +424,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
       {/* ── Step 2: Steps ── */}
       {step === 2 && (
         <div className="space-y-4">
-          <p className="text-sm text-[#666666]">
+          <p className="text-sm text-muted-foreground">
             Mô tả từng bước thực hiện ({steps.length}/30)
           </p>
 
@@ -436,16 +436,16 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
 
           <div className="space-y-4">
             {steps.map((s, idx) => (
-              <div key={idx} className="p-4 bg-white border border-[#f0f0f0] rounded-2xl space-y-3">
+              <div key={idx} className="p-4 bg-white border border-border rounded-2xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="w-8 h-8 rounded-full bg-[#E85D26] text-white flex items-center justify-center text-sm font-semibold">
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold">
                     {idx + 1}
                   </div>
                   <button
                     type="button"
                     onClick={() => removeStep(idx)}
                     disabled={steps.length === 1}
-                    className="p-1.5 rounded-lg text-[#666666] hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="p-1.5 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -456,19 +456,19 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
                   onChange={(e) => updateStep(idx, "content", e.target.value)}
                   placeholder={`Mô tả bước ${idx + 1}...`}
                   rows={3}
-                  className="w-full px-3 py-2 rounded-xl border border-[#f0f0f0] bg-[#FFFBF5] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] text-sm text-[#1C1209] placeholder:text-[#B5A395] resize-none"
+                  className="w-full px-3 py-2 rounded-xl border border-border bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm text-foreground placeholder:text-muted-foreground resize-none"
                 />
 
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 flex-1">
-                    <Timer className="w-4 h-4 text-[#666666] shrink-0" />
+                    <Timer className="w-4 h-4 text-muted-foreground shrink-0" />
                     <input
                       type="number"
                       value={s.timer_seconds ?? ""}
                       onChange={(e) => updateStep(idx, "timer_seconds", e.target.value ? parseInt(e.target.value) : undefined)}
                       min={0}
                       placeholder="Timer (giây)"
-                      className="w-full px-3 py-1.5 rounded-lg border border-[#f0f0f0] bg-white focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] text-sm text-[#1C1209] placeholder:text-[#B5A395]"
+                      className="w-full px-3 py-1.5 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
                 </div>
@@ -488,7 +488,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
             <button
               type="button"
               onClick={addStep}
-              className="flex items-center gap-2 text-sm text-[#E85D26] hover:text-[#D44E1E] font-medium"
+              className="flex items-center gap-2 text-sm text-primary hover:text-[#cc1c22] font-medium"
             >
               <Plus className="w-4 h-4" /> Thêm bước
             </button>
@@ -499,9 +499,9 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
       {/* ── Step 3: Preview ── */}
       {step === 3 && (
         <div className="space-y-5">
-          <div className="bg-white border border-[#f0f0f0] rounded-2xl overflow-hidden">
+          <div className="bg-white border border-border rounded-2xl overflow-hidden">
             {basic.image_url && (
-              <div className="relative aspect-video w-full bg-[#F7F0E8]">
+              <div className="relative aspect-video w-full bg-muted">
                 <Image
                   src={previewImageSrc(basic.image_url)}
                   alt={basic.title}
@@ -512,11 +512,11 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
               </div>
             )}
             <div className="p-5 space-y-4">
-              <h2 className="text-xl font-bold text-[#1C1209] font-heading">{basic.title}</h2>
+              <h2 className="text-xl font-bold text-foreground font-heading">{basic.title}</h2>
               {basic.description && (
-                <p className="text-sm text-[#666666] leading-relaxed">{basic.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{basic.description}</p>
               )}
-              <div className="flex flex-wrap gap-3 text-sm text-[#666666]">
+              <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                 {basic.cooking_time && <span>⏱ {basic.cooking_time} phút</span>}
                 {basic.servings && <span>👤 {basic.servings} người</span>}
                 {basic.difficulty && <span>📊 {RECIPE_DIFFICULTIES.find(d => d.value === basic.difficulty)?.label}</span>}
@@ -524,11 +524,11 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-[#1C1209] mb-2">Nguyên liệu ({ingredients.length})</h3>
+                <h3 className="text-sm font-semibold text-foreground mb-2">Nguyên liệu ({ingredients.length})</h3>
                 <ul className="space-y-1">
                   {ingredients.map((ing, i) => (
-                    <li key={i} className="text-sm text-[#666666] flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E85D26] mt-1.5 shrink-0" />
+                    <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
                       {ing.display_text}
                     </li>
                   ))}
@@ -536,14 +536,14 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-[#1C1209] mb-2">Các bước ({steps.length})</h3>
+                <h3 className="text-sm font-semibold text-foreground mb-2">Các bước ({steps.length})</h3>
                 <ol className="space-y-2">
                   {steps.map((s, i) => (
                     <li key={i} className="flex gap-3 text-sm">
-                      <span className="w-6 h-6 rounded-full bg-[#F7F0E8] text-[#E85D26] font-semibold flex items-center justify-center shrink-0 text-xs">
+                      <span className="w-6 h-6 rounded-full bg-muted text-primary font-semibold flex items-center justify-center shrink-0 text-xs">
                         {i + 1}
                       </span>
-                      <span className="text-[#1C1209] leading-relaxed">{s.content}</span>
+                      <span className="text-foreground leading-relaxed">{s.content}</span>
                     </li>
                   ))}
                 </ol>
@@ -561,12 +561,12 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
       )}
 
       {/* ── Navigation buttons ── */}
-      <div className="flex items-center justify-between mt-8 pt-6 border-t border-[#f0f0f0]">
+      <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
         <button
           type="button"
           onClick={goBack}
           disabled={step === 0}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#f0f0f0] text-sm font-medium text-[#666666] hover:border-[#E85D26]/50 hover:text-[#E85D26] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border text-sm font-medium text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <ChevronLeft className="w-4 h-4" /> Quay lại
         </button>
@@ -575,7 +575,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
           <button
             type="button"
             onClick={goNext}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E85D26] text-white text-sm font-medium hover:bg-[#D44E1E] transition-colors"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-[#cc1c22] transition-colors"
           >
             Tiếp theo <ChevronRight className="w-4 h-4" />
           </button>
@@ -584,7 +584,7 @@ export default function RecipeForm({ initial, recipeId, mode, submitOverride }: 
             type="button"
             onClick={handleSubmit}
             disabled={submitting}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E85D26] text-white text-sm font-medium hover:bg-[#D44E1E] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-[#cc1c22] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {submitting ? (
               <>

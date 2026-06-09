@@ -31,12 +31,12 @@ export function CountdownTimer({
     <div className="flex flex-col items-center gap-4 my-6">
       <div className="relative w-36 h-36">
         <svg className="w-36 h-36 transform -rotate-90" viewBox="0 0 128 128">
-          <circle cx="64" cy="64" r={radius} stroke="#f0f0f0" strokeWidth="8" fill="none" />
+          <circle cx="64" cy="64" r={radius} stroke="var(--border)" strokeWidth="8" fill="none" />
           <circle
             cx="64"
             cy="64"
             r={radius}
-            stroke={completed ? '#2D6A4F' : '#E85D26'}
+            stroke={completed ? '#2D6A4F' : 'var(--primary)'}
             strokeWidth="8"
             fill="none"
             strokeDasharray={circumference}
@@ -46,7 +46,7 @@ export function CountdownTimer({
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-[#1C1209]" style={{ fontFamily: 'var(--font-heading)' }}>
+          <span className="text-2xl font-bold text-foreground" style={{ fontFamily: 'var(--font-heading)' }}>
             {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
           </span>
           {completed && (
@@ -59,14 +59,14 @@ export function CountdownTimer({
         <button
           onClick={onToggle}
           disabled={completed && remaining === 0}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-[#E85D26] text-[#E85D26] hover:bg-[#E85D26] hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm font-medium"
         >
           {running ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
           {running ? 'Tạm dừng' : 'Bắt đầu'}
         </button>
         <button
           onClick={onReset}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-[#f0f0f0] text-[#666666] hover:border-[#666666] transition-colors text-sm"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border text-muted-foreground hover:border-muted-foreground transition-colors text-sm"
         >
           <RotateCcw className="w-4 h-4" />
           Làm lại

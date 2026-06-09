@@ -64,21 +64,21 @@ export default function RatingSection({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-3 py-4 border-y border-[#f0f0f0] my-4">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 py-4 border-y border-border my-4">
       <div className="flex items-center gap-2">
         <StarRating value={avgRating} readonly size="md" />
-        <span className="font-semibold text-[#1C1209]">
+        <span className="font-semibold text-foreground">
           {avgRating > 0 ? avgRating.toFixed(1) : "—"}
         </span>
         {ratingCount > 0 && (
-          <span className="text-sm text-[#666666]">({ratingCount} đánh giá)</span>
+          <span className="text-sm text-muted-foreground">({ratingCount} đánh giá)</span>
         )}
       </div>
 
       <div className="sm:ml-auto flex items-center gap-2">
         {effectiveLoggedIn ? (
           <>
-            <span className="text-sm text-[#666666]">
+            <span className="text-sm text-muted-foreground">
               {userRating ? "Bạn đã đánh giá:" : "Đánh giá của bạn:"}
             </span>
             <StarRating
@@ -91,7 +91,7 @@ export default function RatingSection({
         ) : (
           <button
             onClick={() => router.push(`/auth/login?next=/recipes/${recipeId}`)}
-            className="text-sm text-[#E85D26] hover:underline"
+            className="text-sm text-primary hover:underline"
           >
             Đăng nhập để đánh giá
           </button>

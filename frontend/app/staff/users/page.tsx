@@ -50,7 +50,7 @@ function UserAvatar({ user }: { user: AdminUser }) {
     );
   }
   return (
-    <div className="w-9 h-9 rounded-full bg-[#F7F0E8] flex items-center justify-center shrink-0 text-sm font-semibold text-[#E85D26]">
+    <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center shrink-0 text-sm font-semibold text-primary">
       {(user.full_name ?? user.email)[0].toUpperCase()}
     </div>
   );
@@ -98,17 +98,17 @@ function ActionModal({ user, action, onClose, onDone }: ActionModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
-        <h3 className="font-semibold text-[#1C1209]">{cfg.title}</h3>
-        <p className="text-sm text-[#666666]">
-          <span className="font-medium text-[#1C1209]">{user.full_name ?? user.email}</span>
+        <h3 className="font-semibold text-foreground">{cfg.title}</h3>
+        <p className="text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">{user.full_name ?? user.email}</span>
         </p>
-        <p className="text-sm text-[#666666]">{cfg.desc}</p>
+        <p className="text-sm text-muted-foreground">{cfg.desc}</p>
         <div className="flex justify-end gap-2 pt-1">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:text-[#1C1209]">Hủy</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-border text-sm text-muted-foreground hover:text-foreground">Hủy</button>
           <button
             onClick={handleConfirm}
             disabled={loading}
-            className={`px-4 py-2 rounded-xl text-sm font-medium text-white disabled:opacity-60 ${cfg.danger ? "bg-red-500 hover:bg-red-600" : "bg-[#E85D26] hover:bg-[#d04d1e]"}`}
+            className={`px-4 py-2 rounded-xl text-sm font-medium text-white disabled:opacity-60 ${cfg.danger ? "bg-red-500 hover:bg-red-600" : "bg-primary hover:bg-[#cc1c22]"}`}
           >
             {loading ? "Đang xử lý..." : cfg.confirmText}
           </button>
@@ -165,25 +165,25 @@ export default function AdminUsersPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Người dùng</h1>
-          <p className="text-sm text-[#666666] mt-0.5">{pagination ? `${pagination.total} người dùng` : ""}</p>
+          <h1 className="text-2xl font-bold text-foreground font-heading">Người dùng</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{pagination ? `${pagination.total} người dùng` : ""}</p>
         </div>
-        <Link href="/staff/users/new" className="px-3 py-1.5 text-sm rounded-lg bg-[#E85D26] text-white whitespace-nowrap">+ Tạo tài khoản</Link>
+        <Link href="/staff/users/new" className="px-3 py-1.5 text-sm rounded-lg bg-primary text-white whitespace-nowrap">+ Tạo tài khoản</Link>
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <form onSubmit={handleSearch} className="flex gap-2 flex-1 min-w-0">
           <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Tìm email, tên..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#f0f0f0] bg-white text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
-          <button type="submit" className="px-4 py-2 rounded-xl bg-[#E85D26] text-white text-sm font-medium hover:bg-[#d04d1e] transition-colors">
+          <button type="submit" className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-medium hover:bg-[#cc1c22] transition-colors">
             Tìm
           </button>
         </form>
@@ -191,7 +191,7 @@ export default function AdminUsersPage() {
         <select
           value={roleFilter}
           onChange={(e) => handleFilter(e.target.value, activeFilter)}
-          className="px-3 py-2 rounded-xl border border-[#f0f0f0] bg-white text-sm text-[#1C1209] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+          className="px-3 py-2 rounded-xl border border-border bg-white text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
         >
           <option value="">Tất cả role</option>
           <option value="user">User</option>
@@ -201,7 +201,7 @@ export default function AdminUsersPage() {
         <select
           value={activeFilter}
           onChange={(e) => handleFilter(roleFilter, e.target.value)}
-          className="px-3 py-2 rounded-xl border border-[#f0f0f0] bg-white text-sm text-[#1C1209] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+          className="px-3 py-2 rounded-xl border border-border bg-white text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
         >
           <option value="">Tất cả trạng thái</option>
           <option value="true">Đang hoạt động</option>
@@ -210,22 +210,22 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-[#f0f0f0] overflow-hidden shadow-sm">
+      <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="space-y-0">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-16 border-b border-[#F7F0E8] animate-pulse bg-[#FFFBF5]" />
+              <div key={i} className="h-16 border-b border-muted animate-pulse bg-muted" />
             ))}
           </div>
         ) : users.length === 0 ? (
-          <div className="text-center py-16 text-[#666666]">
+          <div className="text-center py-16 text-muted-foreground">
             <p className="text-3xl mb-2">👥</p>
-            <p className="font-medium text-[#1C1209]">Không có người dùng nào</p>
+            <p className="font-medium text-foreground">Không có người dùng nào</p>
           </div>
         ) : (
           <>
             {/* Desktop header */}
-            <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-5 py-3 bg-[#F7F0E8] text-xs font-semibold text-[#666666] uppercase tracking-wider">
+            <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-5 py-3 bg-muted text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               <span>Người dùng</span>
               <span>Role</span>
               <span>Thống kê</span>
@@ -236,14 +236,14 @@ export default function AdminUsersPage() {
             {users.map((user) => (
               <div
                 key={user.id}
-                className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-2 md:gap-4 px-5 py-4 border-b border-[#F7F0E8] last:border-0 items-center hover:bg-[#FFFBF5] transition-colors"
+                className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-2 md:gap-4 px-5 py-4 border-b border-muted last:border-0 items-center hover:bg-muted/50 transition-colors"
               >
                 {/* User info */}
                 <div className="flex items-center gap-3 min-w-0">
                   <UserAvatar user={user} />
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-[#1C1209] truncate">{user.full_name ?? "—"}</p>
-                    <p className="text-xs text-[#666666] truncate">{user.email}</p>
+                    <p className="text-sm font-medium text-foreground truncate">{user.full_name ?? "—"}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     {!user.is_active && (
                       <span className="inline-block text-[10px] font-medium bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full mt-0.5">
                         Bị ban
@@ -254,25 +254,25 @@ export default function AdminUsersPage() {
 
                 {/* Role */}
                 <div>
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${user.role === "admin" ? "bg-purple-100 text-purple-700" : "bg-[#F7F0E8] text-[#666666]"}`}>
+                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${user.role === "admin" ? "bg-purple-100 text-purple-700" : "bg-muted text-muted-foreground"}`}>
                     {user.role === "admin" ? "Admin" : "User"}
                   </span>
                 </div>
 
                 {/* Stats */}
-                <div className="text-xs text-[#666666] space-y-0.5">
+                <div className="text-xs text-muted-foreground space-y-0.5">
                   <p>{user.stats.recipe_count} công thức</p>
                   <p>{user.stats.follower_count} người theo dõi</p>
                 </div>
 
                 {/* Date */}
-                <div className="text-xs text-[#666666]">{formatDate(user.created_at)}</div>
+                <div className="text-xs text-muted-foreground">{formatDate(user.created_at)}</div>
 
                 {/* Actions */}
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <Link
                     href={`/staff/users/${user.id}`}
-                    className="p-1.5 rounded-lg border border-[#f0f0f0] text-[#666666] hover:text-[#E85D26] hover:border-[#E85D26]/50 transition-colors"
+                    className="p-1.5 rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors"
                     title="Xem chi tiết"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -304,15 +304,15 @@ export default function AdminUsersPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl border border-border text-sm text-muted-foreground hover:border-primary/50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Trước
           </button>
-          <span className="text-sm text-[#666666]">{page} / {pagination.total_pages}</span>
+          <span className="text-sm text-muted-foreground">{page} / {pagination.total_pages}</span>
           <button
             onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
             disabled={page === pagination.total_pages}
-            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl border border-border text-sm text-muted-foreground hover:border-primary/50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Sau
           </button>

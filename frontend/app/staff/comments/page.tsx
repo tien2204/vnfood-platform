@@ -57,7 +57,7 @@ function UserAvatar({ user }: { user: AdminComment["user"] }) {
     );
   }
   return (
-    <div className="w-7 h-7 rounded-full bg-[#F7F0E8] flex items-center justify-center shrink-0 text-xs font-semibold text-[#E85D26]">
+    <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center shrink-0 text-xs font-semibold text-primary">
       {(user.full_name ?? "?")[0].toUpperCase()}
     </div>
   );
@@ -119,20 +119,20 @@ export default function AdminCommentsPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Bình luận</h1>
-          <p className="text-sm text-[#666666] mt-0.5">{pagination ? `${pagination.total} bình luận` : ""}</p>
+          <h1 className="text-2xl font-bold text-foreground font-heading">Bình luận</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{pagination ? `${pagination.total} bình luận` : ""}</p>
         </div>
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         {/* Tab filter */}
-        <div className="flex gap-1 p-1 bg-[#F7F0E8] rounded-xl">
+        <div className="flex gap-1 p-1 bg-muted rounded-xl">
           {FILTER_TABS.map(({ value, label }) => (
             <button
               key={value}
               onClick={() => handleFilterChange(value)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isHiddenFilter === value ? "bg-white text-[#E85D26] shadow-sm" : "text-[#666666] hover:text-[#1C1209]"}`}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isHiddenFilter === value ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
             >
               {label}
             </button>
@@ -142,36 +142,36 @@ export default function AdminCommentsPage() {
         {/* Search */}
         <form onSubmit={handleSearch} className="flex gap-2 flex-1 min-w-0">
           <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Tìm nội dung..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#f0f0f0] bg-white text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
-          <button type="submit" className="px-4 py-2 rounded-xl bg-[#E85D26] text-white text-sm font-medium hover:bg-[#d04d1e]">
+          <button type="submit" className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-medium hover:bg-[#cc1c22]">
             Tìm
           </button>
         </form>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-[#f0f0f0] overflow-hidden shadow-sm">
+      <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="space-y-0">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-20 border-b border-[#F7F0E8] animate-pulse bg-[#FFFBF5]" />
+              <div key={i} className="h-20 border-b border-muted animate-pulse bg-muted" />
             ))}
           </div>
         ) : comments.length === 0 ? (
-          <div className="text-center py-16 text-[#666666]">
+          <div className="text-center py-16 text-muted-foreground">
             <p className="text-3xl mb-2">💬</p>
-            <p className="font-medium text-[#1C1209]">Không có bình luận nào</p>
+            <p className="font-medium text-foreground">Không có bình luận nào</p>
           </div>
         ) : (
           <>
-            <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_auto] gap-4 px-5 py-3 bg-[#F7F0E8] text-xs font-semibold text-[#666666] uppercase tracking-wider">
+            <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_auto] gap-4 px-5 py-3 bg-muted text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               <span>Nội dung</span>
               <span>Người dùng · Công thức</span>
               <span>Ngày · Trạng thái</span>
@@ -181,10 +181,10 @@ export default function AdminCommentsPage() {
             {comments.map((comment) => (
               <div
                 key={comment.id}
-                className={`grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1fr_auto] gap-3 md:gap-4 px-5 py-4 border-b border-[#F7F0E8] last:border-0 items-start md:items-center hover:bg-[#FFFBF5] transition-colors ${comment.is_hidden ? "opacity-70" : ""}`}
+                className={`grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1fr_auto] gap-3 md:gap-4 px-5 py-4 border-b border-muted last:border-0 items-start md:items-center hover:bg-muted/50 transition-colors ${comment.is_hidden ? "opacity-70" : ""}`}
               >
                 {/* Content */}
-                <p className={`text-sm line-clamp-3 ${comment.is_hidden ? "line-through text-[#666666]" : "text-[#1C1209]"}`}>
+                <p className={`text-sm line-clamp-3 ${comment.is_hidden ? "line-through text-muted-foreground" : "text-foreground"}`}>
                   {comment.content}
                 </p>
 
@@ -192,13 +192,13 @@ export default function AdminCommentsPage() {
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <UserAvatar user={comment.user} />
-                    <span className="text-xs text-[#666666] truncate">{comment.user.full_name ?? "Người dùng ẩn"}</span>
+                    <span className="text-xs text-muted-foreground truncate">{comment.user.full_name ?? "Người dùng ẩn"}</span>
                   </div>
                   {comment.recipe.title && (
                     <Link
                       href={`/recipes/${comment.recipe.id}`}
                       target="_blank"
-                      className="text-xs text-[#E85D26] hover:underline line-clamp-1 block"
+                      className="text-xs text-primary hover:underline line-clamp-1 block"
                     >
                       {stripEmoji(comment.recipe.title)}
                     </Link>
@@ -207,7 +207,7 @@ export default function AdminCommentsPage() {
 
                 {/* Date + Status */}
                 <div className="space-y-1">
-                  <p className="text-xs text-[#666666]">{formatDate(comment.created_at)}</p>
+                  <p className="text-xs text-muted-foreground">{formatDate(comment.created_at)}</p>
                   <span className={`text-xs font-medium px-2 py-0.5 rounded-full inline-block ${comment.is_hidden ? "bg-red-100 text-red-600" : "bg-green-100 text-green-700"}`}>
                     {comment.is_hidden ? "Đã ẩn" : "Hiển thị"}
                   </span>
@@ -244,15 +244,15 @@ export default function AdminCommentsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl border border-border text-sm text-muted-foreground hover:border-primary/50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Trước
           </button>
-          <span className="text-sm text-[#666666]">{page} / {pagination.total_pages}</span>
+          <span className="text-sm text-muted-foreground">{page} / {pagination.total_pages}</span>
           <button
             onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
             disabled={page === pagination.total_pages}
-            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl border border-border text-sm text-muted-foreground hover:border-primary/50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Sau
           </button>

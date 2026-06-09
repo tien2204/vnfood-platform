@@ -163,12 +163,12 @@ export default function CommentSection({
             placeholder="Viết bình luận của bạn..."
             rows={2}
             maxLength={1000}
-            className="flex-1 resize-none rounded-xl border border-[#f0f0f0] bg-white px-4 py-3 text-sm text-[#1C1209] placeholder:text-[#B8A898] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] transition-colors"
+            className="flex-1 resize-none rounded-xl border border-border bg-white px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
           />
           <button
             type="submit"
             disabled={submitting || newContent.trim().length < 2}
-            className="self-end px-4 py-3 bg-[#E85D26] hover:bg-[#D44E1E] disabled:opacity-50 text-white rounded-xl transition-colors"
+            className="self-end px-4 py-3 bg-primary hover:bg-[#cc1c22] disabled:opacity-50 text-white rounded-xl transition-colors"
             aria-label="Gửi bình luận"
           >
             <Send className="w-4 h-4" />
@@ -177,7 +177,7 @@ export default function CommentSection({
       ) : (
         <button
           onClick={() => router.push(`/auth/login?next=/recipes/${recipeId}`)}
-          className="w-full py-3 rounded-xl border border-dashed border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
+          className="w-full py-3 rounded-xl border border-dashed border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
         >
           Đăng nhập để bình luận
         </button>
@@ -188,17 +188,17 @@ export default function CommentSection({
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex gap-3 animate-pulse">
-              <div className="w-9 h-9 rounded-full bg-[#f0f0f0] shrink-0" />
+              <div className="w-9 h-9 rounded-full bg-muted shrink-0" />
               <div className="flex-1 space-y-2">
-                <div className="h-3 w-24 bg-[#f0f0f0] rounded" />
-                <div className="h-3 w-full bg-[#f0f0f0] rounded" />
-                <div className="h-3 w-3/4 bg-[#f0f0f0] rounded" />
+                <div className="h-3 w-24 bg-muted rounded" />
+                <div className="h-3 w-full bg-muted rounded" />
+                <div className="h-3 w-3/4 bg-muted rounded" />
               </div>
             </div>
           ))}
         </div>
       ) : comments.length === 0 ? (
-        <p className="text-center text-sm text-[#666666] py-8">
+        <p className="text-center text-sm text-muted-foreground py-8">
           Chưa có bình luận nào. Hãy là người đầu tiên!
         </p>
       ) : (
@@ -207,21 +207,21 @@ export default function CommentSection({
             <div key={comment.id} className="flex gap-3">
               <Avatar className="w-9 h-9 shrink-0">
                 <AvatarImage src={comment.user?.avatar_url ?? undefined} />
-                <AvatarFallback className="bg-[#E85D26] text-white text-sm font-semibold">
+                <AvatarFallback className="bg-primary text-white text-sm font-semibold">
                   {comment.user?.full_name?.charAt(0)?.toUpperCase() ?? "?"}
                 </AvatarFallback>
               </Avatar>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm font-semibold text-[#1C1209] truncate">
+                  <span className="text-sm font-semibold text-foreground truncate">
                     {comment.user?.full_name ?? "Người dùng"}
                   </span>
-                  <span className="text-xs text-[#B8A898] shrink-0">
+                  <span className="text-xs text-muted-foreground shrink-0">
                     {relativeTime(comment.created_at)}
                   </span>
                   {comment.updated_at !== comment.created_at && (
-                    <span className="text-xs text-[#B8A898] shrink-0">(đã sửa)</span>
+                    <span className="text-xs text-muted-foreground shrink-0">(đã sửa)</span>
                   )}
                 </div>
 
@@ -232,20 +232,20 @@ export default function CommentSection({
                       onChange={(e) => setEditContent(e.target.value)}
                       rows={2}
                       maxLength={1000}
-                      className="flex-1 resize-none rounded-lg border border-[#f0f0f0] px-3 py-2 text-sm text-[#1C1209] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30 focus:border-[#E85D26] transition-colors"
+                      className="flex-1 resize-none rounded-lg border border-border px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
                     />
                     <div className="flex flex-col gap-1">
                       <button
                         onClick={() => saveEdit(comment.id)}
                         disabled={savingEdit}
-                        className="p-1.5 rounded-lg bg-[#E85D26] text-white hover:bg-[#D44E1E] disabled:opacity-50 transition-colors"
+                        className="p-1.5 rounded-lg bg-primary text-white hover:bg-[#cc1c22] disabled:opacity-50 transition-colors"
                         aria-label="Lưu"
                       >
                         <Check className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => setEditingId(null)}
-                        className="p-1.5 rounded-lg border border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
+                        className="p-1.5 rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                         aria-label="Hủy"
                       >
                         <X className="w-3.5 h-3.5" />
@@ -253,7 +253,7 @@ export default function CommentSection({
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-[#3A2E24] leading-relaxed whitespace-pre-wrap break-words">
+                  <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words">
                     {comment.content}
                   </p>
                 )}
@@ -264,17 +264,17 @@ export default function CommentSection({
                 <div className="relative shrink-0" ref={menuOpenId === comment.id ? menuRef : undefined}>
                   <button
                     onClick={() => setMenuOpenId((id) => id === comment.id ? null : comment.id)}
-                    className="p-1.5 rounded-lg text-[#B8A898] hover:text-[#666666] hover:bg-[#F7F0E8] transition-colors"
+                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     aria-label="Tùy chọn"
                   >
                     <MoreHorizontal className="w-4 h-4" />
                   </button>
                   {menuOpenId === comment.id && (
-                    <div className="absolute right-0 top-8 z-10 bg-white border border-[#f0f0f0] rounded-xl shadow-lg py-1 min-w-[120px]">
+                    <div className="absolute right-0 top-8 z-10 bg-white border border-border rounded-xl shadow-lg py-1 min-w-[120px]">
                       {comment.is_mine && (
                         <button
                           onClick={() => startEdit(comment)}
-                          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-[#1C1209] hover:bg-[#F7F0E8] transition-colors"
+                          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                         >
                           <Pencil className="w-3.5 h-3.5" />
                           Sửa
@@ -298,7 +298,7 @@ export default function CommentSection({
             <button
               onClick={() => loadPage(page + 1)}
               disabled={loadingMore}
-              className="w-full py-2.5 text-sm text-[#E85D26] border border-[#f0f0f0] rounded-xl hover:border-[#E85D26] hover:bg-[#FFF5F0] disabled:opacity-50 transition-colors"
+              className="w-full py-2.5 text-sm text-primary border border-border rounded-xl hover:border-primary hover:bg-[#fef6f6] disabled:opacity-50 transition-colors"
             >
               {loadingMore ? "Đang tải..." : "Xem thêm bình luận"}
             </button>

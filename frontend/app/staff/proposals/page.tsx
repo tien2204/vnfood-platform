@@ -24,23 +24,23 @@ export default function StaffProposalsPage() {
   return (
     <div className="max-w-3xl">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Đề xuất của tôi</h1>
-        <Link href="/recipes/propose-new" className="px-4 py-2 rounded-xl bg-[#E85D26] text-white text-sm font-medium">
+        <h1 className="text-2xl font-bold text-foreground font-heading">Đề xuất của tôi</h1>
+        <Link href="/recipes/propose-new" className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-medium">
           + Đề xuất công thức mới
         </Link>
       </div>
       {isLoading ? (
-        <p className="text-[#666666]">Đang tải…</p>
+        <p className="text-muted-foreground">Đang tải…</p>
       ) : items.length === 0 ? (
-        <p className="text-[#666666]">Chưa có đề xuất nào.</p>
+        <p className="text-muted-foreground">Chưa có đề xuất nào.</p>
       ) : (
         <ul className="space-y-3">
           {items.map((cr) => {
             const st = STATUS[cr.status] ?? { label: cr.status, cls: "bg-gray-100 text-gray-700" };
             return (
-              <li key={cr.id} className="border border-[#f0f0f0] bg-white rounded-xl p-4">
+              <li key={cr.id} className="border border-border bg-white rounded-xl p-4">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-medium text-[#1C1209]">
+                  <span className="font-medium text-foreground">
                     {TYPE_LABEL[cr.type]} · {cr.target_title ?? "(công thức mới)"}
                   </span>
                   <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${st.cls}`}>{st.label}</span>

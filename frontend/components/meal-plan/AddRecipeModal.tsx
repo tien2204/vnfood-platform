@@ -130,8 +130,8 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col gap-0 p-0 overflow-hidden">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b border-[#F0E8E0] shrink-0">
-          <DialogTitle className="text-[#2D2417]">
+        <DialogHeader className="px-6 pt-6 pb-4 border-b border-border shrink-0">
+          <DialogTitle className="text-foreground">
             Thêm món — {MEAL_LABELS[mealType]} {dateDisplay}
           </DialogTitle>
         </DialogHeader>
@@ -140,24 +140,24 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
           {/* Search — always visible */}
           <div className="px-6 pt-4 pb-3 shrink-0">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 autoFocus
                 placeholder="Tìm công thức..."
                 value={query}
                 onChange={(e) => handleQueryChange(e.target.value)}
-                className="pl-9 bg-[#F7F0E8] border-[#f0f0f0] focus-visible:ring-[#E85D26]"
+                className="pl-9 bg-muted border-border focus-visible:ring-primary"
               />
               {searching && (
-                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] animate-spin" />
+                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground animate-spin" />
               )}
             </div>
-            <label className="flex items-center gap-2 mt-2 text-xs text-[#666666] cursor-pointer select-none">
+            <label className="flex items-center gap-2 mt-2 text-xs text-muted-foreground cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={showAll}
                 onChange={(e) => setShowAll(e.target.checked)}
-                className="w-3.5 h-3.5 accent-[#E85D26] cursor-pointer"
+                className="w-3.5 h-3.5 accent-[#ec2028] cursor-pointer"
               />
               Hiện tất cả công thức (mặc định chỉ công thức chuẩn)
             </label>
@@ -179,13 +179,13 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
             </div>
           )}
           {!results.length && query && !searching && (
-            <p className="text-center text-[#666666] text-sm py-6 px-6">
+            <p className="text-center text-muted-foreground text-sm py-6 px-6">
               Không tìm thấy công thức nào
             </p>
           )}
           {!query && suggestions.length > 0 && (
             <div className="px-6 pb-3">
-              <p className="text-xs font-semibold text-[#666666] uppercase tracking-wide mb-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                 Gợi ý cho bạn
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -201,7 +201,7 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
             </div>
           )}
           {!query && suggestions.length === 0 && selected.length === 0 && (
-            <p className="text-center text-[#B8A898] text-sm py-6 px-6">
+            <p className="text-center text-muted-foreground text-sm py-6 px-6">
               Nhập tên món để tìm kiếm
             </p>
           )}
@@ -209,7 +209,7 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
           {/* Selected recipes */}
           {selected.length > 0 && (
             <div className="px-6 pb-4 flex flex-col gap-2">
-              <p className="text-xs font-semibold text-[#666666] uppercase tracking-wide">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                 Đã chọn ({selected.length} món)
               </p>
               {selected.map((s) => (
@@ -221,7 +221,7 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
                 />
               ))}
 
-              <p className="flex items-center gap-1.5 text-xs text-[#666666] mt-1">
+              <p className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
                 <ShoppingCart className="w-3.5 h-3.5 text-[#2D6A4F]" />
                 Nguyên liệu sẽ tự động thêm vào grocery list
               </p>
@@ -230,12 +230,12 @@ export default function AddRecipeModal({ planId, date, mealType, onClose, onAdde
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-[#F0E8E0] shrink-0 flex gap-3">
-          <Button variant="outline" className="flex-1 border-[#f0f0f0]" onClick={onClose}>
+        <div className="px-6 py-4 border-t border-border shrink-0 flex gap-3">
+          <Button variant="outline" className="flex-1 border-border" onClick={onClose}>
             Huỷ
           </Button>
           <Button
-            className="flex-1 bg-[#E85D26] hover:bg-[#D44E1E] text-white"
+            className="flex-1 bg-primary hover:bg-[#cc1c22] text-white"
             onClick={handleAdd}
             disabled={adding || selected.length === 0}
           >
@@ -265,16 +265,16 @@ function RecipePickCard({
       onClick={onToggle}
       className={`text-left rounded-xl overflow-hidden border transition-all group relative ${
         selected
-          ? "border-[#E85D26] shadow-md ring-1 ring-[#E85D26]"
-          : "border-[#f0f0f0] hover:border-[#E85D26] hover:shadow-md"
+          ? "border-primary shadow-md ring-1 ring-primary"
+          : "border-border hover:border-primary hover:shadow-md"
       }`}
     >
       {selected && (
-        <div className="absolute top-1.5 right-1.5 z-10 w-5 h-5 rounded-full bg-[#E85D26] flex items-center justify-center">
+        <div className="absolute top-1.5 right-1.5 z-10 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
           <Check className="w-3 h-3 text-white" />
         </div>
       )}
-      <div className="aspect-video bg-[#F7F0E8] overflow-hidden relative">
+      <div className="aspect-video bg-muted overflow-hidden relative">
         {recipe.is_canonical && (
           <span className="absolute top-1 left-1 z-10 px-1.5 py-0.5 rounded-full bg-[#2D6A4F] text-white text-[9px] font-semibold">
             Chuẩn
@@ -289,13 +289,13 @@ function RecipePickCard({
             className="w-full h-full object-cover group-hover:scale-105 transition-transform"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-[#B8A898] text-2xl">🍽</div>
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-2xl">🍽</div>
         )}
       </div>
       <div className="p-2">
-        <p className="text-xs font-semibold text-[#2D2417] line-clamp-2 leading-tight">{recipe.title}</p>
+        <p className="text-xs font-semibold text-foreground line-clamp-2 leading-tight">{recipe.title}</p>
         {recipe.cooking_time && (
-          <p className="text-[10px] text-[#666666] mt-0.5 flex items-center gap-0.5">
+          <p className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-0.5">
             <Clock className="w-2.5 h-2.5" /> {recipe.cooking_time}p
           </p>
         )}
@@ -314,7 +314,7 @@ function SelectedRow({
   onServingsChange: (delta: number) => void;
 }) {
   return (
-    <div className="flex items-center gap-3 px-3 py-2 bg-white rounded-xl border border-[#f0f0f0]">
+    <div className="flex items-center gap-3 px-3 py-2 bg-white rounded-xl border border-border">
       {item.recipe.image_url && (
         <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0">
           <Image
@@ -326,27 +326,27 @@ function SelectedRow({
           />
         </div>
       )}
-      <p className="flex-1 text-sm font-medium text-[#2D2417] truncate min-w-0">
+      <p className="flex-1 text-sm font-medium text-foreground truncate min-w-0">
         {item.recipe.title}
       </p>
       {/* Servings */}
       <div className="flex items-center gap-1.5 shrink-0">
         <button
           onClick={() => onServingsChange(-1)}
-          className="w-6 h-6 rounded-full border border-[#f0f0f0] flex items-center justify-center hover:bg-[#F7F0E8] transition-colors"
+          className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
         >
           <Minus className="w-3 h-3" />
         </button>
-        <span className="text-sm font-bold text-[#2D2417] w-5 text-center">{item.servings}</span>
+        <span className="text-sm font-bold text-foreground w-5 text-center">{item.servings}</span>
         <button
           onClick={() => onServingsChange(1)}
-          className="w-6 h-6 rounded-full border border-[#f0f0f0] flex items-center justify-center hover:bg-[#F7F0E8] transition-colors"
+          className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
         >
           <Plus className="w-3 h-3" />
         </button>
-        <span className="text-xs text-[#666666]">người</span>
+        <span className="text-xs text-muted-foreground">người</span>
       </div>
-      <button onClick={onRemove} className="text-[#B8A898] hover:text-red-500 transition-colors shrink-0 ml-1">
+      <button onClick={onRemove} className="text-muted-foreground hover:text-red-500 transition-colors shrink-0 ml-1">
         <X className="w-4 h-4" />
       </button>
     </div>

@@ -25,12 +25,12 @@ export default function ProposeEditPage({ params }: { params: Promise<{ id: stri
     router.push("/staff/proposals");
   }
 
-  if (failed) return <p className="p-8 text-[#666666]">Không tải được công thức. <a href="/recipes" className="text-[#E85D26] underline">Quay lại</a></p>;
-  if (!recipe) return <p className="p-8 text-[#666666]">Đang tải…</p>;
+  if (failed) return <p className="p-8 text-muted-foreground">Không tải được công thức. <a href="/recipes" className="text-primary underline">Quay lại</a></p>;
+  if (!recipe) return <p className="p-8 text-muted-foreground">Đang tải…</p>;
   return (
-    <main className="min-h-screen bg-[#FFFBF5] py-8 px-4">
+    <main className="min-h-screen bg-white py-8 px-4">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-xl font-bold text-[#1C1209] mb-4">Đề xuất sửa: {recipe.title}</h1>
+        <h1 className="text-xl font-bold text-foreground mb-4">Đề xuất sửa: {recipe.title}</h1>
         <RecipeForm initial={recipe} recipeId={id} mode="edit" submitOverride={submit} />
       </div>
     </main>
