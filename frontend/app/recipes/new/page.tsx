@@ -6,7 +6,7 @@ export default function NewRecipePage() {
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Đăng công thức mới</h1>
-          <p className="text-sm text-[#7C6A56] mt-1">
+          <p className="text-sm text-[#666666] mt-1">
             Công thức sẽ được Admin duyệt trước khi hiển thị công khai.
           </p>
         </div>

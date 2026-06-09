@@ -61,9 +61,9 @@ function stripEmoji(text: string) {
 function StatPill({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
   return (
     <div className="flex items-center gap-2 bg-[#F7F0E8] rounded-xl px-3 py-2">
-      <span className="text-[#7C6A56]">{icon}</span>
+      <span className="text-[#666666]">{icon}</span>
       <div>
-        <p className="text-xs text-[#7C6A56]">{label}</p>
+        <p className="text-xs text-[#666666]">{label}</p>
         <p className="text-sm font-bold text-[#1C1209]">{value.toLocaleString("vi-VN")}</p>
       </div>
     </div>
@@ -86,9 +86,9 @@ function ConfirmModal({ title, desc, confirmText, danger, onConfirm, onClose }: 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
         <h3 className="font-semibold text-[#1C1209]">{title}</h3>
-        <p className="text-sm text-[#7C6A56]">{desc}</p>
+        <p className="text-sm text-[#666666]">{desc}</p>
         <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56]">Hủy</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666]">Hủy</button>
           <button
             onClick={go} disabled={loading}
             className={`px-4 py-2 rounded-xl text-sm font-medium text-white disabled:opacity-60 ${danger ? "bg-red-500 hover:bg-red-600" : "bg-[#E85D26] hover:bg-[#d04d1e]"}`}
@@ -183,7 +183,7 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
   if (!data) {
     return (
       <div className="text-center py-16">
-        <p className="text-[#7C6A56]">Không tìm thấy người dùng</p>
+        <p className="text-[#666666]">Không tìm thấy người dùng</p>
         <Link href="/staff/users" className="text-sm text-[#E85D26] mt-2 inline-block">← Quay lại</Link>
       </div>
     );
@@ -202,13 +202,13 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
       )}
 
       {/* Back */}
-      <Link href="/staff/users" className="inline-flex items-center gap-1.5 text-sm text-[#7C6A56] hover:text-[#1C1209] transition-colors">
+      <Link href="/staff/users" className="inline-flex items-center gap-1.5 text-sm text-[#666666] hover:text-[#1C1209] transition-colors">
         <ArrowLeft className="w-4 h-4" />
         Danh sách người dùng
       </Link>
 
       {/* Profile card */}
-      <div className="bg-white rounded-2xl border border-[#E8DDD4] shadow-sm p-6">
+      <div className="bg-white rounded-2xl border border-[#f0f0f0] shadow-sm p-6">
         <div className="flex flex-col sm:flex-row gap-5">
           {/* Avatar */}
           <div className="shrink-0">
@@ -227,16 +227,16 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
           <div className="flex-1 min-w-0">
             <div className="flex items-start gap-2 flex-wrap">
               <h1 className="text-xl font-bold text-[#1C1209] font-heading">{user.full_name ?? "Chưa đặt tên"}</h1>
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${user.role === "admin" ? "bg-purple-100 text-purple-700" : "bg-[#F7F0E8] text-[#7C6A56]"}`}>
+              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${user.role === "admin" ? "bg-purple-100 text-purple-700" : "bg-[#F7F0E8] text-[#666666]"}`}>
                 {user.role === "admin" ? "Admin" : "User"}
               </span>
               {!user.is_active && (
                 <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 text-red-600">Bị ban</span>
               )}
             </div>
-            <p className="text-sm text-[#7C6A56] mt-0.5">{user.email}</p>
-            {user.bio && <p className="text-sm text-[#7C6A56] mt-2 line-clamp-2">{user.bio}</p>}
-            <div className="flex items-center gap-1.5 mt-2 text-xs text-[#7C6A56]">
+            <p className="text-sm text-[#666666] mt-0.5">{user.email}</p>
+            {user.bio && <p className="text-sm text-[#666666] mt-2 line-clamp-2">{user.bio}</p>}
+            <div className="flex items-center gap-1.5 mt-2 text-xs text-[#666666]">
               <Calendar className="w-3 h-3" />
               Tham gia {formatDate(user.created_at)} · {stats.joined_days} ngày
             </div>
@@ -264,19 +264,19 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
         {/* CRUD controls */}
         <div className="mt-4 pt-4 border-t border-[#F7F0E8]">
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => { setEditing(true); setFullName(user.full_name ?? ""); setEditEmail(user.email ?? ""); }} className="px-3 py-1.5 text-sm rounded-lg border border-[#E8DDD4] text-[#1C1209] hover:border-[#E85D26]/50">Sửa</button>
-            <button onClick={resetPassword} className="px-3 py-1.5 text-sm rounded-lg border border-[#E8DDD4] text-[#1C1209] hover:border-[#E85D26]/50">Đặt lại mật khẩu</button>
+            <button onClick={() => { setEditing(true); setFullName(user.full_name ?? ""); setEditEmail(user.email ?? ""); }} className="px-3 py-1.5 text-sm rounded-lg border border-[#f0f0f0] text-[#1C1209] hover:border-[#E85D26]/50">Sửa</button>
+            <button onClick={resetPassword} className="px-3 py-1.5 text-sm rounded-lg border border-[#f0f0f0] text-[#1C1209] hover:border-[#E85D26]/50">Đặt lại mật khẩu</button>
             {currentUser?.id !== id && (
               <button onClick={deleteUser} className="px-3 py-1.5 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700">Xóa tài khoản</button>
             )}
           </div>
           {editing && (
             <div className="mt-3 space-y-2 max-w-sm">
-              <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Họ tên" className="w-full border border-[#E8DDD4] rounded-lg px-3 py-2 text-sm" />
-              <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} placeholder="Email" className="w-full border border-[#E8DDD4] rounded-lg px-3 py-2 text-sm" />
+              <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Họ tên" className="w-full border border-[#f0f0f0] rounded-lg px-3 py-2 text-sm" />
+              <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} placeholder="Email" className="w-full border border-[#f0f0f0] rounded-lg px-3 py-2 text-sm" />
               <div className="flex gap-2">
                 <button onClick={saveEdit} className="px-3 py-1.5 text-sm rounded-lg bg-[#E85D26] text-white">Lưu</button>
-                <button onClick={() => setEditing(false)} className="px-3 py-1.5 text-sm rounded-lg text-[#7C6A56]">Hủy</button>
+                <button onClick={() => setEditing(false)} className="px-3 py-1.5 text-sm rounded-lg text-[#666666]">Hủy</button>
               </div>
             </div>
           )}
@@ -294,13 +294,13 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-[#E8DDD4] shadow-sm overflow-hidden">
-        <div className="flex border-b border-[#E8DDD4]">
+      <div className="bg-white rounded-2xl border border-[#f0f0f0] shadow-sm overflow-hidden">
+        <div className="flex border-b border-[#f0f0f0]">
           {([["recipes", "Công thức gần đây", BookOpen], ["comments", "Bình luận gần đây", MessageSquare]] as const).map(([val, label, Icon]) => (
             <button
               key={val}
               onClick={() => setTab(val)}
-              className={`flex items-center gap-1.5 px-5 py-3.5 text-sm font-medium border-b-2 transition-colors ${tab === val ? "border-[#E85D26] text-[#E85D26]" : "border-transparent text-[#7C6A56] hover:text-[#1C1209]"}`}
+              className={`flex items-center gap-1.5 px-5 py-3.5 text-sm font-medium border-b-2 transition-colors ${tab === val ? "border-[#E85D26] text-[#E85D26]" : "border-transparent text-[#666666] hover:text-[#1C1209]"}`}
             >
               <Icon className="w-4 h-4" />
               {label}
@@ -311,7 +311,7 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
         <div className="p-4">
           {tab === "recipes" && (
             recent_recipes.length === 0 ? (
-              <p className="text-sm text-[#7C6A56] text-center py-8">Chưa có công thức nào</p>
+              <p className="text-sm text-[#666666] text-center py-8">Chưa có công thức nào</p>
             ) : (
               <div className="space-y-3">
                 {recent_recipes.map((r) => (
@@ -325,7 +325,7 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
                       <Link href={`/recipes/${r.id}`} target="_blank" className="text-sm font-medium text-[#1C1209] hover:text-[#E85D26] line-clamp-1">
                         {stripEmoji(r.title)}
                       </Link>
-                      <p className="text-xs text-[#7C6A56]">{formatDate(r.created_at)}</p>
+                      <p className="text-xs text-[#666666]">{formatDate(r.created_at)}</p>
                     </div>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${r.status === "approved" ? "bg-green-100 text-green-700" : r.status === "pending" ? "bg-orange-100 text-orange-700" : "bg-red-100 text-red-600"}`}>
                       {r.status === "approved" ? "Đã duyệt" : r.status === "pending" ? "Chờ duyệt" : "Từ chối"}
@@ -338,13 +338,13 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
 
           {tab === "comments" && (
             recent_comments.length === 0 ? (
-              <p className="text-sm text-[#7C6A56] text-center py-8">Chưa có bình luận nào</p>
+              <p className="text-sm text-[#666666] text-center py-8">Chưa có bình luận nào</p>
             ) : (
               <div className="space-y-3">
                 {recent_comments.map((c) => (
-                  <div key={c.id} className={`p-3 rounded-xl border ${c.is_hidden ? "border-red-100 bg-red-50" : "border-[#E8DDD4]"}`}>
+                  <div key={c.id} className={`p-3 rounded-xl border ${c.is_hidden ? "border-red-100 bg-red-50" : "border-[#f0f0f0]"}`}>
                     <p className="text-sm text-[#1C1209] line-clamp-2">{c.content}</p>
-                    <div className="flex items-center justify-between mt-1.5 text-xs text-[#7C6A56]">
+                    <div className="flex items-center justify-between mt-1.5 text-xs text-[#666666]">
                       <span>
                         {c.recipe.title && (
                           <Link href={`/recipes/${c.recipe.id}`} target="_blank" className="hover:text-[#E85D26]">

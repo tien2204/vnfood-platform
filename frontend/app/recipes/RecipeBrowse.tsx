@@ -137,20 +137,20 @@ export default function RecipeBrowse() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       {/* Header */}
-      <div className="mb-8 border-2 border-[#2c1810] bg-[#fff5e6] p-6 shadow-block sm:p-8">
+      <div className="mb-8 border border-border bg-[#f5f5f5] p-6 shadow-block sm:p-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
         <div className="flex-1">
-          <p className="mb-2 text-sm font-bold uppercase tracking-wider text-[#ff6b35]">
+          <p className="mb-2 text-sm font-bold uppercase tracking-wider text-[#ec2028]">
             Our Menu
           </p>
           <h1
-            className="text-3xl font-bold text-[#2c1810] sm:text-4xl"
+            className="text-3xl font-bold text-[#0a0a0a] sm:text-4xl"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             Tất cả công thức
           </h1>
           {!loading && (
-            <p className="mt-1 text-sm font-medium text-[#6b5344]">
+            <p className="mt-1 text-sm font-medium text-[#666666]">
               {total.toLocaleString()} công thức
             </p>
           )}
@@ -167,12 +167,12 @@ export default function RecipeBrowse() {
             variant="outline"
             size="sm"
             onClick={() => setShowFilters(!showFilters)}
-            className="gap-1.5 rounded-none border-2 border-[#2c1810] bg-white shadow-block-sm hover:bg-[#fffaf0]"
+            className="gap-1.5 rounded-lg border border-border bg-white shadow-block-sm hover:bg-[#ffffff]"
           >
             <SlidersHorizontal className="w-4 h-4" />
             Lọc
             {hasFilters && (
-              <Badge className="ml-0.5 flex h-4 w-4 items-center justify-center rounded-none bg-[#ff6b35] p-0 text-[10px]">
+              <Badge className="ml-0.5 flex h-4 w-4 items-center justify-center rounded-lg bg-[#ec2028] p-0 text-[10px]">
                 !
               </Badge>
             )}
@@ -183,15 +183,15 @@ export default function RecipeBrowse() {
 
       {/* Filter bar */}
       {showFilters && (
-        <div className="mb-6 flex flex-wrap items-center gap-3 border-2 border-[#2c1810] bg-white p-4 shadow-block-sm">
+        <div className="mb-6 flex flex-wrap items-center gap-3 border border-border bg-white p-4 shadow-block-sm">
           {/* Sort */}
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-[#6b5344]">Sắp xếp:</span>
+            <span className="text-sm font-medium text-[#666666]">Sắp xếp:</span>
             <Select
               value={sort}
               onValueChange={(v) => updateParam("sort", v ?? "newest")}
             >
-              <SelectTrigger className="h-8 w-36 rounded-none border-2 border-[#2c1810] bg-white text-sm">
+              <SelectTrigger className="h-8 w-36 rounded-lg border border-border bg-white text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -206,12 +206,12 @@ export default function RecipeBrowse() {
 
           {/* Keyword */}
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-[#6b5344]">Danh mục:</span>
+            <span className="text-sm font-medium text-[#666666]">Danh mục:</span>
             <Select
               value={keyword}
               onValueChange={(v) => updateParam("keyword", v === "__all__" ? "" : v ?? "")}
             >
-              <SelectTrigger className="h-8 w-36 rounded-none border-2 border-[#2c1810] bg-white text-sm">
+              <SelectTrigger className="h-8 w-36 rounded-lg border border-border bg-white text-sm">
                 <SelectValue placeholder="Tất cả" />
               </SelectTrigger>
               <SelectContent>
@@ -226,12 +226,12 @@ export default function RecipeBrowse() {
 
           {/* Difficulty */}
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-[#6b5344]">Độ khó:</span>
+            <span className="text-sm font-medium text-[#666666]">Độ khó:</span>
             <Select
               value={difficulty}
               onValueChange={(v) => updateParam("difficulty", v === "__all__" ? "" : v ?? "")}
             >
-              <SelectTrigger className="h-8 w-36 rounded-none border-2 border-[#2c1810] bg-white text-sm">
+              <SelectTrigger className="h-8 w-36 rounded-lg border border-border bg-white text-sm">
                 <SelectValue placeholder="Tất cả" />
               </SelectTrigger>
               <SelectContent>
@@ -248,7 +248,7 @@ export default function RecipeBrowse() {
           {hasFilters && (
             <button
               onClick={() => router.push("/recipes")}
-              className="ml-auto flex items-center gap-1 text-sm font-bold text-[#ff6b35] hover:underline"
+              className="ml-auto flex items-center gap-1 text-sm font-bold text-[#ec2028] hover:underline"
             >
               <X className="w-3.5 h-3.5" /> Xóa bộ lọc
             </button>
@@ -266,8 +266,8 @@ export default function RecipeBrowse() {
               onClick={() => updateParam("keyword", k.value)}
               className={`border-2 px-3.5 py-1.5 text-sm font-bold transition-all ${
                 active
-                  ? "border-[#2c1810] bg-[#ff6b35] text-white shadow-block-sm"
-                  : "border-[#2c1810] bg-[#fff5e6] text-[#2c1810] shadow-block-sm hover:bg-[#ff6b35] hover:text-white"
+                  ? "border-[#0a0a0a] bg-[#ec2028] text-white shadow-block-sm"
+                  : "border-[#0a0a0a] bg-[#f5f5f5] text-[#0a0a0a] shadow-block-sm hover:bg-[#ec2028] hover:text-white"
               }`}
             >
               {k.label}
@@ -290,7 +290,7 @@ export default function RecipeBrowse() {
           />
         ))}
         {facetCount > 0 && (
-          <span className="ml-1 text-sm font-bold text-[#ff6b35]">
+          <span className="ml-1 text-sm font-bold text-[#ec2028]">
             Hiện Bộ Lọc: {facetCount}
           </span>
         )}
@@ -301,12 +301,12 @@ export default function RecipeBrowse() {
 
       {/* Empty state */}
       {!loading && recipes.length === 0 && (
-        <div className="border-2 border-[#2c1810] bg-white py-20 text-center shadow-block">
+        <div className="border border-border bg-white py-20 text-center shadow-block">
           <p className="text-4xl mb-3">🍽️</p>
-          <p className="mb-1 text-lg font-bold text-[#2c1810]">
+          <p className="mb-1 text-lg font-bold text-[#0a0a0a]">
             Không tìm thấy công thức nào
           </p>
-          <p className="text-sm text-[#6b5344]">
+          <p className="text-sm text-[#666666]">
             Thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc
           </p>
         </div>
@@ -321,12 +321,12 @@ export default function RecipeBrowse() {
             size="sm"
             disabled={page <= 1}
             onClick={() => updateParam("page", String(page - 1))}
-            className="rounded-none border-2 border-[#2c1810] bg-white shadow-block-sm"
+            className="rounded-lg border border-border bg-white shadow-block-sm"
           >
             ← Trước
           </Button>
 
-          <span className="px-2 text-sm font-medium text-[#6b5344]">
+          <span className="px-2 text-sm font-medium text-[#666666]">
             Trang {page} / {totalPages}
           </span>
 
@@ -336,7 +336,7 @@ export default function RecipeBrowse() {
             size="sm"
             disabled={page >= totalPages}
             onClick={() => updateParam("page", String(page + 1))}
-            className="rounded-none border-2 border-[#2c1810] bg-white shadow-block-sm"
+            className="rounded-lg border border-border bg-white shadow-block-sm"
           >
             Sau →
           </Button>

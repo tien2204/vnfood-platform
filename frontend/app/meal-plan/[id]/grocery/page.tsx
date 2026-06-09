@@ -22,7 +22,7 @@ export default function GroceryPage({ params }: { params: Promise<{ id: string }
       <div className="flex items-center gap-3 mb-8">
         <Link
           href={`/meal-plan/${id}`}
-          className="p-2 rounded-lg hover:bg-[#F7F0E8] text-[#7C6A56] transition-colors"
+          className="p-2 rounded-lg hover:bg-[#F7F0E8] text-[#666666] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
@@ -30,7 +30,7 @@ export default function GroceryPage({ params }: { params: Promise<{ id: string }
           <h1 className="text-xl font-bold text-[#2D2417]" style={{ fontFamily: "var(--font-playfair)" }}>
             Danh sách mua sắm
           </h1>
-          <p className="text-sm text-[#7C6A56]">Tổng hợp nguyên liệu từ lịch ăn</p>
+          <p className="text-sm text-[#666666]">Tổng hợp nguyên liệu từ lịch ăn</p>
         </div>
       </div>
 
@@ -42,7 +42,7 @@ export default function GroceryPage({ params }: { params: Promise<{ id: string }
         <GroceryList planId={id} initial={data} />
       ) : (
         <div className="text-center py-12">
-          <p className="text-[#7C6A56]">Không thể tải danh sách mua sắm.</p>
+          <p className="text-[#666666]">Không thể tải danh sách mua sắm.</p>
           <p className="text-sm text-[#B8A898] mt-1">
             Thêm món vào lịch để tự động tổng hợp nguyên liệu.
           </p>

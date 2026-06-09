@@ -29,7 +29,7 @@ export default function GlobalError({
       >
         Có lỗi xảy ra
       </h1>
-      <p className="text-[#7C6A56] max-w-sm leading-relaxed mb-8">
+      <p className="text-[#666666] max-w-sm leading-relaxed mb-8">
         Trang này gặp sự cố không mong đợi. Thử tải lại hoặc quay về trang chủ.
       </p>
 
@@ -43,7 +43,7 @@ export default function GlobalError({
         </Button>
         <Button
           variant="outline"
-          className="gap-2 border-[#E8DDD4] text-[#7C6A56] hover:border-[#E85D26] hover:text-[#E85D26]"
+          className="gap-2 border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26]"
           onClick={() => (window.location.href = "/")}
         >
           <Home className="w-4 h-4" aria-hidden="true" />

@@ -64,21 +64,21 @@ export default function RatingSection({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-3 py-4 border-y border-[#E8DDD4] my-4">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 py-4 border-y border-[#f0f0f0] my-4">
       <div className="flex items-center gap-2">
         <StarRating value={avgRating} readonly size="md" />
         <span className="font-semibold text-[#1C1209]">
           {avgRating > 0 ? avgRating.toFixed(1) : "—"}
         </span>
         {ratingCount > 0 && (
-          <span className="text-sm text-[#7C6A56]">({ratingCount} đánh giá)</span>
+          <span className="text-sm text-[#666666]">({ratingCount} đánh giá)</span>
         )}
       </div>
 
       <div className="sm:ml-auto flex items-center gap-2">
         {effectiveLoggedIn ? (
           <>
-            <span className="text-sm text-[#7C6A56]">
+            <span className="text-sm text-[#666666]">
               {userRating ? "Bạn đã đánh giá:" : "Đánh giá của bạn:"}
             </span>
             <StarRating

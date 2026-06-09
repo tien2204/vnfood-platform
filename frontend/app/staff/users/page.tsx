@@ -99,12 +99,12 @@ function ActionModal({ user, action, onClose, onDone }: ActionModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-4">
         <h3 className="font-semibold text-[#1C1209]">{cfg.title}</h3>
-        <p className="text-sm text-[#7C6A56]">
+        <p className="text-sm text-[#666666]">
           <span className="font-medium text-[#1C1209]">{user.full_name ?? user.email}</span>
         </p>
-        <p className="text-sm text-[#7C6A56]">{cfg.desc}</p>
+        <p className="text-sm text-[#666666]">{cfg.desc}</p>
         <div className="flex justify-end gap-2 pt-1">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:text-[#1C1209]">Hủy</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:text-[#1C1209]">Hủy</button>
           <button
             onClick={handleConfirm}
             disabled={loading}
@@ -166,7 +166,7 @@ export default function AdminUsersPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Người dùng</h1>
-          <p className="text-sm text-[#7C6A56] mt-0.5">{pagination ? `${pagination.total} người dùng` : ""}</p>
+          <p className="text-sm text-[#666666] mt-0.5">{pagination ? `${pagination.total} người dùng` : ""}</p>
         </div>
         <Link href="/staff/users/new" className="px-3 py-1.5 text-sm rounded-lg bg-[#E85D26] text-white whitespace-nowrap">+ Tạo tài khoản</Link>
       </div>
@@ -175,12 +175,12 @@ export default function AdminUsersPage() {
       <div className="flex flex-wrap gap-3">
         <form onSubmit={handleSearch} className="flex gap-2 flex-1 min-w-0">
           <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7C6A56]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
             <input
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Tìm email, tên..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#E8DDD4] bg-white text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#f0f0f0] bg-white text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
             />
           </div>
           <button type="submit" className="px-4 py-2 rounded-xl bg-[#E85D26] text-white text-sm font-medium hover:bg-[#d04d1e] transition-colors">
@@ -191,7 +191,7 @@ export default function AdminUsersPage() {
         <select
           value={roleFilter}
           onChange={(e) => handleFilter(e.target.value, activeFilter)}
-          className="px-3 py-2 rounded-xl border border-[#E8DDD4] bg-white text-sm text-[#1C1209] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+          className="px-3 py-2 rounded-xl border border-[#f0f0f0] bg-white text-sm text-[#1C1209] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
         >
           <option value="">Tất cả role</option>
           <option value="user">User</option>
@@ -201,7 +201,7 @@ export default function AdminUsersPage() {
         <select
           value={activeFilter}
           onChange={(e) => handleFilter(roleFilter, e.target.value)}
-          className="px-3 py-2 rounded-xl border border-[#E8DDD4] bg-white text-sm text-[#1C1209] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+          className="px-3 py-2 rounded-xl border border-[#f0f0f0] bg-white text-sm text-[#1C1209] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
         >
           <option value="">Tất cả trạng thái</option>
           <option value="true">Đang hoạt động</option>
@@ -210,7 +210,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-[#E8DDD4] overflow-hidden shadow-sm">
+      <div className="bg-white rounded-2xl border border-[#f0f0f0] overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="space-y-0">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -218,14 +218,14 @@ export default function AdminUsersPage() {
             ))}
           </div>
         ) : users.length === 0 ? (
-          <div className="text-center py-16 text-[#7C6A56]">
+          <div className="text-center py-16 text-[#666666]">
             <p className="text-3xl mb-2">👥</p>
             <p className="font-medium text-[#1C1209]">Không có người dùng nào</p>
           </div>
         ) : (
           <>
             {/* Desktop header */}
-            <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-5 py-3 bg-[#F7F0E8] text-xs font-semibold text-[#7C6A56] uppercase tracking-wider">
+            <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 px-5 py-3 bg-[#F7F0E8] text-xs font-semibold text-[#666666] uppercase tracking-wider">
               <span>Người dùng</span>
               <span>Role</span>
               <span>Thống kê</span>
@@ -243,7 +243,7 @@ export default function AdminUsersPage() {
                   <UserAvatar user={user} />
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-[#1C1209] truncate">{user.full_name ?? "—"}</p>
-                    <p className="text-xs text-[#7C6A56] truncate">{user.email}</p>
+                    <p className="text-xs text-[#666666] truncate">{user.email}</p>
                     {!user.is_active && (
                       <span className="inline-block text-[10px] font-medium bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full mt-0.5">
                         Bị ban
@@ -254,25 +254,25 @@ export default function AdminUsersPage() {
 
                 {/* Role */}
                 <div>
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${user.role === "admin" ? "bg-purple-100 text-purple-700" : "bg-[#F7F0E8] text-[#7C6A56]"}`}>
+                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${user.role === "admin" ? "bg-purple-100 text-purple-700" : "bg-[#F7F0E8] text-[#666666]"}`}>
                     {user.role === "admin" ? "Admin" : "User"}
                   </span>
                 </div>
 
                 {/* Stats */}
-                <div className="text-xs text-[#7C6A56] space-y-0.5">
+                <div className="text-xs text-[#666666] space-y-0.5">
                   <p>{user.stats.recipe_count} công thức</p>
                   <p>{user.stats.follower_count} người theo dõi</p>
                 </div>
 
                 {/* Date */}
-                <div className="text-xs text-[#7C6A56]">{formatDate(user.created_at)}</div>
+                <div className="text-xs text-[#666666]">{formatDate(user.created_at)}</div>
 
                 {/* Actions */}
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <Link
                     href={`/staff/users/${user.id}`}
-                    className="p-1.5 rounded-lg border border-[#E8DDD4] text-[#7C6A56] hover:text-[#E85D26] hover:border-[#E85D26]/50 transition-colors"
+                    className="p-1.5 rounded-lg border border-[#f0f0f0] text-[#666666] hover:text-[#E85D26] hover:border-[#E85D26]/50 transition-colors"
                     title="Xem chi tiết"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -304,15 +304,15 @@ export default function AdminUsersPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Trước
           </button>
-          <span className="text-sm text-[#7C6A56]">{page} / {pagination.total_pages}</span>
+          <span className="text-sm text-[#666666]">{page} / {pagination.total_pages}</span>
           <button
             onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
             disabled={page === pagination.total_pages}
-            className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Sau
           </button>

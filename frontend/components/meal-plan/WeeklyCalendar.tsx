@@ -63,7 +63,7 @@ export default function WeeklyCalendar({ planId, days, onRefresh }: WeeklyCalend
           <div className="grid grid-cols-7 gap-2 mb-2">
             {dayKeys.map((dayKey, i) => (
               <div key={dayKey} className="text-center">
-                <div className="text-xs font-semibold text-[#7C6A56]">{DAY_LABELS[i]}</div>
+                <div className="text-xs font-semibold text-[#666666]">{DAY_LABELS[i]}</div>
                 <div className="text-sm font-bold text-[#2D2417]">{fmtShort(dayKey)}</div>
               </div>
             ))}
@@ -136,7 +136,7 @@ function MobileDay({
   const totalItems = MEAL_TYPES.reduce((sum, mt) => sum + daySlots[mt].length, 0);
 
   return (
-    <div className="border border-[#E8DDD4] rounded-xl overflow-hidden">
+    <div className="border border-[#f0f0f0] rounded-xl overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-3 bg-[#FFFBF5] hover:bg-[#F7F0E8] transition-colors"
@@ -144,7 +144,7 @@ function MobileDay({
         <div className="flex items-center gap-3">
           <div className="text-left">
             <div className="font-semibold text-[#2D2417] text-sm">{dayLabel}</div>
-            <div className="text-xs text-[#7C6A56]">{longLabel}</div>
+            <div className="text-xs text-[#666666]">{longLabel}</div>
           </div>
           {totalItems > 0 && (
             <span className="text-xs bg-[#E85D26] text-white rounded-full px-2 py-0.5">
@@ -152,7 +152,7 @@ function MobileDay({
             </span>
           )}
         </div>
-        <span className="text-[#7C6A56] text-xs">{open ? "▲" : "▼"}</span>
+        <span className="text-[#666666] text-xs">{open ? "▲" : "▼"}</span>
       </button>
 
       {open && (

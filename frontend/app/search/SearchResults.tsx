@@ -74,18 +74,18 @@ export default function SearchResults() {
       {/* Search input */}
       <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#7C6A56]" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666666]" />
           <input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Tìm kiếm món ăn..."
-            className="w-full pl-12 pr-12 h-12 text-base text-[#1C1209] bg-white border border-[#E8DDD4] rounded-xl shadow-sm outline-none focus:border-[#E85D26] focus:ring-2 focus:ring-[#E85D26]/20 placeholder:text-[#7C6A56] transition-colors"
+            className="w-full pl-12 pr-12 h-12 text-base text-[#1C1209] bg-white border border-[#f0f0f0] rounded-xl shadow-sm outline-none focus:border-[#E85D26] focus:ring-2 focus:ring-[#E85D26]/20 placeholder:text-[#666666] transition-colors"
           />
           {inputValue && (
             <button
               type="button"
               onClick={() => setInputValue("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7C6A56] hover:text-[#1C1209]"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#666666] hover:text-[#1C1209]"
             >
               <X className="w-4 h-4" />
             </button>
@@ -103,7 +103,7 @@ export default function SearchResults() {
             Kết quả cho &ldquo;{q}&rdquo;
           </h1>
           {!loading && (
-            <p className="text-sm text-[#7C6A56] mt-0.5">
+            <p className="text-sm text-[#666666] mt-0.5">
               {total > 0
                 ? `${total.toLocaleString()} công thức`
                 : "Không tìm thấy công thức nào"}
@@ -114,7 +114,7 @@ export default function SearchResults() {
 
       {/* Empty state — no query */}
       {!q && (
-        <div className="text-center py-20 text-[#7C6A56]">
+        <div className="text-center py-20 text-[#666666]">
           <Search className="w-12 h-12 mx-auto mb-4 opacity-30" />
           <p className="text-lg">Nhập tên món ăn để tìm kiếm</p>
         </div>
@@ -141,12 +141,12 @@ export default function SearchResults() {
             size="sm"
             disabled={page <= 1}
             onClick={() => goToPage(page - 1)}
-            className="rounded-none border-2 border-[#2c1810] bg-white shadow-block-sm"
+            className="rounded-lg border border-border bg-white shadow-block-sm"
           >
             ← Trước
           </Button>
 
-          <span className="px-2 text-sm font-medium text-[#6b5344]">
+          <span className="px-2 text-sm font-medium text-[#666666]">
             Trang {page} / {totalPages}
           </span>
 
@@ -156,7 +156,7 @@ export default function SearchResults() {
             size="sm"
             disabled={page >= totalPages}
             onClick={() => goToPage(page + 1)}
-            className="rounded-none border-2 border-[#2c1810] bg-white shadow-block-sm"
+            className="rounded-lg border border-border bg-white shadow-block-sm"
           >
             Sau →
           </Button>
@@ -165,7 +165,7 @@ export default function SearchResults() {
 
       {/* No results */}
       {!loading && q && recipes.length === 0 && (
-        <div className="text-center py-20 text-[#7C6A56]">
+        <div className="text-center py-20 text-[#666666]">
           <p className="text-lg mb-2">Không tìm thấy &ldquo;{q}&rdquo;</p>
           <p className="text-sm">Thử từ khóa khác hoặc kiểm tra chính tả</p>
         </div>

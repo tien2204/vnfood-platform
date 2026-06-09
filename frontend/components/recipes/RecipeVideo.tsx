@@ -24,7 +24,7 @@ export function RecipeVideo({ url }: { url?: string | null }) {
       >
         Video hướng dẫn
       </h2>
-      <div className="relative w-full overflow-hidden rounded-xl border border-[#E8DDD4]" style={{ paddingBottom: "56.25%" }}>
+      <div className="relative w-full overflow-hidden rounded-xl border border-[#f0f0f0]" style={{ paddingBottom: "56.25%" }}>
         <iframe
           className="absolute inset-0 h-full w-full"
           src={`https://www.youtube.com/embed/${id}`}

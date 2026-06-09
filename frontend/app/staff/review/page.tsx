@@ -45,22 +45,22 @@ export default function ReviewQueuePage() {
     }
   }
 
-  if (isLoading) return <p className="text-[#7C6A56]">Đang tải…</p>;
+  if (isLoading) return <p className="text-[#666666]">Đang tải…</p>;
   const items = data?.data ?? [];
 
   return (
     <div className="max-w-3xl">
       <h1 className="text-xl font-bold text-[#1C1209] mb-4">Hàng đợi duyệt</h1>
-      {items.length === 0 && <p className="text-[#7C6A56]">Không có công thức chờ duyệt.</p>}
+      {items.length === 0 && <p className="text-[#666666]">Không có công thức chờ duyệt.</p>}
       <div className="space-y-3">
         {items.map((r) => {
           const mine = r.claimed_by && user && r.claimed_by === user.id;
           const claimedOther = r.claimed_by && !mine;
           return (
-            <div key={r.id} className="bg-white border border-[#E8DDD4] rounded-xl p-4 flex items-center gap-3">
+            <div key={r.id} className="bg-white border border-[#f0f0f0] rounded-xl p-4 flex items-center gap-3">
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-[#1C1209] truncate">{r.title}</p>
-                <p className="text-xs text-[#7C6A56]">
+                <p className="text-xs text-[#666666]">
                   {claimedOther ? `🔒 ${r.claimed_by_name} đang xử lý` : mine ? "Bạn đang xử lý" : "Chưa nhận"}
                 </p>
               </div>
@@ -72,7 +72,7 @@ export default function ReviewQueuePage() {
                   <button onClick={() => claim(r.id)} className="px-3 py-1.5 text-sm rounded-lg border border-[#E85D26] text-[#E85D26]">Nhận xử lý</button>
                 )}
                 {(mine || (isAdmin && r.claimed_by)) && (
-                  <button onClick={() => release(r.id)} className="px-3 py-1.5 text-sm rounded-lg border border-[#E8DDD4] text-[#7C6A56]">Nhả</button>
+                  <button onClick={() => release(r.id)} className="px-3 py-1.5 text-sm rounded-lg border border-[#f0f0f0] text-[#666666]">Nhả</button>
                 )}
                 {claimedOther && !isAdmin && (
                   <span className="px-3 py-1.5 text-sm rounded-lg bg-[#F7F0E8] text-[#B5A593]">Đang khóa</span>

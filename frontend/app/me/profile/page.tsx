@@ -90,12 +90,12 @@ export default function EditProfilePage() {
         <h1 className="text-2xl font-bold text-[#1C1209]" style={{ fontFamily: "var(--font-playfair)" }}>
           Chỉnh sửa hồ sơ
         </h1>
-        <p className="text-sm text-[#7C6A56] mt-1">Cập nhật thông tin cá nhân của bạn</p>
+        <p className="text-sm text-[#666666] mt-1">Cập nhật thông tin cá nhân của bạn</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Avatar section */}
-        <div className="bg-white rounded-2xl border border-[#E8DDD4] p-5">
+        <div className="bg-white rounded-2xl border border-[#f0f0f0] p-5">
           <h2 className="font-semibold text-[#1C1209] mb-4 flex items-center gap-2">
             <User className="w-4 h-4" />
             Ảnh đại diện
@@ -110,7 +110,7 @@ export default function EditProfilePage() {
             </Avatar>
             <div>
               <p className="text-sm font-medium text-[#1C1209]">{fullName || "Tên hiển thị"}</p>
-              <p className="text-xs text-[#7C6A56] mt-0.5">Ảnh hiển thị trên toàn bộ trang</p>
+              <p className="text-xs text-[#666666] mt-0.5">Ảnh hiển thị trên toàn bộ trang</p>
             </div>
           </div>
 
@@ -124,7 +124,7 @@ export default function EditProfilePage() {
         </div>
 
         {/* Profile info */}
-        <div className="bg-white rounded-2xl border border-[#E8DDD4] p-5 space-y-4">
+        <div className="bg-white rounded-2xl border border-[#f0f0f0] p-5 space-y-4">
           <h2 className="font-semibold text-[#1C1209]">Thông tin cá nhân</h2>
 
           <div className="space-y-1.5">
@@ -136,9 +136,9 @@ export default function EditProfilePage() {
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Nguyễn Văn A"
               maxLength={100}
-              className="border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+              className="border-[#f0f0f0] focus-visible:ring-[#E85D26]"
             />
-            <p className="text-xs text-[#7C6A56]">{fullName.length}/100 ký tự</p>
+            <p className="text-xs text-[#666666]">{fullName.length}/100 ký tự</p>
           </div>
 
           <div className="space-y-1.5">
@@ -149,9 +149,9 @@ export default function EditProfilePage() {
               placeholder="Tôi yêu thích nấu ăn và khám phá ẩm thực Việt Nam..."
               maxLength={500}
               rows={3}
-              className="resize-none border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+              className="resize-none border-[#f0f0f0] focus-visible:ring-[#E85D26]"
             />
-            <p className="text-xs text-[#7C6A56]">{bio.length}/500 ký tự</p>
+            <p className="text-xs text-[#666666]">{bio.length}/500 ký tự</p>
           </div>
         </div>
 
@@ -161,7 +161,7 @@ export default function EditProfilePage() {
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            className="flex-1 border-[#E8DDD4] text-[#7C6A56]"
+            className="flex-1 border-[#f0f0f0] text-[#666666]"
           >
             Hủy
           </Button>

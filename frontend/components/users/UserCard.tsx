@@ -25,7 +25,7 @@ export default function UserCard({ user, currentUserId }: Props) {
   const isSelf = currentUserId === user.id;
 
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#E8DDD4] hover:border-[#E85D26]/30 transition-colors">
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-[#f0f0f0] hover:border-[#E85D26]/30 transition-colors">
       <Link href={`/users/${user.id}`} className="shrink-0">
         <Avatar className="w-11 h-11">
           <AvatarImage src={avatarSrc} alt={user.full_name ?? "User"} />
@@ -42,7 +42,7 @@ export default function UserCard({ user, currentUserId }: Props) {
           </p>
         </Link>
         {user.bio && (
-          <p className="text-xs text-[#7C6A56] truncate mt-0.5">{user.bio}</p>
+          <p className="text-xs text-[#666666] truncate mt-0.5">{user.bio}</p>
         )}
       </div>
 

@@ -25,8 +25,8 @@ export default function ProposeEditPage({ params }: { params: Promise<{ id: stri
     router.push("/staff/proposals");
   }
 
-  if (failed) return <p className="p-8 text-[#7C6A56]">Không tải được công thức. <a href="/recipes" className="text-[#E85D26] underline">Quay lại</a></p>;
-  if (!recipe) return <p className="p-8 text-[#7C6A56]">Đang tải…</p>;
+  if (failed) return <p className="p-8 text-[#666666]">Không tải được công thức. <a href="/recipes" className="text-[#E85D26] underline">Quay lại</a></p>;
+  if (!recipe) return <p className="p-8 text-[#666666]">Đang tải…</p>;
   return (
     <main className="min-h-screen bg-[#FFFBF5] py-8 px-4">
       <div className="max-w-3xl mx-auto">

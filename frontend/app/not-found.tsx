@@ -25,7 +25,7 @@ export default function NotFound() {
       >
         Công thức bạn tìm đã bị &ldquo;ăn&rdquo; mất rồi!
       </h1>
-      <p className="text-[#7C6A56] max-w-md leading-relaxed mb-8">
+      <p className="text-[#666666] max-w-md leading-relaxed mb-8">
         Trang này không tồn tại hoặc đã bị xóa. Hãy thử tìm kiếm món ăn khác hoặc khám phá kho công thức của chúng tôi.
       </p>
 
@@ -44,7 +44,7 @@ export default function NotFound() {
           </Button>
         </Link>
         <Link href="/search">
-          <Button variant="outline" className="gap-2 border-[#E8DDD4] text-[#7C6A56] hover:border-[#E85D26] hover:text-[#E85D26]">
+          <Button variant="outline" className="gap-2 border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26]">
             <Search className="w-4 h-4" aria-hidden="true" />
             Tìm kiếm
           </Button>

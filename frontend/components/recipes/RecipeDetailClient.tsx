@@ -26,8 +26,8 @@ function difficultyLabel(d: string): string {
 }
 
 const TAB_TRIGGER =
-  'px-4 py-3 text-sm font-medium rounded-none -mb-px border-b-2 border-transparent ' +
-  'text-[#7C6A56] data-[state=active]:border-[#E85D26] data-[state=active]:text-[#E85D26] ' +
+  'px-4 py-3 text-sm font-medium rounded-lg -mb-px border-b-2 border-transparent ' +
+  'text-[#666666] data-[state=active]:border-[#E85D26] data-[state=active]:text-[#E85D26] ' +
   'data-[state=active]:bg-transparent data-[state=active]:shadow-none ' +
   'hover:text-[#1C1209] transition-colors';
 
@@ -57,7 +57,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
         {/* Main content */}
         <div className="lg:col-span-2">
           <Tabs defaultValue="ingredients" className="mb-10">
-            <TabsList className="w-full justify-start bg-transparent p-0 h-auto rounded-none border-b border-[#E8DDD4] gap-0 mb-6">
+            <TabsList className="w-full justify-start bg-transparent p-0 h-auto rounded-lg border-b border-[#f0f0f0] gap-0 mb-6">
               <TabsTrigger value="ingredients" className={TAB_TRIGGER}>
                 Nguyên liệu ({recipe.ingredients.length})
               </TabsTrigger>
@@ -85,7 +85,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
                       return (
                         <li
                           key={ing.id ?? idx}
-                          className="flex items-start gap-3 py-2.5 border-b border-[#E8DDD4] last:border-0"
+                          className="flex items-start gap-3 py-2.5 border-b border-[#f0f0f0] last:border-0"
                         >
                           <span className="w-2 h-2 rounded-full bg-[#E85D26] mt-2 shrink-0" />
                           <span
@@ -103,7 +103,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
                   </ul>
                 </>
               ) : (
-                <p className="text-[#7C6A56] py-4">Chưa có thông tin nguyên liệu.</p>
+                <p className="text-[#666666] py-4">Chưa có thông tin nguyên liệu.</p>
               )}
             </TabsContent>
 
@@ -122,7 +122,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
                       <div className="flex-1 pt-2">
                         <p className="text-[#1C1209] leading-relaxed">{step.content}</p>
                         {(step.timer_seconds ?? 0) > 0 && (
-                          <span className="inline-flex items-center gap-1 mt-2 text-xs text-[#7C6A56] bg-[#F7F0E8] px-2 py-1 rounded-full">
+                          <span className="inline-flex items-center gap-1 mt-2 text-xs text-[#666666] bg-[#F7F0E8] px-2 py-1 rounded-full">
                             <Clock className="w-3 h-3" />
                             {Math.round(step.timer_seconds! / 60)} phút
                           </span>
@@ -147,10 +147,10 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
                   ))}
                 </div>
               ) : (
-                <p className="text-[#7C6A56] py-4">Chưa có thông tin các bước.</p>
+                <p className="text-[#666666] py-4">Chưa có thông tin các bước.</p>
               )}
               {tipSteps.length > 0 && (
-                <div className="mt-6 rounded-xl border border-[#E8DDD4] bg-[#F7F0E8] p-4">
+                <div className="mt-6 rounded-xl border border-[#f0f0f0] bg-[#F7F0E8] p-4">
                   <h3 className="font-semibold text-[#2D2417] mb-2">💡 Mách nhỏ</h3>
                   <div className="space-y-2">
                     {tipSteps.map((s, i) => (
@@ -177,7 +177,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
           <RelatedRecipes recipeId={recipe.id} />
 
           {/* Desktop action bar */}
-          <div className="hidden lg:flex items-center gap-3 pt-6 border-t border-[#E8DDD4]">
+          <div className="hidden lg:flex items-center gap-3 pt-6 border-t border-[#f0f0f0]">
             <button
               onClick={() => setCookingMode(true)}
               disabled={!hasSteps}
@@ -194,7 +194,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
             />
             {(userRole === "collaborator" || userRole === "admin") && (
               <div className="flex gap-2">
-                <Link href={`/recipes/${recipe.id}/propose-edit`} className="px-3 py-1.5 rounded-lg border border-[#E8DDD4] text-sm text-[#7C6A56] hover:text-[#E85D26]">Đề xuất sửa</Link>
+                <Link href={`/recipes/${recipe.id}/propose-edit`} className="px-3 py-1.5 rounded-lg border border-[#f0f0f0] text-sm text-[#666666] hover:text-[#E85D26]">Đề xuất sửa</Link>
                 <button
                   onClick={async () => {
                     if (!confirm("Đề xuất xóa công thức hệ thống này?")) return;
@@ -205,7 +205,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
                       toast.error("Không thể gửi đề xuất xóa");
                     }
                   }}
-                  className="px-3 py-1.5 rounded-lg border border-[#E8DDD4] text-sm text-red-500 hover:border-red-300"
+                  className="px-3 py-1.5 rounded-lg border border-[#f0f0f0] text-sm text-red-500 hover:border-red-300"
                 >Đề xuất xóa</button>
               </div>
             )}
@@ -214,7 +214,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
                 href={recipe.cookpad_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-[#E8DDD4] hover:border-[#E85D26] hover:text-[#E85D26] text-[#7C6A56] transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-[#f0f0f0] hover:border-[#E85D26] hover:text-[#E85D26] text-[#666666] transition-colors"
               >
                 <ExternalLink className="w-5 h-5" />
                 <span>Cookpad</span>
@@ -226,7 +226,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
         {/* Sticky sidebar (desktop only) */}
         <aside className="hidden lg:block lg:col-span-1">
           <div className="sticky top-24 space-y-4">
-            <div className="bg-[#F7F0E8] rounded-lg p-4 border border-[#E8DDD4]/50">
+            <div className="bg-[#F7F0E8] rounded-lg p-4 border border-[#f0f0f0]/50">
               <h3
                 className="text-lg italic mb-3 text-[#1C1209]"
                 style={{ fontFamily: 'var(--font-heading)' }}
@@ -236,24 +236,24 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
               <dl className="space-y-2 text-sm">
                 {recipe.cooking_time && (
                   <div className="flex justify-between">
-                    <dt className="text-[#7C6A56]">Thời gian</dt>
+                    <dt className="text-[#666666]">Thời gian</dt>
                     <dd className="font-medium text-[#1C1209]">{recipe.cooking_time} phút</dd>
                   </div>
                 )}
                 {recipe.servings && (
                   <div className="flex justify-between">
-                    <dt className="text-[#7C6A56]">Khẩu phần</dt>
+                    <dt className="text-[#666666]">Khẩu phần</dt>
                     <dd className="font-medium text-[#1C1209]">{currentServings} người</dd>
                   </div>
                 )}
                 {recipe.difficulty && (
                   <div className="flex justify-between">
-                    <dt className="text-[#7C6A56]">Độ khó</dt>
+                    <dt className="text-[#666666]">Độ khó</dt>
                     <dd className="font-medium text-[#1C1209]">{difficultyLabel(recipe.difficulty)}</dd>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <dt className="text-[#7C6A56]">Nguồn</dt>
+                  <dt className="text-[#666666]">Nguồn</dt>
                   <dd className="font-medium text-[#1C1209]">
                     {recipe.source === 'cookpad' ? 'Cookpad' : 'Cộng đồng'}
                   </dd>
@@ -261,8 +261,8 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
               </dl>
             </div>
 
-            <div className="bg-white rounded-lg p-4 border border-[#E8DDD4]/50">
-              <p className="text-xs text-[#7C6A56] mb-3">Hành động nhanh</p>
+            <div className="bg-white rounded-lg p-4 border border-[#f0f0f0]/50">
+              <p className="text-xs text-[#666666] mb-3">Hành động nhanh</p>
               <div className="space-y-2.5">
                 <button className="w-full text-left text-sm text-[#1C1209] hover:text-[#E85D26] transition-colors">
                   📋 Copy danh sách nguyên liệu
@@ -280,7 +280,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
       </div>
 
       {/* Mobile bottom action bar */}
-      <div className="lg:hidden fixed bottom-16 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[#E8DDD4] px-4 py-3 z-40 flex items-center gap-3">
+      <div className="lg:hidden fixed bottom-16 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[#f0f0f0] px-4 py-3 z-40 flex items-center gap-3">
         <button
           onClick={() => setCookingMode(true)}
           disabled={!hasSteps}
@@ -300,7 +300,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
             href={recipe.cookpad_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-3 py-2.5 rounded-xl border border-[#E8DDD4] hover:border-[#E85D26] hover:text-[#E85D26] text-[#7C6A56] transition-colors"
+            className="inline-flex items-center px-3 py-2.5 rounded-xl border border-[#f0f0f0] hover:border-[#E85D26] hover:text-[#E85D26] text-[#666666] transition-colors"
           >
             <ExternalLink className="w-5 h-5" />
           </a>

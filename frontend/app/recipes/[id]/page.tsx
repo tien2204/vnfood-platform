@@ -144,7 +144,7 @@ export default async function RecipeDetailPage({
       {/* Back */}
       <Link
         href="/recipes"
-        className="inline-flex items-center gap-1.5 text-sm text-[#7C6A56] hover:text-[#E85D26] mb-5 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-[#666666] hover:text-[#E85D26] mb-5 transition-colors"
       >
         <ChevronLeft className="w-4 h-4" />
         Quay lại
@@ -160,7 +160,7 @@ export default async function RecipeDetailPage({
           priority
           unoptimized
           fallback={
-            <div className="absolute inset-0 flex items-center justify-center text-[#E8DDD4]">
+            <div className="absolute inset-0 flex items-center justify-center text-[#f0f0f0]">
               <svg className="w-40 h-40" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.17-15.03-8.17-15.03 0h15.03zM1.02 17h15v2h-15z" />
               </svg>
@@ -179,12 +179,12 @@ export default async function RecipeDetailPage({
             </Badge>
           )}
           {recipe.difficulty && (
-            <Badge variant="outline" className="border-[#E8DDD4] text-[#7C6A56]">
+            <Badge variant="outline" className="border-[#f0f0f0] text-[#666666]">
               {difficultyLabel(recipe.difficulty)}
             </Badge>
           )}
           {recipe.source === "cookpad" && (
-            <Badge variant="outline" className="border-[#E8DDD4] text-[#7C6A56]">
+            <Badge variant="outline" className="border-[#f0f0f0] text-[#666666]">
               Cookpad
             </Badge>
           )}
@@ -204,13 +204,13 @@ export default async function RecipeDetailPage({
             {recipe.is_canonical && <CanonicalBadge size="md" />}
             {recipe.is_manually_reviewed && <ManualReviewBadge />}
             {recipe.variant_label && (
-              <span className="text-sm text-[#7C6A56]">— {recipe.variant_label}</span>
+              <span className="text-sm text-[#666666]">— {recipe.variant_label}</span>
             )}
           </div>
         )}
 
         {recipe.derived_from && (
-          <p className="text-sm text-[#7C6A56] mb-4">
+          <p className="text-sm text-[#666666] mb-4">
             Phỏng theo:{" "}
             <Link href={`/recipes/${recipe.derived_from.id}`} className="text-[#E85D26] underline">
               {recipe.derived_from.title}
@@ -219,11 +219,11 @@ export default async function RecipeDetailPage({
         )}
 
         {recipe.refinement_notes && (
-          <details className="mb-4 p-3 bg-[#F7F0E8] border border-[#E8DDD4] rounded-xl text-sm">
+          <details className="mb-4 p-3 bg-[#F7F0E8] border border-[#f0f0f0] rounded-xl text-sm">
             <summary className="cursor-pointer font-medium text-[#1C1209]">
               Ghi chú chỉnh sửa từ AI
             </summary>
-            <p className="mt-2 text-[#7C6A56] whitespace-pre-wrap">
+            <p className="mt-2 text-[#666666] whitespace-pre-wrap">
               {recipe.refinement_notes}
             </p>
           </details>
@@ -231,10 +231,10 @@ export default async function RecipeDetailPage({
 
         {/* Meta stats */}
         {metaItems.length > 0 && (
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#7C6A56] mb-4">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#666666] mb-4">
             {metaItems.map((item, i) => (
               <span key={item.key} className="flex items-center gap-3">
-                {i > 0 && <span className="select-none text-[#E8DDD4]">•</span>}
+                {i > 0 && <span className="select-none text-[#f0f0f0]">•</span>}
                 {item.node}
               </span>
             ))}
@@ -244,7 +244,7 @@ export default async function RecipeDetailPage({
         {/* Description */}
         {recipe.description && (
           <blockquote
-            className="border-l-4 border-[#E85D26]/30 pl-4 py-2 my-6 italic text-[#7C6A56] text-lg leading-relaxed"
+            className="border-l-4 border-[#E85D26]/30 pl-4 py-2 my-6 italic text-[#666666] text-lg leading-relaxed"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             {recipe.description}
@@ -267,7 +267,7 @@ export default async function RecipeDetailPage({
       {/* Author card */}
       {recipe.author ? (
         // Branch 1: User-uploaded recipe
-        <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">
+        <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#f0f0f0] mb-6">
           <Link href={`/users/${recipe.author.id}`}>
             <Avatar className="w-12 h-12">
               <AvatarImage src={recipe.author.avatar_url ?? undefined} />
@@ -283,7 +283,7 @@ export default async function RecipeDetailPage({
               </p>
             </Link>
             {recipe.author.follower_count > 0 && (
-              <p className="text-xs text-[#7C6A56]">
+              <p className="text-xs text-[#666666]">
                 {recipe.author.follower_count} người theo dõi
               </p>
             )}
@@ -300,7 +300,7 @@ export default async function RecipeDetailPage({
                 href={recipe.cookpad_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-1.5 rounded-full border border-[#7C6A56] text-sm text-[#7C6A56] hover:bg-[#7C6A56] hover:text-white transition-colors"
+                className="px-4 py-1.5 rounded-full border border-[#666666] text-sm text-[#666666] hover:bg-[#666666] hover:text-white transition-colors"
               >
                 Xem trên Cookpad
               </a>
@@ -309,7 +309,7 @@ export default async function RecipeDetailPage({
         </div>
       ) : recipe.original_author_name && recipe.original_author_name.length > 0 ? (
         // Branch 2: Cookpad recipe with scraped author
-        <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">
+        <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#f0f0f0] mb-6">
           <Avatar className="w-12 h-12">
             <AvatarFallback className="bg-[#2D6A4F] text-white font-semibold">
               {recipe.original_author_name.charAt(0).toUpperCase()}
@@ -317,7 +317,7 @@ export default async function RecipeDetailPage({
           </Avatar>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-[#1C1209]">{recipe.original_author_name}</p>
-            <p className="text-xs text-[#7C6A56]">Tác giả Cookpad</p>
+            <p className="text-xs text-[#666666]">Tác giả Cookpad</p>
           </div>
           {recipe.cookpad_url && (
             <a
@@ -332,13 +332,13 @@ export default async function RecipeDetailPage({
         </div>
       ) : recipe.source === "cookpad" ? (
         // Branch 3: Cookpad recipe without scraped author — show "Unknown" placeholder
-        <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#E8DDD4] mb-6">
+        <div className="flex items-center gap-3 p-4 bg-[#F7F0E8] rounded-xl border border-[#f0f0f0] mb-6">
           <Avatar className="w-12 h-12">
             <AvatarFallback className="bg-[#2D6A4F] text-white font-semibold">?</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-[#1C1209]">Unknown</p>
-            <p className="text-xs text-[#7C6A56]">Tác giả Cookpad</p>
+            <p className="text-xs text-[#666666]">Tác giả Cookpad</p>
           </div>
           {recipe.cookpad_url && (
             <a

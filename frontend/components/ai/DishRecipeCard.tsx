@@ -18,10 +18,10 @@ export default function DishRecipeCard({ recipe }: Props) {
   const isAIGenerated = recipe.source === "ai-generated";
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-8 bg-white rounded-2xl shadow-sm border border-[#E8DDD4] p-6">
+    <div className="w-full max-w-4xl mx-auto mt-8 bg-white rounded-2xl shadow-sm border border-[#f0f0f0] p-6">
       <div className="flex items-start justify-between gap-4 flex-wrap mb-3">
         <div>
-          <p className="text-xs text-[#7C6A56] uppercase tracking-wider mb-1">
+          <p className="text-xs text-[#666666] uppercase tracking-wider mb-1">
             Công thức gợi ý
           </p>
           <h3
@@ -40,33 +40,33 @@ export default function DishRecipeCard({ recipe }: Props) {
       </div>
 
       {recipe.description && (
-        <p className="text-sm text-[#7C6A56] leading-relaxed mb-4">{recipe.description}</p>
+        <p className="text-sm text-[#666666] leading-relaxed mb-4">{recipe.description}</p>
       )}
 
       <div className="flex flex-wrap gap-2 mb-4">
         {recipe.cooking_time_minutes != null && (
-          <span className="inline-flex items-center gap-1 text-xs text-[#7C6A56] bg-[#F7F0E8] px-2 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1 text-xs text-[#666666] bg-[#F7F0E8] px-2 py-1 rounded-full">
             <Clock className="w-3 h-3" />
             {recipe.cooking_time_minutes} phút
           </span>
         )}
         {recipe.servings != null && (
-          <span className="inline-flex items-center gap-1 text-xs text-[#7C6A56] bg-[#F7F0E8] px-2 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1 text-xs text-[#666666] bg-[#F7F0E8] px-2 py-1 rounded-full">
             <Users className="w-3 h-3" />
             {recipe.servings} người
           </span>
         )}
         {recipe.difficulty && (
-          <span className="inline-flex items-center gap-1 text-xs text-[#7C6A56] bg-[#F7F0E8] px-2 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1 text-xs text-[#666666] bg-[#F7F0E8] px-2 py-1 rounded-full">
             <ChefHat className="w-3 h-3" />
             {DIFFICULTY_LABEL[recipe.difficulty] ?? recipe.difficulty}
           </span>
         )}
       </div>
 
-      <div className="border-t border-[#E8DDD4] pt-6 grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8">
+      <div className="border-t border-[#f0f0f0] pt-6 grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8">
         <div className="bg-[#F7F0E8] rounded-xl p-4">
-          <p className="text-xs text-[#7C6A56] uppercase tracking-wider mb-2">Nguyên liệu</p>
+          <p className="text-xs text-[#666666] uppercase tracking-wider mb-2">Nguyên liệu</p>
           <ul className="space-y-1 text-sm text-[#1C1209]">
             {recipe.ingredients.map((item, idx) => (
               <li key={idx} className="flex gap-2">
@@ -78,7 +78,7 @@ export default function DishRecipeCard({ recipe }: Props) {
         </div>
 
         <div>
-          <p className="text-xs text-[#7C6A56] uppercase tracking-wider mb-4">Cách làm</p>
+          <p className="text-xs text-[#666666] uppercase tracking-wider mb-4">Cách làm</p>
           <div className="space-y-6">
             {recipe.steps.map((step, idx) => (
               <div key={idx} className="flex gap-4">

@@ -45,10 +45,10 @@ export default function FacetDropdown({
         // another open panel — switching facets should not flicker close→open
         onMouseDown={(e) => e.stopPropagation()}
         onClick={onToggleOpen}
-        className={`border-2 border-[#2c1810] px-3.5 py-1.5 text-sm font-bold shadow-block-sm transition-all ${
+        className={`border border-border px-3.5 py-1.5 text-sm font-bold shadow-block-sm transition-all ${
           count > 0
             ? "bg-[#2D6A4F] text-white"
-            : "bg-[#fff5e6] text-[#2c1810] hover:bg-[#2D6A4F] hover:text-white"
+            : "bg-[#f5f5f5] text-[#0a0a0a] hover:bg-[#2D6A4F] hover:text-white"
         }`}
       >
         {facet.label}
@@ -56,11 +56,11 @@ export default function FacetDropdown({
       </button>
 
       {open && (
-        <div className="absolute left-0 z-30 mt-1 w-[min(92vw,28rem)] border-2 border-[#2c1810] bg-white p-4 shadow-block">
+        <div className="absolute left-0 z-30 mt-1 w-[min(92vw,28rem)] border border-border bg-white p-4 shadow-block">
           {facet.groups.map((g, gi) => (
             <div key={gi} className="mb-3 last:mb-0">
               {g.label && (
-                <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-[#6b5344]">
+                <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-[#666666]">
                   {g.label}
                 </p>
               )}
@@ -68,7 +68,7 @@ export default function FacetDropdown({
                 {g.terms.map((t) => (
                   <label
                     key={t.value}
-                    className="flex cursor-pointer items-center gap-2 text-sm text-[#2c1810]"
+                    className="flex cursor-pointer items-center gap-2 text-sm text-[#0a0a0a]"
                   >
                     <input
                       type="checkbox"
@@ -88,7 +88,7 @@ export default function FacetDropdown({
               onApply(staged);
               onClose();
             }}
-            className="mt-3 w-full border-2 border-[#2c1810] bg-[#ff6b35] py-2 text-sm font-bold text-white shadow-block-sm hover:bg-[#e85d26]"
+            className="mt-3 w-full border border-border bg-[#ec2028] py-2 text-sm font-bold text-white shadow-block-sm hover:bg-[#e85d26]"
           >
             Lọc thông tin
           </button>

@@ -31,7 +31,7 @@ export function CountdownTimer({
     <div className="flex flex-col items-center gap-4 my-6">
       <div className="relative w-36 h-36">
         <svg className="w-36 h-36 transform -rotate-90" viewBox="0 0 128 128">
-          <circle cx="64" cy="64" r={radius} stroke="#E8DDD4" strokeWidth="8" fill="none" />
+          <circle cx="64" cy="64" r={radius} stroke="#f0f0f0" strokeWidth="8" fill="none" />
           <circle
             cx="64"
             cy="64"
@@ -66,7 +66,7 @@ export function CountdownTimer({
         </button>
         <button
           onClick={onReset}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-[#E8DDD4] text-[#7C6A56] hover:border-[#7C6A56] transition-colors text-sm"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-[#f0f0f0] text-[#666666] hover:border-[#666666] transition-colors text-sm"
         >
           <RotateCcw className="w-4 h-4" />
           Làm lại

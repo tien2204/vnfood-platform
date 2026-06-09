@@ -69,23 +69,23 @@ function RejectModal({ recipeId, title, onClose, onDone }: RejectModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
         <h3 className="text-base font-semibold text-[#1C1209]">Từ chối công thức</h3>
-        <p className="text-sm text-[#7C6A56] line-clamp-2">{stripEmoji(title)}</p>
+        <p className="text-sm text-[#666666] line-clamp-2">{stripEmoji(title)}</p>
         <div>
           <label className="block text-sm font-medium text-[#1C1209] mb-1.5">
-            Lý do từ chối <span className="text-[#7C6A56] font-normal">(tùy chọn)</span>
+            Lý do từ chối <span className="text-[#666666] font-normal">(tùy chọn)</span>
           </label>
           <textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             placeholder="Thiếu ảnh minh họa, nội dung không phù hợp..."
             rows={3}
-            className="w-full px-3 py-2 rounded-xl border border-[#E8DDD4] bg-[#FFFBF5] focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-red-400 text-sm text-[#1C1209] placeholder:text-[#B5A395] resize-none"
+            className="w-full px-3 py-2 rounded-xl border border-[#f0f0f0] bg-[#FFFBF5] focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-red-400 text-sm text-[#1C1209] placeholder:text-[#B5A395] resize-none"
           />
         </div>
         <div className="flex justify-end gap-2 pt-1">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:text-[#1C1209] transition-colors"
+            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:text-[#1C1209] transition-colors"
           >
             Hủy
           </button>
@@ -178,7 +178,7 @@ export default function AdminRecipesPage() {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Duyệt công thức</h1>
-          <p className="text-sm text-[#7C6A56] mt-0.5">
+          <p className="text-sm text-[#666666] mt-0.5">
             {pagination ? `${pagination.total} công thức` : ""}
           </p>
         </div>
@@ -193,7 +193,7 @@ export default function AdminRecipesPage() {
                 flex-1 min-w-fit px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all
                 ${tab === value
                   ? "bg-white text-[#E85D26] shadow-sm"
-                  : "text-[#7C6A56] hover:text-[#1C1209]"
+                  : "text-[#666666] hover:text-[#1C1209]"
                 }
               `}
             >
@@ -210,7 +210,7 @@ export default function AdminRecipesPage() {
             ))}
           </div>
         ) : recipes.length === 0 ? (
-          <div className="text-center py-20 text-[#7C6A56]">
+          <div className="text-center py-20 text-[#666666]">
             <p className="text-4xl mb-3">✅</p>
             <p className="font-medium text-[#1C1209]">Không có công thức nào</p>
           </div>
@@ -227,14 +227,14 @@ export default function AdminRecipesPage() {
               return (
                 <div
                   key={recipe.id}
-                  className="bg-white border border-[#E8DDD4] rounded-2xl overflow-hidden flex items-stretch"
+                  className="bg-white border border-[#f0f0f0] rounded-2xl overflow-hidden flex items-stretch"
                 >
                   {/* Thumbnail */}
                   <div className="relative w-24 shrink-0 bg-[#F7F0E8]">
                     {imgSrc ? (
                       <Image src={imgSrc} alt={cleanTitle} fill className="object-cover" unoptimized />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-[#E8DDD4]">
+                      <div className="absolute inset-0 flex items-center justify-center text-[#f0f0f0]">
                         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.17-15.03-8.17-15.03 0h15.03zM1.02 17h15v2h-15z" />
                         </svg>
@@ -256,7 +256,7 @@ export default function AdminRecipesPage() {
                         <StatusBadge status={recipe.status} rejectReason={recipe.reject_reason} />
                       </div>
 
-                      <div className="flex items-center gap-3 text-xs text-[#7C6A56] mt-1.5 flex-wrap">
+                      <div className="flex items-center gap-3 text-xs text-[#666666] mt-1.5 flex-wrap">
                         {recipe.author && (
                           <span>👤 {recipe.author.full_name}</span>
                         )}
@@ -282,7 +282,7 @@ export default function AdminRecipesPage() {
                       <Link
                         href={`/recipes/${recipe.id}`}
                         target="_blank"
-                        className="p-2 rounded-lg border border-[#E8DDD4] text-[#7C6A56] hover:text-[#E85D26] hover:border-[#E85D26]/50 transition-colors"
+                        className="p-2 rounded-lg border border-[#f0f0f0] text-[#666666] hover:text-[#E85D26] hover:border-[#E85D26]/50 transition-colors"
                         title="Xem trước"
                       >
                         <Eye className="w-4 h-4" />
@@ -319,7 +319,7 @@ export default function AdminRecipesPage() {
                           className={`text-xs px-2 py-1 rounded-lg border transition-colors disabled:opacity-50 whitespace-nowrap ${
                             recipe.is_manually_reviewed
                               ? "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-50"
-                              : "bg-white text-[#7C6A56] border-[#E8DDD4] hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200"
+                              : "bg-white text-[#666666] border-[#f0f0f0] hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200"
                           }`}
                           title={recipe.is_manually_reviewed ? "Đã review (bấm để hủy)" : "Đánh dấu đã review"}
                         >
@@ -334,7 +334,7 @@ export default function AdminRecipesPage() {
                       <button
                         onClick={() => handleDelete(recipe.id, recipe.title)}
                         disabled={deletingId === recipe.id}
-                        className="p-2 rounded-lg border border-[#E8DDD4] text-[#7C6A56] hover:text-red-500 hover:border-red-200 transition-colors disabled:opacity-50"
+                        className="p-2 rounded-lg border border-[#f0f0f0] text-[#666666] hover:text-red-500 hover:border-red-200 transition-colors disabled:opacity-50"
                         title="Xóa"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -353,17 +353,17 @@ export default function AdminRecipesPage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Trước
             </button>
-            <span className="text-sm text-[#7C6A56]">
+            <span className="text-sm text-[#666666]">
               {page} / {pagination.total_pages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
               disabled={page === pagination.total_pages}
-              className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Sau
             </button>

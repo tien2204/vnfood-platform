@@ -55,7 +55,7 @@ export default function StarRating({
           >
             {halfFilled ? (
               <span className={cn("relative inline-block", iconSize)}>
-                <Star className={cn(iconSize, "text-[#E8DDD4] fill-[#E8DDD4] absolute inset-0")} />
+                <Star className={cn(iconSize, "text-[#f0f0f0] fill-[#f0f0f0] absolute inset-0")} />
                 <span
                   className="absolute inset-0 overflow-hidden"
                   style={{ width: "50%" }}
@@ -69,7 +69,7 @@ export default function StarRating({
                   iconSize,
                   filled
                     ? "text-[#F4A261] fill-[#F4A261]"
-                    : "text-[#E8DDD4] fill-[#E8DDD4]",
+                    : "text-[#f0f0f0] fill-[#f0f0f0]",
                   !readonly && !filled && "group-hover:text-[#F4A261]/50"
                 )}
               />

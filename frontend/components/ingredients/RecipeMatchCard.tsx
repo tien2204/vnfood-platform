@@ -37,7 +37,7 @@ export default function RecipeMatchCard({ match, totalIngredients }: Props) {
 
   return (
     <Link href={`/recipes/${recipe.id}`} className="group block">
-      <article className="bg-white rounded-2xl overflow-hidden border border-[#E8DDD4] transition-all duration-200 hover:scale-[1.02] hover:shadow-warm h-full flex flex-col">
+      <article className="bg-white rounded-2xl overflow-hidden border border-[#f0f0f0] transition-all duration-200 hover:scale-[1.02] hover:shadow-warm h-full flex flex-col">
         {/* Image */}
         <div className="relative aspect-video bg-[#F7F0E8] shrink-0">
           {imageUrl ? (
@@ -50,7 +50,7 @@ export default function RecipeMatchCard({ match, totalIngredients }: Props) {
               unoptimized
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-[#E8DDD4]">
+            <div className="absolute inset-0 flex items-center justify-center text-[#f0f0f0]">
               <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.17-15.03-8.17-15.03 0h15.03zM1.02 17h15v2h-15z" />
               </svg>
@@ -60,7 +60,7 @@ export default function RecipeMatchCard({ match, totalIngredients }: Props) {
           {/* Source badge */}
           <div className="absolute top-2 left-2 z-10">
             {recipe.source === "cookpad" ? (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 text-[10px] font-medium text-[#7C6A56] border border-[#E8DDD4]/50">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/95 text-[10px] font-medium text-[#666666] border border-[#f0f0f0]/50">
                 <span className="w-1 h-1 rounded-full bg-[#E85D26]" />
                 Cookpad
               </span>
@@ -90,13 +90,13 @@ export default function RecipeMatchCard({ match, totalIngredients }: Props) {
                 <span className="text-sm font-medium text-[#1C1209]">
                   {recipe.avg_rating.toFixed(1)}
                 </span>
-                <span className="text-xs text-[#7C6A56]">({recipe.rating_count})</span>
+                <span className="text-xs text-[#666666]">({recipe.rating_count})</span>
               </>
             ) : (
               <span className="text-xs text-[#B0A090]">Chưa có đánh giá</span>
             )}
             {recipe.cooking_time != null && (
-              <span className="ml-auto flex items-center gap-1 text-xs text-[#7C6A56]">
+              <span className="ml-auto flex items-center gap-1 text-xs text-[#666666]">
                 <Clock className="w-3.5 h-3.5" />
                 {recipe.cooking_time} phút
               </span>
@@ -121,7 +121,7 @@ export default function RecipeMatchCard({ match, totalIngredients }: Props) {
             {missing_ingredients.length > 0 && (
               <div className="flex items-start gap-1.5">
                 <XCircle className="w-3.5 h-3.5 text-[#B0A090] shrink-0 mt-0.5" />
-                <p className="text-[11px] text-[#7C6A56] leading-relaxed">
+                <p className="text-[11px] text-[#666666] leading-relaxed">
                   Thiếu: {missing_ingredients.slice(0, 3).join(", ")}
                   {missing_ingredients.length > 3 && ` +${missing_ingredients.length - 3}`}
                 </p>

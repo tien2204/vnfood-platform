@@ -58,10 +58,10 @@ export default function ImageDropzone({ onSelect, disabled }: Props) {
           "w-full max-w-xl rounded-2xl border-2 border-dashed p-12 text-center",
           "transition-all duration-200 select-none",
           disabled
-            ? "opacity-50 cursor-not-allowed border-[#E8DDD4] bg-[#F7F0E8]"
+            ? "opacity-50 cursor-not-allowed border-[#f0f0f0] bg-[#F7F0E8]"
             : isDragging
             ? "cursor-copy border-[#E85D26] bg-[#FFF3EE] scale-[1.02] shadow-lg"
-            : "cursor-pointer border-[#E8DDD4] bg-[#F7F0E8] hover:border-[#E85D26] hover:bg-[#FFF3EE]",
+            : "cursor-pointer border-[#f0f0f0] bg-[#F7F0E8] hover:border-[#E85D26] hover:bg-[#FFF3EE]",
         ].join(" ")}
       >
         <input
@@ -81,13 +81,13 @@ export default function ImageDropzone({ onSelect, disabled }: Props) {
           <div
             className={[
               "w-16 h-16 rounded-full flex items-center justify-center transition-colors duration-200",
-              isDragging ? "bg-[#E85D26]" : "bg-[#E8DDD4]",
+              isDragging ? "bg-[#E85D26]" : "bg-[#f0f0f0]",
             ].join(" ")}
           >
             <Upload
               className={[
                 "w-7 h-7 transition-colors duration-200",
-                isDragging ? "text-white" : "text-[#7C6A56]",
+                isDragging ? "text-white" : "text-[#666666]",
               ].join(" ")}
             />
           </div>
@@ -96,7 +96,7 @@ export default function ImageDropzone({ onSelect, disabled }: Props) {
             <p className="text-lg font-semibold text-[#2D2417]">
               {isDragging ? "Thả ảnh vào đây" : "Kéo thả ảnh vào đây"}
             </p>
-            <p className="text-sm text-[#7C6A56] mt-1">hoặc click để chọn ảnh từ máy tính</p>
+            <p className="text-sm text-[#666666] mt-1">hoặc click để chọn ảnh từ máy tính</p>
           </div>
 
           <p className="text-xs text-[#A69588] bg-[#EDE6DC] px-3 py-1 rounded-full">

@@ -108,7 +108,7 @@ export default function MealPlanListPage() {
           <h1 className="text-2xl font-bold text-[#2D2417]" style={{ fontFamily: "var(--font-playfair)" }}>
             Meal Plan
           </h1>
-          <p className="text-sm text-[#7C6A56] mt-1">Lên kế hoạch bữa ăn theo tuần</p>
+          <p className="text-sm text-[#666666] mt-1">Lên kế hoạch bữa ăn theo tuần</p>
         </div>
         <Button
           onClick={() => setShowCreate(true)}
@@ -131,7 +131,7 @@ export default function MealPlanListPage() {
           </div>
           <div>
             <p className="font-semibold text-[#2D2417] text-lg">Chưa có meal plan nào</p>
-            <p className="text-sm text-[#7C6A56] mt-1">Tạo plan đầu tiên để bắt đầu lên lịch bữa ăn!</p>
+            <p className="text-sm text-[#666666] mt-1">Tạo plan đầu tiên để bắt đầu lên lịch bữa ăn!</p>
           </div>
           <Button
             onClick={() => setShowCreate(true)}
@@ -147,7 +147,7 @@ export default function MealPlanListPage() {
             <Link
               key={plan.id}
               href={`/meal-plan/${plan.id}`}
-              className="block border border-[#E8DDD4] rounded-xl p-4 bg-white hover:border-[#E85D26] hover:shadow-md transition-all group"
+              className="block border border-[#f0f0f0] rounded-xl p-4 bg-white hover:border-[#E85D26] hover:shadow-md transition-all group"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0">
@@ -156,11 +156,11 @@ export default function MealPlanListPage() {
                   </div>
                   <div className="min-w-0">
                     <p className="font-semibold text-[#2D2417] truncate">{plan.name}</p>
-                    <p className="text-xs text-[#7C6A56] mt-0.5">{fmtWeekRange(plan.week_start)}</p>
+                    <p className="text-xs text-[#666666] mt-0.5">{fmtWeekRange(plan.week_start)}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-2">
-                  <span className="text-xs text-[#7C6A56] hidden sm:block">
+                  <span className="text-xs text-[#666666] hidden sm:block">
                     {plan.items_count} món
                   </span>
                   <button
@@ -193,7 +193,7 @@ export default function MealPlanListPage() {
                 value={planName}
                 onChange={(e) => setPlanName(e.target.value)}
                 placeholder="VD: Tuần này"
-                className="bg-[#F7F0E8] border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+                className="bg-[#F7F0E8] border-[#f0f0f0] focus-visible:ring-[#E85D26]"
               />
             </div>
             <div>
@@ -201,7 +201,7 @@ export default function MealPlanListPage() {
               <select
                 value={weekStart}
                 onChange={(e) => setWeekStart(e.target.value)}
-                className="w-full rounded-md border border-[#E8DDD4] bg-[#F7F0E8] px-3 py-2 text-sm text-[#2D2417] focus:outline-none focus:ring-2 focus:ring-[#E85D26]"
+                className="w-full rounded-md border border-[#f0f0f0] bg-[#F7F0E8] px-3 py-2 text-sm text-[#2D2417] focus:outline-none focus:ring-2 focus:ring-[#E85D26]"
               >
                 {mondayOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>

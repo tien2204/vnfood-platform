@@ -62,7 +62,7 @@ export default function RecognizePage() {
         >
           Nhận diện món Việt
         </h1>
-        <p className="text-[#7C6A56] text-lg max-w-xl mx-auto">
+        <p className="text-[#666666] text-lg max-w-xl mx-auto">
           Chụp hoặc tải ảnh món ăn lên — AI sẽ nhận diện và gợi ý công thức cho bạn nấu tại nhà.
         </p>
       </section>
@@ -84,7 +84,7 @@ export default function RecognizePage() {
                 className="w-48 h-48 object-cover rounded-2xl opacity-70 shadow"
               />
             )}
-            <div className="flex items-center gap-2 text-[#7C6A56]">
+            <div className="flex items-center gap-2 text-[#666666]">
               <Loader2 className="w-5 h-5 animate-spin text-[#E85D26]" />
               <span className="font-medium">Đang nhận diện...</span>
             </div>
@@ -96,13 +96,13 @@ export default function RecognizePage() {
           <>
             <RecognitionResult result={result} imagePreview={preview} />
 
-            <div className="w-full border-t border-[#E8DDD4]" />
+            <div className="w-full border-t border-[#f0f0f0]" />
 
             <RecipeCarousel recipes={result.suggested_recipes} />
 
             <button
               onClick={handleReset}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#E8DDD4] text-[#7C6A56] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors text-sm font-medium"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors text-sm font-medium"
             >
               <RefreshCw className="w-4 h-4" />
               Thử ảnh khác

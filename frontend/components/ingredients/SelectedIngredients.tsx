@@ -20,7 +20,7 @@ export default function SelectedIngredients({ selected, onRemove, onClearAll }: 
         <button
           type="button"
           onClick={onClearAll}
-          className="text-xs text-[#7C6A56] hover:text-[#E85D26] transition-colors underline underline-offset-2 shrink-0"
+          className="text-xs text-[#666666] hover:text-[#E85D26] transition-colors underline underline-offset-2 shrink-0"
         >
           Xóa tất cả
         </button>

@@ -91,22 +91,22 @@ export default async function HomePage() {
   ].slice(0, 6);
 
   return (
-    <div className="bg-[#fffaf0] text-[#2c1810]">
-      <section className="relative overflow-hidden border-b-2 border-[#2c1810] px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+    <div className="bg-[#ffffff] text-[#0a0a0a]">
+      <section className="relative overflow-hidden border-b border-border px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2 lg:gap-14">
           <div>
-            <div className="mb-6 inline-flex items-center gap-2 border-2 border-[#2c1810] bg-[#fff5e6] px-4 py-2 text-sm font-bold">
-              <Award className="h-4 w-4 text-[#ff6b35]" />
+            <div className="mb-6 inline-flex items-center gap-2 border border-border bg-[#f5f5f5] px-4 py-2 text-sm font-bold">
+              <Award className="h-4 w-4 text-[#ec2028]" />
               Bản đồ ẩm thực Việt
             </div>
 
-            <h1 className="mb-6 max-w-2xl text-4xl font-bold leading-tight text-[#2c1810] sm:text-5xl lg:text-6xl">
+            <h1 className="mb-6 max-w-2xl text-4xl font-bold leading-tight text-[#0a0a0a] sm:text-5xl lg:text-6xl">
               Thưởng thức{" "}
-              <span className="text-[#ff6b35]">công thức Việt</span> theo
+              <span className="text-[#ec2028]">công thức Việt</span> theo
               phong cách nhà hàng.
             </h1>
 
-            <p className="mb-8 max-w-xl text-lg leading-relaxed text-[#6b5344]">
+            <p className="mb-8 max-w-xl text-lg leading-relaxed text-[#666666]">
               Khám phá món ngon ba miền, lưu công thức yêu thích và dùng AI để
               nhận diện món ăn từ ảnh trong vài giây.
             </p>
@@ -117,7 +117,7 @@ export default async function HomePage() {
 
             <div className="flex flex-wrap gap-4">
               <Link href="/recipes">
-                <Button className="h-12 rounded-none border-2 border-[#2c1810] bg-[#ff6b35] px-6 font-bold text-white shadow-block hover:bg-[#e55a2b]">
+                <Button className="h-12 rounded-lg border border-border bg-[#ec2028] px-6 font-bold text-white shadow-block hover:bg-[#cc1c22]">
                   <BookOpen className="h-4 w-4" />
                   View Menu
                 </Button>
@@ -125,7 +125,7 @@ export default async function HomePage() {
               <Link href="/ai/scan">
                 <Button
                   variant="outline"
-                  className="h-12 rounded-none border-2 border-[#2c1810] bg-transparent px-6 font-bold text-[#2c1810] shadow-block hover:bg-[#2c1810] hover:text-[#fffaf0]"
+                  className="h-12 rounded-lg border border-border bg-transparent px-6 font-bold text-[#0a0a0a] shadow-block hover:bg-[#0a0a0a] hover:text-[#ffffff]"
                 >
                   <ScanLine className="h-4 w-4" />
                   AI nhận diện
@@ -133,20 +133,20 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-6 text-sm font-medium text-[#6b5344]">
+            <div className="mt-8 flex flex-wrap gap-6 text-sm font-medium text-[#666666]">
               <span className="inline-flex items-center gap-2">
-                <CalendarDays className="h-5 w-5 text-[#ff6b35]" />
+                <CalendarDays className="h-5 w-5 text-[#ec2028]" />
                 Món mới mỗi ngày
               </span>
               <span className="inline-flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-[#ff6b35]" />
+                <MapPin className="h-5 w-5 text-[#ec2028]" />
                 Hương vị ba miền
               </span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="relative col-span-2 aspect-[16/10] overflow-hidden border-2 border-[#2c1810] bg-white shadow-block lg:col-span-1 lg:row-span-2 lg:aspect-auto">
+            <div className="relative col-span-2 aspect-[16/10] overflow-hidden border border-border bg-white shadow-block lg:col-span-1 lg:row-span-2 lg:aspect-auto">
               <Image
                 src={HERO_IMAGES[0]}
                 alt="Không gian nhà hàng ấm áp"
@@ -155,7 +155,7 @@ export default async function HomePage() {
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
-              <div className="absolute bottom-4 left-1/2 w-[calc(100%-2rem)] -translate-x-1/2 border-2 border-[#2c1810] bg-[#ff6b35] px-5 py-3 text-center text-white shadow-block-sm sm:w-auto">
+              <div className="absolute bottom-4 left-1/2 w-[calc(100%-2rem)] -translate-x-1/2 border border-border bg-[#ec2028] px-5 py-3 text-center text-white shadow-block-sm sm:w-auto">
                 <div className="text-2xl font-bold leading-none">22K+</div>
                 <div className="text-xs font-bold uppercase tracking-wider">
                   Công thức
@@ -165,7 +165,7 @@ export default async function HomePage() {
             {HERO_IMAGES.slice(1).map((src, index) => (
               <div
                 key={src}
-                className="relative aspect-square overflow-hidden border-2 border-[#2c1810] bg-white shadow-block"
+                className="relative aspect-square overflow-hidden border border-border bg-white shadow-block"
               >
                 <Image
                   src={src}
@@ -180,7 +180,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-b-2 border-[#2c1810] bg-white">
+      <section className="border-b border-border bg-white">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
           <ScrollArea>
             <div className="flex gap-3 pb-2">
@@ -190,7 +190,7 @@ export default async function HomePage() {
                   href={`/recipes?keyword=${encodeURIComponent(keyword)}`}
                   className="shrink-0"
                 >
-                  <span className="inline-flex border-2 border-[#2c1810] bg-[#fff5e6] px-4 py-2 text-sm font-bold text-[#2c1810] shadow-block-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:bg-[#ff6b35] hover:text-white hover:shadow-none">
+                  <span className="inline-flex border border-border bg-[#f5f5f5] px-4 py-2 text-sm font-bold text-[#0a0a0a] shadow-block-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:bg-[#ec2028] hover:text-white hover:shadow-none">
                     {label}
                   </span>
                 </Link>
@@ -202,7 +202,7 @@ export default async function HomePage() {
       </section>
 
       {menuPreview.length > 0 && (
-        <section className="bg-[#fff5e6] px-4 py-14 sm:px-6 sm:py-20">
+        <section className="bg-[#f5f5f5] px-4 py-14 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-7xl">
             <CenteredSectionHeader
               icon={<ChefHat className="h-6 w-6" />}
@@ -216,7 +216,7 @@ export default async function HomePage() {
             </div>
             <div className="mt-12 text-center">
               <Link href="/recipes">
-                <Button className="h-12 rounded-none border-2 border-[#2c1810] bg-[#ff6b35] px-7 font-bold text-white shadow-block hover:bg-[#e55a2b]">
+                <Button className="h-12 rounded-lg border border-border bg-[#ec2028] px-7 font-bold text-white shadow-block hover:bg-[#cc1c22]">
                   View Full Menu
                   <ChevronRight className="h-4 w-4" />
                 </Button>
@@ -237,7 +237,7 @@ export default async function HomePage() {
       )}
 
       {featured?.top_rated && featured.top_rated.length > 0 && (
-        <section className="bg-[#fffaf0] px-4 py-14 sm:px-6 sm:py-20">
+        <section className="bg-[#ffffff] px-4 py-14 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-7xl">
             <SectionHeader
               icon={<Star className="h-5 w-5 fill-current" />}
@@ -253,11 +253,11 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section className="bg-[#2c1810] px-4 py-14 text-white sm:px-6 sm:py-20">
+      <section className="bg-[#0a0a0a] px-4 py-14 text-white sm:px-6 sm:py-20">
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2">
           <div>
-            <div className="mb-5 h-0.5 w-12 bg-[#ff6b35]" />
-            <p className="mb-3 text-sm font-bold uppercase tracking-wider text-[#ff6b35]">
+            <div className="mb-5 h-0.5 w-12 bg-[#ec2028]" />
+            <p className="mb-3 text-sm font-bold uppercase tracking-wider text-[#ec2028]">
               Our Story
             </p>
             <h2 className="mb-6 text-3xl font-bold sm:text-4xl">
@@ -278,7 +278,7 @@ export default async function HomePage() {
                   key={label}
                   className="border border-white/20 bg-white/5 p-4 text-center"
                 >
-                  <div className="text-2xl font-bold text-[#ff6b35]">
+                  <div className="text-2xl font-bold text-[#ec2028]">
                     {value}
                   </div>
                   <div className="text-xs font-bold uppercase tracking-wider text-white/60">
@@ -289,14 +289,14 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="border-2 border-white bg-white p-6 text-[#2c1810] shadow-block">
-            <Quote className="mb-4 h-8 w-8 text-[#ff6b35]" />
-            <p className="mb-5 text-lg italic leading-relaxed text-[#6b5344]">
+          <div className="border-2 border-white bg-white p-6 text-[#0a0a0a] shadow-block">
+            <Quote className="mb-4 h-8 w-8 text-[#ec2028]" />
+            <p className="mb-5 text-lg italic leading-relaxed text-[#666666]">
               &quot;Món Việt ngon nhất khi có câu chuyện phía sau. Giao diện mới
               giúp câu chuyện đó nổi bật ngay từ ảnh, tên món và cách khám phá.&quot;
             </p>
             <div className="font-bold">VNFood Kitchen</div>
-            <div className="text-sm text-[#6b5344]">Taste guide</div>
+            <div className="text-sm text-[#666666]">Taste guide</div>
           </div>
         </div>
       </section>
@@ -325,7 +325,7 @@ export default async function HomePage() {
               <RecipeCardSkeleton key={i} />
             ))}
           </div>
-          <p className="mt-6 text-center text-sm text-[#6b5344]">
+          <p className="mt-6 text-center text-sm text-[#666666]">
             Backend đang khởi động... Vui lòng refresh sau ít phút.
           </p>
         </section>
@@ -341,9 +341,9 @@ function MenuListItem({ recipe }: { recipe: RecipeCardType }) {
   return (
     <Link
       href={`/recipes/${recipe.id}`}
-      className="group flex gap-4 border-2 border-[#2c1810] bg-white p-4 shadow-block transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-block-sm"
+      className="group flex gap-4 border border-border bg-white p-4 shadow-block transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-block-sm"
     >
-      <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden border-2 border-[#2c1810] bg-[#fff5e6]">
+      <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden border border-border bg-[#f5f5f5]">
         <RecipeImage
           src={imageUrl}
           alt={cleanTitle}
@@ -352,25 +352,25 @@ function MenuListItem({ recipe }: { recipe: RecipeCardType }) {
           sizes="96px"
           unoptimized
           fallback={
-            <ChefHat className="absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 text-[#e8ddd4]" />
+            <ChefHat className="absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 text-[#f0f0f0]" />
           }
         />
       </div>
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex items-start justify-between gap-3">
-          <h3 className="line-clamp-2 text-lg font-bold leading-snug group-hover:text-[#ff6b35]">
+          <h3 className="line-clamp-2 text-lg font-bold leading-snug group-hover:text-[#ec2028]">
             {cleanTitle}
           </h3>
           {recipe.avg_rating > 0 && (
-            <span className="whitespace-nowrap font-bold text-[#ff6b35]">
+            <span className="whitespace-nowrap font-bold text-[#ec2028]">
               {recipe.avg_rating.toFixed(1)}
             </span>
           )}
         </div>
-        <p className="line-clamp-2 text-sm text-[#6b5344]">
+        <p className="line-clamp-2 text-sm text-[#666666]">
           {recipe.author?.full_name ?? "VNFood"} tuyển chọn cho bữa ăn Việt.
         </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-xs font-medium text-[#6b5344]">
+        <div className="mt-3 flex flex-wrap gap-3 text-xs font-medium text-[#666666]">
           {recipe.cooking_time != null && (
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3.5 w-3.5" />
@@ -402,7 +402,7 @@ function RecipeRail({
   variant?: "warm";
 }) {
   return (
-    <section className="bg-[#fff5e6] px-4 py-14 sm:px-6 sm:py-20">
+    <section className="bg-[#f5f5f5] px-4 py-14 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-7xl">
         <SectionHeader icon={icon} title={title} href={href} />
         <ScrollArea className="mt-8">
@@ -431,9 +431,9 @@ function CenteredSectionHeader({
 }) {
   return (
     <div className="mb-12 text-center">
-      <div className="mb-4 inline-flex text-[#ff6b35]">{icon}</div>
+      <div className="mb-4 inline-flex text-[#ec2028]">{icon}</div>
       <h2 className="mb-4 text-3xl font-bold sm:text-4xl">{title}</h2>
-      <p className="mx-auto max-w-md text-[#6b5344]">{subtitle}</p>
+      <p className="mx-auto max-w-md text-[#666666]">{subtitle}</p>
     </div>
   );
 }
@@ -450,15 +450,15 @@ function SectionHeader({
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        <span className="shrink-0 text-[#ff6b35]">{icon}</span>
-        <h2 className="shrink-0 text-2xl font-bold text-[#2c1810] sm:text-3xl">
+        <span className="shrink-0 text-[#ec2028]">{icon}</span>
+        <h2 className="shrink-0 text-2xl font-bold text-[#0a0a0a] sm:text-3xl">
           {title}
         </h2>
-        <div className="h-px flex-1 bg-[#e8ddd4]" />
+        <div className="h-px flex-1 bg-[#f0f0f0]" />
       </div>
       <Link
         href={href}
-        className="group flex shrink-0 items-center gap-1 text-sm font-bold text-[#ff6b35] hover:underline"
+        className="group flex shrink-0 items-center gap-1 text-sm font-bold text-[#ec2028] hover:underline"
       >
         Xem thêm
         <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

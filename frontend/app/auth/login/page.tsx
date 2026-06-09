@@ -64,7 +64,7 @@ export default function LoginPage() {
             </span>
           </Link>
           <h1 className="text-2xl font-semibold text-[#2D2417]">Đăng nhập</h1>
-          <p className="text-[#7C6A56] mt-1 text-sm">Chào mừng bạn trở lại!</p>
+          <p className="text-[#666666] mt-1 text-sm">Chào mừng bạn trở lại!</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -80,7 +80,7 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="bg-white border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+              className="bg-white border-[#f0f0f0] focus-visible:ring-[#E85D26]"
             />
           </div>
 
@@ -96,7 +96,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="bg-white border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+              className="bg-white border-[#f0f0f0] focus-visible:ring-[#E85D26]"
             />
           </div>
 
@@ -109,7 +109,7 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-[#7C6A56] mt-6">
+        <p className="text-center text-sm text-[#666666] mt-6">
           Chưa có tài khoản?{" "}
           <Link
             href="/auth/register"

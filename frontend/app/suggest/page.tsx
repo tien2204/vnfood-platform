@@ -97,14 +97,14 @@ export default function SuggestPage() {
         >
           Hôm nay nấu gì?
         </h1>
-        <p className="text-[#7C6A56] text-lg max-w-xl mx-auto">
+        <p className="text-[#666666] text-lg max-w-xl mx-auto">
           Chọn nguyên liệu bạn đang có — chúng tôi gợi ý công thức phù hợp nhất để nấu ngay hôm nay.
         </p>
       </section>
 
       {/* ── Input panel ── */}
       <section className="max-w-3xl mx-auto px-4 pb-8">
-        <div className="bg-white rounded-2xl border border-[#E8DDD4] shadow-sm p-5 md:p-6 space-y-5">
+        <div className="bg-white rounded-2xl border border-[#f0f0f0] shadow-sm p-5 md:p-6 space-y-5">
 
           {/* Search autocomplete */}
           <div>
@@ -136,7 +136,7 @@ export default function SuggestPage() {
                   <button
                     type="button"
                     onClick={() => setShowAllPopular((v) => !v)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-dashed border-[#D0C5BB] text-sm text-[#7C6A56] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-dashed border-[#D0C5BB] text-sm text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
                   >
                     {showAllPopular ? (
                       <>Thu gọn <ChevronUp className="w-3.5 h-3.5" /></>
@@ -219,8 +219,8 @@ export default function SuggestPage() {
             </div>
 
             {result.db_results.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-[#E8DDD4] p-10 text-center">
-                <p className="text-[#7C6A56] text-lg font-medium">Không tìm thấy công thức phù hợp</p>
+              <div className="bg-white rounded-2xl border border-[#f0f0f0] p-10 text-center">
+                <p className="text-[#666666] text-lg font-medium">Không tìm thấy công thức phù hợp</p>
                 <p className="text-[#B0A090] text-sm mt-1">Thử bớt nguyên liệu hoặc chuyển sang chế độ "Có ít nhất 1"</p>
               </div>
             ) : (
@@ -265,7 +265,7 @@ export default function SuggestPage() {
 
       {/* ── Mobile sticky bottom bar ── */}
       {selected.length > 0 && !result && (
-        <div className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-white/95 backdrop-blur border-t border-[#E8DDD4] px-4 py-3 safe-b">
+        <div className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-white/95 backdrop-blur border-t border-[#f0f0f0] px-4 py-3 safe-b">
           <div className="flex items-center gap-3">
             <div className="flex-1 flex flex-wrap gap-1 overflow-hidden max-h-8">
               {selected.slice(0, 5).map((name) => (
@@ -277,7 +277,7 @@ export default function SuggestPage() {
                 </span>
               ))}
               {selected.length > 5 && (
-                <span className="text-xs text-[#7C6A56] self-center">+{selected.length - 5}</span>
+                <span className="text-xs text-[#666666] self-center">+{selected.length - 5}</span>
               )}
             </div>
             <button

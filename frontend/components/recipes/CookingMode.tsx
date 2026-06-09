@@ -158,10 +158,10 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
   return (
     <div className="fixed inset-0 z-50 bg-[#FFFBF5] flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E8DDD4] bg-white shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#f0f0f0] bg-white shrink-0">
         <button
           onClick={onClose}
-          className="inline-flex items-center gap-1.5 text-sm text-[#7C6A56] hover:text-[#E85D26] transition-colors font-medium"
+          className="inline-flex items-center gap-1.5 text-sm text-[#666666] hover:text-[#E85D26] transition-colors font-medium"
         >
           <X className="w-4 h-4" />
           Thoát
@@ -182,7 +182,7 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
               }}
               title={speech.enabled ? 'Tắt đọc bước' : 'Bật đọc bước'}
               aria-pressed={speech.enabled}
-              className={`p-1.5 rounded-lg transition-colors ${speech.enabled ? 'text-[#E85D26] bg-[#E85D26]/10' : 'text-[#7C6A56] hover:text-[#E85D26]'}`}
+              className={`p-1.5 rounded-lg transition-colors ${speech.enabled ? 'text-[#E85D26] bg-[#E85D26]/10' : 'text-[#666666] hover:text-[#E85D26]'}`}
             >
               {speech.enabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
             </button>
@@ -192,13 +192,13 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
               onClick={voice.toggle}
               title={voice.listening ? 'Tắt điều khiển giọng nói' : 'Bật điều khiển giọng nói'}
               aria-pressed={voice.listening}
-              className={`inline-flex items-center gap-1 p-1.5 rounded-lg transition-colors ${voice.listening ? 'text-[#2D6A4F] bg-[#2D6A4F]/10' : 'text-[#7C6A56] hover:text-[#2D6A4F]'}`}
+              className={`inline-flex items-center gap-1 p-1.5 rounded-lg transition-colors ${voice.listening ? 'text-[#2D6A4F] bg-[#2D6A4F]/10' : 'text-[#666666] hover:text-[#2D6A4F]'}`}
             >
               {voice.listening ? <Mic className="w-4 h-4 animate-pulse" /> : <MicOff className="w-4 h-4" />}
               {voice.listening && <span className="text-[10px] font-semibold">Đang nghe</span>}
             </button>
           )}
-          <span className="text-sm text-[#7C6A56]">
+          <span className="text-sm text-[#666666]">
             {currentStep + 1} / {total}
           </span>
         </div>
@@ -225,7 +225,7 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
           {/* Timer badge hint */}
           {stepTimerSeconds > 0 && (
             <div className="flex justify-center mb-2">
-              <span className="inline-flex items-center gap-1.5 text-xs text-[#7C6A56] bg-[#F7F0E8] px-3 py-1 rounded-full border border-[#E8DDD4]">
+              <span className="inline-flex items-center gap-1.5 text-xs text-[#666666] bg-[#F7F0E8] px-3 py-1 rounded-full border border-[#f0f0f0]">
                 <Clock className="w-3 h-3" />
                 {Math.floor(stepTimerSeconds / 60)}:{String(stepTimerSeconds % 60).padStart(2, '0')} phút
               </span>
@@ -280,7 +280,7 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
                   ? 'bg-[#E85D26] w-10'
                   : i < currentStep
                   ? 'bg-[#E85D26]/40 w-3'
-                  : 'bg-[#E8DDD4] w-3'
+                  : 'bg-[#f0f0f0] w-3'
               }`}
               style={{ minWidth: i === currentStep ? 40 : 12 }}
             />
@@ -289,11 +289,11 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
       )}
 
       {/* Footer navigation */}
-      <div className="flex items-center justify-between px-4 py-3 border-t border-[#E8DDD4] bg-white shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-t border-[#f0f0f0] bg-white shrink-0">
         <button
           onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
           disabled={currentStep === 0}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#E8DDD4] text-[#7C6A56] hover:border-[#E85D26] hover:text-[#E85D26] disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium text-sm"
         >
           <ChevronLeft className="w-5 h-5" />
           Bước trước

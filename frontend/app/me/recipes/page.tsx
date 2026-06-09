@@ -88,7 +88,7 @@ export default function MyRecipesPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Công thức của tôi</h1>
-            <p className="text-sm text-[#7C6A56] mt-0.5">
+            <p className="text-sm text-[#666666] mt-0.5">
               {pagination ? `${pagination.total} công thức` : "Đang tải..."}
             </p>
           </div>
@@ -110,7 +110,7 @@ export default function MyRecipesPage() {
                 flex-1 min-w-fit px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all
                 ${tab === value
                   ? "bg-white text-[#E85D26] shadow-sm"
-                  : "text-[#7C6A56] hover:text-[#1C1209]"
+                  : "text-[#666666] hover:text-[#1C1209]"
                 }
               `}
             >
@@ -127,7 +127,7 @@ export default function MyRecipesPage() {
             ))}
           </div>
         ) : recipes.length === 0 ? (
-          <div className="text-center py-20 text-[#7C6A56]">
+          <div className="text-center py-20 text-[#666666]">
             <p className="text-4xl mb-3">🍽</p>
             <p className="font-medium text-[#1C1209] mb-1">Chưa có công thức nào</p>
             <p className="text-sm mb-6">Hãy đăng công thức đầu tiên của bạn!</p>
@@ -151,14 +151,14 @@ export default function MyRecipesPage() {
               return (
                 <article
                   key={recipe.id}
-                  className="bg-white border border-[#E8DDD4] rounded-2xl overflow-hidden flex gap-0"
+                  className="bg-white border border-[#f0f0f0] rounded-2xl overflow-hidden flex gap-0"
                 >
                   {/* Thumbnail */}
                   <div className="relative w-28 shrink-0 bg-[#F7F0E8]">
                     {imgSrc ? (
                       <Image src={imgSrc} alt={cleanTitle} fill className="object-cover" unoptimized />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-[#E8DDD4]">
+                      <div className="absolute inset-0 flex items-center justify-center text-[#f0f0f0]">
                         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.17-15.03-8.17-15.03 0h15.03zM1.02 17h15v2h-15z" />
                         </svg>
@@ -185,7 +185,7 @@ export default function MyRecipesPage() {
                         </p>
                       )}
 
-                      <div className="flex items-center gap-3 text-xs text-[#7C6A56] mt-2">
+                      <div className="flex items-center gap-3 text-xs text-[#666666] mt-2">
                         {recipe.cooking_time && (
                           <span className="flex items-center gap-1">
                             <Clock className="w-3 h-3" /> {recipe.cooking_time}p
@@ -213,7 +213,7 @@ export default function MyRecipesPage() {
                         <button
                           onClick={() => handleAction(recipe.id, "withdraw", "Đã thu hồi")}
                           disabled={acting === recipe.id}
-                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#E8DDD4] text-xs text-[#7C6A56] hover:border-[#E85D26]/50 hover:text-[#E85D26] transition-colors disabled:opacity-50"
+                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#f0f0f0] text-xs text-[#666666] hover:border-[#E85D26]/50 hover:text-[#E85D26] transition-colors disabled:opacity-50"
                         >
                           Thu hồi
                         </button>
@@ -221,7 +221,7 @@ export default function MyRecipesPage() {
                       {recipe.source !== "cookpad" && (
                         <Link
                           href={`/recipes/${recipe.id}/edit`}
-                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#E8DDD4] text-xs text-[#7C6A56] hover:border-[#E85D26]/50 hover:text-[#E85D26] transition-colors"
+                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#f0f0f0] text-xs text-[#666666] hover:border-[#E85D26]/50 hover:text-[#E85D26] transition-colors"
                         >
                           <Edit2 className="w-3.5 h-3.5" /> Sửa
                         </Link>
@@ -229,7 +229,7 @@ export default function MyRecipesPage() {
                       <button
                         onClick={() => handleDelete(recipe.id, recipe.title)}
                         disabled={deleting === recipe.id}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#E8DDD4] text-xs text-[#7C6A56] hover:border-red-300 hover:text-red-500 transition-colors disabled:opacity-50"
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#f0f0f0] text-xs text-[#666666] hover:border-red-300 hover:text-red-500 transition-colors disabled:opacity-50"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         {deleting === recipe.id ? "..." : "Xóa"}
@@ -248,17 +248,17 @@ export default function MyRecipesPage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Trước
             </button>
-            <span className="text-sm text-[#7C6A56]">
+            <span className="text-sm text-[#666666]">
               {page} / {pagination.total_pages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
               disabled={page === pagination.total_pages}
-              className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Sau
             </button>

@@ -120,7 +120,7 @@ export default function AdminCommentsPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Bình luận</h1>
-          <p className="text-sm text-[#7C6A56] mt-0.5">{pagination ? `${pagination.total} bình luận` : ""}</p>
+          <p className="text-sm text-[#666666] mt-0.5">{pagination ? `${pagination.total} bình luận` : ""}</p>
         </div>
       </div>
 
@@ -132,7 +132,7 @@ export default function AdminCommentsPage() {
             <button
               key={value}
               onClick={() => handleFilterChange(value)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isHiddenFilter === value ? "bg-white text-[#E85D26] shadow-sm" : "text-[#7C6A56] hover:text-[#1C1209]"}`}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isHiddenFilter === value ? "bg-white text-[#E85D26] shadow-sm" : "text-[#666666] hover:text-[#1C1209]"}`}
             >
               {label}
             </button>
@@ -142,12 +142,12 @@ export default function AdminCommentsPage() {
         {/* Search */}
         <form onSubmit={handleSearch} className="flex gap-2 flex-1 min-w-0">
           <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7C6A56]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
             <input
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Tìm nội dung..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#E8DDD4] bg-white text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#f0f0f0] bg-white text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
             />
           </div>
           <button type="submit" className="px-4 py-2 rounded-xl bg-[#E85D26] text-white text-sm font-medium hover:bg-[#d04d1e]">
@@ -157,7 +157,7 @@ export default function AdminCommentsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-[#E8DDD4] overflow-hidden shadow-sm">
+      <div className="bg-white rounded-2xl border border-[#f0f0f0] overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="space-y-0">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -165,13 +165,13 @@ export default function AdminCommentsPage() {
             ))}
           </div>
         ) : comments.length === 0 ? (
-          <div className="text-center py-16 text-[#7C6A56]">
+          <div className="text-center py-16 text-[#666666]">
             <p className="text-3xl mb-2">💬</p>
             <p className="font-medium text-[#1C1209]">Không có bình luận nào</p>
           </div>
         ) : (
           <>
-            <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_auto] gap-4 px-5 py-3 bg-[#F7F0E8] text-xs font-semibold text-[#7C6A56] uppercase tracking-wider">
+            <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_auto] gap-4 px-5 py-3 bg-[#F7F0E8] text-xs font-semibold text-[#666666] uppercase tracking-wider">
               <span>Nội dung</span>
               <span>Người dùng · Công thức</span>
               <span>Ngày · Trạng thái</span>
@@ -184,7 +184,7 @@ export default function AdminCommentsPage() {
                 className={`grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1fr_auto] gap-3 md:gap-4 px-5 py-4 border-b border-[#F7F0E8] last:border-0 items-start md:items-center hover:bg-[#FFFBF5] transition-colors ${comment.is_hidden ? "opacity-70" : ""}`}
               >
                 {/* Content */}
-                <p className={`text-sm line-clamp-3 ${comment.is_hidden ? "line-through text-[#7C6A56]" : "text-[#1C1209]"}`}>
+                <p className={`text-sm line-clamp-3 ${comment.is_hidden ? "line-through text-[#666666]" : "text-[#1C1209]"}`}>
                   {comment.content}
                 </p>
 
@@ -192,7 +192,7 @@ export default function AdminCommentsPage() {
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <UserAvatar user={comment.user} />
-                    <span className="text-xs text-[#7C6A56] truncate">{comment.user.full_name ?? "Người dùng ẩn"}</span>
+                    <span className="text-xs text-[#666666] truncate">{comment.user.full_name ?? "Người dùng ẩn"}</span>
                   </div>
                   {comment.recipe.title && (
                     <Link
@@ -207,7 +207,7 @@ export default function AdminCommentsPage() {
 
                 {/* Date + Status */}
                 <div className="space-y-1">
-                  <p className="text-xs text-[#7C6A56]">{formatDate(comment.created_at)}</p>
+                  <p className="text-xs text-[#666666]">{formatDate(comment.created_at)}</p>
                   <span className={`text-xs font-medium px-2 py-0.5 rounded-full inline-block ${comment.is_hidden ? "bg-red-100 text-red-600" : "bg-green-100 text-green-700"}`}>
                     {comment.is_hidden ? "Đã ẩn" : "Hiển thị"}
                   </span>
@@ -244,15 +244,15 @@ export default function AdminCommentsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Trước
           </button>
-          <span className="text-sm text-[#7C6A56]">{page} / {pagination.total_pages}</span>
+          <span className="text-sm text-[#666666]">{page} / {pagination.total_pages}</span>
           <button
             onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
             disabled={page === pagination.total_pages}
-            className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Sau
           </button>

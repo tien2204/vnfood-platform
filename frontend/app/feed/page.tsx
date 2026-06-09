@@ -84,7 +84,7 @@ export default function FeedPage() {
           <h1 className="text-2xl font-bold text-[#1C1209]" style={{ fontFamily: "var(--font-playfair)" }}>
             {isDiscoverMode ? "Khám phá" : "Bảng tin"}
           </h1>
-          <p className="text-sm text-[#7C6A56]">
+          <p className="text-sm text-[#666666]">
             {isDiscoverMode
               ? "Những công thức được yêu thích nhất"
               : "Công thức mới từ những người bạn đang theo dõi"}
@@ -98,7 +98,7 @@ export default function FeedPage() {
           <UserPlus className="w-5 h-5 text-[#E85D26] shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-[#1C1209]">Chưa theo dõi ai</p>
-            <p className="text-xs text-[#7C6A56] mt-0.5">
+            <p className="text-xs text-[#666666] mt-0.5">
               Theo dõi các đầu bếp để xem công thức mới nhất của họ trong Bảng tin
             </p>
           </div>
@@ -119,7 +119,7 @@ export default function FeedPage() {
 
       {/* Empty state */}
       {!loadingMore && allItems.length === 0 && (
-        <div className="text-center py-20 text-[#7C6A56]">
+        <div className="text-center py-20 text-[#666666]">
           <Newspaper className="w-14 h-14 mx-auto mb-4 opacity-20" />
           <p className="font-medium">Bảng tin trống</p>
           <p className="text-sm mt-1">Theo dõi người dùng để xem công thức của họ</p>
@@ -133,7 +133,7 @@ export default function FeedPage() {
             variant="outline"
             onClick={() => setSize(size + 1)}
             disabled={loadingMore}
-            className="border-[#E8DDD4] text-[#7C6A56] hover:border-[#E85D26] hover:text-[#E85D26]"
+            className="border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26]"
           >
             {loadingMore ? (
               <div className="w-4 h-4 border-2 border-[#E85D26] border-t-transparent rounded-full animate-spin" />
@@ -165,7 +165,7 @@ function FeedCard({ item }: { item: FeedItem }) {
   const [saveCount, setSaveCount] = useState(recipe.save_count);
 
   return (
-    <article className="bg-white rounded-2xl border border-[#E8DDD4] overflow-hidden">
+    <article className="bg-white rounded-2xl border border-[#f0f0f0] overflow-hidden">
       {/* Author header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-[#F7F0E8]">
         <Link href={`/users/${author.id}`} className="shrink-0">
@@ -183,7 +183,7 @@ function FeedCard({ item }: { item: FeedItem }) {
                 {author.full_name ?? "Người dùng"}
               </span>
             </Link>
-            <span className="text-xs text-[#7C6A56]">đã đăng công thức mới</span>
+            <span className="text-xs text-[#666666]">đã đăng công thức mới</span>
           </div>
           <p className="text-xs text-[#B09A88] mt-0.5">{relativeTime(posted_at)}</p>
         </div>
@@ -203,7 +203,7 @@ function FeedCard({ item }: { item: FeedItem }) {
                 unoptimized
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-[#E8DDD4]">
+              <div className="absolute inset-0 flex items-center justify-center text-[#f0f0f0]">
                 <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.17-15.03-8.17-15.03 0h15.03zM1.02 17h15v2h-15z" />
                 </svg>
@@ -223,11 +223,11 @@ function FeedCard({ item }: { item: FeedItem }) {
                   <span className="text-sm font-medium text-[#1C1209]">
                     {recipe.avg_rating.toFixed(1)}
                   </span>
-                  <span className="text-xs text-[#7C6A56]">({recipe.rating_count})</span>
+                  <span className="text-xs text-[#666666]">({recipe.rating_count})</span>
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-3 mt-2 text-xs text-[#7C6A56]">
+            <div className="flex items-center gap-3 mt-2 text-xs text-[#666666]">
               {recipe.cooking_time != null && (
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
@@ -242,7 +242,7 @@ function FeedCard({ item }: { item: FeedItem }) {
       {/* Footer */}
       <div className="px-4 pb-3 flex items-center justify-between border-t border-[#F7F0E8] pt-3">
         <Link href={`/recipes/${recipe.id}`}>
-          <Button size="sm" variant="outline" className="text-xs border-[#E8DDD4] text-[#7C6A56] hover:border-[#E85D26] hover:text-[#E85D26]">
+          <Button size="sm" variant="outline" className="text-xs border-[#f0f0f0] text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26]">
             Xem công thức
           </Button>
         </Link>

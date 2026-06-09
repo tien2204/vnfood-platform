@@ -92,8 +92,8 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
   const isSelf = currentUserId === profile.id;
 
   const tabTriggerClass =
-    "px-4 py-2.5 text-sm font-medium rounded-none -mb-px border-b-2 border-transparent " +
-    "text-[#7C6A56] data-[state=active]:border-[#E85D26] data-[state=active]:text-[#E85D26] " +
+    "px-4 py-2.5 text-sm font-medium rounded-lg -mb-px border-b-2 border-transparent " +
+    "text-[#666666] data-[state=active]:border-[#E85D26] data-[state=active]:text-[#E85D26] " +
     "data-[state=active]:bg-transparent data-[state=active]:shadow-none " +
     "hover:text-[#1C1209] transition-colors";
 
@@ -101,7 +101,7 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-24 lg:pb-8">
 
       {/* ── Profile Hero ── */}
-      <div className="bg-white rounded-2xl border border-[#E8DDD4] overflow-hidden mb-6">
+      <div className="bg-white rounded-2xl border border-[#f0f0f0] overflow-hidden mb-6">
         {/* Cover gradient */}
         <div className="h-32 sm:h-40 bg-gradient-to-br from-[#E85D26]/20 via-[#F4A261]/20 to-[#2D6A4F]/10" />
 
@@ -135,9 +135,9 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
               {profile.full_name ?? "Người dùng"}
             </h1>
             {profile.bio && (
-              <p className="text-[#7C6A56] mt-1.5 leading-relaxed">{profile.bio}</p>
+              <p className="text-[#666666] mt-1.5 leading-relaxed">{profile.bio}</p>
             )}
-            <div className="flex flex-wrap gap-4 mt-3 text-sm text-[#7C6A56]">
+            <div className="flex flex-wrap gap-4 mt-3 text-sm text-[#666666]">
               <span className="flex items-center gap-1.5">
                 <CalendarDays className="w-4 h-4" />
                 Tham gia {formatDate(profile.created_at)}
@@ -163,7 +163,7 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
 
       {/* ── Tabs ── */}
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
-        <TabsList className="w-full justify-start border-b border-[#E8DDD4] bg-transparent h-auto p-0 rounded-none mb-6">
+        <TabsList className="w-full justify-start border-b border-[#f0f0f0] bg-transparent h-auto p-0 rounded-lg mb-6">
           <TabsTrigger value="recipes" className={tabTriggerClass}>
             <ChefHat className="w-4 h-4 mr-1.5" />
             Công thức ({stats.recipe_count})
@@ -179,7 +179,7 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
         {/* Recipes tab */}
         <TabsContent value="recipes">
           {recipes.length === 0 && !recipesLoading ? (
-            <div className="text-center py-16 text-[#7C6A56]">
+            <div className="text-center py-16 text-[#666666]">
               <ChefHat className="w-12 h-12 mx-auto mb-3 opacity-30" />
               <p className="font-medium">Chưa có công thức nào</p>
             </div>
@@ -195,7 +195,7 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
                 <div className="flex justify-center mt-6">
                   <button
                     onClick={() => loadRecipes(recipesPage + 1)}
-                    className="px-6 py-2.5 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
+                    className="px-6 py-2.5 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
                   >
                     Xem thêm
                   </button>
@@ -208,7 +208,7 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
         {/* Followers tab */}
         <TabsContent value="followers">
           {followers.length === 0 && followersLoaded ? (
-            <div className="text-center py-16 text-[#7C6A56]">
+            <div className="text-center py-16 text-[#666666]">
               <p>Chưa có người theo dõi</p>
             </div>
           ) : (
@@ -222,7 +222,7 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
                 <div className="flex justify-center mt-6">
                   <button
                     onClick={() => loadFollowers(followersPage + 1)}
-                    className="px-6 py-2.5 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
+                    className="px-6 py-2.5 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
                   >
                     Xem thêm
                   </button>
@@ -235,7 +235,7 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
         {/* Following tab */}
         <TabsContent value="following">
           {following.length === 0 && followingLoaded ? (
-            <div className="text-center py-16 text-[#7C6A56]">
+            <div className="text-center py-16 text-[#666666]">
               <p>Chưa theo dõi ai</p>
             </div>
           ) : (
@@ -249,7 +249,7 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
                 <div className="flex justify-center mt-6">
                   <button
                     onClick={() => loadFollowing(followingPage + 1)}
-                    className="px-6 py-2.5 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
+                    className="px-6 py-2.5 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26] hover:text-[#E85D26] transition-colors"
                   >
                     Xem thêm
                   </button>

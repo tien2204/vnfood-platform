@@ -29,11 +29,11 @@ function ConfidenceBar({ value }: { value: number }) {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between text-xs text-[#7C6A56] mb-1">
+      <div className="flex justify-between text-xs text-[#666666] mb-1">
         <span>Độ tin cậy cho ảnh này</span>
         <span className="font-semibold text-[#2D2417]">{pct}%</span>
       </div>
-      <div className="h-2.5 rounded-full bg-[#E8DDD4] overflow-hidden">
+      <div className="h-2.5 rounded-full bg-[#f0f0f0] overflow-hidden">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-700`}
           style={{ width: `${pct}%` }}
@@ -91,12 +91,12 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
                 <span className="text-3xl">🤔</span>
               </div>
               <p className="text-lg font-semibold text-[#2D2417]">Không nhận diện được</p>
-              <p className="text-sm text-[#7C6A56] mt-1">Thử ảnh rõ hơn hoặc chụp gần hơn</p>
+              <p className="text-sm text-[#666666] mt-1">Thử ảnh rõ hơn hoặc chụp gần hơn</p>
             </div>
           ) : (
             <>
               <div>
-                <p className="text-xs text-[#7C6A56] uppercase tracking-wider mb-1">Món được nhận diện</p>
+                <p className="text-xs text-[#666666] uppercase tracking-wider mb-1">Món được nhận diện</p>
                 <Link
                   href={`/search?q=${encodeURIComponent(result.display_name)}`}
                   className="inline-block group"
@@ -109,7 +109,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
                   </h2>
                 </Link>
                 {result.subgroup && (
-                  <p className="text-xs text-[#7C6A56] mt-1">Nhóm: {result.subgroup}</p>
+                  <p className="text-xs text-[#666666] mt-1">Nhóm: {result.subgroup}</p>
                 )}
               </div>
 
@@ -130,7 +130,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
 
               {result.model_used === "vnfood" && top3.length > 1 && (
                 <div>
-                  <p className="text-xs text-[#7C6A56] uppercase tracking-wider mb-2">Top dự đoán</p>
+                  <p className="text-xs text-[#666666] uppercase tracking-wider mb-2">Top dự đoán</p>
                   <div className="flex flex-col gap-1.5">
                     {top3.map((pred, i) => (
                       <div
@@ -138,7 +138,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
                         className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm ${
                           i === 0
                             ? "bg-[#E85D26]/10 border border-[#E85D26]/20 font-medium text-[#2D2417]"
-                            : "bg-[#F7F0E8] text-[#7C6A56]"
+                            : "bg-[#F7F0E8] text-[#666666]"
                         }`}
                       >
                         <span className="flex items-center gap-2">
@@ -166,7 +166,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
           </h2>
           <Link
             href={`/recipes/${result.canonical_recipe.id}`}
-            className="block rounded-2xl border border-[#E8DDD4] bg-white overflow-hidden hover:shadow-lg transition-shadow"
+            className="block rounded-2xl border border-[#f0f0f0] bg-white overflow-hidden hover:shadow-lg transition-shadow"
           >
             <div className="grid grid-cols-1 md:grid-cols-3">
               <div className="aspect-square md:aspect-auto relative bg-[#F7F0E8] md:min-h-[200px]">
@@ -177,7 +177,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
                   className="object-cover"
                   unoptimized
                   fallback={
-                    <div className="absolute inset-0 flex items-center justify-center text-[#E8DDD4]">
+                    <div className="absolute inset-0 flex items-center justify-center text-[#f0f0f0]">
                       <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.17-15.03-8.17-15.03 0h15.03zM1.02 17h15v2h-15z" />
                       </svg>
@@ -191,7 +191,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
                   {result.canonical_recipe.title}
                 </h3>
                 {result.canonical_recipe.cooking_time && (
-                  <p className="text-sm text-[#7C6A56] mt-2">
+                  <p className="text-sm text-[#666666] mt-2">
                     ⏱ {result.canonical_recipe.cooking_time} phút
                   </p>
                 )}
@@ -215,7 +215,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
               <Link
                 key={v.id}
                 href={`/recipes/${v.id}`}
-                className="block rounded-xl border border-[#E8DDD4] bg-white overflow-hidden hover:shadow transition-shadow"
+                className="block rounded-xl border border-[#f0f0f0] bg-white overflow-hidden hover:shadow transition-shadow"
               >
                 <div className="aspect-[4/3] relative bg-[#F7F0E8]">
                   <RecipeImage
@@ -225,7 +225,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
                     className="object-cover"
                     unoptimized
                     fallback={
-                      <div className="absolute inset-0 flex items-center justify-center text-[#E8DDD4]">
+                      <div className="absolute inset-0 flex items-center justify-center text-[#f0f0f0]">
                         <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8.17-15.03-8.17-15.03 0h15.03zM1.02 17h15v2h-15z" />
                         </svg>

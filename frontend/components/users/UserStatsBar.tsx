@@ -16,7 +16,7 @@ export default function UserStatsBar({ stats, activeTab, onTabChange }: Props) {
   ];
 
   return (
-    <div className="grid grid-cols-3 divide-x divide-[#E8DDD4] border border-[#E8DDD4] rounded-xl overflow-hidden bg-white">
+    <div className="grid grid-cols-3 divide-x divide-[#f0f0f0] border border-[#f0f0f0] rounded-xl overflow-hidden bg-white">
       {items.map(({ key, label, value }) => {
         const isActive = activeTab === key;
         return (
@@ -32,7 +32,7 @@ export default function UserStatsBar({ stats, activeTab, onTabChange }: Props) {
             <span className={`text-xl font-bold ${isActive ? "text-[#E85D26]" : "text-[#1C1209]"}`}>
               {value.toLocaleString()}
             </span>
-            <span className={`text-xs ${isActive ? "text-[#E85D26]" : "text-[#7C6A56]"}`}>
+            <span className={`text-xs ${isActive ? "text-[#E85D26]" : "text-[#666666]"}`}>
               {label}
             </span>
           </button>

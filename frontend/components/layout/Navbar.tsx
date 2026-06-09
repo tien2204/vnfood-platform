@@ -52,15 +52,15 @@ export default function Navbar() {
     : undefined;
 
   return (
-    <header className="sticky top-0 z-50 bg-[#fffaf0]/95 backdrop-blur-sm border-b-2 border-[#2c1810]">
+    <header className="sticky top-0 z-50 bg-[#ffffff]/95 backdrop-blur-sm border-b border-border">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="flex h-10 w-10 items-center justify-center border-2 border-[#2c1810] bg-[#ff6b35] shadow-block-sm">
+          <span className="flex h-10 w-10 items-center justify-center border border-border bg-[#ec2028] shadow-block-sm">
             <UtensilsCrossed className="w-5 h-5 text-white" />
           </span>
           <span
-            className="text-xl font-bold tracking-wide text-[#2c1810]"
+            className="text-xl font-bold tracking-wide text-[#0a0a0a]"
             style={{ fontFamily: "var(--font-playfair)" }}
           >
             VNFood
@@ -73,12 +73,12 @@ export default function Navbar() {
             onSubmit={handleSearch}
             className="hidden md:flex flex-1 max-w-lg mx-auto relative"
           >
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#ff6b35]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#ec2028]" />
             <Input
               placeholder="Tìm kiếm món ăn..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-9 bg-white border-2 border-[#2c1810] rounded-none shadow-block-sm focus-visible:ring-[#ff6b35]"
+              className="pl-9 bg-white border border-border rounded-lg shadow-block-sm focus-visible:ring-[#ec2028]"
             />
           </form>
         )}
@@ -87,7 +87,7 @@ export default function Navbar() {
           {/* Mobile search toggle — also hidden on /search */}
           {!hideSearchBar && (
             <button
-              className="md:hidden p-2 border-2 border-transparent hover:border-[#2c1810] hover:bg-[#fff5e6]"
+              className="md:hidden p-2 border border-transparent hover:border-[#0a0a0a] hover:bg-[#f5f5f5]"
               onClick={() => setSearchOpen(!searchOpen)}
             >
               {searchOpen ? (
@@ -103,7 +103,7 @@ export default function Navbar() {
             <Button
               variant="outline"
               size="sm"
-              className="hidden sm:flex items-center gap-1.5 rounded-none border-2 border-[#2c1810] bg-[#fff5e6] text-[#2c1810] shadow-block-sm hover:bg-[#ff6b35] hover:text-white"
+              className="hidden sm:flex items-center gap-1.5 rounded-lg border border-border bg-[#f5f5f5] text-[#0a0a0a] shadow-block-sm hover:bg-[#ec2028] hover:text-white"
             >
               <ScanLine className="w-4 h-4" />
               <span>AI Nhận diện</span>
@@ -115,58 +115,58 @@ export default function Navbar() {
             <>
               {isLoggedIn && user ? (
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1.5 border-2 border-transparent pl-1 pr-2 py-1 hover:border-[#2c1810] hover:bg-[#fff5e6] transition-colors cursor-pointer outline-none">
+                  <DropdownMenuTrigger className="flex items-center gap-1.5 border border-transparent pl-1 pr-2 py-1 hover:border-[#0a0a0a] hover:bg-[#f5f5f5] transition-colors cursor-pointer outline-none">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={avatarSrc} alt={user.full_name} />
-                      <AvatarFallback className="bg-[#ff6b35] text-white text-xs font-semibold">
+                      <AvatarFallback className="bg-[#ec2028] text-white text-xs font-semibold">
                         {getInitials(user.full_name)}
                       </AvatarFallback>
                     </Avatar>
-                    <ChevronDown className="w-3.5 h-3.5 text-[#6b5344] hidden sm:block" />
+                    <ChevronDown className="w-3.5 h-3.5 text-[#666666] hidden sm:block" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
                     className="w-auto min-w-[200px]"
                   >
-                    <div className="px-2 py-2.5 border-b border-[#e8ddd4]">
-                      <p className="font-semibold text-sm text-[#2c1810] truncate">
+                    <div className="px-2 py-2.5 border-b border-[#f0f0f0]">
+                      <p className="font-semibold text-sm text-[#0a0a0a] truncate">
                         {user.full_name}
                       </p>
-                      <p className="text-xs text-[#6b5344] truncate">{user.email}</p>
+                      <p className="text-xs text-[#666666] truncate">{user.email}</p>
                     </div>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push(`/users/${user.id}`)}
                     >
-                      <UserRound className="w-4 h-4 text-[#6b5344]" />
+                      <UserRound className="w-4 h-4 text-[#666666]" />
                       Trang cá nhân
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/feed")}
                     >
-                      <Newspaper className="w-4 h-4 text-[#6b5344]" />
+                      <Newspaper className="w-4 h-4 text-[#666666]" />
                       Bảng tin
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/me/recipes")}
                     >
-                      <ChefHat className="w-4 h-4 text-[#6b5344]" />
+                      <ChefHat className="w-4 h-4 text-[#666666]" />
                       Công thức của tôi
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/me/saved")}
                     >
-                      <Bookmark className="w-4 h-4 text-[#6b5344]" />
+                      <Bookmark className="w-4 h-4 text-[#666666]" />
                       Đã lưu
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/meal-plan")}
                     >
-                      <CalendarDays className="w-4 h-4 text-[#7C6A56]" />
+                      <CalendarDays className="w-4 h-4 text-[#666666]" />
                       Meal Plan
                     </DropdownMenuItem>
                     {(user.role === "collaborator" || user.role === "admin") && (
@@ -174,7 +174,7 @@ export default function Navbar() {
                         className="gap-2 cursor-pointer"
                         onClick={() => router.push("/me/change-requests")}
                       >
-                        <ClipboardList className="w-4 h-4 text-[#6b5344]" />
+                        <ClipboardList className="w-4 h-4 text-[#666666]" />
                         Đề xuất của tôi
                       </DropdownMenuItem>
                     )}
@@ -182,7 +182,7 @@ export default function Navbar() {
                       className="gap-2 cursor-pointer"
                       onClick={() => router.push("/me/profile")}
                     >
-                      <Settings className="w-4 h-4 text-[#6b5344]" />
+                      <Settings className="w-4 h-4 text-[#666666]" />
                       Cài đặt hồ sơ
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -202,7 +202,7 @@ export default function Navbar() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="hidden sm:flex rounded-none border-2 border-[#2c1810] bg-white text-[#2c1810] shadow-block-sm hover:bg-[#2c1810] hover:text-[#fffaf0]"
+                      className="hidden sm:flex rounded-lg border border-border bg-white text-[#0a0a0a] shadow-block-sm hover:bg-[#0a0a0a] hover:text-[#ffffff]"
                     >
                       Đăng nhập
                     </Button>
@@ -210,7 +210,7 @@ export default function Navbar() {
                   <Link href="/auth/register">
                     <Button
                       size="sm"
-                      className="rounded-none border-2 border-[#2c1810] bg-[#ff6b35] text-white shadow-block-sm hover:bg-[#e55a2b]"
+                      className="rounded-lg border border-border bg-[#ec2028] text-white shadow-block-sm hover:bg-[#cc1c22]"
                     >
                       <span className="sm:hidden">Đăng nhập</span>
                       <span className="hidden sm:inline">Đăng ký</span>
@@ -227,16 +227,16 @@ export default function Navbar() {
       {searchOpen && (
         <form
           onSubmit={handleSearch}
-          className="md:hidden px-4 pb-3 border-b-2 border-[#2c1810]"
+          className="md:hidden px-4 pb-3 border-b border-border"
         >
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#ff6b35]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#ec2028]" />
             <Input
               autoFocus
               placeholder="Tìm kiếm món ăn..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-9 bg-white border-2 border-[#2c1810] rounded-none"
+              className="pl-9 bg-white border border-border rounded-lg"
             />
           </div>
         </form>

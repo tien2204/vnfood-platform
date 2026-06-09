@@ -30,26 +30,26 @@ export default function ChangeRequestReviewPage() {
     catch (e) { toast.error(errMsg(e, "Từ chối thất bại")); }
   }
 
-  if (isLoading) return <p className="text-[#7C6A56]">Đang tải…</p>;
+  if (isLoading) return <p className="text-[#666666]">Đang tải…</p>;
   const items = data?.data ?? [];
 
   return (
     <div className="max-w-3xl">
       <h1 className="text-xl font-bold text-[#1C1209] mb-4">Duyệt đề xuất (công thức hệ thống)</h1>
-      {items.length === 0 && <p className="text-[#7C6A56]">Không có đề xuất chờ duyệt.</p>}
+      {items.length === 0 && <p className="text-[#666666]">Không có đề xuất chờ duyệt.</p>}
       <div className="space-y-3">
         {items.map((cr) => (
-          <div key={cr.id} className="bg-white border border-[#E8DDD4] rounded-xl p-4">
+          <div key={cr.id} className="bg-white border border-[#f0f0f0] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-0.5 text-xs rounded bg-[#F7F0E8] text-[#7C6A56]">{TYPE_LABEL[cr.type] ?? cr.type}</span>
+              <span className="px-2 py-0.5 text-xs rounded bg-[#F7F0E8] text-[#666666]">{TYPE_LABEL[cr.type] ?? cr.type}</span>
               <span className="text-sm font-semibold text-[#1C1209]">{cr.payload?.title ?? cr.target_title ?? "—"}</span>
-              <span className="ml-auto text-xs text-[#7C6A56]">{cr.requested_by_name}</span>
+              <span className="ml-auto text-xs text-[#666666]">{cr.requested_by_name}</span>
             </div>
             {cr.target_recipe_id && (
               <Link href={`/recipes/${cr.target_recipe_id}`} className="text-xs text-[#E85D26] underline">Xem công thức hiện tại</Link>
             )}
             {(cr.type === "create" || cr.type === "edit") && cr.payload && (
-              <div className="mt-2 text-xs text-[#7C6A56]">
+              <div className="mt-2 text-xs text-[#666666]">
                 <p>{cr.payload.ingredients?.length ?? 0} nguyên liệu · {cr.payload.steps?.length ?? 0} bước</p>
               </div>
             )}
@@ -59,7 +59,7 @@ export default function ChangeRequestReviewPage() {
             </div>
             {rejectId === cr.id && (
               <div className="mt-2 flex gap-2">
-                <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Lý do" className="flex-1 border border-[#E8DDD4] rounded-lg px-2 py-1 text-sm" />
+                <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Lý do" className="flex-1 border border-[#f0f0f0] rounded-lg px-2 py-1 text-sm" />
                 <button disabled={!reason.trim()} onClick={() => reject(cr.id)} className="px-3 py-1.5 text-sm rounded-lg bg-red-600 text-white disabled:opacity-50">Xác nhận</button>
               </div>
             )}

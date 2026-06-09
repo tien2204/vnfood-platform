@@ -72,7 +72,7 @@ export default function RegisterPage() {
             </span>
           </Link>
           <h1 className="text-2xl font-semibold text-[#2D2417]">Tạo tài khoản</h1>
-          <p className="text-[#7C6A56] mt-1 text-sm">
+          <p className="text-[#666666] mt-1 text-sm">
             Bắt đầu hành trình ẩm thực của bạn!
           </p>
         </div>
@@ -90,7 +90,7 @@ export default function RegisterPage() {
               onChange={(e) => setFullName(e.target.value)}
               required
               autoComplete="name"
-              className="bg-white border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+              className="bg-white border-[#f0f0f0] focus-visible:ring-[#E85D26]"
             />
           </div>
 
@@ -106,7 +106,7 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="bg-white border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+              className="bg-white border-[#f0f0f0] focus-visible:ring-[#E85D26]"
             />
           </div>
 
@@ -122,7 +122,7 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="new-password"
-              className="bg-white border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+              className="bg-white border-[#f0f0f0] focus-visible:ring-[#E85D26]"
             />
           </div>
 
@@ -138,7 +138,7 @@ export default function RegisterPage() {
               onChange={(e) => setConfirm(e.target.value)}
               required
               autoComplete="new-password"
-              className="bg-white border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+              className="bg-white border-[#f0f0f0] focus-visible:ring-[#E85D26]"
             />
           </div>
 
@@ -151,7 +151,7 @@ export default function RegisterPage() {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-[#7C6A56] mt-6">
+        <p className="text-center text-sm text-[#666666] mt-6">
           Đã có tài khoản?{" "}
           <Link
             href="/auth/login"

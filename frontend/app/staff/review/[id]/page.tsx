@@ -24,8 +24,8 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
 
-  if (isLoading) return <p className="text-[#7C6A56]">Đang tải…</p>;
-  if (!data) return <p className="text-[#7C6A56]">Không tải được công thức.</p>;
+  if (isLoading) return <p className="text-[#666666]">Đang tải…</p>;
+  if (!data) return <p className="text-[#666666]">Không tải được công thức.</p>;
 
   const r = data;
 
@@ -44,12 +44,12 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="max-w-3xl">
-      <button onClick={() => router.back()} className="text-sm text-[#7C6A56] mb-3">← Quay lại</button>
+      <button onClick={() => router.back()} className="text-sm text-[#666666] mb-3">← Quay lại</button>
       <h1 className="text-2xl font-bold text-[#1C1209] mb-1">{r.title}</h1>
-      <p className="text-xs text-[#7C6A56] mb-4">Trạng thái: {r.status}</p>
+      <p className="text-xs text-[#666666] mb-4">Trạng thái: {r.status}</p>
       <RecipeContent recipe={r} />
 
-      <div className="sticky bottom-0 mt-6 bg-[#FFFBF5] border-t border-[#E8DDD4] py-3 flex gap-2">
+      <div className="sticky bottom-0 mt-6 bg-[#FFFBF5] border-t border-[#f0f0f0] py-3 flex gap-2">
         {r.status === "pending_collaborator" && (
           <>
             <button disabled={busy} onClick={() => act("review/approve", {}, "Đã chuyển chờ admin", "/staff/review")} className="px-4 py-2 rounded-lg bg-[#2e7d32] text-white disabled:opacity-50">Duyệt</button>
@@ -63,7 +63,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
           </>
         )}
         {!(r.status === "pending_collaborator" || (r.status === "pending_admin" && isAdmin)) && (
-          <p className="text-sm text-[#7C6A56]">Không còn trong hàng đợi của bạn.</p>
+          <p className="text-sm text-[#666666]">Không còn trong hàng đợi của bạn.</p>
         )}
       </div>
 
@@ -71,9 +71,9 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setRejecting(false)}>
           <div className="bg-white rounded-xl p-4 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-bold text-[#1C1209] mb-2">Lý do từ chối</h3>
-            <textarea value={reason} onChange={(e) => setReason(e.target.value)} className="w-full border border-[#E8DDD4] rounded-lg p-2 text-sm" rows={3} />
+            <textarea value={reason} onChange={(e) => setReason(e.target.value)} className="w-full border border-[#f0f0f0] rounded-lg p-2 text-sm" rows={3} />
             <div className="flex justify-end gap-2 mt-3">
-              <button onClick={() => setRejecting(false)} className="px-3 py-1.5 text-sm text-[#7C6A56]">Hủy</button>
+              <button onClick={() => setRejecting(false)} className="px-3 py-1.5 text-sm text-[#666666]">Hủy</button>
               <button
                 disabled={busy || !reason.trim()}
                 onClick={() => {

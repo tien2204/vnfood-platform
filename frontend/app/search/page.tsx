@@ -14,7 +14,7 @@ export default function SearchPage() {
   return (
     <Suspense
       fallback={
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 text-center text-[#7C6A56]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 text-center text-[#666666]">
           Đang tìm kiếm...
         </div>
       }

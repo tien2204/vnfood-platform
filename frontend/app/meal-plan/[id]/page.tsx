@@ -36,7 +36,7 @@ export default function MealPlanDetailPage({ params }: { params: Promise<{ id: s
   if (!plan) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12 text-center">
-        <p className="text-[#7C6A56]">Không tìm thấy meal plan hoặc bạn không có quyền truy cập.</p>
+        <p className="text-[#666666]">Không tìm thấy meal plan hoặc bạn không có quyền truy cập.</p>
         <Link href="/meal-plan" className="text-[#E85D26] text-sm mt-2 inline-block hover:underline">
           ← Quay lại
         </Link>
@@ -51,7 +51,7 @@ export default function MealPlanDetailPage({ params }: { params: Promise<{ id: s
         <div className="flex items-center gap-3">
           <Link
             href="/meal-plan"
-            className="p-2 rounded-lg hover:bg-[#F7F0E8] text-[#7C6A56] transition-colors"
+            className="p-2 rounded-lg hover:bg-[#F7F0E8] text-[#666666] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
@@ -59,14 +59,14 @@ export default function MealPlanDetailPage({ params }: { params: Promise<{ id: s
             <h1 className="text-xl font-bold text-[#2D2417]" style={{ fontFamily: "var(--font-playfair)" }}>
               {plan.name}
             </h1>
-            <p className="text-sm text-[#7C6A56]">{fmtWeekRange(plan.week_start)}</p>
+            <p className="text-sm text-[#666666]">{fmtWeekRange(plan.week_start)}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
-            className="gap-1.5 border-[#E8DDD4] text-[#7C6A56]"
+            className="gap-1.5 border-[#f0f0f0] text-[#666666]"
             onClick={() => mutate()}
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -82,7 +82,7 @@ export default function MealPlanDetailPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Legend */}
-      <div className="hidden md:flex items-center gap-4 mb-4 text-xs text-[#7C6A56]">
+      <div className="hidden md:flex items-center gap-4 mb-4 text-xs text-[#666666]">
         {[
           { color: "bg-amber-100", label: "Sáng" },
           { color: "bg-green-100", label: "Trưa" },

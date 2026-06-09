@@ -49,17 +49,17 @@ interface StatsCardProps {
 
 function StatsCard({ icon, label, value, sub, trend, trendText, accent = "#E85D26" }: StatsCardProps) {
   const TrendIcon = trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : Minus;
-  const trendColor = trend === "up" ? "text-green-600" : trend === "down" ? "text-red-500" : "text-[#7C6A56]";
+  const trendColor = trend === "up" ? "text-green-600" : trend === "down" ? "text-red-500" : "text-[#666666]";
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E8DDD4] p-5 flex items-start gap-4 shadow-sm">
+    <div className="bg-white rounded-2xl border border-[#f0f0f0] p-5 flex items-start gap-4 shadow-sm">
       <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${accent}18` }}>
         <span style={{ color: accent }}>{icon}</span>
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-[#7C6A56] font-medium uppercase tracking-wider">{label}</p>
+        <p className="text-xs text-[#666666] font-medium uppercase tracking-wider">{label}</p>
         <p className="text-2xl font-bold text-[#1C1209] mt-0.5 font-heading">{value.toLocaleString("vi-VN")}</p>
-        {sub && <p className="text-xs text-[#7C6A56] mt-0.5">{sub}</p>}
+        {sub && <p className="text-xs text-[#666666] mt-0.5">{sub}</p>}
         {trendText && (
           <div className={`flex items-center gap-1 mt-1 text-xs font-medium ${trendColor}`}>
             <TrendIcon className="w-3 h-3" />
@@ -92,15 +92,15 @@ function LineChartCard({ title, data, dataKey, color }: {
   const formatted = data.map(d => ({ ...d, date: d.date.slice(5) }));
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E8DDD4] p-5 shadow-sm">
+    <div className="bg-white rounded-2xl border border-[#f0f0f0] p-5 shadow-sm">
       <h3 className="text-sm font-semibold text-[#1C1209] mb-4">{title}</h3>
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={formatted}>
-            <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#7C6A56" }} tickLine={false} axisLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: "#7C6A56" }} tickLine={false} axisLine={false} width={30} />
+            <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#666666" }} tickLine={false} axisLine={false} />
+            <YAxis tick={{ fontSize: 10, fill: "#666666" }} tickLine={false} axisLine={false} width={30} />
             <Tooltip
-              contentStyle={{ background: "white", border: "1px solid #E8DDD4", borderRadius: 12, fontSize: 12 }}
+              contentStyle={{ background: "white", border: "1px solid #f0f0f0", borderRadius: 12, fontSize: 12 }}
               labelFormatter={(l) => `Ngày ${l}`}
             />
             <Line type="monotone" dataKey="count" stroke={color} strokeWidth={2} dot={false} />
@@ -130,7 +130,7 @@ function RecipeStatusPie({ stats }: { stats: { approved: number; pending: number
   ].filter(d => d.value > 0);
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E8DDD4] p-5 shadow-sm">
+    <div className="bg-white rounded-2xl border border-[#f0f0f0] p-5 shadow-sm">
       <h3 className="text-sm font-semibold text-[#1C1209] mb-4">Công thức theo trạng thái</h3>
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">
@@ -142,14 +142,14 @@ function RecipeStatusPie({ stats }: { stats: { approved: number; pending: number
             </Pie>
             <Tooltip
               formatter={(value, name) => [(value as number)?.toLocaleString?.("vi-VN") ?? String(value ?? 0), STATUS_LABELS[String(name)] ?? String(name)]}
-              contentStyle={{ background: "white", border: "1px solid #E8DDD4", borderRadius: 12, fontSize: 12 }}
+              contentStyle={{ background: "white", border: "1px solid #f0f0f0", borderRadius: 12, fontSize: 12 }}
             />
           </PieChart>
         </ResponsiveContainer>
       </div>
       <div className="flex gap-4 justify-center mt-2 flex-wrap">
         {data.map(d => (
-          <div key={d.name} className="flex items-center gap-1.5 text-xs text-[#7C6A56]">
+          <div key={d.name} className="flex items-center gap-1.5 text-xs text-[#666666]">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: STATUS_COLORS[d.name] }} />
             {STATUS_LABELS[d.name]}: {d.value.toLocaleString("vi-VN")}
           </div>
@@ -161,15 +161,15 @@ function RecipeStatusPie({ stats }: { stats: { approved: number; pending: number
 
 function TopKeywordsBar({ data }: { data: { keyword: string; count: number }[] }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#E8DDD4] p-5 shadow-sm">
+    <div className="bg-white rounded-2xl border border-[#f0f0f0] p-5 shadow-sm">
       <h3 className="text-sm font-semibold text-[#1C1209] mb-4">Top 10 từ khóa</h3>
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ left: 8 }}>
-            <XAxis type="number" tick={{ fontSize: 10, fill: "#7C6A56" }} tickLine={false} axisLine={false} />
-            <YAxis type="category" dataKey="keyword" tick={{ fontSize: 10, fill: "#7C6A56" }} tickLine={false} axisLine={false} width={72} />
+            <XAxis type="number" tick={{ fontSize: 10, fill: "#666666" }} tickLine={false} axisLine={false} />
+            <YAxis type="category" dataKey="keyword" tick={{ fontSize: 10, fill: "#666666" }} tickLine={false} axisLine={false} width={72} />
             <Tooltip
-              contentStyle={{ background: "white", border: "1px solid #E8DDD4", borderRadius: 12, fontSize: 12 }}
+              contentStyle={{ background: "white", border: "1px solid #f0f0f0", borderRadius: 12, fontSize: 12 }}
             />
             <Bar dataKey="count" fill="#E85D26" radius={[0, 4, 4, 0]} />
           </BarChart>
@@ -190,7 +190,7 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Tổng quan</h1>
-        <p className="text-sm text-[#7C6A56] mt-0.5">Hệ thống VNFood Platform</p>
+        <p className="text-sm text-[#666666] mt-0.5">Hệ thống VNFood Platform</p>
       </div>
 
       {/* Stats cards */}
@@ -222,7 +222,7 @@ export default function AdminDashboardPage() {
               label="Bình luận"
               value={stats.engagement.total_comments}
               sub={`${stats.engagement.total_ratings} đánh giá`}
-              accent="#7C6A56"
+              accent="#666666"
             />
             <StatsCard
               icon={<Brain className="w-5 h-5" />}

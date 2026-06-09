@@ -22,19 +22,19 @@ export function ServingsScaler({ originalServings, onChange, className }: Servin
 
   return (
     <div className={`flex items-center gap-3 mb-5 flex-wrap ${className ?? ''}`}>
-      <span className="text-sm text-[#7C6A56] flex items-center gap-1.5">
+      <span className="text-sm text-[#666666] flex items-center gap-1.5">
         <Users className="w-4 h-4" />
         Khẩu phần:
       </span>
 
-      <div className="flex items-center gap-1 bg-[#F7F0E8] rounded-lg p-1 border border-[#E8DDD4]">
+      <div className="flex items-center gap-1 bg-[#F7F0E8] rounded-lg p-1 border border-[#f0f0f0]">
         <button
           onClick={() => update(servings - 1)}
           disabled={servings <= 1}
-          className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#E8DDD4] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#f0f0f0] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           aria-label="Giảm khẩu phần"
         >
-          <Minus className="w-3.5 h-3.5 text-[#7C6A56]" />
+          <Minus className="w-3.5 h-3.5 text-[#666666]" />
         </button>
         <span className="font-medium text-[#1C1209] min-w-[5ch] text-center text-sm">
           {servings} người
@@ -42,10 +42,10 @@ export function ServingsScaler({ originalServings, onChange, className }: Servin
         <button
           onClick={() => update(servings + 1)}
           disabled={servings >= 20}
-          className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#E8DDD4] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#f0f0f0] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           aria-label="Tăng khẩu phần"
         >
-          <Plus className="w-3.5 h-3.5 text-[#7C6A56]" />
+          <Plus className="w-3.5 h-3.5 text-[#666666]" />
         </button>
       </div>
 

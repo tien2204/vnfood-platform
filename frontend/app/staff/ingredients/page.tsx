@@ -76,24 +76,24 @@ function MergeModal({ initial, onClose, onDone }: MergeModalProps) {
         </h3>
 
         <div>
-          <label className="block text-xs font-medium text-[#7C6A56] mb-1">Tên đích (kết quả sau gộp)</label>
+          <label className="block text-xs font-medium text-[#666666] mb-1">Tên đích (kết quả sau gộp)</label>
           <input
             value={toName}
             onChange={(e) => setToName(e.target.value)}
             placeholder="vd: thịt bò"
-            className="w-full px-3 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+            className="w-full px-3 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-[#7C6A56] mb-1">Các tên nguồn (sẽ bị đổi thành tên đích)</label>
+          <label className="block text-xs font-medium text-[#666666] mb-1">Các tên nguồn (sẽ bị đổi thành tên đích)</label>
           <div className="flex gap-2">
             <input
               value={fromInput}
               onChange={(e) => setFromInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addFrom())}
               placeholder="Thêm tên và nhấn Enter"
-              className="flex-1 px-3 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+              className="flex-1 px-3 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
             />
             <button
               onClick={addFrom}
@@ -108,7 +108,7 @@ function MergeModal({ initial, onClose, onDone }: MergeModalProps) {
               {fromList.map((name) => (
                 <span key={name} className="flex items-center gap-1 bg-[#F7F0E8] rounded-full px-2.5 py-1 text-xs text-[#1C1209]">
                   {name}
-                  <button onClick={() => removeFrom(name)} className="text-[#7C6A56] hover:text-red-500">
+                  <button onClick={() => removeFrom(name)} className="text-[#666666] hover:text-red-500">
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -118,7 +118,7 @@ function MergeModal({ initial, onClose, onDone }: MergeModalProps) {
         </div>
 
         <div className="flex justify-end gap-2 pt-1">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56]">Hủy</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666]">Hủy</button>
           <button
             onClick={handleMerge}
             disabled={loading}
@@ -166,19 +166,19 @@ function RenameModal({ ingredient, onClose, onDone }: RenameModalProps) {
           Đổi tên nguyên liệu
         </h3>
         <div>
-          <label className="block text-xs text-[#7C6A56] mb-1">Tên cũ</label>
+          <label className="block text-xs text-[#666666] mb-1">Tên cũ</label>
           <p className="text-sm font-medium text-[#1C1209] bg-[#F7F0E8] px-3 py-2 rounded-xl">{ingredient.name}</p>
         </div>
         <div>
-          <label className="block text-xs font-medium text-[#7C6A56] mb-1">Tên mới</label>
+          <label className="block text-xs font-medium text-[#666666] mb-1">Tên mới</label>
           <input
             value={toName}
             onChange={(e) => setToName(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#1C1209] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+            className="w-full px-3 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#1C1209] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
           />
         </div>
         <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56]">Hủy</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666]">Hủy</button>
           <button
             onClick={handleRename}
             disabled={loading}
@@ -241,7 +241,7 @@ export default function AdminIngredientsPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Nguyên liệu</h1>
-          <p className="text-sm text-[#7C6A56] mt-0.5">{pagination ? `${pagination.total} tên nguyên liệu` : ""}</p>
+          <p className="text-sm text-[#666666] mt-0.5">{pagination ? `${pagination.total} tên nguyên liệu` : ""}</p>
         </div>
         <button
           onClick={() => setMergeModal("new")}
@@ -255,12 +255,12 @@ export default function AdminIngredientsPage() {
       {/* Search */}
       <form onSubmit={handleSearch} className="flex gap-2">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7C6A56]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
           <input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Tìm nguyên liệu..."
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#E8DDD4] bg-white text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#f0f0f0] bg-white text-sm text-[#1C1209] placeholder:text-[#B5A395] focus:outline-none focus:ring-2 focus:ring-[#E85D26]/30"
           />
         </div>
         <button type="submit" className="px-4 py-2 rounded-xl bg-[#E85D26] text-white text-sm font-medium hover:bg-[#d04d1e]">
@@ -270,7 +270,7 @@ export default function AdminIngredientsPage() {
           <button
             type="button"
             onClick={() => { setSearch(""); setSearchInput(""); setPage(1); }}
-            className="px-3 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:text-[#1C1209]"
+            className="px-3 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:text-[#1C1209]"
           >
             Xóa
           </button>
@@ -278,7 +278,7 @@ export default function AdminIngredientsPage() {
       </form>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-[#E8DDD4] overflow-hidden shadow-sm">
+      <div className="bg-white rounded-2xl border border-[#f0f0f0] overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="space-y-0">
             {Array.from({ length: 10 }).map((_, i) => (
@@ -286,13 +286,13 @@ export default function AdminIngredientsPage() {
             ))}
           </div>
         ) : ingredients.length === 0 ? (
-          <div className="text-center py-16 text-[#7C6A56]">
+          <div className="text-center py-16 text-[#666666]">
             <p className="text-3xl mb-2">🌿</p>
             <p className="font-medium text-[#1C1209]">Không có nguyên liệu nào</p>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-[1fr_auto_auto] gap-4 px-5 py-3 bg-[#F7F0E8] text-xs font-semibold text-[#7C6A56] uppercase tracking-wider">
+            <div className="grid grid-cols-[1fr_auto_auto] gap-4 px-5 py-3 bg-[#F7F0E8] text-xs font-semibold text-[#666666] uppercase tracking-wider">
               <span>Tên nguyên liệu</span>
               <span className="text-right">Số lần dùng</span>
               <span>Hành động</span>
@@ -311,20 +311,20 @@ export default function AdminIngredientsPage() {
                 </div>
 
                 <div className="text-right">
-                  <span className="text-sm text-[#7C6A56]">{ingredient.usage_count.toLocaleString("vi-VN")}</span>
+                  <span className="text-sm text-[#666666]">{ingredient.usage_count.toLocaleString("vi-VN")}</span>
                 </div>
 
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => setMergeModal(ingredient)}
-                    className="p-1.5 rounded-lg border border-[#E8DDD4] text-[#7C6A56] hover:text-[#E85D26] hover:border-[#E85D26]/50 transition-colors"
+                    className="p-1.5 rounded-lg border border-[#f0f0f0] text-[#666666] hover:text-[#E85D26] hover:border-[#E85D26]/50 transition-colors"
                     title="Gộp vào nguyên liệu khác"
                   >
                     <GitMerge className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => setRenameModal(ingredient)}
-                    className="p-1.5 rounded-lg border border-[#E8DDD4] text-[#7C6A56] hover:text-[#E85D26] hover:border-[#E85D26]/50 transition-colors"
+                    className="p-1.5 rounded-lg border border-[#f0f0f0] text-[#666666] hover:text-[#E85D26] hover:border-[#E85D26]/50 transition-colors"
                     title="Đổi tên"
                   >
                     <Pencil className="w-3.5 h-3.5" />
@@ -342,15 +342,15 @@ export default function AdminIngredientsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Trước
           </button>
-          <span className="text-sm text-[#7C6A56]">{page} / {pagination.total_pages}</span>
+          <span className="text-sm text-[#666666]">{page} / {pagination.total_pages}</span>
           <button
             onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
             disabled={page === pagination.total_pages}
-            className="px-4 py-2 rounded-xl border border-[#E8DDD4] text-sm text-[#7C6A56] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl border border-[#f0f0f0] text-sm text-[#666666] hover:border-[#E85D26]/50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Sau
           </button>
@@ -358,7 +358,7 @@ export default function AdminIngredientsPage() {
       )}
 
       {/* Info box */}
-      <div className="bg-[#F7F0E8] rounded-2xl p-4 text-sm text-[#7C6A56]">
+      <div className="bg-[#F7F0E8] rounded-2xl p-4 text-sm text-[#666666]">
         <p className="font-medium text-[#1C1209] mb-1">Hướng dẫn</p>
         <ul className="space-y-1 list-disc list-inside">
           <li><strong>Gộp:</strong> Chọn tên đích → thêm các tên variant → tất cả sẽ đổi thành tên đích</li>

@@ -11,5 +11,5 @@ export default function StaffIndex() {
     if (isLoading) return;
     router.replace(user?.role === "admin" ? "/staff/dashboard" : "/staff/review");
   }, [user, isLoading, router]);
-  return <p className="p-8 text-[#7C6A56]">Đang chuyển hướng…</p>;
+  return <p className="p-8 text-[#666666]">Đang chuyển hướng…</p>;
 }

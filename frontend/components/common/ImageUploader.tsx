@@ -81,7 +81,7 @@ export default function ImageUploader({
       <label className="text-sm font-medium text-[#1C1209]">{label}</label>
 
       {previewSrc ? (
-        <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-[#E8DDD4] bg-[#F7F0E8]">
+        <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-[#f0f0f0] bg-[#F7F0E8]">
           <Image src={previewSrc} alt="preview" fill className="object-cover" unoptimized />
           <button
             type="button"
@@ -102,12 +102,12 @@ export default function ImageUploader({
             cursor-pointer transition-all duration-150
             ${dragging
               ? "border-[#E85D26] bg-[#E85D26]/5"
-              : "border-[#E8DDD4] bg-[#F7F0E8] hover:border-[#E85D26]/50 hover:bg-[#E85D26]/5"
+              : "border-[#f0f0f0] bg-[#F7F0E8] hover:border-[#E85D26]/50 hover:bg-[#E85D26]/5"
             }
           `}
         >
           {uploading ? (
-            <div className="flex flex-col items-center gap-2 text-[#7C6A56]">
+            <div className="flex flex-col items-center gap-2 text-[#666666]">
               <div className="w-8 h-8 border-2 border-[#E85D26] border-t-transparent rounded-full animate-spin" />
               <span className="text-sm">Đang upload...</span>
             </div>
@@ -124,7 +124,7 @@ export default function ImageUploader({
                 <p className="text-sm font-medium text-[#1C1209]">
                   Kéo thả hoặc <span className="text-[#E85D26]">chọn ảnh</span>
                 </p>
-                <p className="text-xs text-[#7C6A56] mt-0.5">JPG, PNG, WEBP — tối đa 10MB</p>
+                <p className="text-xs text-[#666666] mt-0.5">JPG, PNG, WEBP — tối đa 10MB</p>
               </div>
             </>
           )}

@@ -123,7 +123,7 @@ export default function GroceryList({ planId, initial }: GroceryListProps) {
           {/* Unchecked — grouped by category */}
           {CATEGORY_ORDER.filter((cat) => uncheckedItems.some((i) => i.category === cat)).map((cat) => (
             <div key={cat} className="flex flex-col gap-1">
-              <p className="text-[11px] font-semibold text-[#7C6A56] uppercase tracking-wide mt-2 mb-0.5">
+              <p className="text-[11px] font-semibold text-[#666666] uppercase tracking-wide mt-2 mb-0.5">
                 {CATEGORY_LABELS[cat] ?? cat}
               </p>
               {uncheckedItems
@@ -144,9 +144,9 @@ export default function GroceryList({ planId, initial }: GroceryListProps) {
           {/* Divider */}
           {checkedItems.length > 0 && uncheckedItems.length > 0 && (
             <div className="flex items-center gap-2 my-2">
-              <div className="flex-1 h-px bg-[#E8DDD4]" />
+              <div className="flex-1 h-px bg-[#f0f0f0]" />
               <span className="text-xs text-[#B8A898]">Đã mua ({checkedItems.length})</span>
-              <div className="flex-1 h-px bg-[#E8DDD4]" />
+              <div className="flex-1 h-px bg-[#f0f0f0]" />
             </div>
           )}
 
@@ -173,14 +173,14 @@ export default function GroceryList({ planId, initial }: GroceryListProps) {
             value={newItem}
             onChange={(e) => setNewItem(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAddManual()}
-            className="flex-1 bg-[#F7F0E8] border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+            className="flex-1 bg-[#F7F0E8] border-[#f0f0f0] focus-visible:ring-[#E85D26]"
           />
           <Input
             placeholder="Số lượng"
             value={newQty}
             onChange={(e) => setNewQty(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAddManual()}
-            className="w-28 bg-[#F7F0E8] border-[#E8DDD4] focus-visible:ring-[#E85D26]"
+            className="w-28 bg-[#F7F0E8] border-[#f0f0f0] focus-visible:ring-[#E85D26]"
           />
           <Button
             onClick={handleAddManual}
@@ -210,7 +210,7 @@ function GroceryItemRow({
 }) {
   const [shopOpen, setShopOpen] = useState(false);
   return (
-    <div className={`rounded-lg border transition-colors ${item.is_checked ? "border-[#E8DDD4] bg-[#F9F6F2] opacity-70" : "border-[#E8DDD4] bg-white"}`}>
+    <div className={`rounded-lg border transition-colors ${item.is_checked ? "border-[#f0f0f0] bg-[#F9F6F2] opacity-70" : "border-[#f0f0f0] bg-white"}`}>
       <div className="flex items-center gap-3 px-3 py-2.5">
         <input
           type="checkbox"
@@ -223,14 +223,14 @@ function GroceryItemRow({
             {item.ingredient_name}
           </span>
           {item.quantity && (
-            <span className="text-xs text-[#7C6A56] ml-1.5">{item.quantity}</span>
+            <span className="text-xs text-[#666666] ml-1.5">{item.quantity}</span>
           )}
         </div>
         <div className="flex items-center gap-1 shrink-0">
           {item.from_recipes.length > 0 && (
             <button
               onClick={onToggleExpand}
-              className="p-1 text-[#7C6A56] hover:text-[#E85D26] transition-colors"
+              className="p-1 text-[#666666] hover:text-[#E85D26] transition-colors"
               title="Từ công thức nào"
             >
               {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -256,7 +256,7 @@ function GroceryItemRow({
             {shopOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShopOpen(false)} />
-                <div className="absolute right-0 top-full mt-1 z-20 w-40 rounded-lg border border-[#E8DDD4] bg-white shadow-lg py-1">
+                <div className="absolute right-0 top-full mt-1 z-20 w-40 rounded-lg border border-[#f0f0f0] bg-white shadow-lg py-1">
                   {SHOPPING_PLATFORMS.map((p) => (
                     <button
                       key={p.id}
@@ -286,10 +286,10 @@ function GroceryItemRow({
 
       {expanded && item.from_recipes.length > 0 && (
         <div className="px-3 pb-2.5 border-t border-[#F0E8E0]">
-          <p className="text-[10px] font-semibold text-[#7C6A56] uppercase tracking-wide mb-1 pt-2">Từ công thức</p>
+          <p className="text-[10px] font-semibold text-[#666666] uppercase tracking-wide mb-1 pt-2">Từ công thức</p>
           <div className="flex flex-col gap-0.5">
             {item.from_recipes.map((r, i) => (
-              <div key={i} className="flex items-center justify-between text-xs text-[#7C6A56]">
+              <div key={i} className="flex items-center justify-between text-xs text-[#666666]">
                 <span className="truncate">{r.title}</span>
                 {r.quantity && <span className="ml-2 shrink-0 font-medium">{r.quantity}</span>}
               </div>

@@ -20,14 +20,14 @@ export default function IngredientChip({ name, usageCount, selected, onToggle }:
         "active:scale-95 touch-manipulation",
         selected
           ? "bg-[#E85D26] border-[#E85D26] text-white shadow-sm"
-          : "bg-white border-[#E8DDD4] text-[#4A3728] hover:border-[#E85D26] hover:text-[#E85D26]",
+          : "bg-white border-[#f0f0f0] text-[#4A3728] hover:border-[#E85D26] hover:text-[#E85D26]",
       ].join(" ")}
       aria-pressed={selected}
     >
       {selected && <Check className="w-3.5 h-3.5 shrink-0" strokeWidth={2.5} />}
       <span>{name}</span>
       {usageCount !== undefined && (
-        <span className={`text-[10px] ${selected ? "text-white/70" : "text-[#7C6A56]"}`}>
+        <span className={`text-[10px] ${selected ? "text-white/70" : "text-[#666666]"}`}>
           {usageCount >= 1000 ? `${(usageCount / 1000).toFixed(1)}k` : usageCount}
         </span>
       )}

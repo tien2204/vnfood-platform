@@ -43,7 +43,7 @@ export default async function EditRecipePage({ params }: PageProps) {
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-[#1C1209] font-heading">Chỉnh sửa công thức</h1>
-          <p className="text-sm text-[#7C6A56] mt-1">
+          <p className="text-sm text-[#666666] mt-1">
             {recipe.status === "approved"
               ? "Sau khi lưu, công thức sẽ chờ Admin duyệt lại."
               : "Cập nhật và gửi lại để Admin duyệt."}

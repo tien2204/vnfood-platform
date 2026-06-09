@@ -30,15 +30,15 @@ export default function StaffProposalsPage() {
         </Link>
       </div>
       {isLoading ? (
-        <p className="text-[#7C6A56]">Đang tải…</p>
+        <p className="text-[#666666]">Đang tải…</p>
       ) : items.length === 0 ? (
-        <p className="text-[#7C6A56]">Chưa có đề xuất nào.</p>
+        <p className="text-[#666666]">Chưa có đề xuất nào.</p>
       ) : (
         <ul className="space-y-3">
           {items.map((cr) => {
             const st = STATUS[cr.status] ?? { label: cr.status, cls: "bg-gray-100 text-gray-700" };
             return (
-              <li key={cr.id} className="border border-[#E8DDD4] bg-white rounded-xl p-4">
+              <li key={cr.id} className="border border-[#f0f0f0] bg-white rounded-xl p-4">
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-medium text-[#1C1209]">
                     {TYPE_LABEL[cr.type]} · {cr.target_title ?? "(công thức mới)"}
