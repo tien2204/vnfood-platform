@@ -65,7 +65,7 @@ const SOCIAL_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0a0a0a] border-t border-border mt-auto text-white">
+    <footer className="bg-[#330002] mt-auto text-white/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-6">
 
         {/* ── 4-column grid ── */}
@@ -77,22 +77,22 @@ export default function Footer() {
               <span className="flex h-9 w-9 items-center justify-center border-2 border-white bg-[#ec2028]">
                 <UtensilsCrossed className="w-5 h-5 text-white" />
               </span>
-              <span className="text-lg font-bold tracking-wide text-white">VNFood</span>
+              <span className="text-lg font-display tracking-wide text-white">VNFood</span>
             </Link>
-            <p className="text-sm text-white/65 leading-relaxed">
+            <p className="text-sm text-white/70 leading-relaxed">
               Khám phá hương vị Việt Nam qua hàng nghìn công thức nấu ăn truyền thống và hiện đại.
             </p>
           </div>
 
           {/* Col 2: Categories */}
           <div>
-            <h4 className="font-semibold text-[#F2ECE0] mb-3">Danh mục món ăn</h4>
+            <h4 className="font-bold text-white mb-3">Danh mục món ăn</h4>
             <ul className="grid grid-cols-2 gap-1">
               {KEYWORD_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/60 hover:text-[#ec2028] transition-colors duration-150"
+                    className="text-sm text-white/70 hover:text-white transition-colors duration-150"
                   >
                     {link.label}
                   </Link>
@@ -103,13 +103,13 @@ export default function Footer() {
 
           {/* Col 3: Info */}
           <div>
-            <h4 className="font-semibold text-[#F2ECE0] mb-3">Thông tin</h4>
+            <h4 className="font-bold text-white mb-3">Thông tin</h4>
             <ul className="space-y-1.5">
               {INFO_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/60 hover:text-[#ec2028] transition-colors duration-150"
+                    className="text-sm text-white/70 hover:text-white transition-colors duration-150"
                   >
                     {link.label}
                   </Link>
@@ -120,7 +120,7 @@ export default function Footer() {
 
           {/* Col 4: Contact */}
           <div>
-            <h4 className="font-semibold text-[#F2ECE0] mb-3">Liên hệ</h4>
+            <h4 className="font-bold text-white mb-3">Liên hệ</h4>
             <a
               href="mailto:contact@vnfood.local"
               className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-[#ec2028] transition-colors duration-150 mb-4"
@@ -135,7 +135,7 @@ export default function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="flex h-10 w-10 items-center justify-center bg-white/10 text-white/70 hover:bg-[#ec2028] hover:text-white transition-colors duration-150"
+                  className="flex h-10 w-10 items-center justify-center bg-white/10 text-white/70 hover:bg-white/20 hover:text-white transition-colors duration-150"
                 >
                   {svg}
                 </a>
@@ -150,19 +150,19 @@ export default function Footer() {
 
         {/* ── Bottom row ── */}
         <div className="border-t border-white/15 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-white/55">
+          <p className="text-xs text-white/60">
             © 2026 VNFood Platform. Tổng hợp từ Cookpad & cộng đồng.
           </p>
-          <div className="flex items-center gap-3 text-xs text-white/55">
-            <Link href="/privacy" className="hover:text-[#ec2028] transition-colors">
+          <div className="flex items-center gap-3 text-xs text-white/60">
+            <Link href="/privacy" className="hover:text-white transition-colors">
               Chính sách bảo mật
             </Link>
             <span className="text-white/20">•</span>
-            <Link href="/terms" className="hover:text-[#ec2028] transition-colors">
+            <Link href="/terms" className="hover:text-white transition-colors">
               Điều khoản
             </Link>
             <span className="text-white/20">•</span>
-            <Link href="/contact" className="hover:text-[#ec2028] transition-colors">
+            <Link href="/contact" className="hover:text-white transition-colors">
               Liên hệ
             </Link>
           </div>
