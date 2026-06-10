@@ -68,8 +68,10 @@ def resolve_vnfood(
     if not top5:
         return None, None
     top1 = top5[0]
-    slug = top1["class"]
-    conf = top1["confidence"]
+    slug = top1.get("class")
+    conf = top1.get("confidence")
+    if not slug or conf is None:
+        return None, None
     if conf >= CLASS_CONFIDENT:
         return slug, "confident"
     if conf >= CLASS_TENTATIVE and has_canonical(slug):

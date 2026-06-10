@@ -55,3 +55,16 @@ def test_canonical_slug_cache_roundtrip():
     dr.set_canonical_slugs({"pho", "banh-xeo"})
     assert dr.has_canonical("pho") is True
     assert dr.has_canonical("com-tam") is False
+
+
+def test_resolve_to_slug_handles_d_with_stroke():
+    # "đ" (U+0111) does NOT decompose under NFD; alias map registers both the
+    # display-name form (with đ) and the slug-derived ASCII form, so both resolve.
+    assert dr.resolve_to_slug("Bánh đa cua") == "banh-da-cua"
+    assert dr.resolve_to_slug("banh da cua") == "banh-da-cua"
+
+
+def test_resolve_vnfood_malformed_top5_falls_back():
+    vn = {"group_confidence": 0.9, "top5": [{"display_name": "Phở"}]}  # missing class/confidence
+    slug, tier = dr.resolve_vnfood(vn, has_canonical=lambda s: True)
+    assert (slug, tier) == (None, None)
