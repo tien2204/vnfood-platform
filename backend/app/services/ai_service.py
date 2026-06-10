@@ -10,7 +10,7 @@ from typing import Optional
 import requests as _requests_lib
 from openai import AsyncOpenAI
 from PIL import Image
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -286,6 +286,13 @@ def _title_unaccent_ilike(display_name: str):
     return func.unaccent(Recipe.title).ilike(func.unaccent(pattern))
 
 
+def _in_recipes_page_pool():
+    """Restrict to the same recipe pool the /recipes page shows (the ~2.8k curated
+    set): canonical dishes or user-submitted recipes. This excludes the bulk
+    non-canonical Cookpad rows so suggestions only link to listable recipes."""
+    return or_(Recipe.is_canonical.is_(True), Recipe.source == "user")
+
+
 async def _find_suggested_recipes(
     db: AsyncSession,
     resolved_slug: Optional[str],
@@ -327,6 +334,7 @@ async def _find_suggested_recipes(
         q = (
             select(Recipe)
             .where(Recipe.status == "approved")
+            .where(_in_recipes_page_pool())
             .where(_title_unaccent_ilike(display_name))
             .order_by(Recipe.avg_rating.desc(), Recipe.view_count.desc())
             .limit(limit)
@@ -341,6 +349,7 @@ async def _find_suggested_recipes(
         fallback_q = (
             select(Recipe)
             .where(Recipe.status == "approved", Recipe.keyword == keyword)
+            .where(_in_recipes_page_pool())
             .order_by(Recipe.avg_rating.desc(), Recipe.view_count.desc())
             .limit(limit)
         )
