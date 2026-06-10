@@ -136,7 +136,9 @@ async def recognize_image(
         "model_used": model_used,
         "match_tier": match_tier,
         "resolved_slug": resolved_slug,
-        "subgroup": group,
+        # Only surface VNFood's group on VNFood-trusted results; on OpenAI paths the
+        # group is a discarded low-confidence guess and would contradict resolved_slug.
+        "subgroup": group if model_used == "vnfood" else None,
         "top_predictions": top5,
         "suggested_recipes": suggested_recipes,
         "canonical_recipe": canonical_recipe,
