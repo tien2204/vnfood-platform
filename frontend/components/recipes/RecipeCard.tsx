@@ -6,6 +6,7 @@ import { Clock, Users, Star } from "lucide-react";
 import SaveButton from "./SaveButton";
 import RecipeImage from "@/components/common/RecipeImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { recipeAuthorDisplay } from "@/lib/author";
 import type { RecipeCard as RecipeCardType } from "@/lib/types";
 
 const DIFFICULTY_LABEL = {
@@ -147,40 +148,39 @@ export default function RecipeCard({ recipe, onSaveChange, showVariantAction }: 
           {/* Author — mt-auto wrapper pins to bottom so cards align */}
           <div className="mt-auto">
           {(() => {
-            const displayName =
-              recipe.author?.full_name ??
-              (recipe.original_author_name && recipe.original_author_name.length > 0
-                ? recipe.original_author_name
-                : "Unknown");
-            const initials = displayName.slice(0, 2).toUpperCase();
-            const isLinkable = !!recipe.author;
+            const a = recipeAuthorDisplay({
+              source: recipe.source,
+              author: recipe.author,
+              originalAuthorName: recipe.original_author_name,
+            });
+            const initials = a.name.slice(0, 2).toUpperCase();
 
             const authorEl = (
               <div className="flex items-center gap-1.5">
                 <Avatar className="w-[18px] h-[18px]">
-                  {recipe.author?.avatar_url && <AvatarImage src={recipe.author.avatar_url} />}
+                  {a.avatarUrl && <AvatarImage src={a.avatarUrl} />}
                   <AvatarFallback className="text-[9px] bg-[#2D6A4F] text-white">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-xs text-muted-foreground truncate">{displayName}</span>
+                <span className="text-xs text-muted-foreground truncate">{a.name}</span>
               </div>
             );
 
-            return isLinkable ? (
+            return a.linkable && a.authorId ? (
               <span
                 role="link"
                 tabIndex={0}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  router.push(`/users/${recipe.author!.id}`);
+                  router.push(`/users/${a.authorId}`);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     e.stopPropagation();
-                    router.push(`/users/${recipe.author!.id}`);
+                    router.push(`/users/${a.authorId}`);
                   }
                 }}
                 className="block w-fit cursor-pointer hover:opacity-80 transition-opacity"
