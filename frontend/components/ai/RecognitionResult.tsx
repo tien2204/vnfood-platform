@@ -61,11 +61,8 @@ function ModelBadge({ model }: { model: "vnfood" | "openai" }) {
 }
 
 export default function RecognitionResult({ result, imagePreview }: Props) {
-  const isUnknown =
-    !result.display_name ||
-    result.display_name === "Không nhận diện được" ||
-    result.display_name === "Không xác định" ||
-    result.display_name.toLowerCase() === "unknown";
+  const isUnknown = result.match_tier === "unknown";
+  const isTentative = result.match_tier === "tentative";
 
   const top3 = result.top_predictions.slice(0, 3);
 
@@ -95,6 +92,11 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
             </div>
           ) : (
             <>
+              {isTentative && (
+                <div className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-sm text-amber-800">
+                  Có thể là <strong>{result.display_name}</strong> — độ tin cậy chưa cao, kiểm tra lại ảnh nếu chưa đúng.
+                </div>
+              )}
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Món được nhận diện</p>
                 <Link

@@ -306,6 +306,8 @@ export interface AIRecognitionResult {
   display_name: string;
   confidence: number;
   model_used: "vnfood" | "openai";
+  match_tier: "confident" | "tentative" | "openai_known" | "unknown";
+  resolved_slug: string | null;
   subgroup: string | null;
   top_predictions: AITopPrediction[];
   suggested_recipes: SuggestedRecipe[];
