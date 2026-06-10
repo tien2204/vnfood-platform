@@ -243,6 +243,7 @@ async def _find_canonical_for_class(
     result = await db.execute(
         select(Recipe).where(
             Recipe.is_canonical.is_(True),
+            Recipe.status == "approved",
             Recipe.canonical_dish_slug == predicted_class,
         ).order_by(Recipe.llm_judge_score.desc().nullslast())
     )
