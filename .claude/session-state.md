@@ -4,10 +4,29 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-07 (RBAC 3 tầng XONG TOÀN BỘ — SP1/SP2/SP2b/SP3/SP4/SP5)
-**Branch:** `feat/canonical-recipes` (push lại — local ahead ~75 commit)
-**Task đang làm:** **RBAC 3 tầng (user/cộng tác viên/admin) — HOÀN THÀNH cả 6 sub-project.** SP1 (role) · SP2 (pipeline 2 tầng) · SP2b (CTV change-request) · SP3 (claim-lock) · SP5 (staff portal /staff) · **SP4 (variant-from-saved) XONG** (tsc 0 lỗi, `npm run build` OK, smoke create 4/4 + detail 3/3). Roadmap RBAC kết thúc. Mỗi SP có spec/plan `docs/superpowers/{specs,plans}/2026-06-0X-rbac-sp*`.
-**⚠ Cần làm thủ công:** restart `uvicorn` + `npm run dev`; click-through SP5 (per-role) + SP4 (tạo biến thể từ /me/saved & detail → /me/recipes → gửi duyệt → duyệt → hiện "Biến thể từ cộng đồng" trên recipe gốc; "Phỏng theo" trên biến thể).
+**Cập nhật lần cuối:** 2026-06-10 (Restyle monngonmoingay.com + Dark mode + tinh chỉnh meal-plan/recipe-detail)
+**Branch:** `feat/monngonmoingay-restyle` (nhánh off `feat/canonical-recipes`, 18 commit UI/feature)
+**Task đang làm:** **XONG restyle toàn site theo monngonmoingay.com + dark/light mode toàn cục + vài tinh chỉnh UX.** `npm run build` OK (35+ route), tsc sạch.
+**⚠ Cần làm thủ công:** restart `uvicorn` (đã `--reload`) + `npm run dev`; click-through dark toggle mọi trang; thử tạo meal-plan ngày bất kỳ + kiểm ngày quá khứ read-only. (Branch RBAC `feat/canonical-recipes` — xem mục cũ bên dưới.)
+
+### ✅ Restyle monngonmoingay.com — 2026-06-09/10 (branch feat/monngonmoingay-restyle)
+Spec/plan `docs/superpowers/{specs,plans}/2026-06-09-monngonmoingay-restyle*`. Bóc design system THẬT từ `dist.css`/`app.css` của site (Tailwind-based): đỏ `#ec2028` (Primary-02), maroon `#330002`, amber `#ec9a20`, hồng `#fbd0d2`/`#fef6f6`, xanh healthy `#11ca24`; button `.btn` radius 8px viền 2px bold; search viền hồng 6px + shadow đỏ; card rounded-xl. Subagent-driven 11 task + tinh chỉnh.
+- **Token + font** (`globals.css`, `layout.tsx`): token đỏ thay cam brutalist cũ; bỏ shadow-block cứng → mềm; **Open Sans + Lobster** (next/font) thay Playfair+Be Vietnam Pro. `.restaurant-card` đổi `background: var(--card)` (theme-aware).
+- **Sweep màu hardcode** (~77+ file): `#ff6b35→#ec2028`, brutalist border/`#2c1810`/`#E85D26`/`#F7F0E8`/`#2D2417` → token. Giữ greens.
+- **Component**: Navbar (đỏ + **mega-menu Danh mục** 3 cột + ThemeToggle), Footer maroon, RecipeCard editorial badge bo tròn, ui/button theo `.btn`, Search/Facet pill, Meal-plan khung hồng + nút "+" nổi.
+- **Page layout fidelity**: recipe detail 2 cột `lg:grid-cols-[1fr_360px]` + meta icon đỏ + nguyên liệu nền hồng + bước số tròn đỏ; listing/search pill chip + pagination; meal-plan header hồng chữ đỏ.
+
+### ✅ Dark/Light mode toàn cục — 2026-06-10
+- `globals.css`: thêm `.dark {}` palette (nền #121212, card #1c1c1c, đỏ sáng #ff4d52, …) + brand surface vars (`--brand-pink-bg` …) theme-aware qua `:root`/`.dark` indirection.
+- `next-themes@0.4.6` (có sẵn): `components/theme/ThemeProvider.tsx` + `ThemeToggle.tsx` (☀️/🌙 ở Navbar, lưu localStorage, no-flash via `suppressHydrationWarning`). `layout.tsx` wrap ThemeProvider, body `bg-background`.
+- **Sweep token** (~60 file): `bg-white→bg-card`, `bg-[#fef6f6]→bg-[var(--color-brand-pink-bg)]`, đỏ hardcode→`bg-primary/text-primary` để lật đúng dark. Giữ `text-white` trên nền màu.
+- Fix bug: title recipe-card mờ trong dark (do `.restaurant-card` hardcode trắng) → `var(--card)`.
+
+### ✅ Tinh chỉnh UX khác — 2026-06-10
+- **Recipe detail**: nút "Bắt đầu nấu"+"Tạo biến thể" chuyển LÊN TRƯỚC "Món tương tự"; card "Thông tin món ăn" format mới (3 cột icon Khẩu phần/Thời gian/Độ khó) + nút "Lưu công thức" full-width (SaveButton variant `sidebar`); bỏ block "Tạo biến thể" cũ ở cuối page.tsx.
+- **`/me/recipes`**: bỏ 2 tab "Chờ CTV" + "Chờ Admin" (user chỉ cần biết duyệt hay chưa). Logic/badge/Thu hồi giữ nguyên dưới tab "Tất cả".
+- **Meal-plan** (backend+frontend): bỏ rule `week_start phải Thứ 2` → tạo plan **ngày bất kỳ** (modal `<input type=date>`, fix bug `getMonday` toISOString lệch UTC+7→CN). **Ngày quá khứ read-only**: backend chặn add/edit item `date < today`; frontend mờ ngày + nhãn "đã qua" + ẩn nút add/xóa/sửa khẩu phần; nhãn thứ derive từ ngày thật. Files: `meal_plan_service.py`, `meal-plan/page.tsx`, `WeeklyCalendar.tsx`, `MealSlot.tsx`.
+- **DB op**: đã hard-delete recipe test "recipe B" (id `31a37781…`) khỏi `vnfood_db` (FK cascade/set-null tự xử).
 
 ### ✅ RBAC SP4 — variant-from-saved (recipe remix/fork) — 2026-06-07
 Spec/plan `2026-06-07-rbac-sp4-variant-from-saved*`. 5 task subagent-driven. **KHÔNG migration** (`derived_from_recipe_id` + FK ON DELETE SET NULL đã có sẵn từ migration 0006). tsc 0 lỗi, `npm run build` OK, smoke create 4/4 + detail 3/3.
