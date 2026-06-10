@@ -10,7 +10,7 @@ from typing import Optional
 import requests as _requests_lib
 from openai import AsyncOpenAI
 from PIL import Image
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -259,6 +259,12 @@ async def _find_canonical_for_class(
 def _norm_title(title: Optional[str]) -> str:
     """Normalized key for collapsing same-title recipes (NFC, casefolded, single-spaced)."""
     return " ".join(unicodedata.normalize("NFC", (title or "").strip().lower()).split())
+
+
+def _title_unaccent_ilike(display_name: str):
+    """Accent-insensitive title match: unaccent(title) ILIKE unaccent(%name%)."""
+    pattern = f"%{display_name}%"
+    return func.unaccent(Recipe.title).ilike(func.unaccent(pattern))
 
 
 async def _find_suggested_recipes(
