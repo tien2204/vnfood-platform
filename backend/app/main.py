@@ -55,11 +55,16 @@ async def lifespan(app: FastAPI):
     metrics_count = load_model_metrics()
     logging.info(f"[startup] Loaded model metrics for {metrics_count} classes")
 
+    # Coverage check must not block startup — on DB error, log and continue with an
+    # empty canonical-slug cache (tentative/openai_known tiers simply won't trigger).
     from app.core.database import AsyncSessionLocal
     from app.services.canonical_coverage import compute_canonical_coverage
-    async with AsyncSessionLocal() as _cov_db:
-        cov = await compute_canonical_coverage(_cov_db)
-    logging.info(f"[startup] Canonical coverage: {cov['covered']}/{cov['total']} slugs")
+    try:
+        async with AsyncSessionLocal() as _cov_db:
+            cov = await compute_canonical_coverage(_cov_db)
+        logging.info(f"[startup] Canonical coverage: {cov['covered']}/{cov['total']} slugs")
+    except Exception:
+        logger.exception("[startup] Canonical coverage check failed — continuing without it")
 
     yield
 
