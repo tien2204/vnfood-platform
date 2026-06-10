@@ -269,55 +269,65 @@ def _title_unaccent_ilike(display_name: str):
 
 async def _find_suggested_recipes(
     db: AsyncSession,
-    predicted_class: Optional[str],
+    resolved_slug: Optional[str],
     display_name: Optional[str],
     keyword: Optional[str],
+    canonical_recipe: Optional[dict] = None,
+    variants: Optional[list[dict]] = None,
     limit: int = 6,
 ) -> list[dict]:
-    recipes: list[Recipe] = []
+    seen: set = set()
+    output: list[dict] = []
 
+    def _add(item: dict) -> None:
+        key = _norm_title(item.get("title"))
+        if key in seen or not item.get("id"):
+            return
+        seen.add(key)
+        output.append({
+            "id": str(item["id"]),
+            "title": item["title"],
+            "image_url": item.get("image_url"),
+            "avg_rating": item.get("avg_rating") or 0,
+            "rating_count": item.get("rating_count") or 0,
+            "cooking_time": item.get("cooking_time"),
+            "source": item.get("source"),
+        })
+
+    # 1. Seed from the authoritative slug match (canonical first, then variants).
+    if canonical_recipe:
+        _add(canonical_recipe)
+    for v in (variants or []):
+        if len(output) >= limit:
+            break
+        _add(v)
+
+    # 2. Top up by title match (only when we still need more).
     _unknown = {"unknown", "Không xác định", "Không nhận diện được", None}
-
-    if display_name not in _unknown:
+    if len(output) < limit and display_name not in _unknown:
         q = (
             select(Recipe)
-            .where(Recipe.status == "approved", Recipe.title.ilike(f"%{display_name}%"))
+            .where(Recipe.status == "approved")
+            .where(_title_unaccent_ilike(display_name))
             .order_by(Recipe.avg_rating.desc(), Recipe.view_count.desc())
             .limit(limit)
         )
-        result = await db.execute(q)
-        recipes = list(result.scalars().all())
+        for r in (await db.execute(q)).scalars().all():
+            if len(output) >= limit:
+                break
+            _add(_serialize_recipe_for_ai(r))
 
-    if len(recipes) < 3 and keyword:
+    # 3. Top up by coarse keyword as a last resort.
+    if len(output) < limit and keyword:
         fallback_q = (
             select(Recipe)
             .where(Recipe.status == "approved", Recipe.keyword == keyword)
             .order_by(Recipe.avg_rating.desc(), Recipe.view_count.desc())
             .limit(limit)
         )
-        fallback_result = await db.execute(fallback_q)
-        recipes = recipes + list(fallback_result.scalars().all())
+        for r in (await db.execute(fallback_q)).scalars().all():
+            if len(output) >= limit:
+                break
+            _add(_serialize_recipe_for_ai(r))
 
-    # Dedup by normalized title (not just id): Cookpad has many distinct rows
-    # sharing one title (e.g. several "Bánh đa cua Hải Phòng"). Recipes are
-    # rating-sorted, so the first row per title is the best one to keep.
-    seen: set = set()
-    output: list[dict] = []
-    for r in recipes:
-        key = _norm_title(r.title)
-        if key in seen:
-            continue
-        seen.add(key)
-        output.append({
-            "id": str(r.id),
-            "title": r.title,
-            "image_url": r.image_url,
-            "avg_rating": r.avg_rating,
-            "rating_count": r.rating_count,
-            "cooking_time": r.cooking_time,
-            "source": r.source,
-        })
-        if len(output) >= limit:
-            break
-
-    return output
+    return output[:limit]
