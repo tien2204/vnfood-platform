@@ -55,6 +55,12 @@ async def lifespan(app: FastAPI):
     metrics_count = load_model_metrics()
     logging.info(f"[startup] Loaded model metrics for {metrics_count} classes")
 
+    from app.core.database import AsyncSessionLocal
+    from app.services.canonical_coverage import compute_canonical_coverage
+    async with AsyncSessionLocal() as _cov_db:
+        cov = await compute_canonical_coverage(_cov_db)
+    logging.info(f"[startup] Canonical coverage: {cov['covered']}/{cov['total']} slugs")
+
     yield
 
     # ── shutdown ─────────────────────────────────────────────

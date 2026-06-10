@@ -13,6 +13,8 @@ router = APIRouter()
 
 @router.get("/health")
 async def ai_health():
+    from app.services.canonical_coverage import LAST_COVERAGE
+
     predictor = get_predictor_optional()
     return {
         "success": True,
@@ -20,6 +22,7 @@ async def ai_health():
             "loaded": predictor is not None,
             "device": str(predictor.device) if predictor else None,
             "groups": list(predictor.sub_models.keys()) if predictor else [],
+            "canonical_coverage": LAST_COVERAGE,
         },
     }
 
