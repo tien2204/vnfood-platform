@@ -5,15 +5,17 @@ import { Upload } from "lucide-react";
 
 interface Props {
   onSelect: (file: File) => void;
+  onSelectUrl?: (url: string) => void;
   disabled?: boolean;
 }
 
 const MAX_SIZE = 10 * 1024 * 1024;
 
-export default function ImageDropzone({ onSelect, disabled }: Props) {
+export default function ImageDropzone({ onSelect, onSelectUrl, disabled }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [url, setUrl] = useState("");
 
   const validate = (file: File): string | null => {
     if (!file.type.startsWith("image/")) return "Chỉ chấp nhận file ảnh (JPG, PNG, WebP...)";
@@ -43,6 +45,16 @@ export default function ImageDropzone({ onSelect, disabled }: Props) {
     },
     [handleFile]
   );
+
+  const handleUrlSubmit = useCallback(() => {
+    const trimmed = url.trim();
+    if (!/^https?:\/\/.+/i.test(trimmed)) {
+      setError("URL ảnh không hợp lệ (phải bắt đầu bằng http/https)");
+      return;
+    }
+    setError(null);
+    onSelectUrl?.(trimmed);
+  }, [url, onSelectUrl]);
 
   return (
     <div className="w-full flex flex-col items-center gap-2">
@@ -104,6 +116,28 @@ export default function ImageDropzone({ onSelect, disabled }: Props) {
           </p>
         </div>
       </div>
+
+      {onSelectUrl && (
+        <div className="w-full max-w-xl flex items-center gap-2">
+          <input
+            type="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            disabled={disabled}
+            placeholder="hoặc dán URL ảnh (https://...)"
+            className="flex-1 h-10 px-3 rounded-lg border border-border bg-muted text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50"
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleUrlSubmit(); } }}
+          />
+          <button
+            type="button"
+            onClick={handleUrlSubmit}
+            disabled={disabled || !url.trim()}
+            className="h-10 px-4 rounded-lg bg-primary text-white text-sm font-semibold disabled:opacity-50"
+          >
+            Dùng URL
+          </button>
+        </div>
+      )}
 
       {error && (
         <p className="text-sm text-red-500 font-medium">{error}</p>

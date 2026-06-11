@@ -39,8 +39,25 @@ export default function RecognizePage() {
     }
   }, []);
 
+  const handleSelectUrl = useCallback(async (url: string) => {
+    setPreview(url);
+    setState("loading");
+    setResult(null);
+    try {
+      const res = await api.post("/ai/recognize-url", { image_url: url });
+      setResult(res.data.data as AIRecognitionResult);
+      setState("done");
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
+        "Nhận diện thất bại, thử lại sau";
+      toast.error(msg);
+      setState("error");
+    }
+  }, []);
+
   const handleReset = useCallback(() => {
-    if (preview) URL.revokeObjectURL(preview);
+    if (preview && preview.startsWith("blob:")) URL.revokeObjectURL(preview);
     setPreview(null);
     setResult(null);
     setState("idle");
@@ -67,7 +84,7 @@ export default function RecognizePage() {
       <section className="max-w-4xl mx-auto px-4 pb-16 flex flex-col items-center gap-10">
         {/* Upload area — always visible when idle/error */}
         {(state === "idle" || state === "error") && (
-          <ImageDropzone onSelect={handleSelect} disabled={isLoading} />
+          <ImageDropzone onSelect={handleSelect} onSelectUrl={handleSelectUrl} disabled={isLoading} />
         )}
 
         {/* Loading */}
