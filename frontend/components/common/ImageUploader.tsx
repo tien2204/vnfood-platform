@@ -27,6 +27,7 @@ export default function ImageUploader({
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [urlInput, setUrlInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   async function handleFile(file: File) {
@@ -68,6 +69,17 @@ export default function ImageUploader({
     const file = e.target.files?.[0];
     if (file) handleFile(file);
     e.target.value = "";
+  }
+
+  function handleUrlSubmit() {
+    const trimmed = urlInput.trim();
+    if (!/^https?:\/\/.+/i.test(trimmed)) {
+      setError("URL ảnh không hợp lệ (http/https)");
+      return;
+    }
+    setError(null);
+    onChange(trimmed);
+    setUrlInput("");
   }
 
   const previewSrc = value
@@ -128,6 +140,27 @@ export default function ImageUploader({
               </div>
             </>
           )}
+        </div>
+      )}
+
+      {!previewSrc && (
+        <div className="flex items-center gap-2">
+          <input
+            type="url"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            placeholder="hoặc dán URL ảnh (https://...)"
+            className="flex-1 h-9 px-3 rounded-lg border border-border bg-muted text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleUrlSubmit(); } }}
+          />
+          <button
+            type="button"
+            onClick={handleUrlSubmit}
+            disabled={!urlInput.trim()}
+            className="h-9 px-4 rounded-lg bg-primary text-white text-sm font-semibold disabled:opacity-50"
+          >
+            Dùng URL
+          </button>
         </div>
       )}
 
