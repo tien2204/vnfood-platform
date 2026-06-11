@@ -4,10 +4,22 @@ _Cập nhật file này trước khi kết thúc mỗi session._
 ---
 
 ## Trạng thái hiện tại
-**Cập nhật lần cuối:** 2026-06-10 (Restyle monngonmoingay.com + Dark mode + tinh chỉnh meal-plan/recipe-detail)
-**Branch:** `feat/monngonmoingay-restyle` (nhánh off `feat/canonical-recipes`, 18 commit UI/feature)
-**Task đang làm:** **XONG restyle toàn site theo monngonmoingay.com + dark/light mode toàn cục + vài tinh chỉnh UX.** `npm run build` OK (35+ route), tsc sạch.
-**⚠ Cần làm thủ công:** restart `uvicorn` (đã `--reload`) + `npm run dev`; click-through dark toggle mọi trang; thử tạo meal-plan ngày bất kỳ + kiểm ngày quá khứ read-only. (Branch RBAC `feat/canonical-recipes` — xem mục cũ bên dưới.)
+**Cập nhật lần cuối:** 2026-06-11 (Batch fixes #1–#4 + **gộp role → admin+user** #5)
+**Branch:** `feat/monngonmoingay-restyle` (18 commit session này)
+**Task đang làm:** **XONG 5 thay đổi:** login 404→proxy.ts (Next16), upload nhận URL/file (AI + form), hero headline mới, bỏ tìm-theo-nguyên-liệu, **gộp CTV→admin+user (state machine 1 tầng pending_admin, migration đã apply)**. Backend import OK, tsc sạch, DB remap sạch (0 collaborator/0 pending_collaborator).
+**⚠ Cần làm thủ công:** smoke browser — `/auth/login` render OK; `/recognize` dán URL ảnh; admin `/staff/review` → Đăng/Từ chối 1 recipe pending. (Restart `uvicorn` + `npm run dev` nếu chưa.)
+
+### ✅ Batch fixes #1–#4 + gộp role admin+user #5 — 2026-06-11 (subagent-driven, 18 commit)
+Spec `docs/superpowers/specs/2026-06-11-vnfood-fixes-design.md`; plans `2026-06-11-vnfood-quick-fixes.md` + `2026-06-11-vnfood-role-collapse.md`.
+- **#1 login 404:** Next 16 bỏ `middleware.ts` → **`proxy.ts`** + export `proxy()` (logic/matcher giữ nguyên). `git mv` preserve history.
+- **#2 upload URL/file:** `ImageDropzone` (AI nhận diện) + `ImageUploader` (form recipe) thêm input "Dán URL ảnh". AI dùng endpoint **`POST /ai/recognize-url`** (đã có sẵn từ trước); form lưu thẳng URL string (preview xử lý http sẵn). `handleReset` chỉ `revokeObjectURL` khi `blob:`.
+- **#3 hero:** thay quote "…phong cách nhà hàng" → **"Chụp ảnh món ăn, AI nhận diện và gợi ý công thức nấu ngay."** (`app/page.tsx`).
+- **#4 bỏ tìm theo nguyên liệu:** ẩn facet `main_ingredient` (filter `VISIBLE_FACETS` trong `RecipeBrowse`, KHÔNG sửa `lib/facets.ts` auto-gen) + xóa nhóm "Nguyên liệu" trong navbar mega-menu. `/suggest` để dormant (không có entry point).
+- **#5 gộp role → admin + user (bỏ CTV):**
+  - **State machine 1 tầng:** submit → **`pending_admin`** → admin **publish**(approved)/**admin-reject**(rejected). Bỏ tầng `pending_collaborator`, bỏ claim/lock (cột `claimed_by/at` GIỮ trong DB nhưng dormant).
+  - **Backend:** `roles.py` còn `(user, admin)`; xóa `require_collaborator` (deps), xóa hàm `claim_recipe`/`release_claim`/`collaborator_approve`/`collaborator_reject`/`_assert_claimer` + routes `/review/{approve,reject,claim,release}` + `/review/queue/collaborator` (giữ `/review/queue/admin`, `/publish`, `/admin-reject`). change-requests + portal-gate (`auth_service`) → admin-only. `schemas/admin` default role `user`. App import OK.
+  - **Frontend:** `proxy.ts` staff-gate chỉ `admin` (bỏ `STAFF_ADMIN_RE`); `types.ts` role `"user"|"admin"`, bỏ status `pending_collaborator`; staff portal gộp 1 queue (`/staff/review`→`/recipes/review/queue/admin`; `/staff/review/[id]` chỉ publish/từ chối pending_admin; `/staff/admin-review`→redirect `/staff/review`; StaffLayout bỏ "Chờ đăng"). Dọn ref ở Navbar/RecipeDetailClient/login/staff-login/users(new,list,detail)/me-recipes/StatusBadge. tsc sạch, 0 ref `collaborator` trong code live.
+  - **Migration `0306fd718821`** (sau `0015`): remap `users.role collaborator→user` + `recipes.status pending_collaborator→pending_admin` + clear claim. **Đã apply** (DB: admin=1, user=4199, 0 collaborator, 0 pending_collaborator). ⚠ Phải **khôi phục `0015_enable_unaccent.py`** vào branch (mất file, DB đã stamp 0015 từ branch song song) + đổi down_revision migration mới 0014→0015 để chain tuyến tính.
 
 ### ✅ Restyle monngonmoingay.com — 2026-06-09/10 (branch feat/monngonmoingay-restyle)
 Spec/plan `docs/superpowers/{specs,plans}/2026-06-09-monngonmoingay-restyle*`. Bóc design system THẬT từ `dist.css`/`app.css` của site (Tailwind-based): đỏ `#ec2028` (Primary-02), maroon `#330002`, amber `#ec9a20`, hồng `#fbd0d2`/`#fef6f6`, xanh healthy `#11ca24`; button `.btn` radius 8px viền 2px bold; search viền hồng 6px + shadow đỏ; card rounded-xl. Subagent-driven 11 task + tinh chỉnh.
