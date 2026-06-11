@@ -1,12 +1,11 @@
-"""Single source of truth for user roles + hierarchy (admin ⊇ collaborator ⊇ user)."""
+"""Single source of truth for user roles + hierarchy (admin ⊇ user)."""
 
 USER = "user"
-COLLABORATOR = "collaborator"
 ADMIN = "admin"
 
-ROLES = (USER, COLLABORATOR, ADMIN)  # valid role values for DB / API
-ROLE_RANK = {USER: 0, COLLABORATOR: 1, ADMIN: 2}
-ROLE_LABELS_VI = {USER: "Người dùng", COLLABORATOR: "Cộng tác viên", ADMIN: "Quản trị"}
+ROLES = (USER, ADMIN)  # valid role values for DB / API
+ROLE_RANK = {USER: 0, ADMIN: 1}
+ROLE_LABELS_VI = {USER: "Người dùng", ADMIN: "Quản trị"}
 
 
 def role_at_least(role: str, minimum: str) -> bool:

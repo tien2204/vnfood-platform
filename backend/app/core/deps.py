@@ -46,12 +46,6 @@ async def require_admin(user: User = Depends(get_current_active_user)) -> User:
     return user
 
 
-async def require_collaborator(user: User = Depends(get_current_active_user)) -> User:
-    if not roles.role_at_least(user.role, roles.COLLABORATOR):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cần quyền cộng tác viên")
-    return user
-
-
 async def get_optional_current_user(
     token: Optional[str] = Depends(oauth2_scheme_optional),
     db: AsyncSession = Depends(get_db),
