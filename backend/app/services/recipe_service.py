@@ -276,7 +276,7 @@ async def get_recipe_detail(
     if author and not author.is_active:
         return None
 
-    # Only non-approved recipes visible to owner / collaborator / admin
+    # Only non-approved recipes visible to owner / admin
     if recipe.status != "approved":
         if not current_user:
             return None
@@ -901,7 +901,7 @@ _REVIEW_STAGE_STATUS = {"admin": "pending_admin"}
 async def list_review_queue(
     db: AsyncSession, stage: str, page: int = 1, limit: int = 20,
 ) -> tuple[list[RecipeCardWithStatus], PaginationOut]:
-    """Recipes awaiting review at a stage: 'collaborator' or 'admin' (FIFO).
+    """Recipes awaiting review at the 'admin' stage (FIFO).
 
     Reuses the existing RecipeCardWithStatus shape (status + reject_reason) — the
     owner-facing 'my recipes' list already lives in get_my_recipes / GET /users/me/recipes.

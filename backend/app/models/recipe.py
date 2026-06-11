@@ -67,7 +67,7 @@ class Recipe(Base):
     main_ingredients: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
     cooking_methods: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
 
-    # Claim-lock (SP3): set while status == 'pending_collaborator', cleared on any exit transition
+    # Claim-lock columns (legacy, dormant): kept in schema after the collaborator role was removed
     claimed_by: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
