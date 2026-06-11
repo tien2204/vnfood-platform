@@ -21,7 +21,7 @@ export function useUser() {
 
   const logout = async () => {
     // Staff log back in only through the staff door; consumers return home.
-    const wasStaff = user?.role === "admin" || user?.role === "collaborator";
+    const wasStaff = user?.role === "admin";
     await clearTokens();
     await mutate(null, false);
     router.push(wasStaff ? "/auth/staff-login" : "/");

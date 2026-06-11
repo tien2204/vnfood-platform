@@ -2,7 +2,7 @@ export interface User {
   id: string;
   email: string;
   full_name: string;
-  role: "user" | "collaborator" | "admin";
+  role: "user" | "admin";
   avatar_url: string | null;
   bio?: string | null;
 }
@@ -71,7 +71,6 @@ export interface RecipeCard {
 
 export type RecipeStatus =
   | "private"
-  | "pending_collaborator"
   | "pending_admin"
   | "approved"
   | "rejected";
@@ -432,7 +431,7 @@ export interface AdminUserDetailLite {
   id: string;
   email: string;
   full_name: string | null;
-  role: "user" | "collaborator" | "admin";
+  role: "user" | "admin";
   is_active: boolean;
   created_at: string;
 }
@@ -440,7 +439,7 @@ export interface AdminUserDetailLite {
 export interface AdminUserCreate {
   email: string;
   full_name: string;
-  role: "user" | "collaborator" | "admin";
+  role: "user" | "admin";
 }
 
 export interface CreatedUserResponse {

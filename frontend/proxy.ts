@@ -14,7 +14,6 @@ function decodeJWT(token: string): JWTPayload | null {
 }
 
 const STAFF_RE = /^\/staff(\/.*)?$/;
-const STAFF_ADMIN_RE = /^\/staff\/(dashboard|users|recipes|comments|ingredients|admin-review|change-requests)(\/.*)?$/;
 
 const PUBLIC_EXACT = new Set(["/", "/recognize"]);
 const PUBLIC_PREFIXES = ["/auth/", "/recognize/"];
@@ -50,12 +49,8 @@ export function proxy(request: NextRequest) {
   }
 
   if (STAFF_RE.test(pathname)) {
-    const isStaff = payload.role === "collaborator" || payload.role === "admin";
-    if (!isStaff) {
+    if (payload.role !== "admin") {
       return NextResponse.redirect(new URL("/", request.url));
-    }
-    if (STAFF_ADMIN_RE.test(pathname) && payload.role !== "admin") {
-      return NextResponse.redirect(new URL("/staff/review", request.url));
     }
   }
 

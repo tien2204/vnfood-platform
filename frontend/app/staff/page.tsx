@@ -9,7 +9,7 @@ export default function StaffIndex() {
   const { user, isLoading } = useUser();
   useEffect(() => {
     if (isLoading) return;
-    router.replace(user?.role === "admin" ? "/staff/dashboard" : "/staff/review");
+    router.replace("/staff/dashboard");
   }, [user, isLoading, router]);
   return <p className="p-8 text-muted-foreground">Đang chuyển hướng…</p>;
 }

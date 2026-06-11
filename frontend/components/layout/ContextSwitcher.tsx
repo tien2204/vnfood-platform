@@ -19,7 +19,7 @@ export default function ContextSwitcher() {
   if (!user || user.role === "user") return null;
 
   const staffLabel = user.role === "admin" ? "Quản trị" : "Cộng tác viên";
-  const staffHref = user.role === "admin" ? "/staff/dashboard" : "/staff/review";
+  const staffHref = "/staff/dashboard";
   const contexts: Ctx[] = [
     { key: "user", label: "Người dùng", href: "/" },
     { key: "staff", label: staffLabel, href: staffHref },
