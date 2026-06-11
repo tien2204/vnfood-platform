@@ -19,6 +19,8 @@ import type { PaginatedResponse, RecipeCard } from "@/lib/types";
 import { FACETS } from "@/lib/facets";
 import FacetDropdown from "@/components/recipes/FacetDropdown";
 
+const VISIBLE_FACETS = FACETS.filter((f) => f.key !== "main_ingredient");
+
 const KEYWORDS = [
   { label: "Tất cả", value: "" },
   { label: "Bánh", value: "Bánh" },
@@ -98,7 +100,7 @@ export default function RecipeBrowse() {
     if (keyword) params.keyword = keyword;
     if (difficulty) params.difficulty = difficulty;
     if (search) params.search = search;
-    FACETS.forEach((f) => {
+    VISIBLE_FACETS.forEach((f) => {
       const v = searchParams.get(f.param);
       if (v) params[f.param] = v;
     });
@@ -128,7 +130,7 @@ export default function RecipeBrowse() {
     };
   }, [page, keyword, difficulty, sort, search, searchParams]);
 
-  const facetCount = FACETS.reduce(
+  const facetCount = VISIBLE_FACETS.reduce(
     (n, f) => n + (searchParams.get(f.param) ?? "").split(",").filter(Boolean).length,
     0
   );
@@ -278,7 +280,7 @@ export default function RecipeBrowse() {
 
       {/* Facet dropdown bar (MNMN parity) */}
       <div className="mb-6 flex flex-wrap items-center gap-2">
-        {FACETS.map((f) => (
+        {VISIBLE_FACETS.map((f) => (
           <FacetDropdown
             key={f.key}
             facet={f}

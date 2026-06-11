@@ -18,13 +18,6 @@ import { useUser } from "@/lib/hooks/useUser";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const CATEGORY_GROUPS = [
-  { title: "Nguyên liệu", items: [
-    { label: "Thịt bò", href: "/search?q=b%C3%B2" },
-    { label: "Thịt heo", href: "/search?q=heo" },
-    { label: "Thịt gà", href: "/search?q=g%C3%A0" },
-    { label: "Hải sản", href: "/search?q=h%E1%BA%A3i%20s%E1%BA%A3n" },
-    { label: "Rau củ", href: "/search?q=rau" },
-  ]},
   { title: "Cách nấu", items: [
     { label: "Món canh", href: "/search?q=canh" },
     { label: "Món xào", href: "/search?q=x%C3%A0o" },
