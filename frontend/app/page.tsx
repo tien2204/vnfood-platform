@@ -101,9 +101,9 @@ export default async function HomePage() {
             </div>
 
             <h1 className="mb-6 max-w-2xl text-4xl font-extrabold leading-tight text-foreground sm:text-5xl lg:text-6xl">
-              Thưởng thức{" "}
-              <strong className="text-primary font-display font-normal">công thức Việt</strong> theo
-              phong cách nhà hàng.
+              Chụp ảnh món ăn,{" "}
+              <strong className="text-primary font-display font-normal">AI nhận diện</strong> và{" "}
+              <strong className="text-primary font-display font-normal">gợi ý công thức</strong> nấu ngay.
             </h1>
 
             <p className="mb-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
