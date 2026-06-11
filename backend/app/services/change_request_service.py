@@ -111,7 +111,7 @@ async def approve_change_request(db: AsyncSession, cr_id: uuid.UUID, admin) -> R
         db.add(Recipe(
             id=new_id, title=data.title, description=data.description, image_url=data.image_url,
             cooking_time=data.cooking_time, servings=data.servings, difficulty=data.difficulty,
-            keyword=data.keyword, source="collaborator", status="approved",
+            keyword=data.keyword, source="admin", status="approved",
             is_canonical=True, author_id=cr.requested_by,
         ))
         await db.flush()

@@ -171,7 +171,7 @@ async def update_user_role(
     if str(current_admin.id) == user_id:
         raise HTTPException(400, detail="Không thể tự thay đổi role của mình")
     if body.role not in roles.ROLES:
-        raise HTTPException(400, detail="Role không hợp lệ (user | collaborator | admin)")
+        raise HTTPException(400, detail="Role không hợp lệ (user | admin)")
 
     user = await admin_service.update_user_role(db, user_id, body.role)
     if not user:
@@ -187,7 +187,7 @@ async def create_user(
     _: User = Depends(require_admin),
 ):
     if body.role not in roles.ROLES:
-        raise HTTPException(400, detail="Role không hợp lệ (user | collaborator | admin)")
+        raise HTTPException(400, detail="Role không hợp lệ (user | admin)")
     temp = generate_temp_password()
     user = await admin_service.create_admin_user(
         db, email=str(body.email), full_name=body.full_name, role=body.role,

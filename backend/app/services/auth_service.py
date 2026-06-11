@@ -44,7 +44,7 @@ async def login(db: AsyncSession, email: str, password: str, *, portal: str = "c
     # The consumer door must NOT authenticate staff accounts — fail with the exact
     # same generic 401 as a wrong password so a staff account can't be enumerated
     # here (no token ever issued, nothing different observable over the network).
-    if portal == "consumer" and roles.role_at_least(user.role, roles.COLLABORATOR):
+    if portal == "consumer" and roles.role_at_least(user.role, roles.ADMIN):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Email hoặc mật khẩu không đúng",

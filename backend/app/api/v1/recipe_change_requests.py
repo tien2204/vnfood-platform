@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.deps import require_collaborator, require_admin
+from app.core.deps import require_admin
 from app.models.user import User
 from app.schemas.change_request import ChangeRequestCreate
 from app.schemas.recipe import RejectBody
@@ -17,7 +17,7 @@ router = APIRouter()
 async def create_change_request(
     data: ChangeRequestCreate,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_collaborator),
+    current_user: User = Depends(require_admin),
 ):
     cr = await crs.create_change_request(db, current_user, data)
     return {"success": True, "data": {"id": str(cr.id), "status": cr.status}, "message": "Đã gửi đề xuất"}
@@ -28,7 +28,7 @@ async def my_change_requests(
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=20, ge=1, le=50),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_collaborator),
+    current_user: User = Depends(require_admin),
 ):
     items, total, total_pages = await crs.list_my_change_requests(db, current_user, page, limit)
     return {"success": True, "data": [i.model_dump(mode="json") for i in items],

@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 class AdminUserCreate(BaseModel):
     email: str
     full_name: str = Field(..., min_length=1, max_length=200)
-    role: str = "collaborator"
+    role: str = "user"
 
 
 class AdminUserUpdate(BaseModel):
