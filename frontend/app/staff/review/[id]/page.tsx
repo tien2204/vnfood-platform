@@ -17,8 +17,6 @@ function errMsg(e: unknown, fallback: string) {
 export default function ReviewDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-  const { user } = useUser();
-  const isAdmin = user?.role === "admin";
   const { data, mutate, isLoading } = useSWR(`/recipes/${id}`, async (u) => (await api.get<ApiResponse<RecipeDetail>>(u)).data.data);
   const [rejecting, setRejecting] = useState(false);
   const [reason, setReason] = useState("");
@@ -50,19 +48,13 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
       <RecipeContent recipe={r} />
 
       <div className="sticky bottom-0 mt-6 bg-card border-t border-border py-3 flex gap-2">
-        {r.status === "pending_collaborator" && (
+        {r.status === "pending_admin" && (
           <>
-            <button disabled={busy} onClick={() => act("review/approve", {}, "Đã chuyển chờ admin", "/staff/review")} className="px-4 py-2 rounded-lg bg-[#2e7d32] text-white disabled:opacity-50">Duyệt</button>
+            <button disabled={busy} onClick={() => act("publish", {}, "Đã đăng", "/staff/review")} className="px-4 py-2 rounded-lg bg-[#2e7d32] text-white disabled:opacity-50">Đăng</button>
             <button disabled={busy} onClick={() => setRejecting(true)} className="px-4 py-2 rounded-lg bg-red-600 text-white disabled:opacity-50">Từ chối</button>
           </>
         )}
-        {r.status === "pending_admin" && isAdmin && (
-          <>
-            <button disabled={busy} onClick={() => act("publish", {}, "Đã đăng", "/staff/admin-review")} className="px-4 py-2 rounded-lg bg-[#2e7d32] text-white disabled:opacity-50">Đăng</button>
-            <button disabled={busy} onClick={() => setRejecting(true)} className="px-4 py-2 rounded-lg bg-red-600 text-white disabled:opacity-50">Từ chối</button>
-          </>
-        )}
-        {!(r.status === "pending_collaborator" || (r.status === "pending_admin" && isAdmin)) && (
+        {r.status !== "pending_admin" && (
           <p className="text-sm text-muted-foreground">Không còn trong hàng đợi của bạn.</p>
         )}
       </div>
@@ -76,11 +68,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
               <button onClick={() => setRejecting(false)} className="px-3 py-1.5 text-sm text-muted-foreground">Hủy</button>
               <button
                 disabled={busy || !reason.trim()}
-                onClick={() => {
-                  const path = r.status === "pending_admin" ? "admin-reject" : "review/reject";
-                  const back = r.status === "pending_admin" ? "/staff/admin-review" : "/staff/review";
-                  act(path, { reason }, "Đã từ chối", back);
-                }}
+                onClick={() => act("admin-reject", { reason }, "Đã từ chối", "/staff/review")}
                 className="px-3 py-1.5 text-sm rounded-lg bg-red-600 text-white disabled:opacity-50"
               >Xác nhận</button>
             </div>

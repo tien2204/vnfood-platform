@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Users, BookOpen, MessageSquare, Leaf, Menu, X, ChefHat,
-  LogOut, ClipboardCheck, ClipboardList, FileCheck2, Inbox,
+  LogOut, ClipboardList, FileCheck2, Inbox,
 } from "lucide-react";
 import { clearTokens } from "@/lib/auth";
 import { useUser } from "@/lib/hooks/useUser";
@@ -18,7 +18,6 @@ const COLLAB_ITEMS: NavItem[] = [
 ];
 const ADMIN_ITEMS: NavItem[] = [
   { href: "/staff/dashboard", label: "Tổng quan", icon: LayoutDashboard, exact: true },
-  { href: "/staff/admin-review", label: "Chờ đăng", icon: ClipboardCheck },
   { href: "/staff/change-requests", label: "Duyệt đề xuất", icon: FileCheck2 },
   { href: "/staff/users", label: "Người dùng", icon: Users },
   { href: "/staff/recipes", label: "Công thức", icon: BookOpen },
