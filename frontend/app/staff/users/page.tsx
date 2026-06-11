@@ -13,7 +13,7 @@ interface AdminUser {
   email: string;
   full_name: string | null;
   avatar_url: string | null;
-  role: "user" | "collaborator" | "admin";
+  role: "user" | "admin";
   is_active: boolean;
   created_at: string;
   stats: { recipe_count: number; comment_count: number; follower_count: number };

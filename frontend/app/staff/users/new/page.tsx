@@ -16,7 +16,7 @@ export default function NewUserPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<"user" | "collaborator" | "admin">("collaborator");
+  const [role, setRole] = useState<"user" | "admin">("user");
   const [busy, setBusy] = useState(false);
   const [created, setCreated] = useState<CreatedUserResponse | null>(null);
 
@@ -49,7 +49,7 @@ export default function NewUserPage() {
         </div>
         <div className="flex gap-2 mt-4">
           <button onClick={() => router.push("/staff/users")} className="px-3 py-1.5 text-sm rounded-lg bg-primary text-white">Về danh sách</button>
-          <button onClick={() => { setCreated(null); setEmail(""); setFullName(""); setRole("collaborator"); }} className="px-3 py-1.5 text-sm rounded-lg border border-border text-muted-foreground">Tạo tiếp</button>
+          <button onClick={() => { setCreated(null); setEmail(""); setFullName(""); setRole("user"); }} className="px-3 py-1.5 text-sm rounded-lg border border-border text-muted-foreground">Tạo tiếp</button>
         </div>
       </div>
     );
@@ -73,7 +73,6 @@ export default function NewUserPage() {
         <div>
           <label className="block text-sm text-muted-foreground mb-1">Vai trò</label>
           <select value={role} onChange={(e) => setRole(e.target.value as typeof role)} className="w-full border border-border rounded-lg px-3 py-2 text-sm">
-            <option value="collaborator">Cộng tác viên</option>
             <option value="user">Người dùng</option>
             <option value="admin">Quản trị</option>
           </select>

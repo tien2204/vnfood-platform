@@ -31,7 +31,7 @@ export default function LoginPage() {
       // Staff accounts log in only through the staff door. Reject WITHOUT revealing
       // that the account exists / is staff — show the same generic error as a bad
       // password (no redirect, no session) to avoid account enumeration.
-      if (user.role === "admin" || user.role === "collaborator") {
+      if (user.role === "admin") {
         toast.error("Email hoặc mật khẩu không đúng");
         return;
       }

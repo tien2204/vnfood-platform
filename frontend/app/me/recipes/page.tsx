@@ -17,7 +17,7 @@ const TABS = [
   { value: "rejected", label: "Bị từ chối" },
 ] as const;
 
-type TabValue = "" | "private" | "pending_collaborator" | "pending_admin" | "approved" | "rejected";
+type TabValue = "" | "private" | "pending_admin" | "approved" | "rejected";
 
 function cacheKey(status: TabValue, page: number) {
   return `/users/me/recipes?status=${status}&page=${page}`;
@@ -207,7 +207,7 @@ export default function MyRecipesPage() {
                           Gửi duyệt
                         </button>
                       )}
-                      {recipe.status === "pending_collaborator" && (
+                      {recipe.status === "pending_admin" && (
                         <button
                           onClick={() => handleAction(recipe.id, "withdraw", "Đã thu hồi")}
                           disabled={acting === recipe.id}

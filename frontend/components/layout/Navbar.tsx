@@ -208,7 +208,7 @@ export default function Navbar() {
                       <CalendarDays className="w-4 h-4 text-muted-foreground" />
                       Meal Plan
                     </DropdownMenuItem>
-                    {(user.role === "collaborator" || user.role === "admin") && (
+                    {user.role === "admin" && (
                       <DropdownMenuItem
                         className="gap-2 cursor-pointer"
                         onClick={() => router.push("/me/change-requests")}

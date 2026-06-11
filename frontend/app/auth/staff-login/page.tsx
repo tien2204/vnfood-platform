@@ -29,7 +29,7 @@ export default function StaffLoginPage() {
       };
 
       // Role gate BEFORE persisting — a rejected user is never logged in.
-      if (user.role !== "admin" && user.role !== "collaborator") {
+      if (user.role !== "admin") {
         toast.error("Tài khoản không có quyền truy cập khu vực nhân viên");
         return;
       }
@@ -37,7 +37,7 @@ export default function StaffLoginPage() {
       await saveTokens(access_token, refresh_token, user);
       await refreshUser();
       toast.success(`Chào mừng, ${user.full_name}!`);
-      router.push(user.role === "admin" ? "/staff/dashboard" : "/staff/review");
+      router.push("/staff/dashboard");
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { error?: { message?: string } } } })

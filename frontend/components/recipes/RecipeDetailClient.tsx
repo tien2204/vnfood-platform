@@ -190,7 +190,7 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
                 Tạo biến thể
               </Link>
             )}
-            {(userRole === "collaborator" || userRole === "admin") && (
+            {userRole === "admin" && (
               <div className="flex gap-2">
                 <Link href={`/recipes/${recipe.id}/propose-edit`} className="px-3 py-1.5 rounded-lg border border-border text-sm text-muted-foreground hover:text-primary">Đề xuất sửa</Link>
                 <button

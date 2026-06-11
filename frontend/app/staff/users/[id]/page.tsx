@@ -23,7 +23,7 @@ interface UserDetail {
     full_name: string | null;
     avatar_url: string | null;
     bio: string | null;
-    role: "user" | "collaborator" | "admin";
+    role: "user" | "admin";
     is_active: boolean;
     created_at: string;
     updated_at: string;
