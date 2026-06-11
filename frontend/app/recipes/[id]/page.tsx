@@ -16,6 +16,7 @@ import { CanonicalBadge } from "@/components/recipes/CanonicalBadge";
 import { ManualReviewBadge } from "@/components/recipes/ManualReviewBadge";
 import { VariantsAccordion } from "@/components/recipes/VariantsAccordion";
 import { RecipeVideo } from "@/components/recipes/RecipeVideo";
+import { recipeAuthorDisplay } from "@/lib/author";
 import type { ApiResponse, RecipeDetail } from "@/lib/types";
 
 const DIFFICULTY_LABEL = {
@@ -265,93 +266,74 @@ export default async function RecipeDetailPage({
       </div>
 
       {/* Author card */}
-      {recipe.author ? (
-        // Branch 1: User-uploaded recipe
-        <div className="flex items-center gap-3 p-4 bg-muted rounded-xl border border-border shadow-card mb-6">
-          <Link href={`/users/${recipe.author.id}`}>
+      {(() => {
+        const a = recipeAuthorDisplay({
+          source: recipe.source,
+          author: recipe.author,
+          originalAuthorName: recipe.original_author_name,
+        });
+
+        // Genuine platform user → profile card with "Xem hồ sơ".
+        if (a.linkable && a.authorId) {
+          return (
+            <div className="flex items-center gap-3 p-4 bg-muted rounded-xl border border-border shadow-card mb-6">
+              <Link href={`/users/${a.authorId}`}>
+                <Avatar className="w-12 h-12">
+                  <AvatarImage src={a.avatarUrl ?? undefined} />
+                  <AvatarFallback className="bg-primary text-white font-semibold">
+                    {a.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+              <div className="flex-1 min-w-0">
+                <Link href={`/users/${a.authorId}`}>
+                  <p className="font-semibold text-foreground hover:text-primary transition-colors">
+                    {a.name}
+                  </p>
+                </Link>
+                {recipe.author && recipe.author.follower_count > 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    {recipe.author.follower_count} người theo dõi
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <Link
+                  href={`/users/${a.authorId}`}
+                  className="px-4 py-1.5 rounded-full border border-primary text-sm text-primary hover:bg-primary hover:text-white transition-colors"
+                >
+                  Xem hồ sơ
+                </Link>
+              </div>
+            </div>
+          );
+        }
+
+        // Provenance source (Món ngon mỗi ngày / Tổng Hợp) — no profile to view.
+        return (
+          <div className="flex items-center gap-3 p-4 bg-muted rounded-xl border border-border shadow-card mb-6">
             <Avatar className="w-12 h-12">
-              <AvatarImage src={recipe.author.avatar_url ?? undefined} />
-              <AvatarFallback className="bg-primary text-white font-semibold">
-                {recipe.author.full_name?.charAt(0)?.toUpperCase() ?? "?"}
+              <AvatarFallback className="bg-[#2D6A4F] text-white font-semibold">
+                {a.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-          </Link>
-          <div className="flex-1 min-w-0">
-            <Link href={`/users/${recipe.author.id}`}>
-              <p className="font-semibold text-foreground hover:text-primary transition-colors">
-                {recipe.author.full_name}
-              </p>
-            </Link>
-            {recipe.author.follower_count > 0 && (
-              <p className="text-xs text-muted-foreground">
-                {recipe.author.follower_count} người theo dõi
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Link
-              href={`/users/${recipe.author.id}`}
-              className="px-4 py-1.5 rounded-full border border-primary text-sm text-primary hover:bg-primary hover:text-white transition-colors"
-            >
-              Xem hồ sơ
-            </Link>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-foreground">{a.name}</p>
+              <p className="text-xs text-muted-foreground">Nguồn công thức</p>
+            </div>
             {recipe.source === "cookpad" && recipe.cookpad_url && (
               <a
                 href={recipe.cookpad_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-1.5 rounded-full border border-muted-foreground text-sm text-muted-foreground hover:bg-muted-foreground hover:text-white transition-colors"
+                className="px-4 py-1.5 rounded-full border border-primary text-sm text-primary hover:bg-primary hover:text-white transition-colors"
               >
                 Xem trên Cookpad
               </a>
             )}
           </div>
-        </div>
-      ) : recipe.original_author_name && recipe.original_author_name.length > 0 ? (
-        // Branch 2: Cookpad recipe with scraped author
-        <div className="flex items-center gap-3 p-4 bg-muted rounded-xl border border-border shadow-card mb-6">
-          <Avatar className="w-12 h-12">
-            <AvatarFallback className="bg-[#2D6A4F] text-white font-semibold">
-              {recipe.original_author_name.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-foreground">{recipe.original_author_name}</p>
-            <p className="text-xs text-muted-foreground">Tác giả Cookpad</p>
-          </div>
-          {recipe.cookpad_url && (
-            <a
-              href={recipe.cookpad_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-1.5 rounded-full border border-primary text-sm text-primary hover:bg-primary hover:text-white transition-colors"
-            >
-              Xem trên Cookpad
-            </a>
-          )}
-        </div>
-      ) : recipe.source === "cookpad" ? (
-        // Branch 3: Cookpad recipe without scraped author — show "Unknown" placeholder
-        <div className="flex items-center gap-3 p-4 bg-muted rounded-xl border border-border shadow-card mb-6">
-          <Avatar className="w-12 h-12">
-            <AvatarFallback className="bg-[#2D6A4F] text-white font-semibold">?</AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-foreground">Unknown</p>
-            <p className="text-xs text-muted-foreground">Tác giả Cookpad</p>
-          </div>
-          {recipe.cookpad_url && (
-            <a
-              href={recipe.cookpad_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-1.5 rounded-full border border-primary text-sm text-primary hover:bg-primary hover:text-white transition-colors"
-            >
-              Xem trên Cookpad
-            </a>
-          )}
-        </div>
-      ) : null}
+        );
+      })()}
 
       <RecipeDetailClient
         recipe={recipe}
