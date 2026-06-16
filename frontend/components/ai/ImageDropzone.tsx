@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { Upload } from "lucide-react";
+import { Upload, Camera } from "lucide-react";
+import CameraCapture from "@/components/ai/CameraCapture";
 
 interface Props {
   onSelect: (file: File) => void;
@@ -16,6 +17,7 @@ export default function ImageDropzone({ onSelect, onSelectUrl, disabled }: Props
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [url, setUrl] = useState("");
+  const [cameraOpen, setCameraOpen] = useState(false);
 
   const validate = (file: File): string | null => {
     if (!file.type.startsWith("image/")) return "Chỉ chấp nhận file ảnh (JPG, PNG, WebP...)";
@@ -116,6 +118,22 @@ export default function ImageDropzone({ onSelect, onSelectUrl, disabled }: Props
           </p>
         </div>
       </div>
+
+      <button
+        type="button"
+        onClick={() => !disabled && setCameraOpen(true)}
+        disabled={disabled}
+        className="w-full max-w-xl h-11 flex items-center justify-center gap-2 rounded-lg border border-border bg-muted text-sm font-semibold text-foreground hover:border-primary hover:text-primary transition-colors disabled:opacity-50"
+      >
+        <Camera className="w-4 h-4" />
+        Chụp ảnh
+      </button>
+
+      <CameraCapture
+        open={cameraOpen}
+        onClose={() => setCameraOpen(false)}
+        onCapture={handleFile}
+      />
 
       {onSelectUrl && (
         <div className="w-full max-w-xl flex items-center gap-2">
