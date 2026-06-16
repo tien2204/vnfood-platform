@@ -49,10 +49,13 @@ export default function CameraCapture({ open, onClose, onCapture }: Props) {
   );
 
   // Open/close lifecycle: start stream when opened, fully clean up when closed.
+  // State resets live in the close handlers (handleClose/handleUse) so this
+  // effect performs no synchronous setState.
   useEffect(() => {
     if (!open) return;
-    setReview(null);
-    setFacingMode("environment");
+    // startStream synchronizes with the camera (an external system) and may
+    // setError synchronously; that is the intended effect behavior here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     startStream("environment");
     return () => stopStream();
   }, [open, startStream, stopStream]);
@@ -71,6 +74,7 @@ export default function CameraCapture({ open, onClose, onCapture }: Props) {
     stopStream();
     if (review) URL.revokeObjectURL(review.url);
     setReview(null);
+    setFacingMode("environment");
     onClose();
   }, [stopStream, review, onClose]);
 
@@ -113,6 +117,7 @@ export default function CameraCapture({ open, onClose, onCapture }: Props) {
     const { file, url } = review;
     URL.revokeObjectURL(url);
     setReview(null);
+    setFacingMode("environment");
     onCapture(file);
     onClose();
   }, [review, onCapture, onClose]);
