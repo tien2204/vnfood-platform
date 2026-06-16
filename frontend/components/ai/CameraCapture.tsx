@@ -57,6 +57,16 @@ export default function CameraCapture({ open, onClose, onCapture }: Props) {
     return () => stopStream();
   }, [open, startStream, stopStream]);
 
+  // Attach the active stream once the <video> element is actually mounted.
+  // Guards against a race on retake/switch where startStream resolves before
+  // React re-renders the live-preview branch.
+  useEffect(() => {
+    if (!open || review || error) return;
+    if (videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+    }
+  }, [open, review, error]);
+
   const handleClose = useCallback(() => {
     stopStream();
     if (review) URL.revokeObjectURL(review.url);
