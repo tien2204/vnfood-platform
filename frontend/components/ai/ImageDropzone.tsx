@@ -60,6 +60,7 @@ export default function ImageDropzone({ onSelect, onSelectUrl, disabled }: Props
 
   return (
     <div className="w-full flex flex-col items-center gap-2">
+      <div className="w-full max-w-3xl flex flex-col sm:flex-row items-stretch gap-4">
       <div
         onDragOver={(e) => {
           e.preventDefault();
@@ -69,7 +70,7 @@ export default function ImageDropzone({ onSelect, onSelectUrl, disabled }: Props
         onDrop={handleDrop}
         onClick={() => !disabled && inputRef.current?.click()}
         className={[
-          "w-full max-w-xl rounded-2xl border-2 border-dashed p-12 text-center",
+          "flex-1 rounded-2xl border-2 border-dashed p-8 sm:p-10 text-center",
           "transition-all duration-200 select-none",
           disabled
             ? "opacity-50 cursor-not-allowed border-border bg-muted"
@@ -123,11 +124,30 @@ export default function ImageDropzone({ onSelect, onSelectUrl, disabled }: Props
         type="button"
         onClick={() => !disabled && setCameraOpen(true)}
         disabled={disabled}
-        className="w-full max-w-xl h-10 flex items-center justify-center gap-2 rounded-lg border border-border bg-muted text-sm font-semibold text-foreground hover:border-primary hover:text-primary transition-colors disabled:opacity-50"
+        className={[
+          "flex-1 rounded-2xl border-2 border-dashed p-8 sm:p-10 text-center",
+          "transition-all duration-200 select-none",
+          disabled
+            ? "opacity-50 cursor-not-allowed border-border bg-muted"
+            : "cursor-pointer border-border bg-muted hover:border-primary hover:bg-[var(--color-brand-pink-bg)]",
+        ].join(" ")}
       >
-        <Camera className="w-4 h-4" />
-        Chụp ảnh
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center bg-border">
+            <Camera className="w-7 h-7 text-muted-foreground" />
+          </div>
+
+          <div>
+            <p className="text-lg font-semibold text-foreground">Chụp ảnh</p>
+            <p className="text-sm text-muted-foreground mt-1">mở camera để chụp món ăn</p>
+          </div>
+
+          <p className="text-xs text-muted-foreground bg-muted px-3 py-1 rounded-full">
+            Máy tính · Điện thoại
+          </p>
+        </div>
       </button>
+      </div>
 
       <CameraCapture
         open={cameraOpen}
@@ -136,7 +156,7 @@ export default function ImageDropzone({ onSelect, onSelectUrl, disabled }: Props
       />
 
       {onSelectUrl && (
-        <div className="w-full max-w-xl flex items-center gap-2">
+        <div className="w-full max-w-3xl flex items-center gap-2">
           <input
             type="url"
             value={url}
