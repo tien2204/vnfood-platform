@@ -14,6 +14,8 @@ type FacingMode = "environment" | "user";
 export default function CameraCapture({ open, onClose, onCapture }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  // Mirrors `open` so the async toBlob callback can bail if the modal closed.
+  const openRef = useRef(open);
   const [facingMode, setFacingMode] = useState<FacingMode>("environment");
   const [error, setError] = useState<string | null>(null);
   // Blob URL of the just-captured still; null = live preview mode.
@@ -52,6 +54,7 @@ export default function CameraCapture({ open, onClose, onCapture }: Props) {
   // State resets live in the close handlers (handleClose/handleUse) so this
   // effect performs no synchronous setState.
   useEffect(() => {
+    openRef.current = open;
     if (!open) return;
     // startStream synchronizes with the camera (an external system) and may
     // setError synchronously; that is the intended effect behavior here.
@@ -98,6 +101,11 @@ export default function CameraCapture({ open, onClose, onCapture }: Props) {
         if (!blob) return;
         const file = new File([blob], `camera-${Date.now()}.jpg`, { type: "image/jpeg" });
         const url = URL.createObjectURL(blob);
+        // Modal was closed before the async encode finished: don't leak the URL.
+        if (!openRef.current) {
+          URL.revokeObjectURL(url);
+          return;
+        }
         stopStream();
         setReview({ url, file });
       },
