@@ -123,7 +123,7 @@ export default function ImageDropzone({ onSelect, onSelectUrl, disabled }: Props
         type="button"
         onClick={() => !disabled && setCameraOpen(true)}
         disabled={disabled}
-        className="w-full max-w-xl h-11 flex items-center justify-center gap-2 rounded-lg border border-border bg-muted text-sm font-semibold text-foreground hover:border-primary hover:text-primary transition-colors disabled:opacity-50"
+        className="w-full max-w-xl h-10 flex items-center justify-center gap-2 rounded-lg border border-border bg-muted text-sm font-semibold text-foreground hover:border-primary hover:text-primary transition-colors disabled:opacity-50"
       >
         <Camera className="w-4 h-4" />
         Chụp ảnh
