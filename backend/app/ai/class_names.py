@@ -124,6 +124,52 @@ CLASS_DISPLAY_NAMES = {
 }
 
 
+
+
+# ── Group / class-mapping helpers (P2: scope /recipes to 103) ──────────────────
+ALL_103_SLUGS: set[str] = set(CLASS_DISPLAY_NAMES.keys())
+VALID_GROUPS: set[str] = set(GROUP_CLASSES.keys())
+
+# slug → group (a few slugs live in two groups; first group wins).
+GROUP_OF_SLUG: dict[str, str] = {}
+for _grp, _slug_list in GROUP_CLASSES.items():
+    for _slug in _slug_list:
+        GROUP_OF_SLUG.setdefault(_slug, _grp)
+
+# display name → slug, plus display names sorted longest-first so a more specific
+# dish ("Bánh mì chảo") matches before a shorter prefix ("Bánh mì").
+_DISPLAY_TO_SLUG: dict[str, str] = {}
+for _slug, _disp in CLASS_DISPLAY_NAMES.items():
+    _DISPLAY_TO_SLUG.setdefault(_disp, _slug)
+_DISPLAY_NAMES_LONGEST_FIRST: list[str] = sorted(
+    _DISPLAY_TO_SLUG.keys(), key=len, reverse=True
+)
+
+
+def slugs_for_group(group: str) -> list[str]:
+    """All 103-class slugs belonging to a GROUP_CLASSES group ([] if unknown)."""
+    return list(GROUP_CLASSES.get(group, []))
+
+
+def resolve_ai_class(title: str | None, canonical_dish_slug: str | None) -> str | None:
+    """Map a recipe to its parent 103-class slug, or None if outside the 103.
+
+    1. exact canonical_dish_slug ∈ 103 → that slug.
+    2. else title starts with a class display name (accent-sensitive,
+       case-insensitive, longest name first) → that class.
+    3. else None.
+    """
+    if canonical_dish_slug in ALL_103_SLUGS:
+        return canonical_dish_slug
+    t = (title or "").strip().lower()
+    if not t:
+        return None
+    for name in _DISPLAY_NAMES_LONGEST_FIRST:
+        if t.startswith(name.lower()):
+            return _DISPLAY_TO_SLUG[name]
+    return None
+
+
 def get_keyword_from_class(class_slug: str) -> str:
     """Map class slug → keyword tiếng Việt cho query DB."""
     direct = {
