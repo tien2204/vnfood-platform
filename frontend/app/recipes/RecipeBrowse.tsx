@@ -27,7 +27,7 @@ const CATEGORIES = [
   { label: "Bún / Phở", value: "BUN_PHO" },
   { label: "Cơm", value: "COM" },
   { label: "Canh", value: "CANH_CHAO" },
-  { label: "Món Khô", value: "MON_KHO_NUONG" },
+  { label: "Món mặn", value: "MON_KHO_NUONG" },
   { label: "Xôi", value: "XOI" },
   { label: "Gỏi Cuốn", value: "GOI_CUON" },
   { label: "Đặc Biệt", value: "DAC_BIET" },
