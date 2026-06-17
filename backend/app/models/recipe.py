@@ -24,6 +24,7 @@ class Recipe(Base):
     )
     title: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
+    flavor_text: Mapped[str | None] = mapped_column(Text)
     source: Mapped[str] = mapped_column(String(20), nullable=False, default="user")
     cookpad_url: Mapped[str | None] = mapped_column(Text, unique=True)
     keyword: Mapped[str | None] = mapped_column(Text)
