@@ -78,3 +78,33 @@ def build_variant_label(region: str | None, protein: str | None) -> str | None:
     if protein:
         parts.append(PROTEIN_DISPLAY[protein])
     return ", ".join(parts) if parts else None
+
+
+# ── Multi-variant dishes ──────────────────────────────────────────────────────
+# Dishes whose recognized class spans many named sub-dishes. For these, the
+# recognize UI shows a generic overview instead of pinning a single recipe as
+# "the standard". Derived from the variant classification (rich + moderate).
+# Group 1 — rich variants (23):
+_MULTI_VARIANT_RICH = {
+    "pho", "banh-mi", "banh-canh", "hu-tieu", "mi-quang", "banh-xeo",
+    "banh-cuon", "banh-bao", "banh-tet", "banh-chung", "banh-trung-thu",
+    "com-chien", "com-tam", "canh-chua", "ca-kho-to", "bun-rieu", "goi-cuon",
+    "nem-chua", "lap-xuong", "rau-muong-xao", "banh-bo", "banh-da-lon",
+    "banh-pia",
+}
+# Group 2 — moderate variants / by topping–region (34):
+_MULTI_VARIANT_MODERATE = {
+    "banh-beo", "banh-can", "banh-duc", "banh-hoi", "banh-trang-nuong",
+    "banh-da-cua", "banh-u", "bo-ne", "bo-kho", "thit-kho-tau", "kho-quet",
+    "ca-loc-nuong", "ca-sot-ca-chua", "ga-chien-nuoc-mam", "muc-nhoi-thit",
+    "canh-bi-do", "canh-cua", "canh-kho-hoa", "ca-ri-ga", "sup-cua",
+    "bun-cha-ca", "bun-thit-nuong", "bun-mam", "bun-dau-mam-tom", "mi-xao-gion",
+    "nui-xao", "ga-hap-la-chanh", "oc-huong-xao", "oc-buou-hap",
+    "tau-hu-nhoi-thit", "tau-hu-non", "tiet-canh", "trung-vit-lon", "mam-chung",
+}
+MULTI_VARIANT_SLUGS: set[str] = _MULTI_VARIANT_RICH | _MULTI_VARIANT_MODERATE
+
+
+def is_multi_variant(slug: str | None) -> bool:
+    """True if `slug` is a dish with many variants (overview-mode)."""
+    return bool(slug) and slug in MULTI_VARIANT_SLUGS
