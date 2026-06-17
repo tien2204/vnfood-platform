@@ -250,7 +250,7 @@ async def _build_dish_recipe_from_canonical(db: AsyncSession, recipe_id) -> Opti
     return {
         "source": "canonical",
         "title": row.title,
-        "description": row.description,
+        "description": row.flavor_text or row.description,
         "ingredients": ingredients,
         "steps": steps,
         "cooking_time_minutes": row.cooking_time,

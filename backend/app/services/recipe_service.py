@@ -378,7 +378,7 @@ async def get_recipe_detail(
     return RecipeDetailOut(
         id=recipe.id,
         title=recipe.title,
-        description=recipe.description,
+        description=recipe.flavor_text or recipe.description,
         image_url=recipe.image_url,
         cooking_time=recipe.cooking_time,
         servings=recipe.servings,
