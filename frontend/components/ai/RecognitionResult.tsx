@@ -7,8 +7,9 @@ import { Search } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { AIRecognitionResult } from "@/lib/types";
 import RecipeImage from "@/components/common/RecipeImage";
-import { CanonicalBadge } from "@/components/recipes/CanonicalBadge";
+import { CanonicalBadge, VariantBadge } from "@/components/recipes/CanonicalBadge";
 import DishRecipeCard from "./DishRecipeCard";
+import DishOverviewCard from "./DishOverviewCard";
 import ModelMetrics from "./ModelMetrics";
 
 function resolveImageUrl(src: string | null): string | null {
@@ -155,10 +156,14 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
         </div>
       </div>
 
+      {!isUnknown && result.is_multi_variant && result.dish_overview && (
+        <DishOverviewCard overview={result.dish_overview} />
+      )}
+
       {!isUnknown && result.canonical_recipe && (
         <section className="mt-8">
           <h2 className="text-xl font-semibold text-foreground mb-4">
-            Công thức chuẩn cho món này
+            {result.is_multi_variant ? "Một công thức tiêu biểu" : "Công thức chuẩn cho món này"}
           </h2>
           <Link
             href={`/recipes/${result.canonical_recipe.id}`}
@@ -182,7 +187,7 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
                 />
               </div>
               <div className="md:col-span-2 p-4">
-                <CanonicalBadge />
+                {result.is_multi_variant ? <VariantBadge /> : <CanonicalBadge />}
                 <h3 className="text-xl font-semibold mt-2 text-foreground">
                   {result.canonical_recipe.title}
                 </h3>
