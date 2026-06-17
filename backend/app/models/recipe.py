@@ -51,6 +51,7 @@ class Recipe(Base):
     # Canonical recipe metadata
     is_canonical: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False, index=True)
     canonical_dish_slug: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
+    ai_class_slug: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
     variant_label: Mapped[str | None] = mapped_column(String(80), nullable=True)
     is_dessert: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false", default=False, index=True)
     llm_judge_score: Mapped[float | None] = mapped_column(Float, nullable=True)
