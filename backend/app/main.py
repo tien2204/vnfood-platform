@@ -16,8 +16,6 @@ from app.api.v1.meal_plans import router as meal_plans_router, grocery_router
 from app.api.v1.ai import router as ai_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.comments import router as comments_router
-from app.api.v1.feed import router as feed_router
-from app.api.v1.ingredients import router as ingredients_router
 from app.api.v1.ratings import router as ratings_router
 from app.api.v1.recipes import router as recipes_router
 from app.api.v1.saved import router as saved_router
@@ -27,6 +25,7 @@ from app.api.v1.upload import router as upload_router
 from app.api.v1.users import router as users_router
 from app.core.config import settings
 from app.services.dish_recipe_service import load_dish_recipes
+from app.services.dish_overview_service import load_dish_overviews
 from app.services.metrics_service import load_model_metrics
 
 logger = logging.getLogger(__name__)
@@ -51,6 +50,9 @@ async def lifespan(app: FastAPI):
 
     count = load_dish_recipes()
     logging.info(f"[startup] Loaded {count} curated dish recipes")
+
+    ov_count = load_dish_overviews()
+    logging.info(f"[startup] Loaded {ov_count} dish overviews")
 
     metrics_count = load_model_metrics()
     logging.info(f"[startup] Loaded model metrics for {metrics_count} classes")
@@ -103,8 +105,6 @@ app.include_router(admin_router, prefix="/api/v1/admin", tags=["admin"])
 app.include_router(comments_router, prefix="/api/v1", tags=["comments"])
 app.include_router(ratings_router, prefix="/api/v1", tags=["ratings"])
 app.include_router(saved_router, prefix="/api/v1", tags=["saved"])
-app.include_router(feed_router, prefix="/api/v1/feed", tags=["feed"])
-app.include_router(ingredients_router, prefix="/api/v1/ingredients", tags=["ingredients"])
 app.include_router(ai_router, prefix="/api/v1/ai", tags=["ai"])
 app.include_router(meal_plans_router, prefix="/api/v1/meal-plans", tags=["meal-plans"])
 app.include_router(grocery_router, prefix="/api/v1", tags=["grocery"])
