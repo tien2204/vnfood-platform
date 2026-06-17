@@ -10,7 +10,7 @@ from typing import Optional
 import requests as _requests_lib
 from openai import AsyncOpenAI
 from PIL import Image
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -298,10 +298,12 @@ def _title_unaccent_ilike(display_name: str):
 
 
 def _in_recipes_page_pool():
-    """Restrict to the same recipe pool the /recipes page shows (the ~2.8k curated
-    set): canonical dishes or user-submitted recipes. This excludes the bulk
-    non-canonical Cookpad rows so suggestions only link to listable recipes."""
-    return or_(Recipe.is_canonical.is_(True), Recipe.source == "user")
+    """Restrict to the same recipe pool the /recipes page shows: canonical recipes
+    tagged to one of the 103 AI dishes (ai_class_slug) or user-submitted recipes."""
+    return or_(
+        and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
+        Recipe.source == "user",
+    )
 
 
 async def _find_suggested_recipes(

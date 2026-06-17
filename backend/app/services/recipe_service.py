@@ -3,11 +3,12 @@ import uuid
 from typing import Optional
 
 from fastapi import HTTPException, status
-from sqlalchemy import ARRAY, String, bindparam, delete, func, or_, select, text, update
+from sqlalchemy import ARRAY, String, and_, bindparam, delete, func, or_, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core import roles
+from app.ai.class_names import VALID_GROUPS, slugs_for_group
 from app.models.recipe import Recipe, RecipeIngredient, RecipeStep
 from app.models.social import Rating, SavedRecipe
 from app.models.user import User
@@ -115,6 +116,7 @@ async def list_recipes(
     diet: Optional[str] = None,
     main_ingredient: Optional[str] = None,
     cooking_method: Optional[str] = None,
+    group: Optional[str] = None,
     current_user: Optional[User] = None,
     show_all: bool = False,
 ) -> tuple[list[RecipeCardOut], PaginationOut]:
@@ -123,10 +125,15 @@ async def list_recipes(
 
     if not show_all:
         stmt = stmt.where(
-            or_(Recipe.is_canonical.is_(True), Recipe.source == "user"),
+            or_(
+                and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
+                Recipe.source == "user",
+            ),
             Recipe.is_dessert.is_(False),
         )
 
+    if group in VALID_GROUPS:
+        stmt = stmt.where(Recipe.ai_class_slug.in_(slugs_for_group(group)))
     if keyword:
         stmt = stmt.where(Recipe.keyword == keyword)
     if source:
@@ -284,15 +291,12 @@ async def get_recipe_detail(
         if not is_owner and not roles.role_at_least(current_user.role, roles.ADMIN):
             return None
 
-    # Author detail (follow feature removed in refocus branch — table dropped)
     author_detail = None
     if author:
         author_detail = AuthorDetailOut(
             id=author.id,
             full_name=author.full_name,
             avatar_url=author.avatar_url,
-            follower_count=0,
-            is_following=False,
         )
 
     is_saved = None
@@ -436,7 +440,10 @@ async def search_recipes(
 
     if not show_all:
         stmt = stmt.where(
-            or_(Recipe.is_canonical.is_(True), Recipe.source == "user"),
+            or_(
+                and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
+                Recipe.source == "user",
+            ),
             Recipe.is_dessert.is_(False),
         )
 
@@ -495,7 +502,10 @@ async def get_featured_recipes(
 
     if not show_all:
         base = base.where(
-            or_(Recipe.is_canonical.is_(True), Recipe.source == "user"),
+            or_(
+                and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
+                Recipe.source == "user",
+            ),
             Recipe.is_dessert.is_(False),
         )
 
