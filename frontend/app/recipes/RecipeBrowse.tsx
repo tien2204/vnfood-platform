@@ -21,16 +21,16 @@ import FacetDropdown from "@/components/recipes/FacetDropdown";
 
 const VISIBLE_FACETS = FACETS.filter((f) => f.key !== "main_ingredient");
 
-const KEYWORDS = [
+const CATEGORIES = [
   { label: "Tất cả", value: "" },
-  { label: "Bánh", value: "Bánh" },
-  { label: "Bún / Phở", value: "Bún" },
-  { label: "Cơm", value: "Cơm" },
-  { label: "Canh", value: "Canh" },
-  { label: "Món Khô", value: "Thịt" },
-  { label: "Xôi", value: "Xôi" },
-  { label: "Gỏi Cuốn", value: "Gỏi" },
-  { label: "Đặc Biệt", value: "Đặc biệt" },
+  { label: "Bánh", value: "BANH" },
+  { label: "Bún / Phở", value: "BUN_PHO" },
+  { label: "Cơm", value: "COM" },
+  { label: "Canh", value: "CANH_CHAO" },
+  { label: "Món Khô", value: "MON_KHO_NUONG" },
+  { label: "Xôi", value: "XOI" },
+  { label: "Gỏi Cuốn", value: "GOI_CUON" },
+  { label: "Đặc Biệt", value: "DAC_BIET" },
 ];
 
 const DIFFICULTIES = [
@@ -60,7 +60,7 @@ export default function RecipeBrowse() {
   const [openFacet, setOpenFacet] = useState<string | null>(null);
 
   const page = Number(searchParams.get("page") ?? "1");
-  const keyword: string = searchParams.get("keyword") ?? "";
+  const group: string = searchParams.get("group") ?? "";
   const difficulty: string = searchParams.get("difficulty") ?? "";
   const sort: string = searchParams.get("sort") ?? "newest";
   const search: string = searchParams.get("search") ?? "";
@@ -97,7 +97,7 @@ export default function RecipeBrowse() {
       limit: "20",
       sort,
     };
-    if (keyword) params.keyword = keyword;
+    if (group) params.group = group;
     if (difficulty) params.difficulty = difficulty;
     if (search) params.search = search;
     VISIBLE_FACETS.forEach((f) => {
@@ -128,13 +128,13 @@ export default function RecipeBrowse() {
     return () => {
       cancelled = true;
     };
-  }, [page, keyword, difficulty, sort, search, searchParams]);
+  }, [page, group, difficulty, sort, search, searchParams]);
 
   const facetCount = VISIBLE_FACETS.reduce(
     (n, f) => n + (searchParams.get(f.param) ?? "").split(",").filter(Boolean).length,
     0
   );
-  const hasFilters = keyword || difficulty || search || facetCount > 0;
+  const hasFilters = group || difficulty || search || facetCount > 0;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -210,14 +210,14 @@ export default function RecipeBrowse() {
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-muted-foreground">Danh mục:</span>
             <Select
-              value={keyword}
-              onValueChange={(v) => updateParam("keyword", v === "__all__" ? "" : v ?? "")}
+              value={group}
+              onValueChange={(v) => updateParam("group", v === "__all__" ? "" : v ?? "")}
             >
               <SelectTrigger className="h-8 w-36 rounded-lg border border-border bg-card text-sm">
                 <SelectValue placeholder="Tất cả" />
               </SelectTrigger>
               <SelectContent>
-                {KEYWORDS.map((k) => (
+                {CATEGORIES.map((k) => (
                   <SelectItem key={k.value} value={k.value || "__all__"}>
                     {k.label}
                   </SelectItem>
@@ -258,14 +258,14 @@ export default function RecipeBrowse() {
         </div>
       )}
 
-      {/* Keyword chips */}
+      {/* Category (group) chips */}
       <div className="flex flex-wrap gap-2 mb-6">
-        {KEYWORDS.map((k) => {
-          const active = keyword === k.value;
+        {CATEGORIES.map((k) => {
+          const active = group === k.value;
           return (
             <button
               key={k.value}
-              onClick={() => updateParam("keyword", k.value)}
+              onClick={() => updateParam("group", k.value)}
               className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
                 active
                   ? "border-primary bg-primary text-white"
