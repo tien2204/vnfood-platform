@@ -17,8 +17,15 @@ Khi AI nhận diện một món **có nhiều biến thể** (bánh mì, phở, 
 
 ### Backend
 
-1. **Config** trong `backend/app/core/variant_config.py`: thêm `MULTI_VARIANT_SLUGS: set[str]` (~20-30 slug). Danh sách khởi tạo:
-   `pho, banh-mi, banh-canh, hu-tieu, mi-quang, bun-rieu, banh-cuon, banh-xeo, com-chien, com-tam, canh-chua, ca-kho-to, banh-bao, banh-tet, banh-chung, banh-trung-thu, goi-cuon, nem-chua, lap-xuong, rau-muong-xao, banh-bo, banh-da-lon, banh-pia, banh-duc, banh-hoi, ca-loc-nuong`.
+1. **Config** trong `backend/app/core/variant_config.py`: thêm `MULTI_VARIANT_SLUGS: set[str]` (**57 slug**, lấy trọn từ bảng phân loại biến thể — nhóm 1 *phong phú* + nhóm 2 *vừa phải*).
+
+   **Nhóm 1 — biến thể phong phú (23):**
+   `pho, banh-mi, banh-canh, hu-tieu, mi-quang, banh-xeo, banh-cuon, banh-bao, banh-tet, banh-chung, banh-trung-thu, com-chien, com-tam, canh-chua, ca-kho-to, bun-rieu, goi-cuon, nem-chua, lap-xuong, rau-muong-xao, banh-bo, banh-da-lon, banh-pia`
+
+   **Nhóm 2 — biến thể vừa phải / theo topping–vùng miền (34):**
+   `banh-beo, banh-can, banh-duc, banh-hoi, banh-trang-nuong, banh-da-cua, banh-u, bo-ne, bo-kho, thit-kho-tau, kho-quet, ca-loc-nuong, ca-sot-ca-chua, ga-chien-nuoc-mam, muc-nhoi-thit, canh-bi-do, canh-cua, canh-kho-hoa, ca-ri-ga, sup-cua, bun-cha-ca, bun-thit-nuong, bun-mam, bun-dau-mam-tom, mi-xao-gion, nui-xao, ga-hap-la-chanh, oc-huong-xao, oc-buou-hap, tau-hu-nhoi-thit, tau-hu-non, tiet-canh, trung-vit-lon, mam-chung`
+
+   Tất cả slug đã đối chiếu khớp `class_names.py`. Trong code nên giữ 2 nhóm dưới dạng comment để dễ bảo trì (nhưng gộp chung 1 set — logic trigger không phân biệt nhóm).
 
 2. **`backend/app/ai/dish_overviews.json`** (mới) — key = slug, value:
    ```json
