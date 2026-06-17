@@ -44,5 +44,1388 @@
       "Phở xào",
       "Phở cuốn"
     ]
+  },
+  "banh-bao": {
+    "display_name": "Bánh bao",
+    "tasting": "Bánh bao mang đến hương vị thơm ngon từ vỏ bánh mềm mịn, hòa quyện với nhân hòa quyện từ thịt, nấm và gia vị. Thưởng thức cùng nước tương hoặc tương ớt sẽ làm tăng thêm sự hấp dẫn cho món ăn này.",
+    "key_ingredients": [
+      "bột mì",
+      "men nở",
+      "nước",
+      "thịt",
+      "nấm",
+      "gia vị"
+    ],
+    "main_steps": [
+      "Nhào bột với nước và men cho đến khi đạt độ mịn và dẻo.",
+      "Nặn bột thành những miếng tròn, cho nhân vào giữa.",
+      "Gói bánh lại và ủ cho nở.",
+      "Hấp bánh cho đến khi chín và thưởng thức."
+    ],
+    "variant_examples": [
+      "Bánh bao nhân thịt",
+      "Bánh bao chay",
+      "Bánh bao xá xíu",
+      "Bánh bao trứng muối",
+      "Bánh bao tôm",
+      "Bánh bao nhân hạt sen"
+    ]
+  },
+  "banh-beo": {
+    "display_name": "Bánh bèo",
+    "tasting": "Bánh bèo có hương vị thanh nhẹ, hơi ngọt và thơm từ bột gạo. Món này thường ăn kèm với nước mắm chua ngọt, tôm khô, hành phi và một chút đậu xanh nghiền để tăng thêm vị béo ngậy. Bạn có thể dùng thìa nhỏ để thưởng thức từng cái bánh cùng với các topping.",
+    "key_ingredients": [
+      "bột gạo",
+      "nước",
+      "muối",
+      "tôm khô",
+      "hành phi",
+      "đậu xanh"
+    ],
+    "main_steps": [
+      "Pha bột gạo với nước và muối",
+      "Đổ bột vào khuôn và hấp cho chín",
+      "Chuẩn bị nguyên liệu ăn kèm như tôm khô, hành phi, và nước mắm",
+      "Dùng thìa để gắp bánh và thưởng thức cùng các nguyên liệu kèm theo"
+    ],
+    "variant_examples": [
+      "Bánh bèo Huế",
+      "Bánh bèo miền Tây",
+      "Bánh bèo chén",
+      "Bánh bèo nhân thịt",
+      "Bánh bèo nướng"
+    ]
+  },
+  "banh-bo": {
+    "display_name": "Bánh bò",
+    "tasting": "Bánh bò có vị ngọt thanh nhẹ, với kết cấu mềm mại và xốp, đem lại cảm giác thú vị khi thưởng thức. Thường được ăn kèm với nước cốt dừa để tăng thêm hương vị béo ngậy và hòa quyện.",
+    "key_ingredients": [
+      "bột gạo",
+      "bột năng",
+      "đường",
+      "men",
+      "nước cốt dừa"
+    ],
+    "main_steps": [
+      "Pha trộn bột và các nguyên liệu thành hỗn hợp đồng nhất.",
+      "Để ủ bột cho nở và phát triển hương vị.",
+      "Hấp bánh cho đến khi chín và có màu sắc hấp dẫn.",
+      "Thưởng thức bánh cùng nước cốt dừa hoặc các loại topping kèm theo."
+    ],
+    "variant_examples": [
+      "Bánh bò hấp",
+      "Bánh bò nướng",
+      "Bánh bò lá dứa",
+      "Bánh bò trứng",
+      "Bánh bò dừa",
+      "Bánh bò sữa"
+    ]
+  },
+  "banh-can": {
+    "display_name": "Bánh căn",
+    "tasting": "Bánh căn có vỏ ngoài giòn tan, bên trong mềm mại, thường được ăn kèm với nước mắm chua ngọt hoặc nước mắm tỏi ớt để tăng thêm hương vị. Món ăn này hấp dẫn với sự kết hợp hương vị thơm ngon từ nhân bánh và các nguyên liệu đi kèm như rau sống và đậu xanh.",
+    "key_ingredients": [
+      "bột gạo",
+      "nước",
+      "nhân tôm",
+      "nhân thịt",
+      "trứng",
+      "rau sống"
+    ],
+    "main_steps": [
+      "Chuẩn bị bột và nhân cho bánh.",
+      "Đổ bột vào khuôn và cho nhân vào giữa.",
+      "Nướng bánh cho đến khi vàng giòn.",
+      "Dùng bánh cùng với nước chấm và các loại rau sống."
+    ],
+    "variant_examples": [
+      "Bánh căn nhân tôm",
+      "Bánh căn nhân thịt",
+      "Bánh căn trứng",
+      "Bánh căn nhân hải sản",
+      "Bánh căn chay"
+    ]
+  },
+  "banh-canh": {
+    "display_name": "Bánh canh",
+    "tasting": "Bánh canh có vị ngọt thanh đậm đà của nước dùng, thường kết hợp với từng miếng bánh canh mềm mại và dai dai. Món này thường được thưởng thức kèm với chả cá, tôm tươi và rau thơm, tạo nên sự hòa quyện đầy hấp dẫn.",
+    "key_ingredients": [
+      "bánh canh",
+      "nước dùng",
+      "tôm",
+      "chả cá",
+      "rau thơm",
+      "hành phi"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu, bao gồm bánh canh và các thành phần khác.",
+      "Nấu nước dùng với các gia vị và nguyên liệu tạo hương vị.",
+      "Cho bánh canh vào nước dùng, thêm các loại topping.",
+      "Trình bày và thưởng thức kèm với rau sống và gia vị."
+    ],
+    "variant_examples": [
+      "Bánh canh ghẹ",
+      "Bánh canh cua",
+      "Bánh canh tôm",
+      "Bánh canh chả cá",
+      "Bánh canh hải sản",
+      "Bánh canh miền Trung"
+    ]
+  },
+  "banh-chung": {
+    "display_name": "Bánh chưng",
+    "tasting": "Bánh chưng có vị bùi bùi của đậu xanh, béo ngậy của thịt và hương thơm của lá dong tạo nên sự hòa quyện rất đặc trưng. Món này thường được thưởng thức kèm với dưa hành hoặc giò lụa để tăng thêm hương vị hấp dẫn.",
+    "key_ingredients": [
+      "gạo nếp",
+      "đậu xanh",
+      "thịt heo",
+      "lá dong",
+      "gia vị"
+    ],
+    "main_steps": [
+      "ngâm gạo và đậu xanh",
+      "chuẩn bị nhân bánh",
+      "gói bánh bằng lá dong",
+      "luộc bánh cho đến khi chín"
+    ],
+    "variant_examples": [
+      "Bánh chưng truyền thống",
+      "Bánh chưng chay",
+      "Bánh chưng nhân thập cẩm",
+      "Bánh chưng nhân đậu đỏ",
+      "Bánh chưng ngọt"
+    ]
+  },
+  "banh-cuon": {
+    "display_name": "Bánh cuốn",
+    "tasting": "Bánh cuốn mang đến hương vị mềm mại, nhẹ nhàng từ bánh và đậm đà từ nhân. Khi thưởng thức, bánh cuốn thường được chấm với nước mắm chua ngọt và kèm theo rau sống, mang lại sự hài hòa trong từng miếng ăn.",
+    "key_ingredients": [
+      "bột gạo",
+      "nấm hương",
+      "thịt heo",
+      "hành lá",
+      "nước mắm",
+      "rau sống"
+    ],
+    "main_steps": [
+      "Xay bột gạo với nước để làm bánh.",
+      "Nhân bánh được làm từ thịt heo và nấm hương xào chín.",
+      "Hấp bánh và cho nhân vào giữa.",
+      "Thưởng thức bánh với nước mắm và rau sống."
+    ],
+    "variant_examples": [
+      "Bánh cuốn nhân thịt",
+      "Bánh cuốn chả lụa",
+      "Bánh cuốn tôm",
+      "Bánh cuốn chay",
+      "Bánh cuốn Hà Nội",
+      "Bánh cuốn Nam Định"
+    ]
+  },
+  "banh-da-cua": {
+    "display_name": "Bánh đa cua",
+    "tasting": "Bánh đa cua mang đến hương vị đậm đà, nước dùng chua ngọt thanh mát, kết hợp cùng các loại rau sống tươi ngon. Món ăn thường được thưởng thức bằng cách cho bánh đa và nguyên liệu vào tô, sau đó chan nước dùng nóng lên trên và ăn kèm với chanh, ớt để tăng độ hấp dẫn.",
+    "key_ingredients": [
+      "bánh đa",
+      "cua đồng",
+      "rau sống",
+      "nước dùng",
+      "gia vị",
+      "đậu phộng"
+    ],
+    "main_steps": [
+      "nấu nước dùng từ cua đồng và gia vị",
+      "chuẩn bị bánh đa và rau sống",
+      "pha trộn tất cả nguyên liệu vào tô",
+      "chan nước dùng nóng lên trên và thưởng thức"
+    ],
+    "variant_examples": [
+      "Bánh đa cua Hải Phòng",
+      "Bánh đa cua Nam Định",
+      "Bánh đa cua Quảng Ninh",
+      "Bánh đa cua Thái Bình",
+      "Bánh đa cua Sài Gòn"
+    ]
+  },
+  "banh-da-lon": {
+    "display_name": "Bánh da lợn",
+    "tasting": "Bánh da lợn có vị ngọt thanh, mềm mịn, chắc chắn sẽ làm hài lòng các tín đồ ăn vặt. Bạn có thể thưởng thức bánh từng miếng nhỏ, dùng kèm với trà hay nước dừa để tăng thêm hương vị.",
+    "key_ingredients": [
+      "bột gạo",
+      "bột năng",
+      "nước cốt dừa",
+      "đường",
+      "bột nếp",
+      "màu thực phẩm tự nhiên"
+    ],
+    "main_steps": [
+      "Chuẩn bị hỗn hợp bột từ các nguyên liệu chính.",
+      "Đổ từng lớp bột vào khay và hấp để tạo độ chín và độ hấp dẫn.",
+      "Cắt bánh thành miếng vừa ăn và trang trí nếu muốn."
+    ],
+    "variant_examples": [
+      "Bánh da lợn lá dứa",
+      "Bánh da lợn trứng",
+      "Bánh da lợn đậu xanh",
+      "Bánh da lợn khoai mì",
+      "Bánh da lợn trái cây",
+      "Bánh da lợn sầu riêng"
+    ]
+  },
+  "banh-duc": {
+    "display_name": "Bánh đúc",
+    "tasting": "Bánh đúc có vị mềm mịn, ngọt thanh và chút béo từ nước cốt dừa. Món này thường được thưởng thức cùng với các loại nước mắm chua ngọt hoặc sốt đậu phộng, mang lại sự kết hợp hài hòa giữa các hương vị.",
+    "key_ingredients": [
+      "bột gạo",
+      "nước",
+      "nước cốt dừa",
+      "đường",
+      "muối",
+      "đậu xanh"
+    ],
+    "main_steps": [
+      "trộn bột gạo với nước thành hỗn hợp sánh mịn",
+      "hấp hỗn hợp bột trong khuôn cho chín",
+      "để nguội và thêm các loại nhân nếu có",
+      "phục vụ cùng nước mắm hoặc sốt tùy thích"
+    ],
+    "variant_examples": [
+      "Bánh đúc nóng",
+      "Bánh đúc lạnh",
+      "Bánh đúc mặn",
+      "Bánh đúc ngọt",
+      "Bánh đúc nhân đậu xanh",
+      "Bánh đúc nhân thịt"
+    ]
+  },
+  "banh-hoi": {
+    "display_name": "Bánh hỏi",
+    "tasting": "Bánh hỏi có hương vị nhẹ nhàng, mềm mịn và hơi dai, thường được thưởng thức với nước mắm chua ngọt hoặc nước tương. Món ăn này thường được ăn kèm với thịt nướng, rau sống và các loại gia vị như đậu phộng và hành phi để tăng thêm hương vị.",
+    "key_ingredients": [
+      "bánh hỏi",
+      "thịt (heo, bò, gà)",
+      "rau sống",
+      "nước mắm",
+      "đậu phộng",
+      "hành phi"
+    ],
+    "main_steps": [
+      "nguyên liệu được chuẩn bị",
+      "bánh được làm từ bột gạo và hấp",
+      "thịt được chế biến",
+      "trình bày và thưởng thức cùng các loại gia vị và rau sống"
+    ],
+    "variant_examples": [
+      "Bánh hỏi lòng heo",
+      "Bánh hỏi tôm thịt",
+      "Bánh hỏi thịt nướng",
+      "Bánh hỏi Sa Đéc",
+      "Bánh hỏi nhân đậu xanh"
+    ]
+  },
+  "banh-pia": {
+    "display_name": "Bánh pía",
+    "tasting": "Bánh pía có lớp vỏ mềm mịn, nhân ngọt dịu với hương vị đặc trưng từ đậu xanh và sầu riêng, tạo cảm giác béo ngậy nhưng không ngán. Bánh thường được thưởng thức kèm với trà nóng, làm tăng thêm sự hấp dẫn cho từng miếng bánh.",
+    "key_ingredients": [
+      "bột mì",
+      "đậu xanh",
+      "sầu riêng",
+      "đường",
+      "dầu thực vật",
+      "mè rang"
+    ],
+    "main_steps": [
+      "Nhào bột và để nghỉ",
+      "Chuẩn bị nhân bánh từ đậu xanh và sầu riêng",
+      "Gói nhân vào vỏ bánh thành từng miếng",
+      "Nướng hoặc hấp bánh cho đến khi chín"
+    ],
+    "variant_examples": [
+      "Bánh pía truyền thống",
+      "Bánh pía sầu riêng",
+      "Bánh pía đậu xanh",
+      "Bánh pía nhân hạt sen",
+      "Bánh pía nhân dừa",
+      "Bánh pía trứng muối"
+    ]
+  },
+  "banh-tet": {
+    "display_name": "Bánh tét",
+    "tasting": "Bánh tét có vị dẻo thơm của nếp quyện với vị béo ngậy của đậu, thịt hoặc nhân khác tùy biến thể. Được thưởng thức bằng cách cắt thành khoanh và ăn kèm với dưa món hoặc nước mắm chua ngọt, món ăn này mang đến hương vị dịu nhẹ nhưng đầy cuốn hút.",
+    "key_ingredients": [
+      "gạo nếp",
+      "đậu xanh",
+      "thịt heo",
+      "lá chuối",
+      "muối"
+    ],
+    "main_steps": [
+      "Ngâm gạo nếp và đậu xanh, sau đó hấp chín.",
+      "Trộn gạo nếp với đậu và các nguyên liệu khác để tạo nhân.",
+      "Gói nguyên liệu bằng lá chuối, tạo hình và buộc chặt.",
+      "Nấu bánh trong nước sôi trong nhiều giờ cho đến khi chín mềm."
+    ],
+    "variant_examples": [
+      "Bánh tét nhân đậu xanh",
+      "Bánh tét nhân thịt heo",
+      "Bánh tét ngọt nhân chuối",
+      "Bánh tét nhân khoai môn",
+      "Bánh tét chay"
+    ]
+  },
+  "banh-trang-nuong": {
+    "display_name": "Bánh tráng nướng",
+    "tasting": "Bánh tráng nướng mang đến hương vị giòn rụm, thơm ngon với sự kết hợp của nhiều nguyên liệu khác nhau. Thưởng thức món này, bạn có thể cuốn bánh với rau sống và chấm với nước mắm chua ngọt, tạo nên sự phong phú trong từng miếng ăn.",
+    "key_ingredients": [
+      "bánh tráng",
+      "trứng",
+      "thịt băm",
+      "hành lá",
+      "gia vị",
+      "đậu xanh"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu cần thiết.",
+      "Nướng bánh tráng trên bếp cho tơi xốp.",
+      "Thêm trứng và các nguyên liệu khác lên bánh.",
+      "Cuộn hoặc gập bánh lại và nướng thêm cho đến khi chín đều."
+    ],
+    "variant_examples": [
+      "Bánh tráng nướng trứng",
+      "Bánh tráng nướng thịt băm",
+      "Bánh tráng nướng hải sản",
+      "Bánh tráng nướng chay",
+      "Bánh tráng nướng phô mai"
+    ]
+  },
+  "banh-trung-thu": {
+    "display_name": "Bánh trung thu",
+    "tasting": "Bánh trung thu có vị ngọt thanh, thơm béo từ nhân và lớp vỏ mềm mịn. Thưởng thức bánh cùng trà ngon để cảm nhận hương vị truyền thống thêm trọn vẹn, có thể ăn kèm với hạt dưa, trà sữa hoặc trái cây.",
+    "key_ingredients": [
+      "bột mì",
+      "đường",
+      "mỡ lợn hoặc dầu thực vật",
+      "nhân đậu đỏ",
+      "hạt bí",
+      "nước hoa bưởi"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu và làm nhân theo sở thích.",
+      "Nhào bột và tạo hình vỏ bánh.",
+      "Gói nhân vào vỏ và tạo hình trang trí.",
+      "Nướng bánh cho đến khi chín vàng và tỏa mùi thơm."
+    ],
+    "variant_examples": [
+      "Bánh trung thu nhân đậu xanh",
+      "Bánh trung thu nhân hạt sen",
+      "Bánh trung thu nhân thập cẩm",
+      "Bánh trung thu glacé",
+      "Bánh trung thu trà xanh",
+      "Bánh trung thu trái cây"
+    ]
+  },
+  "banh-u": {
+    "display_name": "Bánh ú",
+    "tasting": "Bánh ú mang đến hương vị ngọt ngào, hòa quyện giữa vị dẻo của gạo nếp và nhân đa dạng bên trong. Bạn có thể thưởng thức bánh ú ngay khi còn nóng, thường được ăn kèm với nước dừa hoặc vài lát xoài chín để tăng thêm độ ngon.",
+    "key_ingredients": [
+      "gạo nếp",
+      "đậu xanh",
+      "thịt heo",
+      "nước dừa",
+      "lá chuối",
+      "đường"
+    ],
+    "main_steps": [
+      "Ngâm gạo nếp và đậu xanh, sau đó hấp chín.",
+      "Chuẩn bị nhân bánh theo sở thích (thịt, đậu hoặc các loại khác).",
+      "Gói bánh bằng lá chuối, tạo hình và mang đi hấp.",
+      "Thưởng thức bánh sau khi đã chín tới."
+    ],
+    "variant_examples": [
+      "Bánh ú tro",
+      "Bánh ú lá cẩm",
+      "Bánh ú nhân thịt",
+      "Bánh ú nhân đậu xanh",
+      "Bánh ú ngọt",
+      "Bánh ú chay"
+    ]
+  },
+  "banh-xeo": {
+    "display_name": "Bánh xèo",
+    "tasting": "Bánh xèo có vị giòn tan bên ngoài, mềm mịn ở phần nhân, hòa quyện với hương vị thơm ngon của các loại rau sống và nước chấm chua ngọt. Người thưởng thức thường cuốn bánh cùng rau và chấm với nước mắm pha để tăng thêm hương vị.",
+    "key_ingredients": [
+      "bột gạo",
+      "nước dừa",
+      "tôm",
+      "thịt heo",
+      "giá đỗ",
+      "rau sống"
+    ],
+    "main_steps": [
+      "Trộn bột với nước dừa để tạo hỗn hợp bánh.",
+      "Chiên bánh cho đến khi vàng giòn.",
+      "Chuẩn bị nhân bánh từ tôm và thịt heo cùng các loại rau.",
+      "Ăn kèm với rau sống và nước chấm."
+    ],
+    "variant_examples": [
+      "Bánh xèo miền Nam",
+      "Bánh xèo miền Trung",
+      "Bánh xèo hải sản",
+      "Bánh xèo đậu xanh",
+      "Bánh xèo chay"
+    ]
+  },
+  "bo-kho": {
+    "display_name": "Bò kho",
+    "tasting": "Bò kho có hương vị đậm đà từ thịt bò và gia vị, thường được nấu chín mềm trong nước dùng thơm ngọt. Món ăn này thường được thưởng thức cùng với bánh mì để thấm đẫm nước sốt hoặc cơm trắng để cân bằng vị, mang lại trải nghiệm thực sự ngon miệng.",
+    "key_ingredients": [
+      "thịt bò",
+      "gừng",
+      "sả",
+      "hành tím",
+      "nước dưa",
+      "gia vị (đinh hương, quế, tiêu)"
+    ],
+    "main_steps": [
+      "Sơ chế nguyên liệu và ướp thịt bò với gia vị.",
+      "Nấu thịt bò cùng với các loại gia vị và nước dùng đến khi thịt mềm.",
+      "Thêm các loại rau củ như cà rốt và khoai tây để tăng thêm hương vị."
+    ],
+    "variant_examples": [
+      "Bò kho truyền thống",
+      "Bò kho kiểu Huế",
+      "Bò kho miền Nam",
+      "Bò kho tộ",
+      "Bò kho cà ri"
+    ]
+  },
+  "bo-ne": {
+    "display_name": "Bò né",
+    "tasting": "Bò né có hương vị thơm ngon, đậm đà từ thịt bò được chiên tới độ vừa chín, kết hợp với trứng ốp la và các loại rau ăn kèm. Món ăn thường được phục vụ nóng và ăn kèm với bánh mì để thưởng thức vị ngọt từ thịt và phần nước sốt đậm đà.",
+    "key_ingredients": [
+      "thịt bò",
+      "trứng",
+      "tỏi",
+      "rau sống",
+      "bánh mì",
+      "nước sốt"
+    ],
+    "main_steps": [
+      "Ướp thịt bò với gia vị và tỏi.",
+      "Chiên thịt bò cho tới khi chín vừa.",
+      "Đập trứng ốp la trên chảo.",
+      "Dọn món ăn cùng rau sống và bánh mì."
+    ],
+    "variant_examples": [
+      "Bò né thập cẩm",
+      "Bò né trứng chiên",
+      "Bò né phô mai",
+      "Bò né sả ớt",
+      "Bò né sốt tiêu đen"
+    ]
+  },
+  "bun-cha-ca": {
+    "display_name": "Bún chả cá",
+    "tasting": "Bún chả cá mang đến hương vị đậm đà, thanh nhẹ nhờ nước dùng được chế biến từ cá tươi và gia vị. Món ăn thường được thưởng thức kèm với rau sống và chanh, tạo nên sự hài hòa tươi mát cho vị giác.",
+    "key_ingredients": [
+      "bún",
+      "cá (thường là cá thu hoặc cá ngừ)",
+      "nước dùng",
+      "rau sống",
+      "gia vị",
+      "trái cây chua"
+    ],
+    "main_steps": [
+      "Chuẩn bị nước dùng từ cá và gia vị.",
+      "Chế biến cá thành chả hoặc thái lát.",
+      "Nấu bún và chuẩn bị rau sống kèm theo.",
+      "Dọn món ăn với nước dùng và các thành phần kèm theo."
+    ],
+    "variant_examples": [
+      "Bún chả cá Lã Vọng",
+      "Bún chả cá Đà Nẵng",
+      "Bún chả cá Nha Trang",
+      "Bún chả cá Sài Gòn",
+      "Bún chả cá viên"
+    ]
+  },
+  "bun-dau-mam-tom": {
+    "display_name": "Bún đậu mắm tôm",
+    "tasting": "Bún đậu mắm tôm có hương vị đặc trưng của mắm tôm hòa quyện cùng vị béo ngậy của đậu phụ và độ mềm mại của bún. Món ăn thường được thưởng thức kèm với rau sống và các loại thịt như chả, thịt heo hoặc giò. Cách ăn là chấm từng miếng vào mắm tôm và thưởng thức từng miếng nhỏ, tạo nên sự hòa quyện hoàn hảo giữa các nguyên liệu.",
+    "key_ingredients": [
+      "bún tươi",
+      "đậu phụ",
+      "mắm tôm",
+      "rau sống",
+      "thịt heo",
+      "chả cá"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu: nấu bún, chiên đậu phụ, và làm mắm tôm.",
+      "Bày biện nguyên liệu ra đĩa gồm bún, đậu phụ, rau sống và thịt.",
+      "Chấm đậu phụ, bún và thịt vào mắm tôm và thưởng thức."
+    ],
+    "variant_examples": [
+      "Bún đậu mắm tôm miền Bắc",
+      "Bún đậu mắm tôm miền Trung",
+      "Bún đậu mắm tôm chay",
+      "Bún đậu mắm tôm kết hợp hải sản",
+      "Bún đậu mắm tôm tỏi ớt"
+    ]
+  },
+  "bun-mam": {
+    "display_name": "Bún mắm",
+    "tasting": "Bún mắm có vị ngọt tự nhiên từ hải sản và mắm, hòa quyện với chua chua cay cay của các loại gia vị, tạo nên hương vị đặc trưng khó quên. Các nguyên liệu thường được sắp xếp gọn gàng, ăn kèm với rau sống và pháp chế, khiến cho mỗi muỗng bún trở nên thú vị và hấp dẫn hơn.",
+    "key_ingredients": [
+      "bún",
+      "mắm cá linh",
+      "hải sản (tôm, mực, cá)",
+      "rau sống (rau thơm, giá)",
+      "gia vị (ớt, chanh, đường)"
+    ],
+    "main_steps": [
+      "Chuẩn bị nước dùng từ mắm và hải sản.",
+      "Luộc bún cho chín vừa.",
+      "Sắp xếp bún, hải sản và rau sống vào tô.",
+      "Thêm nước dùng và gia vị để thưởng thức."
+    ],
+    "variant_examples": [
+      "Bún mắm miền Tây",
+      "Bún mắm chay",
+      "Bún mắm hải sản",
+      "Bún mắm Huế",
+      "Bún mắm cá lóc"
+    ]
+  },
+  "bun-rieu": {
+    "display_name": "Bún riêu",
+    "tasting": "Bún riêu mang vị chua nhẹ từ cà chua, đậm đà từ nước dùng và thơm ngon từ riêu cua. Món ăn thường được thưởng thức với bún tươi, rau sống, và thường thêm một chút ớt hoặc chanh để tăng thêm hương vị.",
+    "key_ingredients": [
+      "bún",
+      "cua đồng",
+      "cà chua",
+      "đậu hũ",
+      "hành lá",
+      "rau sống"
+    ],
+    "main_steps": [
+      "Nấu nước dùng từ cua đồng và cà chua.",
+      "Thêm đậu hũ và gia vị cho nước dùng.",
+      "Trụng bún và sắp xếp vào tô, sau đó cho nước dùng và riêu cua lên.",
+      "Trang trí với rau sống và các loại gia vị kèm theo."
+    ],
+    "variant_examples": [
+      "Bún riêu cua",
+      "Bún riêu ghẹ",
+      "Bún riêu thịt bằm",
+      "Bún riêu chay",
+      "Bún riêu cá",
+      "Bún riêu hải sản"
+    ]
+  },
+  "bun-thit-nuong": {
+    "display_name": "Bún thịt nướng",
+    "tasting": "Bún thịt nướng mang đến hương vị thơm ngon, ngọt ngào từ thịt nướng và chua chua, cay cay từ các loại rau sống. Món ăn thường được thưởng thức bằng cách trộn đều bún với thịt, rau và nước mắm chua ngọt cùng với các loại gia vị để tạo nên sự hòa quyện đầy hấp dẫn.",
+    "key_ingredients": [
+      "bún tươi",
+      "thịt nướng",
+      "rau sống",
+      "nước mắm",
+      "đậu phộng rang",
+      "hành phi"
+    ],
+    "main_steps": [
+      "Chuẩn bị và nướng thịt",
+      "Luộc hoặc trụng bún",
+      "Chuẩn bị rau sống và gia vị",
+      "Trộn tất cả nguyên liệu và thưởng thức"
+    ],
+    "variant_examples": [
+      "Bún thịt nướng cha",
+      "Bún thịt nướng chả giò",
+      "Bún thịt nướng chả lá lốt",
+      "Bún thịt nướng sả",
+      "Bún thịt nướng mắm tôm"
+    ]
+  },
+  "ca-kho-to": {
+    "display_name": "Cá kho tộ",
+    "tasting": "Cá kho tộ mang đến hương vị đậm đà, thơm ngon với nước kho sền sệt, conty vị chua ngọt từ đường và nước mắm. Món ăn này thường được thưởng thức cùng cơm trắng, tăng thêm sự hấp dẫn khi ăn kèm dưa leo hoặc rau sống.",
+    "key_ingredients": [
+      "cá (thường là cá lóc hoặc cá basa)",
+      "nước mắm",
+      "đường",
+      "muối",
+      "tiêu",
+      "hành tím"
+    ],
+    "main_steps": [
+      "Sơ chế cá và ướp gia vị như nước mắm, đường, tiêu, hành tím.",
+      "Cho cá vào nồi đất và đổ nước kho, đun trên lửa nhỏ đến khi cá chín và gia vị thấm đều.",
+      "Thêm một số loại thực phẩm kèm theo nếu có (như trứng, thịt ba chỉ) và tiếp tục kho cho đến khi nước kho sệt lại."
+    ],
+    "variant_examples": [
+      "Cá kho tộ kiểu miền Nam",
+      "Cá kho tộ nghệ",
+      "Cá kho tộ tiêu",
+      "Cá kho tộ với măng",
+      "Cá kho tộ với thịt ba chỉ"
+    ]
+  },
+  "ca-loc-nuong": {
+    "display_name": "Cá lóc nướng",
+    "tasting": "Cá lóc nướng mang đến hương vị thơm ngon, thịt cá ngọt, bên ngoài có lớp da giòn rụm và bên trong mềm mại. Món ăn thường được thưởng thức kèm với rau sống, bánh tráng và nước mắm chua ngọt, tạo nên sự hòa quyện hấp dẫn.",
+    "key_ingredients": [
+      "cá lóc",
+      "gia vị (muối, tiêu, đường)",
+      "tỏi",
+      "nghệ",
+      "rau sống",
+      "bánh tráng"
+    ],
+    "main_steps": [
+      "Ướp cá với gia vị và tỏi",
+      "Nướng cá trên than hoa cho đến khi chín vàng",
+      "Bày cá ra đĩa và trang trí với rau sống",
+      "Dùng kèm với bánh tráng và nước mắm."
+    ],
+    "variant_examples": [
+      "Cá lóc nướng trui",
+      "Cá lóc nướng giấy bạc",
+      "Cá lóc nướng mỡ hành",
+      "Cá lóc nướng sa tế",
+      "Cá lóc nướng sả",
+      "Cá lóc nướng chấm muối ớt"
+    ]
+  },
+  "ca-ri-ga": {
+    "display_name": "Cà ri gà",
+    "tasting": "Cà ri gà mang đến hương vị đậm đà, thơm ngon với vị béo ngậy từ nước cốt dừa và hương liệu nức mũi từ cà ri. Món ăn được chế biến chín mềm, có thể thưởng thức cùng cơm trắng hoặc bánh mì, và thường được ăn kèm với rau sống hoặc dưa chua để cân bằng vị.",
+    "key_ingredients": [
+      "gà",
+      "bột cà ri",
+      "nước cốt dừa",
+      "khoai tây",
+      "hành tím",
+      "tỏi"
+    ],
+    "main_steps": [
+      "Sơ chế và ướp gà với gia vị và bột cà ri.",
+      "Chiên sơ gà để tạo màu, sau đó thêm hành và tỏi vào xào thơm.",
+      "Thêm nước và khoai tây, nấu cho đến khi gà chín đều và mềm.",
+      "Cuối cùng, cho nước cốt dừa vào nấu sôi và tạo độ béo cho món ăn."
+    ],
+    "variant_examples": [
+      "Cà ri gà miền Nam",
+      "Cà ri gà miền Bắc",
+      "Cà ri gà khoai lang",
+      "Cà ri gà Thái",
+      "Cà ri gà đậm vị",
+      "Cà ri gà nấu với rau củ"
+    ]
+  },
+  "ca-sot-ca-chua": {
+    "display_name": "Cá sốt cà chua",
+    "tasting": "Cá sốt cà chua mang đến hương vị đậm đà từ sốt cà chua hòa quyện với độ tươi ngon của cá. Món ăn thường được thưởng thức cùng cơm trắng nóng, giúp cân bằng vị chua ngọt và mặn mà, tạo cảm giác ngon miệng.",
+    "key_ingredients": [
+      "cá tươi",
+      "cà chua",
+      "hành tím",
+      "tỏi",
+      "gia vị",
+      "dầu ăn"
+    ],
+    "main_steps": [
+      "Chuẩn bị và ướp cá với gia vị.",
+      "Xào hành tím và tỏi cho thơm, sau đó cho cà chua vào.",
+      "Thêm cá vào chảo và nêm nếm cho vừa ăn.",
+      "Nấu cho đến khi cá chín và sốt sệt lại."
+    ],
+    "variant_examples": [
+      "Cá lóc sốt cà chua",
+      "Cá thu sốt cà chua",
+      "Cá diêu hồng sốt cà chua",
+      "Cá basa sốt cà chua",
+      "Cá ngừ sốt cà chua"
+    ]
+  },
+  "canh-bi-do": {
+    "display_name": "Canh bí đỏ",
+    "tasting": "Canh bí đỏ có vị ngọt tự nhiên và béo ngậy, thường được nêm nếm nhẹ nhàng để giữ nguyên hương vị đặc trưng của bí. Món này thường được thưởng thức kèm với cơm trắng và các món mặn, giúp tạo sự hài hòa trong bữa ăn.",
+    "key_ingredients": [
+      "bí đỏ",
+      "nước dùng (xương hoặc rau)",
+      "muối",
+      "hành lá",
+      "tiêu",
+      "nguyên liệu bổ sung tùy biến (như tôm, thịt bằm)"
+    ],
+    "main_steps": [
+      "Sơ chế bí đỏ, cắt miếng vừa ăn.",
+      "Nấu nước dùng, cho bí đỏ vào và đun sôi.",
+      "Nêm nếm gia vị cho vừa ăn, thêm hành lá.",
+      "Tắt bếp và dọn ra thưởng thức."
+    ],
+    "variant_examples": [
+      "Canh bí đỏ nấu tôm",
+      "Canh bí đỏ thịt bằm",
+      "Canh bí đỏ hầm xương",
+      "Canh bí đỏ chay",
+      "Canh bí đỏ thịt gà",
+      "Canh bí đỏ nấu nấm"
+    ]
+  },
+  "canh-chua": {
+    "display_name": "Canh chua",
+    "tasting": "Canh chua mang đến vị chua thanh mát từ các loại rau củ, kết hợp với vị ngọt tự nhiên của thịt hoặc hải sản. Món ăn này thường được thưởng thức cùng với cơm trắng, giúp cân bằng vị chua và làm tăng hương vị cho bữa ăn.",
+    "key_ingredients": [
+      "cá hoặc tôm",
+      "dứa",
+      "rau muống",
+      "măng",
+      "gia vị (muối, đường, hạt nêm)"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu và phi thơm hành tỏi.",
+      "Nấu nước dùng với cá hoặc tôm và các nguyên liệu chính.",
+      "Thêm các loại rau củ vào nấu chín và điều chỉnh gia vị.",
+      "Hoàn thiện món ăn và trang trí trước khi dọn ra bàn."
+    ],
+    "variant_examples": [
+      "Canh chua cá lóc",
+      "Canh chua tôm",
+      "Canh chua thịt heo",
+      "Canh chua mực",
+      "Canh chua chay"
+    ]
+  },
+  "canh-cua": {
+    "display_name": "Canh cua",
+    "tasting": "Canh cua mang đến hương vị thanh mát, đậm đà với vị ngọt tự nhiên từ cua đồng hòa quyện cùng các loại rau củ. Món canh này thường được thưởng thức nóng, kèm với cơm trắng và rau sống, tạo nên sự hài hòa giữa vị ngọt, chua và cay.",
+    "key_ingredients": [
+      "cua đồng",
+      "rau ghém",
+      "măng tươi",
+      "gia vị",
+      "hành lá",
+      "hạt tiêu"
+    ],
+    "main_steps": [
+      "Rửa sạch cua và hấp chín, sau đó gỡ lấy thịt.",
+      "Nấu nước dùng với măng và gia vị, khi nước sôi thì cho cua vào.",
+      "Thêm rau ghém và hành lá, đợi cho rau chín tới.",
+      "Nêm nếm lại cho vừa ăn và trình bày ra bát."
+    ],
+    "variant_examples": [
+      "Canh cua mồng tơi",
+      "Canh cua rau đay",
+      "Canh cua dưa leo",
+      "Canh cua tôm",
+      "Canh cua với nấm",
+      "Canh cua củ sen"
+    ]
+  },
+  "canh-kho-hoa": {
+    "display_name": "Canh khổ hoa",
+    "tasting": "Canh khổ hoa có vị thanh nhẹ, mát dịu từ rau củ kết hợp với vị ngọt tự nhiên từ nước dùng. Món canh thường được thưởng thức cùng với cơm trắng, giúp cân bằng vị giác và tạo cảm giác ngon miệng hơn.",
+    "key_ingredients": [
+      "khổ qua",
+      "nước dùng thịt hoặc hải sản",
+      "nấm",
+      "cà rốt",
+      "gia vị (muối, tiêu, đường)"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu, rửa sạch và cắt khổ qua.",
+      "Nấu nước dùng cho sôi rồi cho khổ qua và các nguyên liệu khác vào.",
+      "Nêm nếm gia vị theo khẩu vị, sau đó tắt bếp và để nguội."
+    ],
+    "variant_examples": [
+      "Canh khổ hoa nhồi thịt",
+      "Canh khổ hoa kiểu Bắc",
+      "Canh khổ hoa chay",
+      "Canh khổ hoa với tôm"
+    ]
+  },
+  "com-chien": {
+    "display_name": "Cơm chiên",
+    "tasting": "Cơm chiên có vị mặn ngọt hài hòa, với hương vị thơm lừng từ nguyên liệu tươi ngon. Món ăn thường được thưởng thức nóng, kèm theo các loại rau sống, dưa leo và nước tương, tạo nên sự cân bằng hoàn hảo giữa độ béo và tươi mát.",
+    "key_ingredients": [
+      "cơm nguội",
+      "trứng",
+      "hành lá",
+      "tỏi",
+      "rau củ các loại",
+      "gia vị (muối, tiêu)"
+    ],
+    "main_steps": [
+      "Chiên tỏi cho thơm rồi cho rau củ vào xào chín.",
+      "Thêm cơm nguội vào và đảo đều cho thấm gia vị.",
+      "Đập trứng vào và tiếp tục đảo cho trứng quyện đều.",
+      "Cuối cùng, rắc hành lá và nêm nếm lại cho vừa ăn."
+    ],
+    "variant_examples": [
+      "Cơm chiên Dương Châu",
+      "Cơm chiên Hải sản",
+      "Cơm chiên thịt gà",
+      "Cơm chiên tôm",
+      "Cơm chiên chay",
+      "Cơm chiên ớt chuông"
+    ]
+  },
+  "com-tam": {
+    "display_name": "Cơm tấm",
+    "tasting": "Cơm tấm mang đến hương vị đặc trưng với cái mềm dẻo của gạo tấm hòa quyện cùng nước mắm thơm phức. Món ăn thường được thưởng thức kèm với thịt nướng, chả trứng hoặc trứng ốp la, tạo nên sự phong phú trong mỗi miếng cơm.",
+    "key_ingredients": [
+      "gạo tấm",
+      "thịt nướng",
+      "nước mắm",
+      "dưa leo",
+      "đồ chua",
+      "trứng"
+    ],
+    "main_steps": [
+      "Nấu gạo tấm cho đến khi chín mềm.",
+      "Chuẩn bị các loại thịt nướng hoặc chả để phục vụ.",
+      "Sắp xếp cơm, thịt và các món đi kèm trên đĩa.",
+      "Rưới nước mắm và thêm rau sống trước khi thưởng thức."
+    ],
+    "variant_examples": [
+      "Cơm tấm sườn nướng",
+      "Cơm tấm chả trứng",
+      "Cơm tấm gà nướng",
+      "Cơm tấm tôm nướng",
+      "Cơm tấm đùi gà",
+      "Cơm tấm thịt hộp"
+    ]
+  },
+  "ga-chien-nuoc-mam": {
+    "display_name": "Gà chiên nước mắm",
+    "tasting": "Gà chiên nước mắm mang đến vị mặn mà, ngọt ngào từ nước mắm hòa quyện với phần da gà giòn tan. Món ăn thường được thưởng thức nóng hổi, có thể dùng kèm với cơm trắng hoặc bún tươi, thêm chút rau sống để cân bằng vị giác.",
+    "key_ingredients": [
+      "thịt gà",
+      "nước mắm",
+      "tỏi",
+      "đường",
+      "giấm",
+      "hạt tiêu"
+    ],
+    "main_steps": [
+      "Sơ chế gà, ướp gia vị với nước mắm, tỏi và đường",
+      "Chiên gà cho vàng giòn",
+      "Pha nước sốt từ nước mắm, đường và giấm",
+      "Trộn gà chiên với nước sốt và thưởng thức."
+    ],
+    "variant_examples": [
+      "Gà chiên nước mắm sả ớt",
+      "Gà chiên nước mắm chanh",
+      "Gà chiên nước mắm tỏi",
+      "Gà chiên nước mắm tiêu",
+      "Gà chiên nước mắm hành",
+      "Gà chiên nước mắm thảo mộc"
+    ]
+  },
+  "ga-hap-la-chanh": {
+    "display_name": "Gà hấp lá chanh",
+    "tasting": "Món gà hấp lá chanh mang đến hương vị thanh mát, thơm ngon từ lá chanh tươi, hòa quyện cùng thịt gà mềm juicy. Thưởng thức món này, bạn có thể ăn kèm với cơm trắng và nước chấm chua ngọt để tăng thêm độ đậm đà.",
+    "key_ingredients": [
+      "gà",
+      "lá chanh",
+      "tỏi",
+      "gừng",
+      "muối",
+      "tiêu"
+    ],
+    "main_steps": [
+      "Sơ chế gà và ướp gia vị cơ bản.",
+      "Xếp lá chanh và các gia vị lên gà.",
+      "Hấp gà trong thời gian nhất định cho đến khi chín.",
+      "Thưởng thức với nước chấm và cơm."
+    ],
+    "variant_examples": [
+      "Gà hấp lá chanh kiểu Bắc",
+      "Gà hấp lá chanh kiểu miền Trung",
+      "Gà hấp lá chanh với sả",
+      "Gà hấp lá chanh nước dừa",
+      "Gà hấp lá chanh với nấm",
+      "Gà hấp lá chanh tro"
+    ]
+  },
+  "goi-cuon": {
+    "display_name": "Gỏi cuốn",
+    "tasting": "Gỏi cuốn có vị tươi mát, kết hợp giữa vị ngọt của tôm, vị beo béo của thịt và rau sống. Món ăn thường được thưởng thức kèm với nước chấm như mắm nêm hoặc tương đậu phộng, tạo nên sự hài hòa độc đáo.",
+    "key_ingredients": [
+      "bánh tráng",
+      "tôm",
+      "thịt heo",
+      "rau sống",
+      "bún",
+      "nước chấm"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu tươi sống và bánh tráng.",
+      "Nhúng bánh tráng vào nước ấm để làm mềm.",
+      "Xếp các nguyên liệu lên bánh tráng và cuốn lại.",
+      "Thưởng thức với nước chấm tùy theo sở thích."
+    ],
+    "variant_examples": [
+      "Gỏi cuốn tôm thịt",
+      "Gỏi cuốn chay",
+      "Gỏi cuốn cá lóc",
+      "Gỏi cuốn xù",
+      "Gỏi cuốn hải sản",
+      "Gỏi cuốn tôm mực"
+    ]
+  },
+  "hu-tieu": {
+    "display_name": "Hủ tiếu",
+    "tasting": "Hủ tiếu mang lại hương vị đặc trưng của sự kết hợp giữa nước dùng ngọt thanh, sợi hủ tiếu mỏng nhẹ và các nguyên liệu tươi ngon. Món ăn thường được thưởng thức kèm với rau sống, chanh và ớt để tăng thêm phần hấp dẫn.",
+    "key_ingredients": [
+      "sợi hủ tiếu",
+      "nước dùng",
+      "thịt (heo, bò, gà)",
+      "hải sản (tôm, mực)",
+      "rau sống",
+      "gia vị (mắm, tiêu)"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu và nước dùng",
+      "Nấu sợi hủ tiếu cho đến khi chín mềm",
+      "Cho nguyên liệu vào tô và thêm nước dùng nóng",
+      "Trang trí với rau sống và gia vị trước khi thưởng thức"
+    ],
+    "variant_examples": [
+      "Hủ tiếu Nam Vang",
+      "Hủ tiếu Mỹ Tho",
+      "Hủ tiếu bò viên",
+      "Hủ tiếu gà",
+      "Hủ tiếu hải sản",
+      "Hủ tiếu xào"
+    ]
+  },
+  "kho-quet": {
+    "display_name": "Kho quẹt",
+    "tasting": "Kho quẹt là món ăn có vị mặn mà đậm đà, thường hòa quyện với sự ngọt ngào từ thịt và nước dừa. Món ăn được thưởng thức bằng cách chấm rau sống hoặc cơm trắng nóng hổi, tạo nên sự kết hợp thú vị giữa vị béo ngậy và độ tươi mát.",
+    "key_ingredients": [
+      "thịt ba chỉ",
+      "nước mắm",
+      "đường",
+      "tiêu",
+      "hành tím",
+      "ớt"
+    ],
+    "main_steps": [
+      "sơ chế các nguyên liệu như thịt và gia vị",
+      "nấu thịt với các gia vị cho thấm đậm",
+      "gia giảm độ mặn và ngọt theo khẩu vị",
+      "nấu cho đến khi hỗn hợp sánh đặc lại"
+    ],
+    "variant_examples": [
+      "Kho quẹt tôm",
+      "Kho quẹt thịt heo",
+      "Kho quẹt mực",
+      "Kho quẹt chay",
+      "Kho quẹt cá nục"
+    ]
+  },
+  "lap-xuong": {
+    "display_name": "Lạp xưởng",
+    "tasting": "Lạp xưởng mang hương vị ngọt nhẹ, hơi mặn và thơm nức từ gia vị. Khi thưởng thức, bạn có thể ăn trực tiếp hoặc chiên sơ, thường được dùng kèm với cơm nóng và rau sống, tạo thành một món ăn hài hòa vị giác.",
+    "key_ingredients": [
+      "thịt heo",
+      "mỡ heo",
+      "gia vị (muối, đường, tiêu)",
+      "bột nếp",
+      "ruột bò (hoặc túi lạp xưởng)"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu, sơ chế thịt và mỡ theo tỷ lệ hợp lý.",
+      "Trộn đều thịt với các gia vị và bột nếp, sau đó cho vào ruột bò.",
+      "Bó chặt lạp xưởng và đem đi phơi hoặc hấp chín.",
+      "Cuối cùng, lạp xưởng có thể được chế biến thêm bằng cách nướng hoặc chiên."
+    ],
+    "variant_examples": [
+      "Lạp xưởng tươi",
+      "Lạp xưởng khô",
+      "Lạp xưởng chiên",
+      "Lạp xưởng xông khói",
+      "Lạp xưởng miền Trung"
+    ]
+  },
+  "mam-chung": {
+    "display_name": "Mắm chưng",
+    "tasting": "Mắm chưng mang đến sự hòa quyện tinh tế giữa vị mặn mà của mắm, vị béo ngậy từ thịt heo hoặc cá, cùng với sự thanh mát của rau sống. Món ăn thường được thưởng thức kèm với bánh tráng, rau diếp, hoặc dưa leo, tạo nên sự cân bằng giữa các hương vị và kết cấu.",
+    "key_ingredients": [
+      "mắm (mắm tôm, mắm cá)",
+      "thịt heo hoặc cá",
+      "trứng",
+      "hành lá",
+      "gia vị (tiêu, đường)",
+      "rau sống"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu, bao gồm thịt hoặc cá, mắm và rau.",
+      "Trộn đều các nguyên liệu với nhau, sau đó đổ vào chén hoặc khuôn.",
+      "Hấp cách thủy cho đến khi chín và các hương vị hòa quyện.",
+      "Thưởng thức nóng cùng với bánh tráng và rau sống."
+    ],
+    "variant_examples": [
+      "Mắm chưng thịt heo",
+      "Mắm chưng cá lóc",
+      "Mắm chưng tôm",
+      "Mắm chưng chay",
+      "Mắm chưng cong"
+    ]
+  },
+  "mi-quang": {
+    "display_name": "Mì Quảng",
+    "tasting": "Mì Quảng mang đến hương vị đậm đà, thơm lừng của nước dùng và bánh mì. Món ăn được thưởng thức bằng cách trộn đều mì với nước dùng, rau sống và các loại topping, tạo nên sự hòa quyện hoàn hảo giữa vị ngọt, chua, cay và đậm đà. Các thực khách thường ăn kèm với bánh tráng và rau rừng tươi ngon.",
+    "key_ingredients": [
+      "mì gạo",
+      "nước dùng",
+      "thịt (gà, tôm, heo)",
+      "rau sống",
+      "hành phi",
+      "đậu phộng giã nhuyễn"
+    ],
+    "main_steps": [
+      "luộc mì gạo đến khi mềm",
+      "nấu nước dùng từ thịt và gia vị",
+      "trộn mì với nước dùng, rau và thịt",
+      "rắc thêm hành phi và đậu phộng để tăng hương vị"
+    ],
+    "variant_examples": [
+      "Mì Quảng gà",
+      "Mì Quảng tôm",
+      "Mì Quảng thịt bò",
+      "Mì Quảng cá lóc",
+      "Mì Quảng chay"
+    ]
+  },
+  "mi-xao-gion": {
+    "display_name": "Mì xào giòn",
+    "tasting": "Mì xào giòn mang đến hương vị thơm ngon và giòn tan, tạo cảm giác thú vị khi thưởng thức. Món ăn thường được ăn kèm với rau sống tươi ngon và chả giò, giúp tăng thêm độ hấp dẫn và phong phú cho bữa ăn.",
+    "key_ingredients": [
+      "mì (có thể là mì trứng hoặc mì gạo)",
+      "thịt (gà, bò, hoặc hải sản)",
+      "rau củ (cà rốt, đậu xanh, cải thìa)",
+      "gia vị (nước tương, tiêu, tỏi)",
+      "dầu ăn",
+      "trứng"
+    ],
+    "main_steps": [
+      "luộc mì cho chín mềm, sau đó xả với nước lạnh",
+      "sauté các nguyên liệu thịt và rau củ với gia vị",
+      "trộn mì với các nguyên liệu đã xào chín",
+      "chiên mì trong chảo dầu nóng cho đến khi giòn"
+    ],
+    "variant_examples": [
+      "Mì xào giòn hải sản",
+      "Mì xào giòn gà",
+      "Mì xào giòn bò",
+      "Mì xào giòn chay",
+      "Mì xào giòn thập cẩm"
+    ]
+  },
+  "muc-nhoi-thit": {
+    "display_name": "Mực nhồi thịt",
+    "tasting": "Mực nhồi thịt mang đến hương vị đậm đà, hòa quyện giữa độ giòn của mực và vị dai của thịt. Món ăn thường được thưởng thức với nước chấm chua ngọt hoặc tương ớt, tạo nên sự cân bằng hoàn hảo giữa vị mặn và ngọt.",
+    "key_ingredients": [
+      "mực tươi",
+      "thịt xay (thịt heo, bò, gà)",
+      "hành tím",
+      "gia vị (muối, tiêu, đường)",
+      "rau thơm (ngò, thì là)"
+    ],
+    "main_steps": [
+      "Sơ chế mực và chuẩn bị phần nhân thịt.",
+      "Nhồi nhân vào trong thân mực.",
+      "Chế biến mực (nướng, hấp hoặc chiên).",
+      "Trình bày và thưởng thức món ăn."
+    ],
+    "variant_examples": [
+      "Mực nhồi thịt heo",
+      "Mực nhồi thịt bò",
+      "Mực nhồi kiểu Thái",
+      "Mực nhồi tôm thịt",
+      "Mực nhồi đông lạnh",
+      "Mực nhồi nướng trui"
+    ]
+  },
+  "nem-chua": {
+    "display_name": "Nem chua",
+    "tasting": "Nem chua có vị chua nhẹ, thơm nồng đặc trưng kết hợp với độ dai của thịt heo. Món ăn này thường được thưởng thức bằng cách cuốn với rau sống và chấm với tương ớt để tăng thêm độ ngon.",
+    "key_ingredients": [
+      "thịt heo xay",
+      "da heo",
+      "bì heo",
+      "gạo nếp",
+      "tỏi",
+      "ớt"
+    ],
+    "main_steps": [
+      "Chuẩn bị và tẩm ướp nguyên liệu chính",
+      "Ép hỗn hợp nguyên liệu vào khuôn để tạo hình",
+      "Ủ nem trong thời gian nhất định để lên men",
+      "Thưởng thức nem sau khi đã lên men"
+    ],
+    "variant_examples": [
+      "Nem chua Thanh Hóa",
+      "Nem chua rán",
+      "Nem chua Huế",
+      "Nem chua Thái Nguyên",
+      "Nem chua quấn tôm"
+    ]
+  },
+  "nui-xao": {
+    "display_name": "Nui xào",
+    "tasting": "Nui xào mang đến hương vị đậm đà và đặc biệt từ sự hòa quyện của nước sốt và các nguyên liệu đi kèm. Món ăn thường được thưởng thức khi còn nóng, có thể ăn kèm với rau sống hoặc dưa leo để cân bằng vị giác.",
+    "key_ingredients": [
+      "nui",
+      "thịt (gà, bò, heo)",
+      "rau củ (cà rốt, bắp, đậu que)",
+      "nước sốt (xì dầu, tương ớt)",
+      "hành lá"
+    ],
+    "main_steps": [
+      "Luộc nui đến khi chín mềm",
+      "Xào thịt và rau củ với nước sốt",
+      "Trộn nui vào chảo xào cho thấm gia vị",
+      "Trang trí với hành lá và thưởng thức."
+    ],
+    "variant_examples": [
+      "Nui xào thịt bò",
+      "Nui xào hải sản",
+      "Nui xào gà",
+      "Nui xào chay",
+      "Nui xào trứng",
+      "Nui xào mực"
+    ]
+  },
+  "oc-buou-hap": {
+    "display_name": "Ốc bươu hấp",
+    "tasting": "Ốc bươu hấp mang đến hương vị ngọt tự nhiên, hòa quyện với sự dậy mùi của các gia vị. Món ăn thường được thưởng thức khi còn nóng, có thể chấm với nước mắm chua ngọt hoặc muối tiêu chanh để tăng thêm phần hấp dẫn.",
+    "key_ingredients": [
+      "ốc bươu",
+      "gừng",
+      "sả",
+      "ớt",
+      "lá chanh",
+      "nước mắm"
+    ],
+    "main_steps": [
+      "Sơ chế ốc bươu, rửa sạch",
+      "Chuẩn bị các gia vị như gừng, sả, ớt",
+      "Xếp ốc vào nồi cùng gia vị, hấp cho đến khi chín",
+      "Thưởng thức ốc bươu hấp với nước chấm"
+    ],
+    "variant_examples": [
+      "Ốc bươu hấp sả",
+      "Ốc bươu hấp xả tắc",
+      "Ốc bươu hấp bia",
+      "Ốc bươu hấp gừng",
+      "Ốc bươu hấp chua cay"
+    ]
+  },
+  "oc-huong-xao": {
+    "display_name": "Ốc hương xào",
+    "tasting": "Ốc hương xào có hương vị đậm đà, quyến rũ với vị ngọt tự nhiên của ốc kết hợp cùng các gia vị gia tăng hương vị như tỏi, ớt và nước mắm. Món ăn thường được thưởng thức cùng với rau sống và bánh tráng, tạo nên sự hòa quyện thú vị giữa vị ngọt thanh và cay nồng.",
+    "key_ingredients": [
+      "ốc hương",
+      "tỏi",
+      "ớt",
+      "nước mắm",
+      "gia vị",
+      "rau sống"
+    ],
+    "main_steps": [
+      "sơ chế ốc hương",
+      "xào tỏi với gia vị",
+      "thêm ốc vào đảo đều",
+      "trình bày và thưởng thức"
+    ],
+    "variant_examples": [
+      "ốc hương xào tỏi ớt",
+      "ốc hương xào me",
+      "ốc hương xào sa tế",
+      "ốc hương xào dừa",
+      "ốc hương xào bơ tỏi",
+      "ốc hương xào sả ớt"
+    ]
+  },
+  "rau-muong-xao": {
+    "display_name": "Rau muống xào",
+    "tasting": "Rau muống xào mang lại vị giòn ngon, thanh mát với hương thơm đặc trưng. Món ăn thường được thưởng thức cùng cơm nóng, có thể ăn kèm với các loại nước chấm để tăng thêm hương vị.",
+    "key_ingredients": [
+      "rau muống",
+      "tỏi",
+      "dầu ăn",
+      "nước mắm",
+      "ớt",
+      "đường"
+    ],
+    "main_steps": [
+      "Rửa sạch rau muống và để ráo.",
+      "Phi thơm tỏi trong dầu ăn.",
+      "Thêm rau muống vào xào chín tới và nêm nếm gia vị.",
+      "Trình bày và thưởng thức."
+    ],
+    "variant_examples": [
+      "rau muống xào tỏi",
+      "rau muống xào thịt bò",
+      "rau muống xào sả",
+      "rau muống xào trứng",
+      "rau muống xào mắm tôm"
+    ]
+  },
+  "sup-cua": {
+    "display_name": "Súp cua",
+    "tasting": "Súp cua mang đến sự hòa quyện giữa vị ngọt tự nhiên của cua và độ béo của nước dùng, tạo nên một cảm giác ấm áp và dễ chịu khi thưởng thức. Món ăn thường được dùng với bún hoặc bánh mì, điểm thêm một chút chanh và rau sống để tăng phần hấp dẫn.",
+    "key_ingredients": [
+      "cua",
+      "nước dùng",
+      "trứng",
+      "bột năng",
+      "rau thơm",
+      "gia vị"
+    ],
+    "main_steps": [
+      "Nấu nước dùng từ xương để tạo độ ngọt tự nhiên.",
+      "Chế biến cua thành thịt cua xé nhỏ.",
+      "Kết hợp thịt cua với nước dùng và gia vị, tạo nên hỗn hợp súp.",
+      "Thêm trứng và bột năng để tạo độ sánh cho súp."
+    ],
+    "variant_examples": [
+      "Súp cua Hải Phòng",
+      "Súp cua miền Nam",
+      "Súp cua nấm",
+      "Súp cua hải sản",
+      "Súp cua thịt gà"
+    ]
+  },
+  "tau-hu-nhoi-thit": {
+    "display_name": "Tàu hũ nhồi thịt",
+    "tasting": "Tàu hũ nhồi thịt mang đến sự hòa quyện giữa vị thanh mát của tàu hũ và vị đậm đà của thịt xay. Món ăn thường được thưởng thức kèm với nước chấm chua ngọt và rau sống, tạo nên trải nghiệm ẩm thực đa dạng và hấp dẫn.",
+    "key_ingredients": [
+      "tàu hũ",
+      "thịt heo xay",
+      "nấm",
+      "hành tím",
+      "gia vị",
+      "trứng"
+    ],
+    "main_steps": [
+      "Chuẩn bị tàu hũ và cắt khối để nhồi nhân.",
+      "Trộn thịt xay với các nguyên liệu như nấm, hành để tạo nhân.",
+      "Nhồi nhân vào tàu hũ và chiên hoặc hấp cho chín.",
+      "Phục vụ cùng nước chấm và rau sống."
+    ],
+    "variant_examples": [
+      "Tàu hũ nhồi thịt heo",
+      "Tàu hũ nhồi tôm",
+      "Tàu hũ nhồi gà",
+      "Tàu hũ nhồi chay",
+      "Tàu hũ nhồi hải sản"
+    ]
+  },
+  "tau-hu-non": {
+    "display_name": "Tàu hũ non",
+    "tasting": "Tàu hũ non mang đến vị mềm mịn, thanh mát và có độ ngọt nhẹ tự nhiên. Bạn có thể thưởng thức món này kèm với nước đường, đậu phộng rang, hoặc dừa nạo để tăng thêm hương vị đặc sắc.",
+    "key_ingredients": [
+      "đậu nành",
+      "nước",
+      "nước đường",
+      "bột agar",
+      "đường"
+    ],
+    "main_steps": [
+      "ngâm đậu nành và xay nhuyễn",
+      "lọc lấy nước đậu",
+      "cho nước đậu vào nấu sôi và thêm bột agar",
+      "đổ vào khuôn để đông lại"
+    ],
+    "variant_examples": [
+      "Tàu hũ non nước đường",
+      "Tàu hũ non đậu phộng",
+      "Tàu hũ non dừa",
+      "Tàu hũ non trà xanh",
+      "Tàu hũ non trái cây"
+    ]
+  },
+  "thit-kho-tau": {
+    "display_name": "Thịt kho tàu",
+    "tasting": "Thịt kho tàu là món ăn mang hương vị đậm đà, thường có vị ngọt thanh và một chút mặn mà từ nước mắm. Món này thường được thưởng thức cùng cơm trắng, giúp cân bằng hương vị và làm nổi bật sự ngon miệng của thịt và nước kho.",
+    "key_ingredients": [
+      "thịt heo",
+      "nước dừa",
+      "nước mắm",
+      "đường",
+      "trứng",
+      "hành tím"
+    ],
+    "main_steps": [
+      "Chuẩn bị nguyên liệu và ướp thịt heo.",
+      "Đun nóng dầu, cho hành tím vào phi cho thơm.",
+      "Cho thịt vào nồi, xào đến khi săn lại, sau đó thêm nước dừa và gia vị.",
+      "Kho thịt cho đến khi mềm, thấm gia vị và nước kho sánh lại."
+    ],
+    "variant_examples": [
+      "Thịt kho trứng",
+      "Thịt kho tàu miền Trung",
+      "Thịt kho tàu miền Nam",
+      "Thịt kho tàu với củ cải",
+      "Thịt kho tàu với hành tây"
+    ]
+  },
+  "tiet-canh": {
+    "display_name": "Tiết canh",
+    "tasting": "Tiết canh có vị ngọt mát, hòa quyện với cảm giác hơi tanh nhẹ, mang đến trải nghiệm độc đáo khi thưởng thức. Người ta thường ăn kèm với tỏi, ớt và rau sống để tăng thêm vị cay nồng và sự tươi mát cho món ăn.",
+    "key_ingredients": [
+      "máu động vật",
+      "mỡ động vật",
+      "nước cốt gia vị",
+      "rau sống",
+      "tỏi",
+      "ớt"
+    ],
+    "main_steps": [
+      "Thu thập và chuẩn bị nguyên liệu sạch",
+      "Khuấy trộn máu động vật với các gia vị đến khi đạt độ sánh",
+      "Đổ hỗn hợp vào khuôn và để đông lại",
+      "Trang trí với các loại rau sống, tỏi và ớt trước khi thưởng thức"
+    ],
+    "variant_examples": [
+      "Tiết canh vịt",
+      "Tiết canh heo",
+      "Tiết canh ngan",
+      "Tiết canh bò",
+      "Tiết canh ngỗng"
+    ]
+  },
+  "trung-vit-lon": {
+    "display_name": "Trứng vịt lộn",
+    "tasting": "Trứng vịt lộn mang đến vị béo ngậy của lòng đỏ hòa quyện với độ mềm mại của lòng trắng, tạo cảm giác thơm ngon, đặc biệt là khi ăn kèm với muối tiêu chanh. Món ăn thường được thưởng thức nóng, có thể dùng cùng rau răm để cân bằng hương vị.",
+    "key_ingredients": [
+      "trứng vịt",
+      "muối",
+      "tiêu",
+      "chanh",
+      "rau răm",
+      "gừng"
+    ],
+    "main_steps": [
+      "Ngâm trứng trong nước nóng để làm chín phần lòng đỏ và lòng trắng.",
+      "Đập trứng để lấy phần lòng bên trong ra chén.",
+      "Nêm nếm với muối, tiêu và chanh.",
+      "Thưởng thức trứng cùng với rau răm và các loại gia vị đi kèm."
+    ],
+    "variant_examples": [
+      "Trứng vịt lộn xào",
+      "Trứng vịt lộn sốt me",
+      "Trứng vịt lộn chưng sả",
+      "Trứng vịt lộn hấp",
+      "Trứng vịt lộn muối tiêu",
+      "Trứng vịt lộn ăn kèm với bún"
+    ]
   }
 }
