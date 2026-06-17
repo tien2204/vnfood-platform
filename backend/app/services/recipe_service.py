@@ -161,7 +161,7 @@ async def list_recipes(
     if search:
         stmt = stmt.where(
             text(
-                "to_tsvector('simple', recipes.title || ' ' || COALESCE(recipes.description, '')) "
+                "to_tsvector('simple', recipes.title || ' ' || COALESCE(recipes.description, '') || ' ' || COALESCE(recipes.flavor_text, '')) "
                 "@@ plainto_tsquery('simple', :q)"
             ).bindparams(q=search)
         )
@@ -450,12 +450,12 @@ async def search_recipes(
     if q:
         stmt = stmt.where(
             text(
-                "to_tsvector('simple', recipes.title || ' ' || COALESCE(recipes.description, '')) "
+                "to_tsvector('simple', recipes.title || ' ' || COALESCE(recipes.description, '') || ' ' || COALESCE(recipes.flavor_text, '')) "
                 "@@ plainto_tsquery('simple', :q)"
             ).bindparams(q=q)
         ).order_by(
             text(
-                "ts_rank(to_tsvector('simple', recipes.title || ' ' || COALESCE(recipes.description, '')), "
+                "ts_rank(to_tsvector('simple', recipes.title || ' ' || COALESCE(recipes.description, '') || ' ' || COALESCE(recipes.flavor_text, '')), "
                 "plainto_tsquery('simple', :q2)) DESC"
             ).bindparams(q2=q),
             Recipe.avg_rating.desc(),

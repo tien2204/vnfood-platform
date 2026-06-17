@@ -122,6 +122,9 @@ async def approve_change_request(db: AsyncSession, cr_id: uuid.UUID, admin) -> R
         target = await _get_recipe_or_404(db, cr.target_recipe_id)
         target.title = data.title
         target.description = data.description
+        # A reviewed edit is authoritative — drop any seeded flavor_text so the
+        # new description is what the detail page shows (it serves flavor_text ?? description).
+        target.flavor_text = None
         target.image_url = data.image_url
         target.cooking_time = data.cooking_time
         target.servings = data.servings
