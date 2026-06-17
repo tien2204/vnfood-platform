@@ -1,0 +1,48 @@
+{
+  "banh-mi": {
+    "display_name": "Bánh mì",
+    "tasting": "Bánh mì Việt là ổ bánh vỏ giòn rụm, ruột mềm xốp, kẹp nhân mặn-béo cùng đồ chua, rau thơm và chút cay. Ăn nóng ngay khi vừa kẹp là ngon nhất — cắn một miếng cảm nhận được vỏ giòn, nhân đậm đà và vị chua thanh giải ngấy.",
+    "key_ingredients": [
+      "Bánh mì vỏ giòn",
+      "Pate hoặc bơ",
+      "Đồ chua (cà rốt, củ cải)",
+      "Rau mùi, dưa leo, ớt",
+      "Nhân tùy biến thể (thịt nướng/chả/trứng/xíu mại)"
+    ],
+    "main_steps": [
+      "Chuẩn bị nhân theo biến thể (nướng thịt, làm chả, chiên trứng...)",
+      "Phết pate/bơ và sốt vào ruột bánh",
+      "Kẹp nhân cùng đồ chua, rau thơm, ớt; ăn ngay khi còn nóng giòn"
+    ],
+    "variant_examples": [
+      "Bánh mì thịt nướng",
+      "Bánh mì pate",
+      "Bánh mì xíu mại",
+      "Bánh mì chả cá",
+      "Bánh mì trứng"
+    ]
+  },
+  "pho": {
+    "display_name": "Phở",
+    "tasting": "Phở quyến rũ ở nước dùng trong, ngọt xương ninh lâu, dậy mùi quế hồi thảo quả. Sợi phở mềm mượt, ăn kèm thịt thái mỏng, hành mùi và chút tương ớt, vắt chanh. Húp thìa nước dùng nóng hổi đầu tiên là cảm nhận trọn vị thanh mà đậm.",
+    "key_ingredients": [
+      "Bánh phở",
+      "Xương bò/gà ninh nước dùng",
+      "Thịt (bò tái/chín hoặc gà)",
+      "Gia vị: quế, hồi, thảo quả, gừng, hành",
+      "Rau ăn kèm: hành, mùi, giá, chanh, ớt"
+    ],
+    "main_steps": [
+      "Ninh xương với gừng, hành và gia vị nướng thơm để lấy nước dùng trong",
+      "Chần bánh phở, xếp thịt thái mỏng lên trên",
+      "Chan nước dùng sôi, thêm hành mùi; ăn kèm rau sống, chanh, ớt"
+    ],
+    "variant_examples": [
+      "Phở bò",
+      "Phở gà",
+      "Phở tái lăn",
+      "Phở xào",
+      "Phở cuốn"
+    ]
+  }
+}
