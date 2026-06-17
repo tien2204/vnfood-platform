@@ -53,6 +53,16 @@ or_(and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
 ```
 → pool ~521 + user. `show_all=True` (admin) giữ nguyên = xem tất cả.
 
+**Align recognize suggestions:** `_in_recipes_page_pool()` ([ai_service.py:289](backend/app/services/ai_service.py#L289)) dùng cho phần *top-up* gợi ý (title-match + keyword fallback) cũng đổi giống hệt:
+```
+# cũ
+or_(Recipe.is_canonical.is_(True), Recipe.source == "user")
+# mới
+or_(and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
+    Recipe.source == "user")
+```
+→ gợi ý chỉ trỏ tới recipe trong pool 521 (hoặc UGC). Seed chính (`canonical_recipe` + `variants` từ `_find_canonical_for_class`, khớp `canonical_dish_slug` đúng 1 trong 103) **không đổi** và vẫn nằm trong pool vì backfill rule 1 gán `ai_class_slug` cho chúng.
+
 ### 5. Param `group` cho list (backend)
 - `list_recipes` thêm tham số `group: Optional[str]`. Nếu set & ∈ `VALID_GROUPS` → thêm `WHERE Recipe.ai_class_slug = ANY(slugs_for_group(group))`. Group không hợp lệ → bỏ qua (không lọc).
 - API `GET /recipes` ([recipes.py:112](backend/app/api/v1/recipes.py#L112)) thêm query param `group`, truyền xuống.
@@ -65,7 +75,7 @@ or_(and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
 - Số đếm "2.806 công thức" tự đổi theo `pagination.total` (~521) — không cần sửa.
 
 ## Out of scope (YAGNI)
-- Không đụng recognize lookup/suggestions (`_find_canonical_for_class`, `_in_recipes_page_pool`) — vốn đã neo theo 103 qua `canonical_dish_slug`. (Cân nhắc align sau nếu suggestion trỏ tới recipe ngoài pool — không thuộc P2.)
+- Không đụng `_find_canonical_for_class` (seed gợi ý) — vốn đã neo 103 qua `canonical_dish_slug` exact. (`_in_recipes_page_pool` thì CÓ align — xem mục 4.)
 - Không đụng `/recipes/by-keyword`, không xóa cột `keyword`.
 - Không đổi recipe detail.
 - P3 (mô tả vị giác) sẽ chạy trên đúng pool 521 này — làm sau, spec riêng.
