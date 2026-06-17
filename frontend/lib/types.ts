@@ -13,10 +13,7 @@ export interface Author {
   avatar_url: string | null;
 }
 
-export interface AuthorDetail extends Author {
-  follower_count: number;
-  is_following: boolean;
-}
+export type AuthorDetail = Author;
 
 export interface Ingredient {
   id: string;
@@ -224,8 +221,6 @@ export interface SaveResponse {
 
 export interface UserStats {
   recipe_count: number;
-  follower_count: number;
-  following_count: number;
   total_likes_received: number;
 }
 
@@ -243,36 +238,8 @@ export interface UserProfile {
   bio: string | null;
   created_at: string;
   stats: UserStats;
-  is_following: boolean | null;
   is_self: boolean;
   recent_recipes: RecipeCard[];
-}
-
-export interface FollowerOut {
-  id: string;
-  full_name: string | null;
-  avatar_url: string | null;
-  bio: string | null;
-  is_following: boolean | null;
-}
-
-export interface FollowResponse {
-  is_following: boolean;
-  follower_count: number;
-}
-
-export interface FeedItem {
-  type: "recipe";
-  recipe: RecipeCard;
-  author: UserMini;
-  posted_at: string;
-}
-
-export interface FeedResponse {
-  success: boolean;
-  data: FeedItem[];
-  pagination: Pagination;
-  is_discover_mode: boolean;
 }
 
 // ── AI Recognition types ───────────────────────────────────────────────────────
@@ -300,6 +267,14 @@ export interface ClassMetrics {
   support: number;
 }
 
+export interface DishOverview {
+  display_name: string;
+  tasting: string;
+  key_ingredients: string[];
+  main_steps: string[];
+  variant_examples: string[];
+}
+
 export interface AIRecognitionResult {
   predicted_class: string;
   display_name: string;
@@ -314,6 +289,8 @@ export interface AIRecognitionResult {
   variants: SuggestedRecipe[];
   dish_recipe: DishRecipe | null;
   class_metrics: ClassMetrics | null;
+  is_multi_variant?: boolean;
+  dish_overview?: DishOverview | null;
 }
 
 export interface SavedRecipeOut {
@@ -330,44 +307,6 @@ export interface SavedRecipeOut {
   save_count: number;
   is_saved: boolean;
   saved_at: string;
-}
-
-// ── Ingredient Suggest types ───────────────────────────────────────────────────
-
-export interface IngredientItem {
-  name: string;
-  usage_count: number;
-}
-
-export interface RecipeMatchResult {
-  recipe: {
-    id: string;
-    title: string;
-    image_url: string | null;
-    avg_rating: number;
-    rating_count: number;
-    cooking_time: number | null;
-    source: "cookpad" | "user";
-  };
-  match_score: number;
-  matched_ingredients: string[];
-  missing_ingredients: string[];
-}
-
-export interface AISuggestion {
-  name: string;
-  description: string;
-  key_ingredients: string[];
-  additional_needed: string[];
-}
-
-export interface IngredientSuggestResult {
-  match_mode: "any" | "all" | "most";
-  selected_ingredients: string[];
-  db_results: RecipeMatchResult[];
-  total_db_results: number;
-  ai_suggestions: AISuggestion[];
-  ai_used: boolean;
 }
 
 // ── Meal Plan types ────────────────────────────────────────────────────────────
