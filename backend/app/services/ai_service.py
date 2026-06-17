@@ -18,7 +18,13 @@ from app.ai.class_names import CLASS_DISPLAY_NAMES, get_keyword_from_class
 from app.core.config import settings
 from app.models.ai_log import AILog
 from app.models.recipe import Recipe
-from app.services import dish_recipe_service, dish_resolver, metrics_service
+from app.core.variant_config import is_multi_variant
+from app.services import (
+    dish_overview_service,
+    dish_recipe_service,
+    dish_resolver,
+    metrics_service,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -129,6 +135,9 @@ async def recognize_image(
     if model_used == "vnfood" and resolved_slug:
         class_metrics = metrics_service.get_class_metrics(resolved_slug)
 
+    multi_variant = is_multi_variant(resolved_slug)
+    dish_overview = dish_overview_service.get_overview(resolved_slug) if multi_variant else None
+
     return {
         "predicted_class": predicted_class,
         "display_name": display_name,
@@ -145,6 +154,8 @@ async def recognize_image(
         "variants": variants,
         "dish_recipe": dish_recipe,
         "class_metrics": class_metrics,
+        "is_multi_variant": multi_variant,
+        "dish_overview": dish_overview,
     }
 
 
