@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { ScanLine, RefreshCw, Loader2 } from "lucide-react";
+import { ScanLine, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/lib/api";
 import { AIRecognitionResult } from "@/lib/types";
@@ -108,19 +108,11 @@ export default function RecognizePage() {
         {/* Result */}
         {state === "done" && result && preview && (
           <>
-            <RecognitionResult result={result} imagePreview={preview} />
+            <RecognitionResult result={result} imagePreview={preview} onReset={handleReset} />
 
             <div className="w-full border-t border-border" />
 
             <RecipeCarousel recipes={result.suggested_recipes} />
-
-            <button
-              onClick={handleReset}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors text-sm font-medium"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Thử ảnh khác
-            </button>
           </>
         )}
       </section>

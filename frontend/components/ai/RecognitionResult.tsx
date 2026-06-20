@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, RefreshCw } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { AIRecognitionResult } from "@/lib/types";
@@ -21,6 +21,7 @@ function resolveImageUrl(src: string | null): string | null {
 interface Props {
   result: AIRecognitionResult;
   imagePreview: string;
+  onReset?: () => void;
 }
 
 function ConfidenceBar({ value }: { value: number }) {
@@ -61,7 +62,7 @@ function ModelBadge({ model }: { model: "vnfood" | "openai" }) {
   );
 }
 
-export default function RecognitionResult({ result, imagePreview }: Props) {
+export default function RecognitionResult({ result, imagePreview, onReset }: Props) {
   const isUnknown = result.match_tier === "unknown";
   const isTentative = result.match_tier === "tentative";
 
@@ -155,6 +156,18 @@ export default function RecognitionResult({ result, imagePreview }: Props) {
           )}
         </div>
       </div>
+
+      {onReset && (
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={onReset}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors text-sm font-medium"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Thử ảnh khác
+          </button>
+        </div>
+      )}
 
       {!isUnknown && result.is_multi_variant && result.dish_overview && (
         <DishOverviewCard overview={result.dish_overview} />
