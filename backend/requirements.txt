@@ -25,6 +25,10 @@ openai>=1.52.0
 edge-tts>=6.1.9
 
 # AI / ML
+# torch 2.2/2.3 CPU wheels are built against NumPy 1.x — pin <2 to avoid the
+# "module compiled with NumPy 1.x cannot run in NumPy 2.x" crash at startup.
+# (opencv-python declares numpy>=2 but is unused and still imports under 1.26.)
+numpy<2
 torch==2.3.0
 torchvision==0.18.0
 Pillow==10.3.0
