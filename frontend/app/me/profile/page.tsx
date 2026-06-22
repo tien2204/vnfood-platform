@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Save, User, Mail, KeyRound, Copy, Check } from "lucide-react";
+import { Save, User, Mail, KeyRound, Copy, Check, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +17,38 @@ import type { ApiResponse, UserProfile } from "@/lib/types";
 function errMsg(err: unknown, fallback: string): string {
   return (
     (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? fallback
+  );
+}
+
+function PasswordInput({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <Input
+        type={show ? "text" : "password"}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="border-border focus-visible:ring-primary pr-10"
+      />
+      <button
+        type="button"
+        tabIndex={-1}
+        onClick={() => setShow((s) => !s)}
+        aria-label={show ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+      >
+        {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+      </button>
+    </div>
   );
 }
 
@@ -326,12 +358,10 @@ export default function EditProfilePage() {
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-foreground">Mật khẩu hiện tại</label>
-          <Input
-            type="password"
+          <PasswordInput
             value={emailPassword}
-            onChange={(e) => setEmailPassword(e.target.value)}
+            onChange={setEmailPassword}
             placeholder="Nhập để xác nhận"
-            className="border-border focus-visible:ring-primary"
           />
         </div>
         <Button
@@ -357,31 +387,19 @@ export default function EditProfilePage() {
         </h2>
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-foreground">Mật khẩu hiện tại</label>
-          <Input
-            type="password"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-            className="border-border focus-visible:ring-primary"
-          />
+          <PasswordInput value={oldPassword} onChange={setOldPassword} />
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-foreground">Mật khẩu mới</label>
-          <Input
-            type="password"
+          <PasswordInput
             value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            onChange={setNewPassword}
             placeholder="Ít nhất 8 ký tự"
-            className="border-border focus-visible:ring-primary"
           />
         </div>
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-foreground">Nhập lại mật khẩu mới</label>
-          <Input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="border-border focus-visible:ring-primary"
-          />
+          <PasswordInput value={confirmPassword} onChange={setConfirmPassword} />
         </div>
         <Button
           type="submit"
