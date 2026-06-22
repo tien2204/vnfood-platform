@@ -51,6 +51,28 @@ def _base_approved_query():
     )
 
 
+# Single source of truth for what counts as a "catalog" dish. The public /recipes
+# pool is intentionally narrowed to recipes scraped from monngonmoingay.com (plus
+# user-submitted posts). Recipes from other sources (cookpad, llm-canonical,
+# curated) remain reachable by direct URL but are hidden from browse/search/AI.
+CATALOG_SOURCE = "monngonmoingay"
+
+
+def catalog_canonical_clause():
+    """A canonical dish in the public catalog: tagged to an AI class AND scraped
+    from monngonmoingay.com."""
+    return and_(
+        Recipe.is_canonical.is_(True),
+        Recipe.ai_class_slug.isnot(None),
+        Recipe.source == CATALOG_SOURCE,
+    )
+
+
+def catalog_visible_clause():
+    """The /recipes pool: catalog canonical dishes + user-submitted recipes."""
+    return or_(catalog_canonical_clause(), Recipe.source == "user")
+
+
 def _build_recipe_card(recipe: Recipe, author: Optional[User], saved_ids: set, user: Optional[User]) -> RecipeCardOut:
     author_out = None
     if author:
@@ -125,10 +147,7 @@ async def list_recipes(
 
     if not show_all:
         stmt = stmt.where(
-            or_(
-                and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
-                Recipe.source == "user",
-            ),
+            catalog_visible_clause(),
             Recipe.is_dessert.is_(False),
         )
 
@@ -223,7 +242,7 @@ async def get_related_recipes(
 
     def _base():
         return _base_approved_query().where(
-            Recipe.is_canonical.is_(True),
+            catalog_canonical_clause(),
             Recipe.is_dessert.is_(False),
             Recipe.id != recipe.id,
         )
@@ -440,10 +459,7 @@ async def search_recipes(
 
     if not show_all:
         stmt = stmt.where(
-            or_(
-                and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
-                Recipe.source == "user",
-            ),
+            catalog_visible_clause(),
             Recipe.is_dessert.is_(False),
         )
 
@@ -502,10 +518,7 @@ async def get_featured_recipes(
 
     if not show_all:
         base = base.where(
-            or_(
-                and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
-                Recipe.source == "user",
-            ),
+            catalog_visible_clause(),
             Recipe.is_dessert.is_(False),
         )
 

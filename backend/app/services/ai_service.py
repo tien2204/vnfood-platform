@@ -10,7 +10,7 @@ from typing import Optional
 import requests as _requests_lib
 from openai import AsyncOpenAI
 from PIL import Image
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -24,6 +24,7 @@ from app.services import (
     dish_recipe_service,
     dish_resolver,
     metrics_service,
+    recipe_service,
 )
 
 logger = logging.getLogger(__name__)
@@ -274,6 +275,7 @@ async def _find_canonical_for_class(
         select(Recipe).where(
             Recipe.is_canonical.is_(True),
             Recipe.status == "approved",
+            Recipe.source == recipe_service.CATALOG_SOURCE,
             Recipe.canonical_dish_slug == predicted_class,
         ).order_by(Recipe.llm_judge_score.desc().nullslast())
     )
@@ -298,12 +300,9 @@ def _title_unaccent_ilike(display_name: str):
 
 
 def _in_recipes_page_pool():
-    """Restrict to the same recipe pool the /recipes page shows: canonical recipes
-    tagged to one of the 103 AI dishes (ai_class_slug) or user-submitted recipes."""
-    return or_(
-        and_(Recipe.is_canonical.is_(True), Recipe.ai_class_slug.isnot(None)),
-        Recipe.source == "user",
-    )
+    """Restrict to the same recipe pool the /recipes page shows: monngonmoingay
+    canonical dishes (tagged to an AI class) or user-submitted recipes."""
+    return recipe_service.catalog_visible_clause()
 
 
 async def _find_suggested_recipes(

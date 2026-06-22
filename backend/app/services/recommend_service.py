@@ -65,7 +65,7 @@ async def suggest_recipes_for_user(
     prefs = await _preferred_slugs(db, user_id)
 
     base = recipe_service._base_approved_query().where(
-        Recipe.is_canonical.is_(True), Recipe.is_dessert.is_(False)
+        recipe_service.catalog_canonical_clause(), Recipe.is_dessert.is_(False)
     )
 
     picked: list = []
