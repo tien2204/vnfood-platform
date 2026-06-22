@@ -80,3 +80,22 @@ async def change_password(
 
     user.hashed_password = hash_password(new_password)
     db.add(user)
+
+
+async def change_email(
+    db: AsyncSession, user: User, new_email: str, password: str
+) -> None:
+    if not verify_password(password, user.hashed_password):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Mật khẩu không đúng")
+    if new_email == user.email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Email mới trùng email hiện tại"
+        )
+    result = await db.execute(select(User).where(User.email == new_email))
+    if result.scalar_one_or_none():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Email đã được sử dụng"
+        )
+    user.email = new_email
+    db.add(user)
+    await db.commit()

@@ -36,6 +36,11 @@ class ChangePasswordRequest(BaseModel):
         return v
 
 
+class ChangeEmailRequest(BaseModel):
+    new_email: EmailStr
+    password: str
+
+
 class UserOut(BaseModel):
     id: uuid.UUID
     email: str

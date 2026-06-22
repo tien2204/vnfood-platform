@@ -5,6 +5,7 @@ from app.core.database import get_db
 from app.core.deps import get_current_active_user
 from app.models.user import User
 from app.schemas.auth import (
+    ChangeEmailRequest,
     ChangePasswordRequest,
     LoginRequest,
     RefreshRequest,
@@ -77,3 +78,13 @@ async def change_password(
 ):
     await auth_service.change_password(db, current_user, body.old_password, body.new_password)
     return {"success": True, "message": "Đổi mật khẩu thành công"}
+
+
+@router.post("/change-email")
+async def change_email(
+    body: ChangeEmailRequest,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    await auth_service.change_email(db, current_user, body.new_email, body.password)
+    return {"success": True, "message": "Đổi email thành công"}
