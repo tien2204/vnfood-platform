@@ -185,14 +185,15 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto px-4 sm:px-6 py-8 pb-24 lg:pb-8 space-y-6">
-      <div>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 pb-24 lg:pb-8">
+      <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground">Cài đặt tài khoản</h1>
         <p className="text-sm text-muted-foreground mt-1">Quản lý hồ sơ và thông tin đăng nhập</p>
       </div>
 
-      {/* Card 1 — Public profile */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        {/* Left column — Public profile */}
+        <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-card rounded-2xl border border-border p-5">
           <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <User className="w-4 h-4" />
@@ -272,8 +273,10 @@ export default function EditProfilePage() {
         </div>
       </form>
 
-      {/* Card 2 — Account info (read-only) */}
-      <div className="bg-card rounded-2xl border border-border p-5 space-y-3">
+        {/* Right column — Account & security */}
+        <div className="space-y-6">
+        {/* Account info (read-only) */}
+        <div className="bg-card rounded-2xl border border-border p-5 space-y-3">
         <h2 className="font-semibold text-foreground flex items-center gap-2">
           <User className="w-4 h-4" />
           Tài khoản
@@ -391,6 +394,8 @@ export default function EditProfilePage() {
           Đổi mật khẩu
         </Button>
       </form>
+        </div>
+      </div>
     </div>
   );
 }
