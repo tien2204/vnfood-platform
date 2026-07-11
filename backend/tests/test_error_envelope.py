@@ -24,6 +24,10 @@ def _client() -> TestClient:
     def validate(body: Body):
         return {"ok": body.n}
 
+    @app.get("/boom")
+    def boom():
+        raise ValueError("kaboom")
+
     return TestClient(app, raise_server_exceptions=False)
 
 
@@ -47,3 +51,11 @@ def test_validation_error_envelope():
     body = r.json()
     assert body["success"] is False
     assert body["error"]["code"] == "VALIDATION_ERROR"
+
+
+def test_unhandled_exception_wrapped_in_envelope():
+    r = _client().get("/boom")
+    assert r.status_code == 500
+    body = r.json()
+    assert body["success"] is False
+    assert body["error"]["code"] == "INTERNAL_ERROR"
