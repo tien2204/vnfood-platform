@@ -12,6 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from app.core.exceptions import register_exception_handlers
 from app.api.v1.admin import router as admin_router
 from app.api.v1.meal_plans import router as meal_plans_router, grocery_router
 from app.api.v1.ai import router as ai_router
@@ -93,6 +94,8 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+register_exception_handlers(app)
 
 app.add_middleware(
     CORSMiddleware,
