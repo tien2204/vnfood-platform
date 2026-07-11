@@ -25,7 +25,7 @@ from pathlib import Path
 from PIL import Image
 from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 
-from app.ai.inference import VNFoodPredictor
+from app.ai.inference import TastyVietnamPredictor
 from app.core.config import settings
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -70,7 +70,7 @@ def main():
     import os
     weights_dir = os.path.abspath(settings.MODEL_WEIGHTS_DIR)
     logger.info(f"Loading model weights from {weights_dir}...")
-    predictor = VNFoodPredictor(weights_dir)
+    predictor = TastyVietnamPredictor(weights_dir)
     logger.info("Model loaded.")
 
     samples = collect_test_samples(test_dir, args.limit_per_class)

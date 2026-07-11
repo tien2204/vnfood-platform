@@ -25,7 +25,8 @@
       "Bash(rtk curl *)",
       "Bash(.venv/Scripts/python.exe -m scripts.enrich_cookpad_authors --limit 10)",
       "Bash(rtk find *)",
-      "Bash(read d *)"
+      "Bash(read d *)",
+      "Bash(.venv/Scripts/python.exe -c \"from app.core.dish_whitelist import DISH_30; from app.ai.class_names import CLASS_DISPLAY_NAMES; missing = [s for s in DISH_30 if s not in CLASS_DISPLAY_NAMES]; print\\('missing:', missing\\); print\\('count:', len\\(DISH_30\\)\\)\")"
     ]
   }
 }

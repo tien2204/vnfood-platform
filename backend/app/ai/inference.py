@@ -73,7 +73,7 @@ def _load_model_state(path: str, device) -> dict:
     return ckpt
 
 
-class VNFoodPredictor:
+class TastyVietnamPredictor:
     """
     Hierarchical predictor matching vnfood_hierarchical_training.py exactly.
 
@@ -89,7 +89,7 @@ class VNFoodPredictor:
     def __init__(self, weights_dir: str):
         self.weights_dir = weights_dir
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        logger.info("VNFoodPredictor initializing on %s", self.device)
+        logger.info("TastyVietnamPredictor initializing on %s", self.device)
 
         # ── Group model ──────────────────────────────────────────────────────
         group_path = os.path.join(weights_dir, GROUP_MODEL_FILE)
@@ -141,7 +141,7 @@ class VNFoodPredictor:
                 sub_ckpt.get('val_acc', sub_ckpt.get('best_val_acc', 0)) * 100,
             )
 
-        logger.info("VNFoodPredictor ready")
+        logger.info("TastyVietnamPredictor ready")
 
     # ── inference ────────────────────────────────────────────────────────────
 

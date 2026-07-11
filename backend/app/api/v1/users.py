@@ -8,8 +8,8 @@ from app.core.database import get_db
 from app.core.deps import get_current_active_user, get_optional_current_user
 from app.models.user import User
 from app.schemas.auth import UserOut
-from app.schemas.user import FollowResponse, FollowerOut, UserProfileOut, UserUpdate
-from app.services import recipe_service, social_service, user_service
+from app.schemas.user import UserProfileOut, UserUpdate
+from app.services import recipe_service, user_service
 
 router = APIRouter()
 
@@ -71,60 +71,6 @@ async def get_user_profile(
         current_user_id=current_user.id if current_user else None,
     )
     return {"success": True, "data": profile.model_dump()}
-
-
-# ── Follow / Unfollow ─────────────────────────────────────────────────────────
-
-@router.post("/{user_id}/follow")
-async def follow_user(
-    user_id: uuid.UUID,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
-):
-    result = await social_service.follow_user(db, follower_id=current_user.id, following_id=user_id)
-    return {"success": True, "data": result.model_dump()}
-
-
-@router.delete("/{user_id}/follow")
-async def unfollow_user(
-    user_id: uuid.UUID,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
-):
-    result = await social_service.unfollow_user(db, follower_id=current_user.id, following_id=user_id)
-    return {"success": True, "data": result.model_dump()}
-
-
-# ── Followers / Following lists ───────────────────────────────────────────────
-
-@router.get("/{user_id}/followers")
-async def get_followers(
-    user_id: uuid.UUID,
-    page: int = Query(default=1, ge=1),
-    limit: int = Query(default=20, ge=1, le=50),
-    db: AsyncSession = Depends(get_db),
-    current_user: Optional[User] = Depends(get_optional_current_user),
-):
-    rows, pagination = await social_service.list_followers(
-        db, user_id=user_id, page=page, limit=limit,
-        current_user_id=current_user.id if current_user else None,
-    )
-    return {"success": True, "data": [r.model_dump() for r in rows], "pagination": pagination.model_dump()}
-
-
-@router.get("/{user_id}/following")
-async def get_following(
-    user_id: uuid.UUID,
-    page: int = Query(default=1, ge=1),
-    limit: int = Query(default=20, ge=1, le=50),
-    db: AsyncSession = Depends(get_db),
-    current_user: Optional[User] = Depends(get_optional_current_user),
-):
-    rows, pagination = await social_service.list_following(
-        db, user_id=user_id, page=page, limit=limit,
-        current_user_id=current_user.id if current_user else None,
-    )
-    return {"success": True, "data": [r.model_dump() for r in rows], "pagination": pagination.model_dump()}
 
 
 # ── My Meal Plans ────────────────────────────────────────────────────────────

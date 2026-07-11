@@ -1,0 +1,46 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+
+\section{Đặt vấn đề}
+\label{section:1.1}
+Ẩm thực là một phần quan trọng trong đời sống hằng ngày và là một nét đặc trưng của văn hóa Việt Nam, với kho tàng món ăn phong phú trải dài theo từng vùng miền. Cùng với xu hướng nấu ăn tại nhà ngày càng phổ biến, nhu cầu tìm kiếm, học hỏi và chia sẻ công thức nấu ăn của người dùng, đặc biệt là những người trẻ và những người ít kinh nghiệm bếp núc, cũng tăng lên đáng kể.
+
+Tuy nhiên, việc tiếp cận công thức nấu ăn hiện nay vẫn còn nhiều bất tiện. Người dùng thường phải tra cứu rải rác trên nhiều nguồn khác nhau như công cụ tìm kiếm, các trang blog hay mạng xã hội, trong khi thông tin trả về thiếu nhất quán và hiếm khi được chuẩn hóa. Một công thức có thể không nêu rõ định lượng nguyên liệu, các bước thực hiện, thời gian nấu hay độ khó, khiến người dùng khó hình dung và khó thực hiện theo. Bên cạnh đó, do dữ liệu không được tổ chức thống nhất, người dùng cũng khó lọc món ăn theo những tiêu chí thiết thực như vùng miền, loại món hay khẩu phần, đồng thời khó lưu trữ và quản lý lại những công thức mình yêu thích để sử dụng về sau.
+
+Một hạn chế đáng chú ý khác nằm ở khâu xác định món ăn. Trong thực tế, người dùng thường bắt gặp một món ăn hấp dẫn nhưng lại không biết tên gọi của nó, nên không có cách nào thuận tiện để tra cứu công thức tương ứng. Việc tìm kiếm dựa trên từ khóa văn bản của các hệ thống phần mềm hiện có không giải quyết được tình huống này, tạo ra một rào cản trong hành trình từ hình ảnh món ăn đến công thức cụ thể. Ngoài ra, khi nội dung được đóng góp tự do mà thiếu cơ chế kiểm soát, chất lượng và độ tin cậy của công thức cũng khó được bảo đảm.
+
+Nếu được giải quyết, bài toán trên sẽ giúp người dùng tiếp cận công thức nấu ăn một cách dễ dàng và có hệ thống hơn, tiết kiệm thời gian và công sức, đồng thời góp phần gìn giữ và lan tỏa giá trị ẩm thực Việt. Hướng tiếp cận này còn có tiềm năng ứng dụng sang các lĩnh vực liên quan như giáo dục ẩm thực, tư vấn dinh dưỡng hay gợi ý mua sắm nguyên liệu.
+
+\section{Mục tiêu và phạm vi đề tài}
+\label{section:1.2}
+Hiện nay đã có một số sản phẩm phục vụ nhu cầu tra cứu và chia sẻ công thức nấu ăn như Cookpad, Yummly hay Món Ngon Mỗi Ngày, cùng với rất nhiều nhóm và trang chia sẻ trên mạng xã hội. Các sản phẩm này cung cấp lượng công thức phong phú và cộng đồng người dùng đông đảo. Tuy nhiên, phần lớn vẫn còn những hạn chế nhất định: dữ liệu công thức chưa được chuẩn hóa đồng bộ về nguyên liệu và các bước thực hiện; việc tìm kiếm chủ yếu dựa trên từ khóa văn bản mà chưa hỗ trợ nhận diện món ăn trực tiếp từ hình ảnh; khả năng cá nhân hóa như lập kế hoạch bữa ăn còn hạn chế; và nguồn công thức tiếng Việt chất lượng vẫn còn phân mảnh.
+
+Từ những phân tích trên, đồ án hướng tới xây dựng một hệ thống phần mềm tập trung cho việc quản lý và chia sẻ công thức món ăn Việt Nam, trong đó dữ liệu công thức được chuẩn hóa và có hỗ trợ nhận diện món ăn từ hình ảnh nhằm khắc phục các hạn chế đã nêu. Hệ thống website đặt trọng tâm vào trải nghiệm liền mạch từ lúc người dùng phát hiện một món ăn cho đến khi thực sự nấu được món đó.
+
+Trong phạm vi đề tài, hệ thống được xây dựng với các chức năng chính bao gồm: (i) duyệt, tìm kiếm và lọc công thức theo nhiều tiêu chí như vùng miền, loại món và khẩu phần; (ii) nhận diện món ăn từ ảnh do người dùng cung cấp và gợi ý công thức tương ứng; (iii) lập kế hoạch bữa ăn theo tuần kèm danh sách đi chợ được tổng hợp tự động; (iv) các tính năng cộng đồng như đánh giá, bình luận và lưu công thức; và (v) cho phép người dùng đóng góp công thức mới thông qua quy trình kiểm duyệt của quản trị viên. Hệ thống website được phát triển và vận hành dưới dạng ứng dụng web, hỗ trợ hiển thị tương thích trên nhiều kích thước màn hình, trong môi trường phát triển trên máy cục bộ.
+
+\section{Định hướng giải pháp}
+\label{section:1.3}
+Để giải quyết nhiệm vụ đã xác định ở phần \ref{section:1.2}, đồ án lựa chọn định hướng xây dựng một ứng dụng web theo kiến trúc client--server tách biệt, kết hợp với kỹ thuật học sâu cho bài toán nhận diện hình ảnh. Phần giao diện người dùng được phát triển trên nền Next.js với TypeScript, phần máy chủ dịch vụ sử dụng FastAPI trên nền Python, dữ liệu được lưu trữ trong hệ quản trị cơ sở dữ liệu PostgreSQL và việc xác thực người dùng dựa trên cơ chế JSON Web Token.
+
+Đối với chức năng nhận diện món ăn, đồ án vận dụng mạng nơ-ron tích chập EfficientNet theo kiến trúc phân cấp hai tầng. Tầng thứ nhất phân loại ảnh vào một trong các nhóm món, tầng thứ hai dùng mô hình chuyên biệt của nhóm để xác định món cụ thể. Cách chia này giúp mỗi mô hình chỉ phải phân biệt số lớp nhỏ trong cùng nhóm, qua đó nâng cao độ chính xác so với một mô hình phẳng duy nhất.
+
+Theo định hướng đó, giải pháp của đồ án là một hệ thống phần mềm cung cấp kho công thức món ăn được chuẩn hóa, trong đó có một tập công thức tiêu biểu được tuyển chọn làm tham chiếu. Quy trình nhận diện ảnh được thiết kế để kết quả luôn ánh xạ về các công thức có trong kho; trường hợp không xác định được, hệ thống thông báo không nhận diện được thay vì trả về kết quả thiếu tin cậy. Trên hệ thống phần mềm này, người dùng có thể tra cứu công thức bằng hình ảnh hoặc từ nguyên liệu sẵn có, lập kế hoạch bữa ăn và tương tác trong cộng đồng.
+
+Đóng góp chính của đồ án là xây dựng được một ứng dụng web sử dụng mạch lạc, từ việc chụp ảnh món ăn, tìm đúng công thức, đến nấu, lưu lại và lập kế hoạch bữa ăn, cùng với một ràng buộc chặt chẽ giữa kết quả nhận diện và dữ liệu công thức của hệ thống nhằm bảo đảm độ tin cậy. Kết quả đạt được là một hệ thống hoàn chỉnh, chạy được trên môi trường thử nghiệm, với kho dữ liệu công thức tiếng Việt có cấu trúc và mô hình nhận diện hỗ trợ nhiều lớp món ăn khác nhau.
+
+\section{Bố cục đồ án}
+\label{section:1.4}
+Phần còn lại của báo cáo đồ án tốt nghiệp này được tổ chức như sau.
+
+Chương 2 trình bày kết quả khảo sát hiện trạng và phân tích yêu cầu của hệ thống. Chương này làm rõ các tác nhân tham gia, các yêu cầu chức năng và phi chức năng, các trường hợp sử dụng cùng những quy trình nghiệp vụ chính, qua đó tạo cơ sở cho việc thiết kế ở các chương sau.
+
+Chương 3 giới thiệu nền tảng lý thuyết và các công nghệ được sử dụng trong hệ thống. Nội dung bao gồm cơ sở lý thuyết về mạng nơ-ron tích chập và mô hình EfficientNet cho bài toán nhận diện hình ảnh, cùng với các công nghệ phát triển ứng dụng như Next.js, FastAPI, PostgreSQL, JSON Web Token và các thư viện học sâu liên quan.
+
+Chương 4 trình bày quá trình phân tích thiết kế, triển khai và đánh giá hệ thống. Chương này mô tả kiến trúc tổng thể, thiết kế cơ sở dữ liệu, thiết kế các giao diện và dịch vụ, quy trình xử lý của khối nhận diện ảnh, cũng như công tác triển khai và kiểm thử, đánh giá kết quả đạt được.
+
+Chương 5 trình bày các giải pháp và đóng góp nổi bật của đồ án, trong đó tập trung vào cách tổ chức kho công thức chuẩn hóa, ràng buộc giữa kết quả nhận diện và dữ liệu công thức, cùng chức năng lập kế hoạch bữa ăn.
+
+Chương 6 tổng kết những kết quả đã đạt được, chỉ ra các hạn chế còn tồn tại và đề xuất các hướng phát triển trong tương lai cho hệ thống.
+
+\end{document}

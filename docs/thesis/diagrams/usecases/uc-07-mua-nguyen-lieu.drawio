@@ -1,0 +1,24 @@
+<mxfile host="app.diagrams.net" modified="2026-06-03T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="uc-07" name="UC-07 Mua nguyen lieu">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sys" value="Hệ thống VNFood" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontStyle=1;verticalAlign=top;spacingTop=8;" vertex="1" parent="1"><mxGeometry x="240" y="80" width="660" height="520" as="geometry"/></mxCell>
+        <mxCell id="actor" value="Người dùng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1"><mxGeometry x="70" y="280" width="70" height="110" as="geometry"/></mxCell>
+        <mxCell id="shop" value="Nền tảng mua sắm bên ngoài" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1"><mxGeometry x="990" y="280" width="90" height="120" as="geometry"/></mxCell>
+        <mxCell id="uc_main" value="Mua nguyên liệu từ danh sách mua sắm" style="ellipse;whiteSpace=wrap;html=1;fontStyle=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="460" y="120" width="260" height="75" as="geometry"/></mxCell>
+        <mxCell id="uc_view" value="Xem danh sách nguyên liệu cần mua" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="310" y="280" width="240" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_check" value="Đánh dấu đã mua / chưa mua" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="630" y="280" width="230" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_link" value="Mở liên kết tra cứu nơi mua" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="310" y="430" width="240" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_keyword" value="Chuẩn hóa từ khóa nguyên liệu" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="630" y="430" width="230" height="60" as="geometry"/></mxCell>
+        <mxCell id="e_actor" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor" target="uc_main"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_shop" value="" style="endArrow=none;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_link" target="shop"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_view" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_view"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_check" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_check"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_link" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_link"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_keyword" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_link" target="uc_keyword"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

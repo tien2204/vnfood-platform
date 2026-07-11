@@ -291,11 +291,6 @@ export default async function RecipeDetailPage({
                     {a.name}
                   </p>
                 </Link>
-                {recipe.author && recipe.author.follower_count > 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    {recipe.author.follower_count} người theo dõi
-                  </p>
-                )}
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Link

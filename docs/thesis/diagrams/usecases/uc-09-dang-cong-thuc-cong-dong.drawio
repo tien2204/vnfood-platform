@@ -1,0 +1,26 @@
+<mxfile host="app.diagrams.net" modified="2026-06-03T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="uc-09" name="UC-09 Dang cong thuc cong dong">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sys" value="Hệ thống VNFood" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontStyle=1;verticalAlign=top;spacingTop=8;" vertex="1" parent="1"><mxGeometry x="240" y="60" width="720" height="620" as="geometry"/></mxCell>
+        <mxCell id="actor" value="Người dùng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1"><mxGeometry x="70" y="310" width="70" height="110" as="geometry"/></mxCell>
+        <mxCell id="admin" value="Quản trị viên" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1"><mxGeometry x="1010" y="310" width="70" height="110" as="geometry"/></mxCell>
+        <mxCell id="uc_main" value="Đăng công thức cộng đồng" style="ellipse;whiteSpace=wrap;html=1;fontStyle=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="500" y="100" width="220" height="70" as="geometry"/></mxCell>
+        <mxCell id="uc_basic" value="Nhập thông tin cơ bản" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="310" y="250" width="200" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_image" value="Tải ảnh công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="620" y="250" width="190" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_ing" value="Nhập nguyên liệu" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="310" y="400" width="190" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_steps" value="Nhập các bước nấu" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="620" y="400" width="190" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_pending" value="Gửi công thức chờ duyệt" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="470" y="540" width="230" height="60" as="geometry"/></mxCell>
+        <mxCell id="e_actor" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor" target="uc_main"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_admin" value="duyệt sau khi gửi" style="endArrow=none;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_pending" target="admin"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_basic" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_basic"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_image" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_image"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_ing" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_ing"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_steps" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_steps"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_pending" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_pending"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

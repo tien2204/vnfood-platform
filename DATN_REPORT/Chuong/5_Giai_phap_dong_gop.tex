@@ -1,0 +1,60 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+
+Chương này trình bày các giải pháp và đóng góp nổi bật nhất của đồ án. Mỗi đóng góp được trình bày theo ba phần: bài toán đặt ra, giải pháp và kết quả đạt được. Những nội dung kỹ thuật chi tiết đã nêu ở các chương trước chỉ được tham chiếu lại, không trình bày lặp.
+
+\section{Xây dựng kho công thức nấu ăn gắn với tập món ăn được hệ thống nhận diện}
+\label{sec:5-chuanhoa}
+
+\subsection*{Bài toán}
+Hệ thống website nhận diện ảnh có thể xác định một trong 103 lớp món ăn Việt Nam. Để chức năng nhận diện trả về kết quả có ích, mỗi lớp món cần có ít nhất một công thức thực sự trong kho. Nếu kho công thức và tập món mà mô hình nhận diện được không trùng khớp, người dùng sẽ nhận được kết quả nhận diện nhưng không tra được công thức --- đây là tình huống cần loại bỏ ngay từ thiết kế.
+
+\subsection*{Giải pháp}
+Đồ án thu thập công thức từ monngonmoingay.com --- một nguồn ẩm thực Việt Nam có cấu trúc --- thông qua sitemap và JSON-LD Recipe. Các công thức thu được được nhập vào cơ sở dữ liệu và nhóm lại theo định danh món (trường \texttt{canonical\_dish\_slug}, sinh tự động từ tiêu đề công thức bằng cách chuyển về chữ thường không dấu). Với mỗi nhóm món, một công thức đại diện (đánh dấu bằng cờ \texttt{is\_canonical}) được chọn dựa trên chất lượng nội dung --- ưu tiên có ảnh, đủ nguyên liệu, nhiều lượt lưu; nội dung công thức được giữ nguyên từ nguồn gốc, không thêm hay bịa nguyên liệu mới.
+
+Tiếp theo, toàn bộ công thức trong kho được gắn nhãn lớp AI (trường \texttt{ai\_class\_slug}) bằng cách khớp tiền tố tên món với 103 tên lớp mà mô hình nhận diện được. Phép khớp dài nhất được ưu tiên --- ví dụ ``Bánh mì chảo'' khớp với lớp \texttt{banh-mi-chao} trước khi khớp với \texttt{banh-mi} --- nhờ đó các biến thể theo tên như ``Phở gà'', ``Phở bò'' đều được gắn về đúng lớp gốc.
+
+Để bảo đảm tính nhất quán về nguồn gốc và chất lượng dữ liệu, tập công thức hiển thị công khai trên trang tìm kiếm (\texttt{/recipes}) được thu hẹp về \emph{một công thức đại diện cho mỗi lớp món AI}, chọn trong số các công thức được cào từ monngonmoingay.com và đã gắn nhãn lớp AI hợp lệ --- ưu tiên công thức có định danh món trùng đúng tên lớp, sau đó tới công thức nhiều lượt lưu nhất. Cách thu hẹp này loại bỏ các biến thể cùng một lớp (ví dụ ``Phở bò'' và ``Phở gà'' chỉ giữ lại một đại diện cho lớp \texttt{pho}), kết hợp với công thức do người dùng đóng góp. Do nguồn monngonmoingay.com chỉ phủ 47 trong số 103 lớp món, danh mục công khai gồm khoảng 47 công thức đại diện (tại thời điểm hoàn thiện đồ án); trong đó khoảng 17 công thức có định danh trùng đúng tên lớp, 30 công thức còn lại là biến thể được chọn làm đại diện cho các lớp không có món trùng tên --- tuy tên gọi cụ thể hơn nhưng vẫn đúng là món thuộc lớp đó.
+
+\subsection*{Kết quả}
+Cần phân biệt hai phạm vi. Danh mục duyệt công khai (\texttt{/recipes}) trình bày khoảng 47 công thức đại diện theo từng lớp cho gọn và dễ khám phá; trong khi đó kho dữ liệu phục vụ nhận diện bao phủ toàn bộ 103 lớp món. Nhờ vậy, khi người dùng tải ảnh, kết quả nhận diện luôn ánh xạ được về ít nhất một công thức thực, loại bỏ tình huống nhận diện được nhưng không có công thức để trả về --- giới hạn 47 lớp ở danh mục duyệt là lựa chọn về nguồn gốc và độ gọn của giao diện, không phải giới hạn năng lực nhận diện. Đây cũng là nền tảng dữ liệu để gắn kết với kết quả nhận diện ở mục~\ref{sec:5-rangbuoc}.
+
+\section{Ràng buộc nhất quán giữa nhận diện và dữ liệu công thức}
+\label{sec:5-rangbuoc}
+
+\subsection*{Bài toán}
+Hệ thống website gồm hai mảng tưởng như tách rời: mô hình AI nhận diện món ăn từ ảnh, và kho công thức để tra cứu. Nếu hai mảng này hoạt động độc lập, hệ thống dễ rơi vào tình trạng ``các tính năng rời rạc'': mô hình có thể nhận ra một món nhưng hệ thống không có công thức tương ứng, hoặc trả về kết quả không ăn khớp với dữ liệu thật, làm mất lòng tin của người dùng.
+
+\subsection*{Giải pháp}
+Đồ án thiết kế một \emph{ràng buộc bất biến} làm trục liên kết hai mảng: kết quả nhận diện chỉ được chấp nhận khi ánh xạ được về một món có công thức chuẩn trong kho; nếu nhãn dự đoán không khớp định danh món chuẩn nào, hệ thống chủ động báo ``không tìm thấy'' thay vì trả kết quả tùy tiện. Việc kiểm soát phạm vi hiển thị được thực hiện ở tầng dữ liệu (phân biệt công thức chuẩn, công thức người dùng và kho dữ liệu gốc) thay vì dựa vào vai trò người dùng. Nhờ đó, thay cho cơ chế ``cổng kiểm duyệt theo vai trò'' thường gặp, hệ thống dùng \emph{cổng kiểm soát theo tầng dữ liệu}, vừa bảo đảm độ tin cậy vừa dễ mở rộng quy mô.
+
+\subsection*{Kết quả}
+Ràng buộc này tạo ra một hành trình người dùng liền mạch và nhất quán: chụp ảnh hoặc tra cứu, ra đúng công thức chuẩn, rồi nấu, lưu, xem biến thể và đưa vào kế hoạch bữa ăn. Mọi kết quả nhận diện đưa ra cho người dùng đều có công thức thật phía sau, loại bỏ các phản hồi ``treo'' không dẫn tới đâu.
+
+\section{Luồng xử lí khối nhận diện hai tầng phân cấp}
+\label{sec:5-haitang}
+
+\subsection*{Bài toán}
+Tập món ăn cần nhận diện gồm hơn một trăm lớp, trong đó nhiều món rất giống nhau về hình thức (các loại bánh, các món nước). Một mô hình phân loại phẳng trên toàn bộ số lớp khó đạt độ chính xác cao và dễ nhầm giữa các món tương đồng.
+
+\subsection*{Giải pháp}
+Đồ án vận dụng kiến trúc nhận diện phân cấp hai tầng (coarse-to-fine)~\cite{yan2015hdcnn, zhu2017bcnn}: tầng thứ nhất phân loại ảnh vào một trong tám nhóm món, tầng thứ hai dùng mô hình chuyên biệt cho từng nhóm để phân loại món chi tiết. Khi độ tin cậy thấp, hệ thống thông báo không nhận diện được thay vì đưa ra dự đoán kém tin cậy. Chi tiết kiến trúc và chiến lược huấn luyện đã được trình bày ở mục~\ref{sub:3-2tang} (Hình~\ref{fig:kientruc2tang}).
+
+\subsection*{Kết quả}
+Cách chia hai tầng giúp mỗi mô hình con chỉ phải phân biệt số lớp nhỏ trong cùng nhóm, qua đó nâng độ chính xác. Kết quả đánh giá ở mục~\ref{sec:4-danhgia} cho thấy bộ phân loại nhóm đạt độ chính xác $92{,}48\%$, các bộ phân loại món trong nhóm đạt từ $89{,}95\%$ đến $98{,}88\%$ --- kết quả khả quan cho bài toán phân loại nhiều lớp trên dữ liệu món ăn Việt Nam.
+
+So với phương án dùng các dịch vụ nhận diện đa năng có sẵn trên thị trường (ví dụ mô hình thị giác của OpenAI), mô hình tự huấn luyện hai tầng của đồ án có phạm vi hẹp hơn --- chỉ tập trung vào 103 lớp món Việt --- nhưng đổi lại đạt độ chính xác cao trên đúng tập món mục tiêu, chạy cục bộ nên không phụ thuộc dịch vụ bên ngoài, không phát sinh chi phí gọi API hay độ trễ mạng, và quan trọng nhất là chủ động kiểm soát được kết quả để ràng buộc chặt với kho công thức. Ngược lại, các API đa năng có độ bao phủ món ăn rộng hơn nhiều lần và nhận diện được cả món nằm ngoài tập huấn luyện, song khó bảo đảm kết quả luôn ánh xạ về một công thức cụ thể trong kho, đồng thời kém chủ động về chi phí và quyền riêng tư dữ liệu. Việc lựa chọn mô hình chuyên biệt vì thế phù hợp với mục tiêu của đồ án là gắn chặt nhận diện với kho công thức tiếng Việt đã chuẩn hóa.
+
+\section{Quy trình đóng góp công thức có kiểm duyệt}
+\label{sec:5-dongggop}
+
+\subsection*{Bài toán}
+Để kho công thức ngày càng phong phú, hệ thống cần cho phép người dùng đóng góp công thức mới. Tuy nhiên, nội dung do người dùng tạo ra cần được kiểm soát chất lượng trước khi đưa vào kho chung, và không chỉ việc tạo mới mà cả việc chỉnh sửa hay xóa công thức cũng cần được giám sát.
+
+\subsection*{Giải pháp}
+Đồ án thiết kế quy trình đề xuất--duyệt thống nhất cho cả ba thao tác tạo, sửa và xóa. Mọi thao tác của người dùng lên kho chung được gói thành một ``yêu cầu thay đổi'' lưu ở trạng thái chờ duyệt, với nội dung đề xuất chứa trong trường dữ liệu linh hoạt (JSONB). Quản trị viên xem xét rồi phê duyệt --- khi đó thay đổi mới được áp dụng vào kho --- hoặc từ chối kèm lý do. Thiết kế này được mô tả ở mục~\ref{sec:4-chitiet}.
+
+\subsection*{Kết quả}
+Hệ thống website cho phép mở rộng kho công thức từ cộng đồng mà vẫn giữ được chất lượng và tính nhất quán của dữ liệu. Việc gộp chung cả ba thao tác vào một cơ chế duyệt giúp luồng kiểm soát đơn giản và đồng nhất, đồng thời lưu vết đầy đủ các thay đổi đối với kho công thức.
+
+\end{document}

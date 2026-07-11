@@ -1,0 +1,33 @@
+@startuml quytrinh_nhan_dien
+' Biểu đồ hoạt động - Quy trình nhận diện món ăn qua ảnh
+' Hai nhánh quyết định: (1) mô hình TastyVietnam đủ tin cậy? -> nếu không, báo không nhận diện được;
+' (2) có công thức chuẩn khớp? -> nếu không, báo không tìm thấy.
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+|Người dùng|
+start
+:Chọn & tải ảnh món ăn;
+
+|Hệ thống|
+:Tiền xử lý ảnh;
+:Phân loại nhóm & dự đoán bằng EfficientNet;
+if (Mô hình đủ tin cậy?) then (Có)
+  :Lấy nhãn món từ EfficientNet;
+else (Không)
+  :Báo "Không nhận diện được";
+  stop
+endif
+:Ánh xạ nhãn về công thức chuẩn;
+if (Có công thức chuẩn khớp?) then (Không)
+  :Báo "Không tìm thấy món";
+  stop
+else (Có)
+  :Trả công thức chuẩn + các biến thể;
+endif
+
+|Người dùng|
+:Xem công thức / Lưu / Đưa vào kế hoạch;
+stop
+@enduml

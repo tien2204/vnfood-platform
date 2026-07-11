@@ -106,3 +106,12 @@ logs/
 # Local agent workspaces
 .superpowers/
 .claude/skills/ui-ux-pro-max/
+
+# Piper TTS voice model (download via: python -m piper.download_voices vi_VN-vais1000-medium --data-dir backend/tts_models)
+backend/tts_models/
+
+# --- data / artifacts / backups (kept on disk, excluded from git) ---
+backups/
+cookpad_recipe/
+kaggle_output/
+*.pdf

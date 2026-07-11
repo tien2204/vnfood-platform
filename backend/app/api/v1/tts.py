@@ -22,6 +22,6 @@ async def tts_endpoint(text: str, current_user=Depends(get_current_user)):
         raise HTTPException(status_code=502, detail="TTS lỗi")
     return Response(
         content=audio,
-        media_type="audio/mpeg",
+        media_type="audio/wav",
         headers={"Cache-Control": "public, max-age=86400"},
     )

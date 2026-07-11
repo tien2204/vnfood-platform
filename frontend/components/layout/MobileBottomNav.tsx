@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, ScanLine, Newspaper, User } from "lucide-react";
+import { Home, Search, ScanLine, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUser } from "@/lib/hooks/useUser";
 
@@ -10,7 +10,6 @@ const STATIC_ITEMS = [
   { href: "/", icon: Home, label: "Trang chủ" },
   { href: "/search", icon: Search, label: "Tìm kiếm" },
   { href: "/ai/scan", icon: ScanLine, label: "AI Scan", highlight: true },
-  { href: "/feed", icon: Newspaper, label: "Bảng tin" },
 ];
 
 export default function MobileBottomNav() {

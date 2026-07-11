@@ -9,6 +9,7 @@ from app.models.ai_log import AILog
 from app.models.recipe import Recipe, RecipeIngredient
 from app.models.social import Comment, Rating, SavedRecipe
 from app.models.user import User
+from app.services import recipe_service
 
 
 # ── Overview stats ─────────────────────────────────────────────────────────────
@@ -28,13 +29,24 @@ async def get_admin_stats(db: AsyncSession) -> dict:
         select(func.count(User.id)).where(User.is_active.is_(False))
     )).scalar_one()
 
-    total_recipes = (await db.execute(select(func.count(Recipe.id)))).scalar_one()
+    # "Tổng công thức" mirrors exactly what the public /recipes page shows: one
+    # representative per AI class + user-submitted posts (not the full raw import).
+    visible_subq = (
+        recipe_service._base_approved_query()
+        .where(recipe_service.browse_visible_clause())
+    ).subquery()
+    total_recipes = (await db.execute(select(func.count()).select_from(visible_subq))).scalar_one()
+
     new_recipes_today = (await db.execute(
         select(func.count(Recipe.id)).where(cast(Recipe.created_at, Date) == today)
     )).scalar_one()
 
+    # "Đã duyệt / Chờ duyệt / Từ chối" are moderation metrics — they count only
+    # user-submitted recipes, not the pre-approved monngonmoingay catalog import.
     status_rows = (await db.execute(
-        select(Recipe.status, func.count(Recipe.id)).group_by(Recipe.status)
+        select(Recipe.status, func.count(Recipe.id))
+        .where(Recipe.source == "user")
+        .group_by(Recipe.status)
     )).all()
     status_counts = {s: c for s, c in status_rows}
 
@@ -139,7 +151,6 @@ async def list_admin_users(
     user_ids = [u.id for u in users]
     recipe_map = {}
     comment_map = {}
-    follower_map = {}  # follow feature removed (table dropped) — counts stay 0
     if user_ids:
         for uid, cnt in (await db.execute(
             select(Recipe.author_id, func.count(Recipe.id))
@@ -166,7 +177,6 @@ async def list_admin_users(
             "stats": {
                 "recipe_count": recipe_map.get(u.id, 0),
                 "comment_count": comment_map.get(u.id, 0),
-                "follower_count": follower_map.get(u.id, 0),
             },
         } for u in users],
         "pagination": {"page": page, "limit": limit, "total": total, "total_pages": max(1, (total + limit - 1) // limit)},
@@ -185,8 +195,6 @@ async def get_admin_user_detail(db: AsyncSession, user_id: str) -> dict | None:
 
     recipe_count = (await db.execute(select(func.count(Recipe.id)).where(Recipe.author_id == uid))).scalar_one()
     comment_count = (await db.execute(select(func.count(Comment.id)).where(Comment.user_id == uid))).scalar_one()
-    follower_count = 0  # follow feature removed (table dropped)
-    following_count = 0
     rating_count = (await db.execute(select(func.count(Rating.id)).where(Rating.user_id == uid))).scalar_one()
     ai_count = (await db.execute(select(func.count(AILog.id)).where(AILog.user_id == uid))).scalar_one()
     joined_days = (datetime.now(timezone.utc) - user.created_at).days
@@ -220,8 +228,6 @@ async def get_admin_user_detail(db: AsyncSession, user_id: str) -> dict | None:
         "stats": {
             "recipe_count": recipe_count,
             "comment_count": comment_count,
-            "follower_count": follower_count,
-            "following_count": following_count,
             "total_ratings_given": rating_count,
             "ai_recognitions": ai_count,
             "joined_days": joined_days,

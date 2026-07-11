@@ -6,7 +6,6 @@ from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.recipe import Recipe
-from app.models.social import Follow
 from app.models.user import User
 from app.schemas.recipe import AuthorOut, RecipeCardOut
 from app.schemas.user import UserProfileOut, UserStats, UserUpdate
@@ -25,29 +24,11 @@ async def get_user_profile(
         select(func.count(Recipe.id)).where(Recipe.author_id == user_id, Recipe.status == "approved")
     )).scalar_one()
 
-    follower_count = (await db.execute(
-        select(func.count(Follow.id)).where(Follow.following_id == user_id)
-    )).scalar_one()
-
-    following_count = (await db.execute(
-        select(func.count(Follow.id)).where(Follow.follower_id == user_id)
-    )).scalar_one()
-
     likes_result = await db.execute(
         select(func.sum(Recipe.rating_count))
         .where(Recipe.author_id == user_id, Recipe.status == "approved")
     )
     total_likes = likes_result.scalar_one() or 0
-
-    is_following: Optional[bool] = None
-    if current_user_id and current_user_id != user_id:
-        existing = (await db.execute(
-            select(Follow.id).where(
-                Follow.follower_id == current_user_id,
-                Follow.following_id == user_id,
-            )
-        )).scalar_one_or_none()
-        is_following = existing is not None
 
     is_self = current_user_id == user_id
 
@@ -84,11 +65,8 @@ async def get_user_profile(
         created_at=user.created_at,
         stats=UserStats(
             recipe_count=recipe_count,
-            follower_count=follower_count,
-            following_count=following_count,
             total_likes_received=total_likes,
         ),
-        is_following=is_following,
         is_self=is_self,
         recent_recipes=recent_recipes,
     )

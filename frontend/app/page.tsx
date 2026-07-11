@@ -6,22 +6,18 @@ import {
   Award,
   BookOpen,
   CalendarDays,
-  ChefHat,
   ChevronRight,
-  Clock,
   Flame,
   MapPin,
   Quote,
   ScanLine,
   Sparkles,
   Star,
-  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import RecipeCard from "@/components/recipes/RecipeCard";
 import RecipeCardSkeleton from "@/components/recipes/RecipeCardSkeleton";
-import RecipeImage from "@/components/common/RecipeImage";
 import SearchBar from "@/components/common/SearchBar";
 import type {
   ApiResponse,
@@ -67,28 +63,10 @@ async function getFeaturedRecipes(
   }
 }
 
-function stripEmoji(text: string): string {
-  return text
-    .replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, "")
-    .trim();
-}
-
-function getRecipeImageUrl(recipe: RecipeCardType) {
-  if (!recipe.image_url) return null;
-  return recipe.image_url.startsWith("http")
-    ? recipe.image_url
-    : `${process.env.NEXT_PUBLIC_UPLOAD_URL}/${recipe.image_url}`;
-}
-
 export default async function HomePage() {
   const jar = await cookies();
   const accessToken = jar.get("access_token")?.value;
   const featured = await getFeaturedRecipes(accessToken);
-  const menuPreview = [
-    ...(featured?.trending ?? []),
-    ...(featured?.top_rated ?? []),
-    ...(featured?.new ?? []),
-  ].slice(0, 6);
 
   return (
     <div className="bg-background text-foreground">
@@ -119,7 +97,7 @@ export default async function HomePage() {
               <Link href="/recipes">
                 <Button className="h-12 rounded-lg border-2 border-primary bg-primary px-6 font-bold text-white shadow-card hover:bg-[#cc1c22]">
                   <BookOpen className="h-4 w-4" />
-                  View Menu
+                  Xem công thức
                 </Button>
               </Link>
               <Link href="/ai/scan">
@@ -155,12 +133,6 @@ export default async function HomePage() {
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
-              <div className="absolute bottom-4 left-1/2 w-[calc(100%-2rem)] -translate-x-1/2 rounded-lg bg-primary px-5 py-3 text-center text-white shadow-warm sm:w-auto">
-                <div className="text-2xl font-bold leading-none">22K+</div>
-                <div className="text-xs font-bold uppercase tracking-wider">
-                  Công thức
-                </div>
-              </div>
             </div>
             {HERO_IMAGES.slice(1).map((src, index) => (
               <div
@@ -201,31 +173,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {menuPreview.length > 0 && (
-        <section className="bg-muted px-4 py-14 sm:px-6 sm:py-20">
-          <div className="mx-auto max-w-7xl">
-            <CenteredSectionHeader
-              icon={<ChefHat className="h-6 w-6" />}
-              title="Our Menu"
-              subtitle="Món Việt quen thuộc, trình bày như một bảng menu nhà hàng."
-            />
-            <div className="grid gap-6 md:grid-cols-2">
-              {menuPreview.map((recipe) => (
-                <MenuListItem key={recipe.id} recipe={recipe} />
-              ))}
-            </div>
-            <div className="mt-12 text-center">
-              <Link href="/recipes">
-                <Button className="h-12 rounded-lg border-2 border-primary bg-primary px-7 font-bold text-white shadow-card hover:bg-[#cc1c22]">
-                  View Full Menu
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
       {featured?.trending && featured.trending.length > 0 && (
         <RecipeRail
           icon={<Flame className="h-5 w-5" />}
@@ -258,15 +205,15 @@ export default async function HomePage() {
           <div>
             <div className="mb-5 h-0.5 w-12 bg-primary" />
             <p className="mb-3 text-sm font-bold uppercase tracking-wider text-primary">
-              Our Story
+              Về chúng tôi
             </p>
             <h2 className="mb-6 text-3xl font-bold sm:text-4xl">
-              Từ mâm cơm gia đình đến trải nghiệm khám phá món ăn.
+              Công nghệ AI kết nối bạn với kho công thức ẩm thực Việt.
             </h2>
             <p className="mb-8 max-w-xl leading-relaxed text-white/70">
-              VNFood giữ lại chất Việt của từng công thức, nhưng chuyển giao
-              diện sang cảm giác menu nhà hàng: rõ món, nhiều ảnh, nhấn mạnh
-              lựa chọn và hành động.
+              VNFood ứng dụng trí tuệ nhân tạo để nhận diện món ăn từ ảnh, gợi
+              ý công thức nấu chi tiết và giúp bạn khám phá nền ẩm thực phong
+              phú của ba miền Việt Nam.
             </p>
             <div className="grid grid-cols-3 gap-4">
               {[
@@ -292,11 +239,12 @@ export default async function HomePage() {
           <div className="rounded-xl border border-border bg-card p-6 text-foreground shadow-card">
             <Quote className="mb-4 h-8 w-8 text-primary" />
             <p className="mb-5 text-lg italic leading-relaxed text-muted-foreground">
-              &quot;Món Việt ngon nhất khi có câu chuyện phía sau. Giao diện mới
-              giúp câu chuyện đó nổi bật ngay từ ảnh, tên món và cách khám phá.&quot;
+              &quot;Chỉ cần một tấm ảnh, AI sẽ nhận diện ngay món ăn và gợi ý công
+              thức nấu chi tiết. Khám phá ẩm thực Việt chưa bao giờ dễ dàng
+              đến thế.&quot;
             </p>
-            <div className="font-bold">VNFood Kitchen</div>
-            <div className="text-sm text-muted-foreground">Taste guide</div>
+            <div className="font-bold">VNFood AI</div>
+            <div className="text-sm text-muted-foreground">Nhận diện món ăn thông minh</div>
           </div>
         </div>
       </section>
@@ -334,61 +282,6 @@ export default async function HomePage() {
   );
 }
 
-function MenuListItem({ recipe }: { recipe: RecipeCardType }) {
-  const imageUrl = getRecipeImageUrl(recipe);
-  const cleanTitle = stripEmoji(recipe.title);
-
-  return (
-    <Link
-      href={`/recipes/${recipe.id}`}
-      className="group flex gap-4 rounded-xl border border-border bg-card p-4 shadow-card transition-all hover:shadow-warm"
-    >
-      <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
-        <RecipeImage
-          src={imageUrl}
-          alt={cleanTitle}
-          fill
-          className="object-cover"
-          sizes="96px"
-          unoptimized
-          fallback={
-            <ChefHat className="absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 text-muted" />
-          }
-        />
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="mb-1 flex items-start justify-between gap-3">
-          <h3 className="line-clamp-2 text-lg font-bold leading-snug group-hover:text-primary">
-            {cleanTitle}
-          </h3>
-          {recipe.avg_rating > 0 && (
-            <span className="whitespace-nowrap font-bold text-primary">
-              {recipe.avg_rating.toFixed(1)}
-            </span>
-          )}
-        </div>
-        <p className="line-clamp-2 text-sm text-muted-foreground">
-          {recipe.author?.full_name ?? "VNFood"} tuyển chọn cho bữa ăn Việt.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-xs font-medium text-muted-foreground">
-          {recipe.cooking_time != null && (
-            <span className="inline-flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5" />
-              {recipe.cooking_time} phút
-            </span>
-          )}
-          {recipe.servings != null && (
-            <span className="inline-flex items-center gap-1">
-              <Users className="h-3.5 w-3.5" />
-              {recipe.servings} người
-            </span>
-          )}
-        </div>
-      </div>
-    </Link>
-  );
-}
-
 function RecipeRail({
   icon,
   title,
@@ -417,24 +310,6 @@ function RecipeRail({
         </ScrollArea>
       </div>
     </section>
-  );
-}
-
-function CenteredSectionHeader({
-  icon,
-  title,
-  subtitle,
-}: {
-  icon: ReactNode;
-  title: string;
-  subtitle: string;
-}) {
-  return (
-    <div className="mb-12 text-center">
-      <div className="mb-4 inline-flex text-primary">{icon}</div>
-      <h2 className="mb-4 text-3xl font-extrabold text-foreground sm:text-4xl">{title}</h2>
-      <p className="mx-auto max-w-md text-muted-foreground">{subtitle}</p>
-    </div>
   );
 }
 

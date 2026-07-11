@@ -1,0 +1,30 @@
+@startuml
+' Biểu đồ trình tự - Nhận diện món ăn
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+actor "Người dùng" as U
+participant "Giao diện\n(Next.js)" as FE
+participant "API /ai/recognize" as API
+participant "AIService" as S
+participant "TastyVietnamPredictor\n(B0 + B2)" as M
+participant "RecipeService" as R
+database "PostgreSQL" as DB
+
+U -> FE : Tải ảnh món ăn
+FE -> API : POST /ai/recognize (ảnh)
+API -> S : recognize(ảnh)
+S -> M : predict_group + predict_dish
+M --> S : nhãn món + độ tin cậy
+alt độ tin cậy thấp
+  S --> API : không nhận diện được
+end
+S -> R : find_canonical_for_class(nhãn)
+R -> DB : truy vấn công thức chuẩn + biến thể
+DB --> R : kết quả
+R --> S : công thức / rỗng
+S --> API : kết quả nhận diện
+API --> FE : JSON
+FE --> U : Hiển thị công thức hoặc "không nhận diện được"
+@enduml

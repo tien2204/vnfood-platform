@@ -1,0 +1,20 @@
+@startuml usecase_che_do_nau
+' Biểu đồ use case Chế độ nấu / Hướng dẫn nấu ăn theo từng bước
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+left to right direction
+
+actor "Người dùng" as User
+
+rectangle "Hướng dẫn nấu ăn theo từng bước" {
+  usecase "Điều hướng các bước nấu" as UC_Nav
+  usecase "Đọc bước bằng giọng nói" as UC_TTS
+  usecase "Hẹn giờ đếm ngược theo bước" as UC_Timer
+}
+
+User --> UC_Nav
+User --> UC_TTS
+User --> UC_Timer
+@enduml

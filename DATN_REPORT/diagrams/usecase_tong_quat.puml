@@ -1,0 +1,65 @@
+@startuml usecase_tong_quat
+' Biểu đồ use case tổng quát - hệ thống TastyVietnam (bố cục ngang, tuyến tính)
+' Bố cục trái -> phải: [UC Quản trị] - Quản trị viên - Người dùng - [UC Người dùng]
+'                      - Khách - [UC Khách].
+' Quản trị viên kế thừa Người dùng; Người dùng kế thừa Khách.
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam nodesep 8
+skinparam ranksep 70
+left to right direction
+
+' --- Use case của Quản trị viên (bên trái actor) ---
+usecase "Duyệt công thức và nội dung" as UC_Approve
+usecase "Quản lý người dùng" as UC_ManageUser
+usecase "Quản lý nội dung" as UC_ManageContent
+usecase "Gửi bản tin công thức" as UC_SendNewsletter
+
+actor "Quản trị viên" as Admin
+actor "Người dùng" as User
+
+' --- Use case của Người dùng (giữa) ---
+usecase "Tìm kiếm & gửi công thức" as UC_Search
+usecase "Xem chi tiết công thức" as UC_View
+usecase "Đánh giá / Bình luận / Lưu công thức" as UC_Community
+usecase "Đề xuất công thức (tạo/sửa/xóa)" as UC_Propose
+usecase "Lập kế hoạch bữa ăn & danh sách đi chợ" as UC_MealPlan
+usecase "Đăng ký nhận bản tin công thức" as UC_Newsletter
+usecase "Quản lý hồ sơ cá nhân" as UC_Profile
+usecase "Đăng xuất" as UC_Logout
+
+actor "Khách" as Guest
+
+' --- Use case của Khách (bên phải actor) ---
+usecase "Xem trang chủ" as UC_Home
+usecase "Nhận diện món ăn qua ảnh" as UC_Detect
+usecase "Đăng ký tài khoản" as UC_Register
+usecase "Đăng nhập" as UC_Login
+
+' UC Quản trị nằm bên TRÁI actor Quản trị (UC là đầu trái của liên kết)
+UC_Approve -- Admin
+UC_ManageUser -- Admin
+UC_ManageContent -- Admin
+UC_SendNewsletter -- Admin
+
+' Kế thừa tác nhân (tam giác rỗng: con -> cha)
+Admin --|> User
+User --|> Guest
+
+' UC Người dùng nằm bên PHẢI actor Người dùng
+User -- UC_Search
+User -- UC_View
+User -- UC_Community
+User -- UC_Propose
+User -- UC_MealPlan
+User -- UC_Newsletter
+User -- UC_Profile
+User -- UC_Logout
+
+' UC Khách nằm bên PHẢI actor Khách
+Guest -- UC_Home
+Guest -- UC_Detect
+Guest -- UC_Register
+Guest -- UC_Login
+@enduml

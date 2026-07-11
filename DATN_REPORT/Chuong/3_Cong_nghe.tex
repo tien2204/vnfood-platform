@@ -1,0 +1,90 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+
+Chương 2 đã xác định các yêu cầu chức năng và phi chức năng của hệ thống. Chương này trình bày nền tảng lý thuyết cho bài toán nhận diện ảnh và các công nghệ được lựa chọn để hiện thực hóa những yêu cầu đó. Với mỗi nhóm công nghệ, nội dung nêu rõ vấn đề cần giải quyết, các lựa chọn thay thế khả dĩ và lý do lựa chọn.
+
+\section{Tổng quan kiến trúc và công nghệ}
+\label{sec:3-tongquan}
+Hệ thống website được tổ chức theo kiến trúc client--server tách lớp: tầng giao diện chạy trên trình duyệt, giao tiếp với tầng dịch vụ (API) qua HTTP; tầng dịch vụ truy xuất cơ sở dữ liệu quan hệ và gọi khối trí tuệ nhân tạo để nhận diện món ăn. Khối nhận diện được nhúng trực tiếp trong tiến trình backend (nạp mô hình PyTorch). Cách phân tách này giúp mỗi tầng có thể phát triển, kiểm thử và mở rộng độc lập. Bảng~\ref{tab:congnghe} tổng hợp các công nghệ chính theo từng tầng.
+
+\begin{center}
+\captionof{table}{Tổng hợp công nghệ theo tầng}\label{tab:congnghe}
+\begin{tabular}{|p{3.2cm}|p{10.3cm}|}\hline
+\textbf{Tầng} & \textbf{Công nghệ chính} \\ \hline
+Giao diện & Next.js (App Router), React, TypeScript, Tailwind CSS \\ \hline
+Dịch vụ (API) & FastAPI, Pydantic, SQLAlchemy (async) \\ \hline
+Trí tuệ nhân tạo & PyTorch (EfficientNet) \\ \hline
+Cơ sở dữ liệu & PostgreSQL 16, Alembic (migration) \\ \hline
+Hạ tầng & Docker, lưu trữ tệp cục bộ \\ \hline
+Xác thực & JSON Web Token (JWT) \\ \hline
+\end{tabular}
+\end{center}
+
+\section{Cơ sở lý thuyết nhận diện ảnh}
+\label{sec:3-lythuyet}
+
+\subsection{Mạng nơ-ron tích chập}
+Mạng nơ-ron tích chập (Convolutional Neural Network --- CNN) là kiến trúc học sâu phù hợp với dữ liệu ảnh, được sử dụng rộng rãi từ các công trình nền tảng~\cite{lecun1998gradient, krizhevsky2012imagenet}. Mạng gồm các lớp tích chập (convolution) trích xuất đặc trưng cục bộ qua các bộ lọc trượt trên ảnh, các lớp gộp (pooling) giảm kích thước không gian và tăng tính bất biến với dịch chuyển, và các lớp kết nối đầy đủ (fully-connected) ở cuối để phân loại (Hình~\ref{fig:cnn}). Đặc trưng được học theo nhiều mức từ cạnh, kết cấu đến bộ phận và toàn bộ đối tượng, nên CNN đặc biệt thích hợp cho bài toán nhận diện món ăn từ ảnh (use case UC-05, Bảng~\ref{tab:uc-nhandien}).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth,height=0.8\textheight,keepaspectratio]{minh_hoa_CNN.jpg}
+  \caption{Minh họa kiến trúc mạng nơ-ron tích chập}
+  \label{fig:cnn}
+\end{figure}
+
+\subsection{Kiến trúc EfficientNet}
+EfficientNet là họ kiến trúc CNN do Tan và Le đề xuất~\cite{tan2019efficientnet}, nổi bật ở kỹ thuật \emph{compound scaling}: thay vì mở rộng riêng lẻ chiều sâu, chiều rộng hoặc độ phân giải ảnh, EfficientNet mở rộng đồng thời cả ba theo một hệ số thống nhất (Hình~\ref{fig:compound}), nhờ đó đạt độ chính xác cao với số tham số và chi phí tính toán thấp hơn nhiều kiến trúc cùng thời. Khối cơ bản của mạng là MBConv (mobile inverted bottleneck) kết hợp cơ chế squeeze-and-excitation (Hình~\ref{fig:mbconv}). Trong họ này, hệ thống sử dụng hai biến thể: EfficientNet-B0 nhẹ cho bài toán phân loại nhóm và EfficientNet-B2 (Hình~\ref{fig:effb2}) có dung lượng lớn hơn cho bài toán phân loại món chi tiết.
+
+Việc dùng hai biến thể khác nhau xuất phát từ đặc điểm của từng tầng. Tầng phân loại nhóm chỉ cần phân biệt tám nhóm vốn khác biệt rõ về hình thức, nên một mô hình nhẹ như EfficientNet-B0 (khoảng 5,3 triệu tham số, ảnh đầu vào $224\times224$) đã đủ chính xác mà vẫn nhanh --- đây là tầng luôn được chạy đầu tiên nên cần chi phí tính toán thấp. Ngược lại, tầng phân loại món chi tiết phải phân biệt nhiều món rất giống nhau trong cùng một nhóm (ví dụ các loại bánh, các món nước), đòi hỏi năng lực biểu diễn và độ phân giải cao hơn; EfficientNet-B2 (khoảng 9,1 triệu tham số, ảnh $260\times260$) đáp ứng tốt hơn cho nhiệm vụ khó này. Nếu dùng B2 cho mọi tầng thì chi phí tính toán tăng không cần thiết, còn dùng B0 cho tầng chi tiết lại thiếu năng lực phân biệt; do đó cách phối hợp B0--B2 cân bằng giữa tốc độ và độ chính xác.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth,height=0.8\textheight,keepaspectratio]{EfficientNet_compound_scaling.png}
+  \caption{Kỹ thuật compound scaling của EfficientNet}
+  \label{fig:compound}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth,height=0.8\textheight,keepaspectratio]{MBConv.png}
+  \caption{Cấu trúc khối MBConv}
+  \label{fig:mbconv}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth,height=0.8\textheight,keepaspectratio]{EfficientNet-B2.png}
+  \caption{Sơ đồ khối kiến trúc EfficientNet-B2}
+  \label{fig:effb2}
+\end{figure}
+
+\subsection{Học chuyển giao và Fine - Tuning mô hình}
+\label{sub:3-transfer}
+Do tập ảnh món ăn Việt Nam có quy mô hạn chế, việc huấn luyện mạng từ đầu dễ dẫn đến quá khớp. Vì vậy hệ thống áp dụng học chuyển giao (transfer learning): khởi tạo mạng bằng trọng số đã huấn luyện trên tập ImageNet rồi tinh chỉnh cho bài toán món ăn~\cite{yosinski2014transferable}. Quá trình tinh chỉnh được chia thành ba pha mở băng dần (progressive unfreezing): (P1) đóng băng toàn bộ phần trích đặc trưng, chỉ huấn luyện lớp phân loại mới; (P2) mở băng ba khối cuối của phần trích đặc trưng; (P3) mở băng toàn mạng với tốc độ học nhỏ. Mỗi pha sử dụng bộ tối ưu AdamW kèm lịch suy giảm cosine và hàm mất mát entropy chéo có làm trơn nhãn (label smoothing $0{,}1$); dữ liệu huấn luyện được tăng cường bằng lật ngang, xoay nhẹ và biến đổi màu để tăng khả năng tổng quát hóa. Chiến lược này tận dụng đặc trưng tổng quát của ImageNet ở các pha đầu và chỉ điều chỉnh sâu khi mô hình đã ổn định, giúp hội tụ nhanh và hạn chế quá khớp trên dữ liệu nhỏ.
+
+\subsection{Kiến trúc nhận diện hai tầng của hệ thống}
+\label{sub:3-2tang}
+Tập món ăn gồm hơn một trăm lớp với nhiều món tương đồng về hình thức. Để giảm độ khó của bài toán phân loại trực tiếp trên toàn bộ lớp, hệ thống vận dụng hướng phân loại phân cấp (coarse-to-fine), một cách tiếp cận đã được áp dụng trong các nghiên cứu nhận dạng ảnh quy mô lớn~\cite{yan2015hdcnn, zhu2017bcnn}, bằng cách tổ chức nhận diện theo hai tầng (Hình~\ref{fig:kientruc2tang}). Tầng thứ nhất là bộ phân loại nhóm dùng EfficientNet-B0 (ảnh đầu vào $224\times224$), xác định món thuộc một trong tám nhóm (bánh, bún--phở, cơm, món kho--nướng, canh--cháo, xôi, gỏi--cuốn, đặc biệt). Tầng thứ hai chọn mô hình con tương ứng với nhóm đó --- mỗi nhóm có một bộ phân loại riêng dùng EfficientNet-B2 (ảnh $260\times260$) --- để dự đoán lớp món cụ thể. Khi độ tin cậy của mô hình thấp, hệ thống thông báo không nhận diện được thay vì đưa ra dự đoán kém tin cậy. Kết quả nhận diện được ánh xạ về công thức chuẩn trong kho; nếu không khớp, hệ thống báo ``không tìm thấy'' (quy trình ở Hình~\ref{fig:qt-nhandien}). Cách chia hai tầng giúp mỗi mô hình con chỉ phải phân biệt số lớp nhỏ trong cùng nhóm, qua đó nâng độ chính xác so với một mô hình phẳng duy nhất.
+
+\diagramfig{kientruc_2tang}{Kiến trúc nhận diện món ăn hai tầng}{fig:kientruc2tang}
+
+\section{Công nghệ phát triển giao diện}
+\label{sec:3-frontend}
+Giao diện được xây dựng bằng Next.js --- một khung làm việc trên nền React, sử dụng ngôn ngữ TypeScript và thư viện Tailwind CSS~\cite{nextjs}. Next.js cung cấp cơ chế định tuyến theo thư mục, kết xuất phía máy chủ và tối ưu tài nguyên sẵn có, đáp ứng yêu cầu giao diện thân thiện, tương thích nhiều kích thước màn hình (mục~\ref{sec:2-phichucnang}) và trải nghiệm liền mạch từ tra cứu đến nấu ăn. Các lựa chọn thay thế gồm ứng dụng một trang thuần React (Create React App, Vite) hoặc hệ sinh thái Vue/Nuxt. So với ứng dụng một trang thuần, Next.js hỗ trợ kết xuất phía máy chủ và định tuyến quy ước giúp tải trang nhanh và thuận lợi cho việc phân quyền truy cập ở tầng định tuyến; so với Vue/Nuxt, React có hệ sinh thái thư viện phong phú hơn và phù hợp với kinh nghiệm sẵn có, nên Next.js được lựa chọn.
+
+\section{Công nghệ phát triển dịch vụ}
+\label{sec:3-backend}
+Tầng dịch vụ sử dụng FastAPI --- khung web Python bất đồng bộ, tích hợp kiểm tra kiểu dữ liệu bằng Pydantic và tự sinh tài liệu API theo chuẩn OpenAPI~\cite{fastapi}. Truy xuất dữ liệu thực hiện qua SQLAlchemy ở chế độ bất đồng bộ. Lựa chọn FastAPI giải quyết yêu cầu phản hồi nhanh cho các thao tác tìm kiếm và duyệt (mục~\ref{sec:2-phichucnang}), đồng thời cho phép nạp và chạy mô hình PyTorch~\cite{pytorch} ngay trong cùng tiến trình mà không cần cầu nối giữa các ngôn ngữ. Các lựa chọn thay thế gồm Flask, Django (Python) hoặc Express trên nền Node.js. So với Flask/Django, FastAPI hỗ trợ bất đồng bộ và kiểm tra kiểu ngay từ thiết kế; so với Node.js, việc dùng Python giúp tích hợp trực tiếp với hệ sinh thái học sâu (PyTorch, torchvision) mà mô hình nhận diện phụ thuộc vào. Đây là lý do FastAPI được chọn làm nền tảng cho tầng dịch vụ.
+
+\section{Cơ sở dữ liệu và hạ tầng}
+\label{sec:3-data}
+Dữ liệu công thức được lưu trong hệ quản trị cơ sở dữ liệu quan hệ PostgreSQL~\cite{postgresql}. Mô hình công thức có cấu trúc rõ ràng (nguyên liệu, các bước, phân loại đa chiều) và cần truy vấn lọc kết hợp nhiều tiêu chí (use case UC-04, Bảng~\ref{tab:uc-timkiem}), phù hợp với mô hình quan hệ. PostgreSQL còn hỗ trợ tìm kiếm văn bản và kiểu dữ liệu JSON, thuận lợi cho việc tìm kiếm công thức tiếng Việt và lưu các trường linh hoạt. Việc thay đổi lược đồ được quản lý bằng công cụ migration Alembic, và toàn bộ dịch vụ được đóng gói bằng Docker để đồng nhất môi trường. Các lựa chọn thay thế gồm MySQL hoặc cơ sở dữ liệu phi quan hệ như MongoDB. So với MySQL, PostgreSQL có hỗ trợ tìm kiếm văn bản và JSON mạnh hơn; so với MongoDB, mô hình quan hệ phù hợp hơn với dữ liệu công thức có ràng buộc và quan hệ chặt chẽ, nên PostgreSQL được lựa chọn.
+
+\section{Xác thực và bảo mật}
+\label{sec:3-baomat}
+Hệ thống website xác thực dựa trên JSON Web Token (JWT)~\cite{rfc7519}: sau khi đăng nhập, máy chủ cấp một access token ngắn hạn và một refresh token dài hạn; mật khẩu người dùng được băm trước khi lưu. Cơ chế này đáp ứng yêu cầu bảo mật và phân quyền giữa ba tác nhân (mục~\ref{sec:2-phichucnang}). So với phương án phiên (session) lưu trạng thái phía máy chủ, JWT không lưu trạng thái nên dễ mở rộng và phù hợp với kiến trúc tách lớp; so với việc ủy quyền qua nhà cung cấp bên thứ ba (OAuth2), tự quản lý JWT đơn giản và đủ dùng trong phạm vi đồ án. Vì vậy JWT được lựa chọn cho cơ chế xác thực.
+
+Chương này đã trình bày nền tảng lý thuyết nhận diện ảnh cùng các công nghệ được lựa chọn và lý do tương ứng với từng yêu cầu ở Chương 2. Các lựa chọn này là cơ sở để tiến hành phân tích thiết kế, triển khai và đánh giá hệ thống ở Chương~\ref{chapter:Experiment}.
+
+\end{document}

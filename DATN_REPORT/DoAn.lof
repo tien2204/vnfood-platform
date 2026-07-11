@@ -1,0 +1,41 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Biểu đồ use case tổng quát}}{6}{figure.caption.7}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Use case phân rã xác thực tài khoản}}{7}{figure.caption.8}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Use case phân rã nhận diện món ăn}}{7}{figure.caption.9}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Use case phân rã quản lý và đề xuất công thức}}{7}{figure.caption.10}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Use case phân rã lập kế hoạch bữa ăn}}{8}{figure.caption.11}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Use case phân rã tương tác cộng đồng}}{9}{figure.caption.12}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Use case phân rã bản tin công thức}}{10}{figure.caption.13}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Use case phân rã hướng dẫn nấu ăn theo từng bước}}{10}{figure.caption.14}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Quy trình nhận diện món ăn}}{11}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Quy trình đề xuất và duyệt công thức}}{12}{figure.caption.16}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Minh họa kiến trúc mạng nơ-ron tích chập}}{22}{figure.caption.17}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Kỹ thuật compound scaling của EfficientNet}}{23}{figure.caption.18}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Cấu trúc khối MBConv}}{23}{figure.caption.19}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Sơ đồ khối kiến trúc EfficientNet-B2}}{23}{figure.caption.20}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Kiến trúc nhận diện món ăn hai tầng}}{25}{figure.caption.21}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Biểu đồ phụ thuộc gói}}{28}{figure.caption.22}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Biểu đồ lớp gói nhận diện món ăn}}{29}{figure.caption.23}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Biểu đồ trình tự use case Nhận diện món ăn}}{30}{figure.caption.24}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Biểu đồ trình tự use case Đề xuất và duyệt công thức}}{30}{figure.caption.25}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Biểu đồ thực thể liên kết}}{31}{figure.caption.26}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Màn hình trang chủ}}{32}{figure.caption.27}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Màn hình trang chủ (phần tiếp theo)}}{32}{figure.caption.28}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Màn hình tìm kiếm và lọc công thức}}{33}{figure.caption.29}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Màn hình chi tiết công thức}}{33}{figure.caption.30}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Màn hình chi tiết công thức (phần tiếp theo)}}{33}{figure.caption.31}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Màn hình chế độ nấu ăn theo bước (có hẹn giờ)}}{34}{figure.caption.32}%
+\contentsline {figure}{\numberline {4.12}{\ignorespaces Màn hình nhận diện món ăn từ ảnh và kết quả}}{34}{figure.caption.33}%
+\contentsline {figure}{\numberline {4.13}{\ignorespaces Màn hình ``Công thức của tôi'' --- công thức do người dùng tạo}}{34}{figure.caption.34}%
+\contentsline {figure}{\numberline {4.14}{\ignorespaces Màn hình kế hoạch bữa ăn và danh sách đi chợ}}{35}{figure.caption.35}%
+\contentsline {figure}{\numberline {4.15}{\ignorespaces Màn hình bảng điều khiển quản trị (tổng quan)}}{35}{figure.caption.36}%
+\contentsline {figure}{\numberline {4.16}{\ignorespaces Ma trận nhầm lẫn của bộ phân loại nhóm}}{37}{figure.caption.37}%
+\contentsline {figure}{\numberline {4.17}{\ignorespaces Đường cong ROC của bộ phân loại nhóm}}{37}{figure.caption.38}%
+\contentsline {figure}{\numberline {4.18}{\ignorespaces Biểu đồ triển khai hệ thống}}{39}{figure.caption.39}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsfinish 
+\contentsfinish 

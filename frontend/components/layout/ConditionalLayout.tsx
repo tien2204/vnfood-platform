@@ -5,6 +5,8 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import MobileBottomNav from "./MobileBottomNav";
 import ContextSwitcher from "./ContextSwitcher";
+import SessionKeepAlive from "./SessionKeepAlive";
+import NewsletterConsentPrompt from "@/components/common/NewsletterConsentPrompt";
 
 export default function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -23,6 +25,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
   if (bare) {
     return (
       <>
+        <SessionKeepAlive />
         {switcher}
         {children}
       </>
@@ -31,11 +34,13 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
 
   return (
     <>
+      <SessionKeepAlive />
       {switcher}
       <Navbar />
       <main className="flex-1 pb-16 md:pb-0">{children}</main>
       <Footer />
       <MobileBottomNav />
+      <NewsletterConsentPrompt />
     </>
   );
 }

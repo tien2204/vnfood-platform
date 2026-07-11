@@ -1,0 +1,253 @@
+<mxfile host="app.diagrams.net" modified="2026-06-03T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="uc-overview" name="Use case tong quat">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sys1" value="Hệ thống VNFood" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontStyle=1;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="220" y="60" width="720" height="650" as="geometry"/>
+        </mxCell>
+        <mxCell id="guest1" value="Khách vãng lai" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="170" width="70" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="user1" value="Người dùng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="430" width="70" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="admin1" value="Quản trị viên" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="310" width="70" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="shop1" value="Nền tảng mua sắm bên ngoài" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="560" width="90" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_register1" value="Đăng ký" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="100" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_login1" value="Đăng nhập" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="100" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_detail1" value="Xem chi tiết công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="200" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_recognize1" value="Nhận diện ảnh món ăn" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="200" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_ingredient1" value="Tra cứu công thức theo nguyên liệu" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="200" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_submit1" value="Đăng công thức cộng đồng" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="350" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_meal1" value="Lập kế hoạch bữa ăn" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="350" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_grocery1" value="Tạo danh sách mua sắm từ kế hoạch bữa ăn" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="350" width="190" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_buy1" value="Mua nguyên liệu từ danh sách mua sắm" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="520" width="210" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_approve1" value="Duyệt công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="100" width="170" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1_1" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="guest1" target="uc_register1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_2" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="guest1" target="uc_login1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_3" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="guest1" target="uc_detail1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_4" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="guest1" target="uc_recognize1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_5" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="guest1" target="uc_ingredient1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_6" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user1" target="uc_submit1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_7" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user1" target="uc_meal1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_8" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user1" target="uc_grocery1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_9" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user1" target="uc_buy1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_10" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin1" target="uc_approve1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_11" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin1" target="uc_submit1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_12" value="" style="endArrow=none;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_buy1" target="shop1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1_13" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_grocery1" target="uc_meal1"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="uc-user" name="Use case phan ra - Nguoi dung">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sys2" value="Nhóm chức năng người dùng và cộng đồng" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontStyle=1;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="220" y="50" width="760" height="700" as="geometry"/>
+        </mxCell>
+        <mxCell id="guest2" value="Khách vãng lai" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="140" width="70" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="user2" value="Người dùng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="470" width="70" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_auth2" value="Đăng ký / Đăng nhập" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="90" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_browse2" value="Tìm kiếm và xem danh sách công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="90" width="220" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_detail2" value="Xem chi tiết công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="210" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_recognize2" value="Nhận diện ảnh món ăn" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="210" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_suggest2" value="Gợi ý công thức theo nguyên liệu" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="750" y="210" width="190" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_submit2" value="Đăng công thức cộng đồng" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="350" width="200" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_edit2" value="Sửa / xóa công thức của bản thân" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="350" width="210" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_save2" value="Lưu công thức yêu thích" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="350" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_rate2" value="Đánh giá công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="500" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_comment2" value="Bình luận công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="500" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_follow2" value="Theo dõi người dùng" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="730" y="500" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_feed2" value="Xem bảng tin cộng đồng" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="630" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_profile2" value="Quản lý hồ sơ cá nhân" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="630" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2_1" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="guest2" target="uc_auth2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_2" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="guest2" target="uc_browse2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_3" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="guest2" target="uc_detail2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_4" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="guest2" target="uc_recognize2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_5" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="guest2" target="uc_suggest2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_6" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user2" target="uc_submit2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_7" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user2" target="uc_edit2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_8" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user2" target="uc_save2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_9" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user2" target="uc_rate2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_10" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user2" target="uc_comment2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_11" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user2" target="uc_follow2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_12" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user2" target="uc_feed2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2_13" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user2" target="uc_profile2"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="uc-meal-grocery" name="Use case phan ra - Meal plan va Grocery">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sys3" value="Nhóm chức năng Meal Plan và Smart Grocery List" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontStyle=1;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="230" y="50" width="720" height="690" as="geometry"/>
+        </mxCell>
+        <mxCell id="user3" value="Người dùng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="350" width="70" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="shop3" value="Nền tảng mua sắm bên ngoài" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="510" width="90" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_create_plan3" value="Tạo kế hoạch bữa ăn" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="100" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_ai_plan3" value="Nhận gợi ý kế hoạch bữa ăn" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="100" width="210" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_view_plan3" value="Xem kế hoạch theo tuần" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="230" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_add_recipe3" value="Thêm công thức vào bữa ăn" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="230" width="210" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_update_item3" value="Cập nhật / xóa món trong kế hoạch" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="350" width="230" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_grocery3" value="Tạo danh sách mua sắm" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="480" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_check3" value="Đánh dấu nguyên liệu đã mua" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="480" width="210" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_manual3" value="Thêm nguyên liệu thủ công" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="610" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_buy3" value="Mở liên kết mua nguyên liệu" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="610" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3_1" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user3" target="uc_create_plan3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3_2" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user3" target="uc_ai_plan3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3_3" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user3" target="uc_view_plan3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3_4" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user3" target="uc_add_recipe3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3_5" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user3" target="uc_update_item3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3_6" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user3" target="uc_grocery3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3_7" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user3" target="uc_check3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3_8" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user3" target="uc_manual3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3_9" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="user3" target="uc_buy3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3_10" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_grocery3" target="uc_view_plan3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3_11" value="" style="endArrow=none;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_buy3" target="shop3"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="uc-admin" name="Use case phan ra - Admin">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sys4" value="Nhóm chức năng quản trị" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontStyle=1;verticalAlign=top;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="230" y="50" width="760" height="690" as="geometry"/>
+        </mxCell>
+        <mxCell id="admin4" value="Quản trị viên" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="350" width="70" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_dashboard4" value="Xem dashboard thống kê" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="90" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_charts4" value="Xem biểu đồ hoạt động hệ thống" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="90" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_review_recipe4" value="Duyệt / từ chối công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="220" width="210" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_delete_recipe4" value="Xóa công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="220" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_manual_review4" value="Đánh dấu cần kiểm tra thủ công" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="330" width="230" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_users4" value="Quản lý người dùng" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="460" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_user_status4" value="Khóa / mở khóa tài khoản" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="460" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_role4" value="Thay đổi quyền người dùng" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="770" y="460" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_comments4" value="Quản lý bình luận" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="600" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_ingredients4" value="Quản lý nguyên liệu" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="600" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_merge4" value="Gộp / đổi tên nguyên liệu" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="790" y="600" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4_1" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_dashboard4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_2" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_charts4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_3" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_review_recipe4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_4" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_delete_recipe4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_5" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_manual_review4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_6" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_users4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_7" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_user_status4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_8" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_role4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_9" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_comments4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_10" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_ingredients4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_11" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin4" target="uc_merge4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_12" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_user_status4" target="uc_users4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_13" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_role4" target="uc_users4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4_14" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_merge4" target="uc_ingredients4"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

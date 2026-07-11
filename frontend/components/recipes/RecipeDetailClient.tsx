@@ -260,21 +260,6 @@ export function RecipeDetailClient({ recipe, isLoggedIn, currentUserId, isAdmin,
                 />
               </div>
             </div>
-
-            <div className="bg-card rounded-xl p-5 border border-border shadow-card">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Hành động nhanh</p>
-              <div className="space-y-2.5">
-                <button className="w-full text-left text-sm text-foreground hover:text-primary transition-colors">
-                  📋 Copy danh sách nguyên liệu
-                </button>
-                <button className="w-full text-left text-sm text-foreground hover:text-primary transition-colors">
-                  🖨 In công thức
-                </button>
-                <button className="w-full text-left text-sm text-foreground hover:text-primary transition-colors">
-                  📤 Chia sẻ
-                </button>
-              </div>
-            </div>
           </div>
         </aside>
       </div>

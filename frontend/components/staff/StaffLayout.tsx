@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard, Users, BookOpen, MessageSquare, Leaf, Menu, X, ChefHat,
-  LogOut, ClipboardList, FileCheck2, Inbox,
+  LayoutDashboard, Users, BookOpen, MessageSquare, Menu, X, ChefHat,
+  LogOut, ClipboardList, FileCheck2, Inbox, Send,
 } from "lucide-react";
 import { clearTokens } from "@/lib/auth";
 import { useUser } from "@/lib/hooks/useUser";
@@ -22,7 +22,7 @@ const ADMIN_ITEMS: NavItem[] = [
   { href: "/staff/users", label: "Người dùng", icon: Users },
   { href: "/staff/recipes", label: "Công thức", icon: BookOpen },
   { href: "/staff/comments", label: "Bình luận", icon: MessageSquare },
-  { href: "/staff/ingredients", label: "Nguyên liệu", icon: Leaf },
+  { href: "/staff/newsletter", label: "Bản tin", icon: Send },
 ];
 
 function NavLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {

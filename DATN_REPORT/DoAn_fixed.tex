@@ -1,0 +1,167 @@
+% =====================================================================
+% DoAn_fixed.tex — TỔNG HỢP CÁC PHẦN ĐÃ CHỈNH SỬA (để review một lượt)
+% Biên dịch độc lập từ thư mục DATN_REPORT/:  pdflatex DoAn_fixed.tex
+% (Đây KHÔNG phải bản nộp; trích dẫn/tham chiếu được rút gọn thành chữ
+%  cho dễ đọc, hình lấy trực tiếp từ figures/.)
+% =====================================================================
+\documentclass[13pt,a4paper]{article}
+\usepackage[utf8]{vietnam}
+\usepackage{times}
+\usepackage[top=2cm,bottom=2cm,left=3cm,right=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{url}
+\graphicspath{{figures/}}
+\onehalfspacing
+\setlength{\parindent}{15pt}
+
+\newcommand{\rfig}[2]{% #1=tên file (figures/), #2=nhãn caption
+  \begin{figure}[H]\centering
+    \includegraphics[width=0.92\textwidth,height=0.78\textheight,keepaspectratio]{#1}
+    \caption*{#2}
+  \end{figure}}
+
+\begin{document}
+
+% =====================================================================
+\section*{TÓM TẮT NỘI DUNG ĐỒ ÁN}
+Đồ án tốt nghiệp này xây dựng hệ thống phần mềm dựa trên website quản lý và chia sẻ công thức món ăn Việt Nam, tích hợp khả năng nhận diện món ăn từ hình ảnh bằng kỹ thuật học sâu, nhằm khắc phục tình trạng công thức phân mảnh, thiếu chuẩn hóa và thiếu một cách trực quan để nhận biết món ăn rồi tra cứu công thức. Hệ thống website gồm giao diện Next.js, máy chủ dịch vụ FastAPI và cơ sở dữ liệu PostgreSQL; bài toán nhận diện sử dụng mạng EfficientNet huấn luyện theo từng nhóm món theo kiến trúc phân cấp hai tầng để nâng cao độ chính xác. Hệ thống phần mềm cung cấp kho công thức đã chuẩn hóa (nguyên liệu, các bước, thời gian, độ khó) với phân loại theo vùng miền, loại món và bữa ăn; cho phép tra cứu công thức từ ảnh, lập kế hoạch bữa ăn theo tuần kèm danh sách đi chợ tự động, cùng các tính năng cộng đồng và đóng góp công thức có kiểm duyệt. Đóng góp chính của đồ án là xây dựng phần mềm thực hiện một quy trình sử dụng liền mạch từ nhận diện món ăn đến nấu và lập kế hoạch bữa ăn, cùng ràng buộc chặt chẽ giữa kết quả nhận diện và kho công thức: kết quả luôn ánh xạ về công thức có thật, nếu không hệ thống thông báo không nhận diện được --- qua đó bảo đảm tính nhất quán và độ tin cậy.
+
+% =====================================================================
+\section*{1.3\quad Định hướng giải pháp}
+Để giải quyết nhiệm vụ đã xác định ở phần~1.2, đồ án lựa chọn định hướng xây dựng một ứng dụng web theo kiến trúc client--server tách biệt, kết hợp với kỹ thuật học sâu cho bài toán nhận diện hình ảnh. Phần giao diện người dùng được phát triển trên nền Next.js với TypeScript, phần máy chủ dịch vụ sử dụng FastAPI trên nền Python, dữ liệu được lưu trữ trong hệ quản trị cơ sở dữ liệu PostgreSQL và việc xác thực người dùng dựa trên cơ chế JSON Web Token.
+
+Đối với chức năng nhận diện món ăn, đồ án vận dụng mạng nơ-ron tích chập EfficientNet theo kiến trúc phân cấp hai tầng. Tầng thứ nhất phân loại ảnh vào một trong các nhóm món, tầng thứ hai dùng mô hình chuyên biệt của nhóm để xác định món cụ thể. Cách chia này giúp mỗi mô hình chỉ phải phân biệt số lớp nhỏ trong cùng nhóm, qua đó nâng cao độ chính xác so với một mô hình phẳng duy nhất.
+
+Theo định hướng đó, giải pháp của đồ án là một nền tảng cung cấp kho công thức món ăn được chuẩn hóa, trong đó có một tập công thức tiêu biểu được tuyển chọn làm tham chiếu. Quy trình nhận diện ảnh được thiết kế để kết quả luôn ánh xạ về các công thức có trong kho; trường hợp không xác định được, hệ thống thông báo không nhận diện được thay vì trả về kết quả thiếu tin cậy. Trên nền tảng này, người dùng có thể tra cứu công thức bằng hình ảnh hoặc từ nguyên liệu sẵn có, lập kế hoạch bữa ăn và tương tác trong cộng đồng.
+
+Đóng góp chính của đồ án là xây dựng được một ứng dụng web sử dụng mạch lạc, từ việc chụp ảnh món ăn, tìm đúng công thức, đến nấu, lưu lại và lập kế hoạch bữa ăn, cùng với một ràng buộc chặt chẽ giữa kết quả nhận diện và dữ liệu công thức của hệ thống nhằm bảo đảm độ tin cậy. Kết quả đạt được là một hệ thống hoàn chỉnh, chạy được trên môi trường thử nghiệm, với kho dữ liệu công thức tiếng Việt có cấu trúc và mô hình nhận diện hỗ trợ nhiều lớp món ăn khác nhau.
+
+% =====================================================================
+\section*{Hình chương 2 (use case)}
+\rfig{usecase_tong_quat}{Hình 2.1: Biểu đồ use case tổng quát}
+\rfig{usecase_nhan_dien}{Hình 2.3: Use case phân rã nhận diện món ăn}
+
+% =====================================================================
+\section*{3.2.4\quad Kiến trúc nhận diện hai tầng của hệ thống}
+Tập món ăn gồm hơn một trăm lớp với nhiều món tương đồng về hình thức. Để giảm độ khó của bài toán phân loại trực tiếp trên toàn bộ lớp, hệ thống vận dụng hướng phân loại phân cấp (coarse-to-fine), một cách tiếp cận đã được áp dụng trong các nghiên cứu nhận dạng ảnh quy mô lớn~\cite{yan2015hdcnn, zhu2017bcnn}, bằng cách tổ chức nhận diện theo hai tầng (Hình~3.5). Tầng thứ nhất là bộ phân loại nhóm dùng EfficientNet-B0 (ảnh đầu vào $224\times224$), xác định món thuộc một trong tám nhóm (bánh, bún--phở, cơm, món kho--nướng, canh--cháo, xôi, gỏi--cuốn, đặc biệt). Tầng thứ hai chọn mô hình con tương ứng với nhóm đó --- mỗi nhóm có một bộ phân loại riêng dùng EfficientNet-B2 (ảnh $260\times260$) --- để dự đoán lớp món cụ thể. Khi độ tin cậy của mô hình thấp, hệ thống thông báo không nhận diện được thay vì đưa ra dự đoán kém tin cậy. Kết quả nhận diện được ánh xạ về công thức chuẩn trong kho; nếu không khớp, hệ thống báo ``không tìm thấy'' (quy trình nhận diện món ăn). Cách chia hai tầng giúp mỗi mô hình con chỉ phải phân biệt số lớp nhỏ trong cùng nhóm, qua đó nâng độ chính xác so với một mô hình phẳng duy nhất.
+
+\rfig{kientruc_2tang}{Hình 3.5: Kiến trúc nhận diện món ăn hai tầng}
+
+% =====================================================================
+\noindent\textit{Chương 5 trình bày các giải pháp và đóng góp nổi bật nhất của đồ án; mỗi đóng góp gồm bài toán đặt ra, giải pháp và kết quả đạt được.}
+
+\section*{5.1\quad Xây dựng kho công thức nấu ăn gắn với tập món ăn được hệ thống nhận diện}
+
+\subsubsection*{Bài toán}
+Hệ thống website nhận diện ảnh có thể xác định một trong 103 lớp món ăn Việt Nam. Để chức năng nhận diện trả về kết quả có ích, mỗi lớp món cần có ít nhất một công thức thực sự trong kho. Nếu kho công thức và tập món mà mô hình nhận diện được không trùng khớp, người dùng sẽ nhận được kết quả nhận diện nhưng không tra được công thức --- đây là tình huống cần loại bỏ ngay từ thiết kế.
+
+\subsubsection*{Giải pháp}
+Đồ án thu thập công thức từ monngonmoingay.com --- một nguồn ẩm thực Việt Nam có cấu trúc --- thông qua sitemap và JSON-LD Recipe. Các công thức thu được được nhập vào cơ sở dữ liệu và nhóm lại theo định danh món (trường \texttt{canonical\_dish\_slug}, sinh tự động từ tiêu đề công thức bằng cách chuyển về chữ thường không dấu). Với mỗi nhóm món, một công thức đại diện (đánh dấu bằng cờ \texttt{is\_canonical}) được chọn dựa trên chất lượng nội dung --- ưu tiên có ảnh, đủ nguyên liệu, nhiều lượt lưu; nội dung công thức được giữ nguyên từ nguồn gốc, không thêm hay bịa nguyên liệu mới.
+
+Tiếp theo, toàn bộ công thức trong kho được gắn nhãn lớp AI (trường \texttt{ai\_class\_slug}) bằng cách khớp tiền tố tên món với 103 tên lớp mà mô hình nhận diện được. Phép khớp dài nhất được ưu tiên --- ví dụ ``Bánh mì chảo'' khớp với lớp \texttt{banh-mi-chao} trước khi khớp với \texttt{banh-mi} --- nhờ đó các biến thể theo tên như ``Phở gà'', ``Phở bò'' đều được gắn về đúng lớp gốc.
+
+Để bảo đảm tính nhất quán về nguồn gốc và chất lượng dữ liệu, tập công thức hiển thị công khai trên trang tìm kiếm (\texttt{/recipes}) được thu hẹp về \emph{một công thức đại diện cho mỗi lớp món AI}, chọn trong số các công thức được cào từ monngonmoingay.com và đã gắn nhãn lớp AI hợp lệ --- ưu tiên công thức có định danh món trùng đúng tên lớp, sau đó tới công thức nhiều lượt lưu nhất. Cách thu hẹp này loại bỏ các biến thể cùng một lớp (ví dụ ``Phở bò'' và ``Phở gà'' chỉ giữ lại một đại diện cho lớp \texttt{pho}), kết hợp với công thức do người dùng đóng góp. Do nguồn monngonmoingay.com chỉ phủ 47 trong số 103 lớp món, danh mục công khai gồm khoảng 47 công thức đại diện (tại thời điểm hoàn thiện đồ án); trong đó khoảng 17 công thức có định danh trùng đúng tên lớp, 30 công thức còn lại là biến thể được chọn làm đại diện cho các lớp không có món trùng tên --- tuy tên gọi cụ thể hơn nhưng vẫn đúng là món thuộc lớp đó.
+
+\subsubsection*{Kết quả}
+Cần phân biệt hai phạm vi. Danh mục duyệt công khai (\texttt{/recipes}) trình bày khoảng 47 công thức đại diện theo từng lớp cho gọn và dễ khám phá; trong khi đó kho dữ liệu phục vụ nhận diện bao phủ toàn bộ 103 lớp món. Nhờ vậy, khi người dùng tải ảnh, kết quả nhận diện luôn ánh xạ được về ít nhất một công thức thực, loại bỏ tình huống nhận diện được nhưng không có công thức để trả về --- giới hạn 47 lớp ở danh mục duyệt là lựa chọn về nguồn gốc và độ gọn của giao diện, không phải giới hạn năng lực nhận diện. Đây cũng là nền tảng dữ liệu để gắn kết với kết quả nhận diện ở mục~5.2.
+
+% =====================================================================
+\section*{5.2\quad Ràng buộc nhất quán giữa nhận diện và dữ liệu công thức}
+\subsubsection*{Bài toán}
+Hệ thống website gồm hai mảng tưởng như tách rời: mô hình AI nhận diện món ăn từ ảnh, và kho công thức để tra cứu. Nếu hai mảng này hoạt động độc lập, hệ thống dễ rơi vào tình trạng ``các tính năng rời rạc'': mô hình có thể nhận ra một món nhưng hệ thống không có công thức tương ứng, hoặc trả về kết quả không ăn khớp với dữ liệu thật, làm mất lòng tin của người dùng.
+
+\subsubsection*{Giải pháp}
+Đồ án thiết kế một \emph{ràng buộc bất biến} làm trục liên kết hai mảng: kết quả nhận diện chỉ được chấp nhận khi ánh xạ được về một món có công thức chuẩn trong kho; nếu nhãn dự đoán không khớp định danh món chuẩn nào, hệ thống chủ động báo ``không tìm thấy'' thay vì trả kết quả tùy tiện. Việc kiểm soát phạm vi hiển thị được thực hiện ở tầng dữ liệu (phân biệt công thức chuẩn, công thức người dùng và kho dữ liệu gốc) thay vì dựa vào vai trò người dùng. Nhờ đó, thay cho cơ chế ``cổng kiểm duyệt theo vai trò'' thường gặp, hệ thống dùng \emph{cổng kiểm soát theo tầng dữ liệu}, vừa bảo đảm độ tin cậy vừa dễ mở rộng quy mô.
+
+\subsubsection*{Kết quả}
+Ràng buộc này tạo ra một quá trình người dùng liền mạch và nhất quán: chụp ảnh hoặc tra cứu, ra đúng công thức chuẩn, rồi nấu, lưu, xem biến thể và đưa vào kế hoạch bữa ăn. Mọi kết quả nhận diện đưa ra cho người dùng đều có công thức thật phía sau, loại bỏ các phản hồi ``treo'' không dẫn tới đâu.
+
+% =====================================================================
+\section*{5.3\quad Luồng xử lí khối nhận diện hai tầng phân cấp}
+\subsubsection*{Bài toán}
+Tập món ăn cần nhận diện gồm hơn một trăm lớp, trong đó nhiều món rất giống nhau về hình thức (các loại bánh, các món nước). Một mô hình phân loại phẳng trên toàn bộ số lớp khó đạt độ chính xác cao và dễ nhầm giữa các món tương đồng.
+
+\subsubsection*{Giải pháp}
+Đồ án vận dụng kiến trúc nhận diện phân cấp hai tầng (coarse-to-fine)~\cite{yan2015hdcnn, zhu2017bcnn}: tầng thứ nhất phân loại ảnh vào một trong tám nhóm món, tầng thứ hai dùng mô hình chuyên biệt cho từng nhóm để phân loại món chi tiết. Khi độ tin cậy thấp, hệ thống thông báo không nhận diện được thay vì đưa ra dự đoán kém tin cậy. Chi tiết kiến trúc và chiến lược huấn luyện đã được trình bày ở mục~3.2.4 (Hình~3.5).
+
+\subsubsection*{Kết quả}
+Cách chia hai tầng giúp mỗi mô hình con chỉ phải phân biệt số lớp nhỏ trong cùng nhóm, qua đó nâng độ chính xác. Kết quả đánh giá ở phần đánh giá mô hình nhận diện (Chương 4) cho thấy bộ phân loại nhóm đạt độ chính xác $92{,}48\%$, các bộ phân loại món trong nhóm đạt từ $89{,}95\%$ đến $98{,}88\%$ --- kết quả khả quan cho bài toán phân loại nhiều lớp trên dữ liệu món ăn Việt Nam.
+
+So với phương án dùng các dịch vụ nhận diện đa năng có sẵn trên thị trường (ví dụ mô hình thị giác của OpenAI), mô hình tự huấn luyện hai tầng của đồ án có phạm vi hẹp hơn --- chỉ tập trung vào 103 lớp món Việt --- nhưng đổi lại đạt độ chính xác cao trên đúng tập món mục tiêu, chạy cục bộ nên không phụ thuộc dịch vụ bên ngoài, không phát sinh chi phí gọi API hay độ trễ mạng, và quan trọng nhất là chủ động kiểm soát được kết quả để ràng buộc chặt với kho công thức. Ngược lại, các API đa năng có độ bao phủ món ăn rộng hơn nhiều lần và nhận diện được cả món nằm ngoài tập huấn luyện, song khó bảo đảm kết quả luôn ánh xạ về một công thức cụ thể trong kho, đồng thời kém chủ động về chi phí và quyền riêng tư dữ liệu. Việc lựa chọn mô hình chuyên biệt vì thế phù hợp với mục tiêu của đồ án là gắn chặt nhận diện với kho công thức tiếng Việt đã chuẩn hóa.
+
+% =====================================================================
+\section*{5.4\quad Quy trình đóng góp công thức có kiểm duyệt}
+\subsubsection*{Bài toán}
+Để kho công thức ngày càng phong phú, hệ thống cần cho phép người dùng đóng góp công thức mới. Tuy nhiên, nội dung do người dùng tạo ra cần được kiểm soát chất lượng trước khi đưa vào kho chung, và không chỉ việc tạo mới mà cả việc chỉnh sửa hay xóa công thức cũng cần được giám sát.
+
+\subsubsection*{Giải pháp}
+Đồ án thiết kế quy trình đề xuất--duyệt thống nhất cho cả ba thao tác tạo, sửa và xóa. Mọi thao tác của người dùng lên kho chung được gói thành một ``yêu cầu thay đổi'' lưu ở trạng thái chờ duyệt, với nội dung đề xuất chứa trong trường dữ liệu linh hoạt (JSONB). Quản trị viên xem xét rồi phê duyệt --- khi đó thay đổi mới được áp dụng vào kho --- hoặc từ chối kèm lý do. Thiết kế này được mô tả ở phần thiết kế chi tiết (Chương 4).
+
+\subsubsection*{Kết quả}
+Hệ thống website cho phép mở rộng kho công thức từ cộng đồng mà vẫn giữ được chất lượng và tính nhất quán của dữ liệu. Việc gộp chung cả ba thao tác vào một cơ chế duyệt giúp luồng kiểm soát đơn giản và đồng nhất, đồng thời lưu vết đầy đủ các thay đổi đối với kho công thức.
+
+% =====================================================================
+\section*{6.2\quad Hướng phát triển}
+Trong thời gian tới, hệ thống có thể được hoàn thiện và mở rộng theo các hướng sau.
+
+Trước hết là hoàn thiện các chức năng đã có: bổ sung tính năng điều chỉnh khẩu phần linh hoạt cho công thức, xây dựng bảng điều khiển quản trị đầy đủ hơn, và tăng cường kiểm thử tự động cho các luồng quan trọng. Tiếp đó, hệ thống cần được đưa lên môi trường đám mây để phục vụ người dùng thực và đánh giá khả năng chịu tải.
+
+Về các hướng đi mới, có thể phát triển ứng dụng di động để tận dụng camera điện thoại cho việc nhận diện món ăn thuận tiện hơn; bổ sung không gian blog cộng đồng có kiểm duyệt để người dùng chia sẻ kinh nghiệm nấu nướng; và cá nhân hóa gợi ý theo nhu cầu dinh dưỡng (calo, chỉ số khối cơ thể). Về phía mô hình nhận diện, có thể mở rộng tập món ăn, bổ sung dữ liệu huấn luyện cho các nhóm món còn nhầm lẫn nhiều, và thử nghiệm các kiến trúc mạng mới nhằm nâng cao độ chính xác.
+
+Một hướng đáng chú ý khác là thay thế hoặc kết hợp mô hình nhận diện hiện tại bằng các mô hình ngôn ngữ--thị giác đa phương thức thông qua API như OpenAI hay Gemini. Các mô hình này được huấn luyện trên kho dữ liệu khổng lồ nên có năng lực nhận diện mạnh hơn và độ bao phủ món ăn rộng hơn nhiều lần so với mô hình huấn luyện riêng trên tập một trăm lẻ ba lớp, đồng thời có khả năng nhận diện cả những món nằm ngoài tập đã huấn luyện. Đổi lại, hướng này phụ thuộc vào dịch vụ bên thứ ba, phát sinh chi phí gọi API và độ trễ mạng, do đó cần cân nhắc giữa độ bao phủ và tính chủ động khi triển khai thực tế.
+
+% =====================================================================
+\renewcommand{\refname}{TÀI LIỆU THAM KHẢO}
+\begin{thebibliography}{99}
+\bibitem{lecun1998gradient}
+Y. LeCun, L. Bottou, Y. Bengio, and P. Haffner,
+``Gradient-based learning applied to document recognition,''
+\textit{Proceedings of the IEEE}, vol. 86, no. 11, pp. 2278--2324, 1998.
+
+\bibitem{krizhevsky2012imagenet}
+A. Krizhevsky, I. Sutskever, and G. E. Hinton,
+``ImageNet classification with deep convolutional neural networks,''
+in \textit{Advances in Neural Information Processing Systems (NeurIPS)}, vol. 25, 2012, pp. 1097--1105.
+
+\bibitem{tan2019efficientnet}
+M. Tan and Q. V. Le,
+``EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks,''
+in \textit{Proc. 36th International Conference on Machine Learning (ICML)}, 2019, pp. 6105--6114.
+
+\bibitem{yosinski2014transferable}
+J. Yosinski, J. Clune, Y. Bengio, and H. Lipson,
+``How transferable are features in deep neural networks?,''
+in \textit{Advances in Neural Information Processing Systems (NeurIPS)}, vol. 27, 2014, pp. 3320--3328.
+
+\bibitem{yan2015hdcnn}
+Z. Yan, H. Zhang, R. Piramuthu, V. Jagadeesh, D. DeCoste, W. Di, and Y. Yu,
+``HD-CNN: Hierarchical Deep Convolutional Neural Networks for Large Scale Visual Recognition,''
+in \textit{Proc. IEEE International Conference on Computer Vision (ICCV)}, 2015, pp. 2740--2748.
+
+\bibitem{zhu2017bcnn}
+X. Zhu and M. Bain,
+``B-CNN: Branch Convolutional Neural Network for Hierarchical Classification,''
+\textit{arXiv preprint arXiv:1709.09890}, 2017.
+
+\bibitem{nextjs}
+Vercel, ``Next.js Documentation.'' [Online]. Available: \url{https://nextjs.org/docs}
+
+\bibitem{fastapi}
+S. Ram\'irez, ``FastAPI Documentation.'' [Online]. Available: \url{https://fastapi.tiangolo.com}
+
+\bibitem{pytorch}
+PyTorch Team, ``PyTorch Documentation.'' [Online]. Available: \url{https://pytorch.org/docs}
+
+\bibitem{postgresql}
+The PostgreSQL Global Development Group, ``PostgreSQL 16 Documentation.'' [Online]. Available: \url{https://www.postgresql.org/docs/16/}
+
+\bibitem{rfc7519}
+M. Jones, J. Bradley, and N. Sakimura,
+``JSON Web Token (JWT), RFC 7519,'' 2015. [Online]. Available: \url{https://www.rfc-editor.org/rfc/rfc7519}
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,29 @@
+@startuml quytrinh_de_xuat_duyet_cong_thuc
+' Biểu đồ hoạt động - Quy trình đề xuất & duyệt công thức
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+|Người dùng|
+start
+:Soạn nội dung công thức;
+:Gửi đề xuất (tạo / sửa / xóa);
+
+|Hệ thống|
+:Lưu đề xuất ở trạng thái "chờ duyệt";
+
+|Quản trị viên|
+:Xem & kiểm tra đề xuất;
+if (Chấp nhận?) then (Có)
+  |Hệ thống|
+  :Áp dụng thay đổi vào công thức;
+  :Cập nhật trạng thái "đã duyệt";
+else (Không)
+  |Quản trị viên|
+  :Đánh dấu từ chối + lưu lý do;
+endif
+
+|Người dùng|
+:Nhận thông báo kết quả;
+stop
+@enduml

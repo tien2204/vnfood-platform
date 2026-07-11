@@ -1,0 +1,24 @@
+@startuml usecase_cong_dong
+' Biểu đồ use case Tương tác cộng đồng (CHỈ đánh giá / bình luận / lưu)
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+left to right direction
+
+actor "Người dùng" as User
+
+rectangle "Tương tác cộng đồng" {
+  usecase "Đánh giá công thức (1-5 sao)" as UC_Rate
+  usecase "Bình luận công thức" as UC_Comment
+  usecase "Lưu / bỏ lưu công thức" as UC_Save
+  usecase "Đăng ký nhận bản tin công thức" as UC_Subscribe
+  usecase "Hủy nhận bản tin công thức" as UC_Unsubscribe
+}
+
+User --> UC_Rate
+User --> UC_Comment
+User --> UC_Save
+User --> UC_Subscribe
+User --> UC_Unsubscribe
+@enduml

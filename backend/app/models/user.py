@@ -41,14 +41,6 @@ class User(Base):
     saved_recipes: Mapped[list["SavedRecipe"]] = relationship(  # noqa: F821
         "SavedRecipe", back_populates="user", cascade="all, delete-orphan"
     )
-    followers: Mapped[list["Follow"]] = relationship(  # noqa: F821
-        "Follow", back_populates="following", foreign_keys="Follow.following_id",
-        cascade="all, delete-orphan"
-    )
-    following: Mapped[list["Follow"]] = relationship(  # noqa: F821
-        "Follow", back_populates="follower", foreign_keys="Follow.follower_id",
-        cascade="all, delete-orphan"
-    )
     meal_plans: Mapped[list["MealPlan"]] = relationship(  # noqa: F821
         "MealPlan", back_populates="user", cascade="all, delete-orphan"
     )

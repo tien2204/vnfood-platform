@@ -1,0 +1,27 @@
+@startuml usecase_xac_thuc
+' Biểu đồ use case Xác thực tài khoản
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+left to right direction
+
+actor "Khách" as Guest
+actor "Người dùng" as User
+
+rectangle "Xác thực tài khoản" {
+  usecase "Đăng ký" as UC_Register
+  usecase "Đăng nhập" as UC_Login
+  usecase "Đăng xuất" as UC_Logout
+  usecase "Cấp phát JWT" as UC_Issue
+  usecase "Làm mới phiên đăng nhập" as UC_Refresh
+}
+
+Guest --> UC_Register
+Guest --> UC_Login
+User --> UC_Logout
+
+UC_Login ..> UC_Issue : <<include>>
+UC_Refresh ..> UC_Issue : <<include>>
+UC_Login <.. UC_Refresh : <<extend>>
+@enduml

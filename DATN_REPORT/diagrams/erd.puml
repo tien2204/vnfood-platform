@@ -1,0 +1,99 @@
+@startuml
+' Biểu đồ thực thể liên kết (ERD) - TastyVietnam (cột chính)
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+hide circle
+skinparam linetype ortho
+skinparam nodesep 22
+skinparam ranksep 55
+
+entity "users" as users {
+  *id : UUID <<PK>>
+  --
+  email · hashed_password
+  full_name · role · is_active
+}
+entity "recipes" as recipes {
+  *id : UUID <<PK>>
+  --
+  title · source · status
+  is_canonical · canonical_dish_slug
+  author_id <<FK>>
+  derived_from_recipe_id <<FK>>
+}
+entity "recipe_ingredients" as ri {
+  *id : UUID <<PK>>
+  --
+  recipe_id <<FK>>
+  display_text · quantity · order_index
+}
+entity "recipe_steps" as rs {
+  *id : UUID <<PK>>
+  --
+  recipe_id <<FK>>
+  step_number · content · timer_seconds
+}
+entity "comments" as comments {
+  *id : UUID <<PK>>
+  --
+  recipe_id <<FK>> · user_id <<FK>>
+  content · is_hidden
+}
+entity "ratings" as ratings {
+  *id : UUID <<PK>>
+  --
+  recipe_id <<FK>> · user_id <<FK>>
+  score (1..5)
+}
+entity "saved_recipes" as saved {
+  *id : UUID <<PK>>
+  --
+  user_id <<FK>> · recipe_id <<FK>>
+}
+entity "meal_plans" as mp {
+  *id : UUID <<PK>>
+  --
+  user_id <<FK>>
+  name · week_start
+}
+entity "meal_plan_items" as mpi {
+  *id : UUID <<PK>>
+  --
+  meal_plan_id <<FK>> · recipe_id <<FK>>
+  date · meal_type · servings
+}
+entity "grocery_items" as gi {
+  *id : UUID <<PK>>
+  --
+  meal_plan_id <<FK>>
+  ingredient_name · is_checked
+}
+entity "recipe_change_requests" as rcr {
+  *id : UUID <<PK>>
+  --
+  type · status · payload(JSONB)
+  target_recipe_id <<FK>>
+  requested_by <<FK>> · reviewed_by <<FK>>
+}
+
+' ===== Hàng users: recipes, meal_plans, change_requests (dưới users) =====
+users ||--o{ recipes
+users ||--o{ mp
+users ||--o{ rcr
+recipes ||--o{ rcr
+' ===== TRÊN recipes (đảo con }o--|| cha): comments, ratings, saved =====
+comments }o--|| recipes
+comments }o--|| users
+ratings }o--|| recipes
+ratings }o--|| users
+saved }o--|| recipes
+saved }o--|| users
+' ===== DƯỚI recipes (cha ||--o{ con): recipe_ingredients, recipe_steps, meal_plan_items =====
+recipes ||--o{ ri
+recipes ||--o{ rs
+recipes ||--o{ mpi
+mp ||--o{ mpi
+mp ||--o{ gi
+recipes ||--o{ recipes : derived_from
+@enduml

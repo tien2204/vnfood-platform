@@ -16,7 +16,7 @@ interface AdminUser {
   role: "user" | "admin";
   is_active: boolean;
   created_at: string;
-  stats: { recipe_count: number; comment_count: number; follower_count: number };
+  stats: { recipe_count: number; comment_count: number };
 }
 
 interface UsersResponse {
@@ -262,7 +262,7 @@ export default function AdminUsersPage() {
                 {/* Stats */}
                 <div className="text-xs text-muted-foreground space-y-0.5">
                   <p>{user.stats.recipe_count} công thức</p>
-                  <p>{user.stats.follower_count} người theo dõi</p>
+                  <p>{user.stats.comment_count} bình luận</p>
                 </div>
 
                 {/* Date */}

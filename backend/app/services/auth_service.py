@@ -58,7 +58,7 @@ async def login(db: AsyncSession, email: str, password: str, *, portal: str = "c
     return {"access_token": access_token, "refresh_token": refresh_token, "user": user}
 
 
-async def refresh_access_token(db: AsyncSession, refresh_token: str) -> str:
+async def refresh_access_token(db: AsyncSession, refresh_token: str) -> dict:
     payload = decode_token(refresh_token)
     if payload is None or payload.get("type") != "refresh":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token không hợp lệ")
@@ -69,7 +69,14 @@ async def refresh_access_token(db: AsyncSession, refresh_token: str) -> str:
     if user is None or not user.is_active:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Người dùng không hợp lệ")
 
-    return create_access_token(str(user.id), user.role)
+    # Sliding session: hand back a fresh refresh token too so an actively-used
+    # session keeps extending its 7-day window instead of dying abruptly. Tokens
+    # are stateless JWTs (no server-side store), so the previous refresh token
+    # stays valid until its own exp — concurrent refreshes don't invalidate it.
+    return {
+        "access_token": create_access_token(str(user.id), user.role),
+        "refresh_token": create_refresh_token(str(user.id)),
+    }
 
 
 async def change_password(

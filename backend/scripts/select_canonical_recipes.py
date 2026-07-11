@@ -332,9 +332,13 @@ async def main(limit: int | None = None) -> None:
             .where(
                 Recipe.canonical_dish_slug.is_not(None),
                 Recipe.is_dessert.is_(False),
+                # Skip catch-all parents (uppercase slugs like "Bánh", "Canh") —
+                # those are not real dishes; LLM extraction already produced
+                # specific lowercase slugs for the dishes inside them.
+                Recipe.canonical_dish_slug.op('~')('^[a-z]'),
             )
             .group_by(Recipe.canonical_dish_slug)
-            .having(func.count(Recipe.id) >= 3)  # min cluster size
+            .having(func.count(Recipe.id) >= 5)  # min cluster size for signal
             .order_by(func.count(Recipe.id).desc())
         )
         rows = result.all()

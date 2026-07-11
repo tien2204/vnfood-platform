@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight, Clock, Volume2, VolumeX, Mic, MicOff } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Clock, Volume2, VolumeX } from 'lucide-react';
 import { CountdownTimer } from './CountdownTimer';
 import { useWakeLock } from '@/lib/hooks/useWakeLock';
 import { useSpeech } from '@/lib/hooks/useSpeech';
-import { useVoiceCommands } from '@/lib/hooks/useVoiceCommands';
 import type { RecipeDetail } from '@/lib/types';
 
 interface CookingModeProps {
@@ -61,11 +60,19 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
     speech.speak(stepSpeechText(i));
   };
 
-  const voice = useVoiceCommands((cmd) => {
-    if (cmd === 'next') setCurrentStep((s) => Math.min(total - 1, s + 1));
-    else if (cmd === 'back') setCurrentStep((s) => Math.max(0, s - 1));
-    else if (cmd === 'repeat') speakStep(currentStep);
-  });
+  // Warm the server cache for EVERY step as soon as cooking mode opens (or TTS
+  // is re-enabled). Microsoft's edge-tts endpoint flakes often, so the backend
+  // retries hard in the background here — by the time the user navigates to a
+  // step its audio is usually already cached and plays instantly. Fire-and-forget.
+  const { prefetch: prefetchSpeech } = speech;
+  useEffect(() => {
+    if (speech.supported && speech.enabled) {
+      steps.forEach((s, i) =>
+        prefetchSpeech(`Bước ${i + 1}. ${s.content.replace(/^\s*bước\s*\d+\s*[:.\-]?\s*/i, '')}`),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [speech.enabled, speech.supported]);
 
   // Auto-read on step change and when TTS is (re)enabled. Also warm the next
   // step's audio so forward navigation reads near-instantly (no synth latency).
@@ -185,17 +192,6 @@ export function CookingMode({ recipe, onClose }: CookingModeProps) {
               className={`p-1.5 rounded-lg transition-colors ${speech.enabled ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-primary'}`}
             >
               {speech.enabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </button>
-          )}
-          {voice.supported && (
-            <button
-              onClick={voice.toggle}
-              title={voice.listening ? 'Tắt điều khiển giọng nói' : 'Bật điều khiển giọng nói'}
-              aria-pressed={voice.listening}
-              className={`inline-flex items-center gap-1 p-1.5 rounded-lg transition-colors ${voice.listening ? 'text-[#2D6A4F] bg-[#2D6A4F]/10' : 'text-muted-foreground hover:text-[#2D6A4F]'}`}
-            >
-              {voice.listening ? <Mic className="w-4 h-4 animate-pulse" /> : <MicOff className="w-4 h-4" />}
-              {voice.listening && <span className="text-[10px] font-semibold">Đang nghe</span>}
             </button>
           )}
           <span className="text-sm text-muted-foreground">

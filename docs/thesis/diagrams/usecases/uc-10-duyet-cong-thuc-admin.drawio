@@ -1,0 +1,26 @@
+<mxfile host="app.diagrams.net" modified="2026-06-03T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="uc-10" name="UC-10 Duyet cong thuc Admin">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sys" value="Hệ thống VNFood" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#666666;fontStyle=1;verticalAlign=top;spacingTop=8;" vertex="1" parent="1"><mxGeometry x="250" y="70" width="700" height="580" as="geometry"/></mxCell>
+        <mxCell id="admin" value="Quản trị viên" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1"><mxGeometry x="70" y="310" width="70" height="110" as="geometry"/></mxCell>
+        <mxCell id="user" value="Người dùng đăng công thức" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1"><mxGeometry x="1000" y="310" width="90" height="120" as="geometry"/></mxCell>
+        <mxCell id="uc_main" value="Duyệt công thức" style="ellipse;whiteSpace=wrap;html=1;fontStyle=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="510" y="110" width="200" height="70" as="geometry"/></mxCell>
+        <mxCell id="uc_list" value="Xem danh sách công thức chờ duyệt" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="310" y="260" width="250" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_preview" value="Xem nội dung công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="650" y="260" width="210" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_approve" value="Phê duyệt công thức" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="310" y="420" width="210" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_reject" value="Từ chối và nhập lý do" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="650" y="420" width="210" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_notify" value="Cập nhật trạng thái cho người đăng" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="450" y="540" width="270" height="60" as="geometry"/></mxCell>
+        <mxCell id="e_admin" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="admin" target="uc_main"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_user" value="nhận trạng thái" style="endArrow=none;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_notify" target="user"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_list" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_list"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_preview" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_preview"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_approve" value="&lt;&lt;extend&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_approve" target="uc_main"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_reject" value="&lt;&lt;extend&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_reject" target="uc_main"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_notify" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="uc_main" target="uc_notify"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

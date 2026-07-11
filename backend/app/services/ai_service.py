@@ -1,21 +1,17 @@
 import asyncio
-import base64
 import io
-import json
 import logging
 import unicodedata
 import uuid
 from typing import Optional
 
 import requests as _requests_lib
-from openai import AsyncOpenAI
 from PIL import Image
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.ai.class_names import CLASS_DISPLAY_NAMES, get_keyword_from_class
-from app.core.config import settings
 from app.models.ai_log import AILog
 from app.models.recipe import Recipe
 from app.core.variant_config import is_multi_variant
@@ -40,7 +36,7 @@ async def recognize_image(
     """
     Pipeline:
       1. Validate image (size, dimensions)
-      2. VNFoodPredictor → if needs_fallback → OpenAI Vision
+      2. TastyVietnamPredictor → if needs_fallback → OpenAI Vision
       3. Query suggested recipes from DB
       4. Log to ai_logs
     """
@@ -74,36 +70,13 @@ async def recognize_image(
         confidence = top5[0]["confidence"]
         model_used = "vnfood"
     else:
-        # Fall back to OpenAI Vision
-        model_used = "openai"
-        openai_name: Optional[str] = None
-        if settings.OPENAI_API_KEY:
-            try:
-                openai_name, confidence = await _openai_recognize(image_bytes)
-            except Exception:
-                logger.exception("OpenAI fallback failed")
-        else:
-            logger.warning("OPENAI_API_KEY not configured — cannot fallback")
-
-        mapped = dish_resolver.resolve_to_slug(openai_name)
-        if mapped and dish_resolver.has_canonical(mapped):
-            # OpenAI named a dish we already have a canonical recipe for → re-enter lookup.
-            resolved_slug = mapped
-            match_tier = "openai_known"
-            predicted_class = mapped
-            display_name = CLASS_DISPLAY_NAMES.get(mapped, openai_name)
-            top5 = [{"class": mapped, "display_name": display_name, "confidence": confidence}]
-        elif openai_name:
-            # Genuinely outside the 103 → AI-generate path.
-            match_tier = "unknown"
-            predicted_class = openai_name
-            display_name = openai_name
-            top5 = [{"class": openai_name, "display_name": openai_name, "confidence": confidence}]
-        else:
-            match_tier = "unknown"
-            predicted_class = "unknown"
-            display_name = "Không nhận diện được"
-            confidence = 0.0
+        # VNFood model không đủ tin cậy và không khớp món chuẩn nào → báo không
+        # nhận diện được. (Đã bỏ fallback OpenAI Vision.)
+        match_tier = "unknown"
+        predicted_class = "unknown"
+        display_name = "Không nhận diện được"
+        confidence = 0.0
+        model_used = "vnfood"
 
     # ── lookup, all keyed off resolved_slug ──────────────────────────────────
     keyword = get_keyword_from_class(resolved_slug) if resolved_slug else None
@@ -123,14 +96,12 @@ async def recognize_image(
     db.add(log)
     await db.commit()
 
-    # dish_recipe: canonical inline card when we have a slug; else OpenAI-generated.
+    # dish_recipe: canonical inline card khi có slug chuẩn; không tạo bằng OpenAI nữa.
     dish_recipe = None
     if resolved_slug and canonical_recipe is not None:
         dish_recipe = await _build_dish_recipe_from_canonical(db, canonical_recipe["id"])
     elif resolved_slug:
         dish_recipe = dish_recipe_service.get_curated(resolved_slug)
-    elif match_tier == "unknown" and display_name and display_name not in ("Không nhận diện được", "unknown"):
-        dish_recipe = await dish_recipe_service.get_or_generate_ai(db, display_name, user_id=user_id)
 
     class_metrics = None
     if model_used == "vnfood" and resolved_slug:
@@ -158,54 +129,6 @@ async def recognize_image(
         "is_multi_variant": multi_variant,
         "dish_overview": dish_overview,
     }
-
-
-async def _openai_recognize(image_bytes: bytes) -> tuple[str, float]:
-    # Detect actual MIME type from bytes
-    try:
-        probe = Image.open(io.BytesIO(image_bytes))
-        fmt = (probe.format or "JPEG").upper()
-        mime = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp", "GIF": "image/gif"}.get(fmt, "image/jpeg")
-    except Exception:
-        mime = "image/jpeg"
-
-    client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-    b64 = base64.b64encode(image_bytes).decode()
-
-    # No response_format — avoid SDK 1.30 + vision incompatibility; parse manually instead
-    response = await client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{
-            "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": (
-                        "Identify the food dish in this image. "
-                        "If it matches one of these Vietnamese dishes, reply with that exact name: "
-                        + ", ".join(sorted(set(CLASS_DISPLAY_NAMES.values())))
-                        + ". Otherwise reply with the dish's real name. "
-                        "Reply ONLY with a JSON object, no markdown, no explanation: "
-                        '{"dish_name": "name (Vietnamese if VN dish, English if not)", "confidence": 0.0-1.0}. '
-                        "Never reply 'Unknown'. "
-                        "Set confidence below 0.3 if it is NOT a Vietnamese dish or truly unrecognizable."
-                    ),
-                },
-                {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}},
-            ],
-        }],
-        max_tokens=150,
-    )
-
-    content = response.choices[0].message.content.strip()
-
-    # Strip markdown code fences if model wraps response
-    import re as _re
-    m = _re.search(r"\{.*\}", content, _re.DOTALL)
-    if not m:
-        raise ValueError(f"OpenAI trả về không phải JSON: {content[:200]}")
-    result = json.loads(m.group())
-    return result.get("dish_name", "Không xác định"), float(result.get("confidence", 0.5))
 
 
 async def fetch_image_from_url(url: str) -> bytes:

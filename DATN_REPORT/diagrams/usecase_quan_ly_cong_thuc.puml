@@ -1,0 +1,35 @@
+@startuml usecase_quan_ly_cong_thuc
+' Biểu đồ use case Quản lý công thức (đề xuất & duyệt)
+' Luồng trái->phải: Người dùng -> đề xuất -> yêu cầu duyệt -> xét duyệt -> Quản trị viên
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+left to right direction
+
+actor "Người dùng" as User
+
+rectangle "Quản lý công thức" {
+  usecase "Đề xuất tạo công thức" as UC_Create
+  usecase "Đề xuất sửa công thức" as UC_Edit
+  usecase "Đề xuất xóa công thức" as UC_Delete
+  usecase "Theo dõi trạng thái đề xuất" as UC_Track
+  usecase "Yêu cầu duyệt công thức" as UC_Request
+  usecase "Xét duyệt đề xuất\n(duyệt / từ chối kèm lý do)" as UC_Review
+}
+
+actor "Quản trị viên" as Admin
+
+User --> UC_Create
+User --> UC_Edit
+User --> UC_Delete
+User --> UC_Track
+
+UC_Create ..> UC_Request : <<include>>
+UC_Edit   ..> UC_Request : <<include>>
+UC_Delete ..> UC_Request : <<include>>
+UC_Track  ..> UC_Request : <<xem trạng thái>>
+
+UC_Request ..> UC_Review : <<gửi tới QTV>>
+UC_Review  --> Admin
+@enduml

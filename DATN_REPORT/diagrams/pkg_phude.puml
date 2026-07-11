@@ -1,0 +1,45 @@
+@startuml
+' Biểu đồ phụ thuộc gói (phân tầng) - TastyVietnam
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam componentStyle rectangle
+
+package "Tầng giao diện (Next.js)" as UI {
+  component "Trang & Thành phần React" as ui1
+}
+package "Tầng API (FastAPI routers)" as API {
+  component "auth" as api1
+  component "recipes" as api2
+  component "ai" as api3
+  component "meal_plans" as api4
+  component "comments / ratings / saved" as api5
+  component "admin" as api6
+}
+package "Tầng nghiệp vụ (Services)" as SVC {
+  component "auth_service" as svc1
+  component "recipe_service" as svc2
+  component "ai_service" as svc3
+  component "meal_plan_service" as svc4
+  component "social_service" as svc5
+  component "admin_service" as svc6
+}
+package "Tầng dữ liệu (Models - SQLAlchemy)" as DATA {
+  component "User" as d1
+  component "Recipe" as d2
+  component "MealPlan" as d3
+  component "Comment / Rating / SavedRecipe" as d4
+}
+package "Khối AI (PyTorch)" as AI {
+  component "inference (B0/B2)" as ai1
+  component "dish_resolver" as ai2
+}
+
+database "PostgreSQL" as DB
+
+UI ..> API : HTTP / JSON
+API ..> SVC
+SVC ..> DATA
+SVC ..> AI
+DATA ..> DB
+@enduml

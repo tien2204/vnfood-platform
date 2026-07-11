@@ -8,9 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { AIRecognitionResult } from "@/lib/types";
 import RecipeImage from "@/components/common/RecipeImage";
 import { CanonicalBadge, VariantBadge } from "@/components/recipes/CanonicalBadge";
-import DishRecipeCard from "./DishRecipeCard";
 import DishOverviewCard from "./DishOverviewCard";
-import ModelMetrics from "./ModelMetrics";
 
 function resolveImageUrl(src: string | null): string | null {
   if (!src) return null;
@@ -117,10 +115,6 @@ export default function RecognitionResult({ result, imagePreview, onReset }: Pro
               <ModelBadge model={result.model_used} />
               <ConfidenceBar value={result.confidence} />
 
-              {result.class_metrics && (
-                <ModelMetrics metrics={result.class_metrics} />
-              )}
-
               <Link
                 href={`/search?q=${encodeURIComponent(result.display_name)}`}
                 className={buttonVariants({ variant: "default" }) + " bg-primary hover:bg-[#cc1c22] text-white w-full sm:w-auto"}
@@ -212,7 +206,6 @@ export default function RecognitionResult({ result, imagePreview, onReset }: Pro
               </div>
             </div>
           </Link>
-          {result.dish_recipe && <DishRecipeCard recipe={result.dish_recipe} />}
         </section>
       )}
 
@@ -253,10 +246,6 @@ export default function RecognitionResult({ result, imagePreview, onReset }: Pro
             ))}
           </div>
         </section>
-      )}
-
-      {!isUnknown && !result.canonical_recipe && result.dish_recipe && (
-        <DishRecipeCard recipe={result.dish_recipe} />
       )}
     </div>
   );

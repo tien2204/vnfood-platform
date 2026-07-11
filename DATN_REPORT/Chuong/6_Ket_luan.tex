@@ -1,0 +1,22 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+
+\section{Kết luận}
+Đồ án đã xây dựng hoàn chỉnh một hệ thống phần mềm quản lý và chia sẻ công thức món ăn Việt Nam, tích hợp khả năng nhận diện món ăn từ hình ảnh. Hệ thống website chạy được trên môi trường thử nghiệm với đầy đủ các chức năng đã đặt ra ở Chương~2: tra cứu và lọc công thức, nhận diện món ăn từ ảnh, xem và nấu công thức theo chế độ nấu ăn có hẹn giờ, lập kế hoạch bữa ăn kèm danh sách đi chợ, tương tác cộng đồng (đánh giá, bình luận, lưu công thức) và đóng góp công thức qua quy trình kiểm duyệt.
+
+So với các sản phẩm tương tự như Cookpad, Yummly hay Món Ngon Mỗi Ngày, hệ thống có một số ưu điểm: dữ liệu công thức được chuẩn hóa và phân loại đa chiều thay vì để rời rạc; hỗ trợ nhận diện món ăn trực tiếp từ ảnh thay vì chỉ tìm theo từ khóa; và đặc biệt là ràng buộc nhất quán giữa kết quả nhận diện với kho công thức, tạo nên một hành trình sử dụng mạch lạc từ lúc phát hiện món ăn đến khi nấu được món đó. Đây cũng chính là các đóng góp nổi bật đã trình bày ở Chương~\ref{chapter:SolutionAndContribution}.
+
+Bên cạnh các kết quả đạt được, hệ thống vẫn còn một số hạn chế. Về phạm vi, hệ thống mới triển khai trên môi trường cục bộ, chưa đưa lên môi trường đám mây và chưa kiểm thử với lượng người dùng lớn. Về tính năng, một số nội dung cộng đồng còn ở mức cơ bản (chưa có blog chia sẻ, chưa có cá nhân hóa theo nhu cầu dinh dưỡng), và độ chính xác của mô hình nhận diện ở một vài nhóm món tương đồng vẫn còn dư địa cải thiện.
+
+Qua quá trình thực hiện đồ án, em đã rút ra nhiều bài học: tầm quan trọng của việc chuẩn hóa dữ liệu trước khi xây dựng tính năng; giá trị của việc thiết kế một trục liên kết nhất quán giữa các thành phần thay vì phát triển rời rạc; và kinh nghiệm thực tế khi kết hợp mô hình học sâu với một ứng dụng web hoàn chỉnh.
+
+\section{Hướng phát triển}
+Trong thời gian tới, hệ thống có thể được hoàn thiện và mở rộng theo các hướng sau.
+
+Trước hết là hoàn thiện các chức năng đã có: bổ sung tính năng điều chỉnh khẩu phần linh hoạt cho công thức, xây dựng bảng điều khiển quản trị đầy đủ hơn, và tăng cường kiểm thử tự động cho các luồng quan trọng. Tiếp đó, hệ thống cần được đưa lên môi trường đám mây để phục vụ người dùng thực và đánh giá khả năng chịu tải.
+
+Về các hướng đi mới, có thể phát triển ứng dụng di động để tận dụng camera điện thoại cho việc nhận diện món ăn thuận tiện hơn; bổ sung không gian blog cộng đồng có kiểm duyệt để người dùng chia sẻ kinh nghiệm nấu nướng; và cá nhân hóa gợi ý theo nhu cầu dinh dưỡng (calo, chỉ số khối cơ thể). Về phía mô hình nhận diện, có thể mở rộng tập món ăn, bổ sung dữ liệu huấn luyện cho các nhóm món còn nhầm lẫn nhiều, và thử nghiệm các kiến trúc mạng mới nhằm nâng cao độ chính xác.
+
+Một hướng đáng chú ý khác là thay thế hoặc kết hợp mô hình nhận diện hiện tại bằng các mô hình ngôn ngữ--thị giác đa phương thức thông qua API như OpenAI hay Gemini. Các mô hình này được huấn luyện trên kho dữ liệu khổng lồ nên có năng lực nhận diện mạnh hơn và độ bao phủ món ăn rộng hơn nhiều lần so với mô hình huấn luyện riêng trên tập một trăm lẻ ba lớp, đồng thời có khả năng nhận diện cả những món nằm ngoài tập đã huấn luyện. Đổi lại, hướng này phụ thuộc vào dịch vụ bên thứ ba, phát sinh chi phí gọi API và độ trễ mạng, do đó cần cân nhắc giữa độ bao phủ và tính chủ động khi triển khai thực tế.
+
+\end{document}

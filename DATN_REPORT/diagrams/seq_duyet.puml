@@ -1,0 +1,37 @@
+@startuml
+' Biểu đồ trình tự - Đề xuất và duyệt công thức
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+actor "Người dùng" as U
+actor "Quản trị viên" as A
+participant "Giao diện" as FE
+participant "API change-request" as API
+participant "ChangeRequestService" as S
+database "PostgreSQL" as DB
+
+U -> FE : Gửi đề xuất (tạo / sửa / xóa)
+FE -> API : POST /recipes/change-requests
+API -> S : create_request(payload)
+S -> DB : lưu trạng thái "pending"
+DB --> S : ok
+S --> FE : đã gửi
+
+A -> FE : Mở danh sách chờ duyệt
+FE -> API : GET /admin/change-requests
+API -> S : list_pending()
+S -> DB : truy vấn
+DB --> S : danh sách
+S --> FE : hiển thị
+
+A -> FE : Phê duyệt / Từ chối
+FE -> API : POST approve / reject
+API -> S : review(quyết định)
+alt Phê duyệt
+  S -> DB : áp dụng vào recipes + status "approved"
+else Từ chối
+  S -> DB : status "rejected" + lý do
+end
+S --> FE : thông báo kết quả
+@enduml

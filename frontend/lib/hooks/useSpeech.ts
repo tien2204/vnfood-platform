@@ -6,8 +6,29 @@ import api from "@/lib/api";
 // Cache-bust token appended to TTS requests. The endpoint sends a long
 // Cache-Control, so the browser would otherwise replay audio cached under the
 // previous engine/voice for the same `text` URL. Bump this whenever the
-// backend TTS engine or voice changes (currently edge-tts vi-VN-HoaiMyNeural).
-const TTS_VERSION = "edge-hoaimy-1";
+// backend TTS engine or voice changes (currently Piper vi_VN-vais1000-medium).
+const TTS_VERSION = "piper-vais1000-1";
+
+/**
+ * Offline fallback: read `text` with the browser's built-in speech synthesis
+ * (Web Speech API). Used when the server TTS (edge-tts) fails — Microsoft's free
+ * endpoint flakes often — so the user still hears the step instead of silence.
+ * Prefers a Vietnamese voice if the OS has one; otherwise the vi-VN lang hint.
+ */
+function browserSpeak(text: string) {
+  try {
+    const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
+    if (!synth) return;
+    synth.cancel(); // never overlap with a previous utterance
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "vi-VN";
+    const vi = synth.getVoices().find((v) => v.lang?.toLowerCase().startsWith("vi"));
+    if (vi) u.voice = vi;
+    synth.speak(u);
+  } catch {
+    /* Web Speech API unavailable — nothing more we can do */
+  }
+}
 
 export interface UseSpeech {
   supported: boolean;
@@ -47,6 +68,10 @@ export function useSpeech(): UseSpeech {
       URL.revokeObjectURL(urlRef.current);
       urlRef.current = null;
     }
+    // Also stop any browser-synthesis fallback that may be speaking.
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
   }, []);
 
   const speak = useCallback(
@@ -74,7 +99,10 @@ export function useSpeech(): UseSpeech {
         .catch((err) => {
           if (controller.signal.aborted) return;
           // eslint-disable-next-line no-console
-          console.warn("[useSpeech] TTS fetch failed:", err);
+          console.warn("[useSpeech] TTS fetch failed, falling back to browser voice:", err);
+          // Server TTS unavailable (edge-tts flake / 502) → speak locally so the
+          // user still hears the step instead of waiting on nothing.
+          browserSpeak(text);
         });
     },
     [enabled, cancel],

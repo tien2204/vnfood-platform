@@ -1,0 +1,173 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+
+Trên cơ sở yêu cầu ở Chương~2 và các công nghệ đã chọn ở Chương~3, chương này trình bày thiết kế kiến trúc và thiết kế chi tiết của hệ thống, quá trình xây dựng ứng dụng, kết quả đánh giá mô hình nhận diện, kiểm thử và triển khai.
+
+\section{Thiết kế kiến trúc}
+\label{sec:4-kientruc}
+
+\subsection{Lựa chọn kiến trúc phần mềm}
+Hệ thống website áp dụng kiến trúc client--server kết hợp phân tầng (layered architecture). Phía client là ứng dụng web đơn trang dựng bằng Next.js; phía server tổ chức thành các tầng tách biệt: tầng API tiếp nhận yêu cầu, tầng nghiệp vụ (service) xử lý logic, tầng dữ liệu ánh xạ đối tượng--quan hệ với cơ sở dữ liệu, và khối trí tuệ nhân tạo phục vụ nhận diện. Việc phân tầng giúp tách bạch trách nhiệm: thay đổi ở một tầng hạn chế ảnh hưởng tới tầng khác, đồng thời thuận lợi cho kiểm thử từng tầng độc lập. So với việc gộp logic vào tầng API, cách phân tầng này giúp tái sử dụng nghiệp vụ và dễ bảo trì hơn khi hệ thống mở rộng.
+
+\subsection{Thiết kế tổng quan}
+Hình~\ref{fig:pkg} biểu diễn các gói chính và quan hệ phụ thuộc giữa chúng, được sắp xếp theo tầng từ trên xuống. Tầng giao diện phụ thuộc tầng API qua giao thức HTTP/JSON; tầng API gọi tầng nghiệp vụ; tầng nghiệp vụ sử dụng tầng dữ liệu và khối AI; tầng dữ liệu làm việc với PostgreSQL. Các phụ thuộc đều hướng xuống tầng dưới, không có phụ thuộc ngược hay phụ thuộc vòng, tuân thủ nguyên tắc thiết kế phân tầng.
+
+\diagramfig{pkg_phude}{Biểu đồ phụ thuộc gói}{fig:pkg}
+
+\subsection{Thiết kế chi tiết gói}
+Hình~\ref{fig:lopnhandien} minh họa thiết kế các lớp trong gói nhận diện món ăn --- gói thể hiện rõ nhất đặc trưng của hệ thống. Lớp \texttt{AIService} điều phối luồng nhận diện: gọi \texttt{TastyVietnamPredictor} (chứa mô hình hai tầng B0/B2) để dự đoán, dùng \texttt{DishResolver} để ánh xạ nhãn về định danh món chuẩn, và dùng \texttt{RecipeService} để truy ra công thức chuẩn tương ứng.
+
+\diagramfig{lopthietke_nhandien}{Biểu đồ lớp gói nhận diện món ăn}{fig:lopnhandien}
+
+\section{Thiết kế chi tiết}
+\label{sec:4-chitiet}
+
+\subsection{Thiết kế giao diện}
+Ứng dụng hướng tới trình duyệt web trên cả máy tính để bàn và thiết bị di động, bố cục co giãn theo chiều rộng màn hình (responsive). Giao diện thống nhất một số quy ước: hệ màu chủ đạo ấm phù hợp chủ đề ẩm thực; nút hành động chính nổi bật, nút phụ ở dạng viền; thông điệp phản hồi (thành công, lỗi) hiển thị nhất quán ở dạng thông báo nổi; các danh sách dài đều phân trang. Một số màn hình thiết kế chính được minh họa ở mục~\ref{sec:4-minhhoa}.
+
+\subsection{Thiết kế lớp và biểu đồ trình tự}
+Để minh họa luồng truyền thông điệp giữa các đối tượng, mục này trình bày hai use case quan trọng. Hình~\ref{fig:seqnhandien} mô tả trình tự nhận diện món ăn: giao diện gửi ảnh tới API, \texttt{AIService} điều phối mô hình hai tầng rồi ánh xạ kết quả về công thức chuẩn, báo không nhận diện được khi độ tin cậy thấp. Hình~\ref{fig:seqduyet} mô tả trình tự đề xuất và duyệt công thức: người dùng gửi đề xuất ở trạng thái chờ duyệt, quản trị viên xem xét rồi phê duyệt (áp dụng thay đổi vào kho) hoặc từ chối kèm lý do.
+
+\diagramfig{seq_nhandien}{Biểu đồ trình tự use case Nhận diện món ăn}{fig:seqnhandien}
+
+\diagramfig{seq_duyet}{Biểu đồ trình tự use case Đề xuất và duyệt công thức}{fig:seqduyet}
+
+\subsection{Thiết kế cơ sở dữ liệu}
+Cơ sở dữ liệu gồm 13 bảng quan hệ, mô tả ở biểu đồ thực thể liên kết Hình~\ref{fig:erd}. Thực thể trung tâm là \texttt{recipes} (công thức), liên kết tới \texttt{recipe\_ingredients} (nguyên liệu) và \texttt{recipe\_steps} (các bước) theo quan hệ một--nhiều có ràng buộc xóa lan truyền. Người dùng (\texttt{users}) sở hữu công thức, bình luận (\texttt{comments}), đánh giá (\texttt{ratings}), công thức đã lưu (\texttt{saved\_recipes}) và kế hoạch bữa ăn (\texttt{meal\_plans}); mỗi kế hoạch gồm các mục (\texttt{meal\_plan\_items}) trỏ tới công thức và danh sách đi chợ (\texttt{grocery\_items}). Quy trình đóng góp công thức được lưu ở bảng \texttt{recipe\_change\_requests} với trường \texttt{payload} kiểu JSONB để chứa nội dung đề xuất. Bảng \texttt{recipes} có khóa ngoại tự tham chiếu \texttt{derived\_from\_recipe\_id} để biểu diễn quan hệ công thức biến thể.
+
+\diagramfig{erd}{Biểu đồ thực thể liên kết}{fig:erd}
+
+\section{Xây dựng ứng dụng}
+\label{sec:4-xaydung}
+
+\subsection{Thư viện và công cụ sử dụng}
+Bảng~\ref{tab:congcu} liệt kê các thư viện và công cụ chính kèm phiên bản.
+
+\begin{center}
+\captionof{table}{Danh sách thư viện và công cụ chính}\label{tab:congcu}
+\begin{tabular}{|p{4.3cm}|p{4.2cm}|p{4.3cm}|}\hline
+\textbf{Mục đích} & \textbf{Công cụ} & \textbf{Phiên bản} \\ \hline
+Giao diện web & Next.js / React & 16.2 / 19.2 \\ \hline
+Ngôn ngữ giao diện & TypeScript & 5 \\ \hline
+Định kiểu giao diện & Tailwind CSS & 4 \\ \hline
+Khung dịch vụ & FastAPI / Uvicorn & 0.111 / 0.29 \\ \hline
+Truy xuất dữ liệu & SQLAlchemy & 2.0.30 \\ \hline
+Kiểm tra dữ liệu & Pydantic & 2.7 \\ \hline
+Học sâu & PyTorch / torchvision & 2.3 / 0.18 \\ \hline
+Quản lý migration & Alembic & 1.13 \\ \hline
+Xác thực & python-jose (JWT) & 3.3 \\ \hline
+Cơ sở dữ liệu & PostgreSQL & 16 \\ \hline
+Đóng gói môi trường & Docker & --- \\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Kết quả đạt được}
+Sản phẩm gồm hai thành phần đóng gói: ứng dụng giao diện Next.js và dịch vụ backend FastAPI (kèm khối AI và cơ sở dữ liệu PostgreSQL chạy trong Docker). Một số thống kê về mã nguồn được tổng hợp ở Bảng~\ref{tab:thongke}.
+
+\begin{center}
+\captionof{table}{Thống kê mã nguồn hệ thống}\label{tab:thongke}
+\begin{tabular}{|p{8cm}|p{4cm}|}\hline
+\textbf{Hạng mục} & \textbf{Số lượng} \\ \hline
+Tệp mã backend (Python) & 61 tệp ($\approx$ 6.600 dòng) \\ \hline
+Tệp mã frontend (TS/TSX) & 120 tệp ($\approx$ 14.300 dòng) \\ \hline
+Bộ định tuyến API & 13 \\ \hline
+Bảng cơ sở dữ liệu & 13 \\ \hline
+Số lớp món AI nhận diện & 103 (8 nhóm) \\ \hline
+Số công thức trong kho & 2.257 \\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Minh họa các chức năng chính}
+\label{sec:4-minhhoa}
+Mục này minh họa một số màn hình quan trọng của hệ thống, lần lượt từ trang chủ, tìm kiếm, xem và nấu công thức, nhận diện món ăn, quản lý công thức cá nhân, lập kế hoạch bữa ăn đến khu vực quản trị.
+
+\screenfig{man_trangchu}{Màn hình trang chủ}{fig:man-trangchu}
+\screenfig{man_trangchu1}{Màn hình trang chủ (phần tiếp theo)}{fig:man-trangchu1}
+\screenfig{man_timkiem}{Màn hình tìm kiếm và lọc công thức}{fig:man-timkiem}
+\screenfig{man_chitiet}{Màn hình chi tiết công thức}{fig:man-chitiet}
+\screenfig{man_chitiet1}{Màn hình chi tiết công thức (phần tiếp theo)}{fig:man-chitiet1}
+\screenfig{man_cachnau}{Màn hình chế độ nấu ăn theo bước (có hẹn giờ)}{fig:man-cachnau}
+\screenfig{man_nhandien}{Màn hình nhận diện món ăn từ ảnh và kết quả}{fig:man-nhandien}
+\screenfig{man_congthuc_canhan}{Màn hình ``Công thức của tôi'' --- công thức do người dùng tạo}{fig:man-congthuc-canhan}
+\screenfig{man_kehoach}{Màn hình kế hoạch bữa ăn và danh sách đi chợ}{fig:man-kehoach}
+\screenfig{man_quantri}{Màn hình bảng điều khiển quản trị (tổng quan)}{fig:man-quantri}
+
+\section{Đánh giá mô hình nhận diện}
+\label{sec:4-danhgia}
+Mô hình nhận diện được đánh giá trên tập kiểm tra theo từng tầng. Bảng~\ref{tab:eval} tổng hợp độ chính xác (accuracy) và F1 trung bình macro của bộ phân loại nhóm và tám bộ phân loại món theo nhóm.
+
+\begin{center}
+\captionof{table}{Kết quả đánh giá các mô hình nhận diện}\label{tab:eval}
+\begin{tabular}{|p{6.5cm}|p{3.2cm}|p{3.2cm}|}\hline
+\textbf{Mô hình} & \textbf{Accuracy (\%)} & \textbf{Macro-F1 (\%)} \\ \hline
+Bộ phân loại nhóm (EfficientNet-B0) & 92,48 & 91,22 \\ \hline
+Nhóm BÁNH (B2) & 94,53 & 93,89 \\ \hline
+Nhóm BÚN--PHỞ (B2) & 89,95 & 91,42 \\ \hline
+Nhóm CƠM (B2) & 97,07 & 95,57 \\ \hline
+Nhóm MÓN KHO--NƯỚNG (B2) & 93,39 & 92,19 \\ \hline
+Nhóm CANH--CHÁO (B2) & 94,44 & 92,32 \\ \hline
+Nhóm XÔI (B2) & 98,88 & 98,63 \\ \hline
+Nhóm GỎI--CUỐN (B2) & 95,49 & 94,12 \\ \hline
+Nhóm ĐẶC BIỆT (B2) & 94,27 & 94,34 \\ \hline
+\end{tabular}
+\end{center}
+
+Bộ phân loại nhóm đạt độ chính xác $92{,}48\%$ trên tập kiểm tra; chi tiết theo từng nhóm được trình bày ở Bảng~\ref{tab:evalgroup} và ma trận nhầm lẫn ở Hình~\ref{fig:cmgroup}. Các bộ phân loại món trong nhóm đạt độ chính xác từ $89{,}95\%$ (nhóm bún--phở, vốn nhiều món nước tương đồng) đến $98{,}88\%$ (nhóm xôi). Kết quả cho thấy chiến lược chia hai tầng giúp mỗi mô hình con chỉ phải phân biệt số lớp nhỏ trong cùng nhóm nên đạt độ chính xác cao.
+
+\begin{center}
+\captionof{table}{Kết quả bộ phân loại nhóm theo từng nhóm món}\label{tab:evalgroup}
+\begin{tabular}{|p{4.2cm}|p{2.4cm}|p{2.4cm}|p{2.2cm}|p{1.8cm}|}\hline
+\textbf{Nhóm} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{Support} \\ \hline
+BÁNH & 0,944 & 0,945 & 0,945 & 3058 \\ \hline
+BÚN--PHỞ & 0,896 & 0,941 & 0,918 & 1566 \\ \hline
+CƠM & 0,948 & 0,910 & 0,929 & 344 \\ \hline
+MÓN KHO--NƯỚNG & 0,908 & 0,926 & 0,917 & 768 \\ \hline
+CANH--CHÁO & 0,919 & 0,890 & 0,904 & 584 \\ \hline
+XÔI & 0,963 & 0,876 & 0,917 & 177 \\ \hline
+GỎI--CUỐN & 0,933 & 0,875 & 0,903 & 399 \\ \hline
+ĐẶC BIỆT & 0,888 & 0,846 & 0,867 & 488 \\ \hline
+\textbf{Trung bình (macro)} & 0,925 & 0,901 & 0,912 & 7384 \\ \hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth,height=0.78\textheight,keepaspectratio]{cm_group.png}
+  \caption{Ma trận nhầm lẫn của bộ phân loại nhóm}
+  \label{fig:cmgroup}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth,height=0.78\textheight,keepaspectratio]{roc_group.png}
+  \caption{Đường cong ROC của bộ phân loại nhóm}
+  \label{fig:rocgroup}
+\end{figure}
+
+\section{Kiểm thử}
+\label{sec:4-kiemthu}
+Hệ thống website được kiểm thử cho các chức năng quan trọng bằng kỹ thuật kiểm thử hộp đen dựa trên phân hoạch tương đương và phân tích giá trị biên. Bảng~\ref{tab:test} trình bày một số trường hợp tiêu biểu cho chức năng đăng nhập và nhận diện món ăn.
+
+\begin{center}
+\captionof{table}{Một số trường hợp kiểm thử tiêu biểu}\label{tab:test}
+\begin{tabular}{|p{1.2cm}|p{5.2cm}|p{4.3cm}|p{2.3cm}|}\hline
+\textbf{Mã} & \textbf{Mô tả} & \textbf{Kết quả mong đợi} & \textbf{Kết quả} \\ \hline
+TC-01 & Đăng nhập đúng email và mật khẩu & Cấp token, vào trang chính & Đạt \\ \hline
+TC-02 & Đăng nhập sai mật khẩu & Báo lỗi chung, không cấp token & Đạt \\ \hline
+TC-03 & Tải ảnh món có trong kho & Trả công thức chuẩn tương ứng & Đạt \\ \hline
+TC-04 & Tải ảnh không phải món ăn & Báo "không tìm thấy" & Đạt \\ \hline
+TC-05 & Khách truy cập trang yêu cầu đăng nhập & Chuyển hướng tới trang đăng nhập & Đạt \\ \hline
+\end{tabular}
+\end{center}
+
+Các trường hợp kiểm thử cho những chức năng cốt lõi đều cho kết quả đạt. Những trường hợp kiểm thử khác được trình bày trong phần phụ lục.
+
+\section{Triển khai}
+\label{sec:4-trienkhai}
+Hệ thống website hiện được triển khai thử nghiệm trên môi trường máy cục bộ (localhost) theo mô hình ở Hình~\ref{fig:trienkhai}. Cơ sở dữ liệu PostgreSQL chạy trong Docker (cổng 5432); dịch vụ backend FastAPI chạy bằng Uvicorn (cổng 8000) và nạp các trọng số mô hình EfficientNet khi khởi động; ứng dụng giao diện Next.js chạy ở cổng 3000. Ảnh do người dùng tải lên được lưu trong thư mục cục bộ và phục vụ tĩnh. Mô hình triển khai này thuận tiện cho phát triển và kiểm thử trước khi đưa lên môi trường đám mây.
+
+\diagramfig{trienkhai}{Biểu đồ triển khai hệ thống}{fig:trienkhai}
+
+Chương này đã trình bày thiết kế kiến trúc và chi tiết của hệ thống, quá trình xây dựng, kết quả đánh giá mô hình nhận diện với độ chính xác bộ phân loại nhóm đạt $92{,}48\%$, cùng kết quả kiểm thử và mô hình triển khai. Các giải pháp và đóng góp nổi bật được tổng kết ở Chương~\ref{chapter:SolutionAndContribution}.
+
+\end{document}

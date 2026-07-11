@@ -71,8 +71,7 @@ class AuthorOut(BaseModel):
 
 
 class AuthorDetailOut(AuthorOut):
-    follower_count: int
-    is_following: bool
+    pass
 
 
 class IngredientOut(BaseModel):

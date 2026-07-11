@@ -1,16 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
+import { useState, useCallback } from "react";
 import { CalendarDays, ChefHat, Star } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RecipeGrid from "@/components/recipes/RecipeGrid";
-import UserCard from "@/components/users/UserCard";
-import UserStatsBar from "@/components/users/UserStatsBar";
-import FollowButton from "@/components/users/FollowButton";
-import type { FollowerOut, RecipeCard, UserProfile, UserStats } from "@/lib/types";
+import type { RecipeCard, UserProfile } from "@/lib/types";
 import api from "@/lib/api";
+
+const PAGE_SIZE = 6;
 
 interface Props {
   profile: UserProfile;
@@ -21,81 +18,35 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("vi-VN", { month: "long", year: "numeric" });
 }
 
-export default function UserProfileClient({ profile, currentUserId }: Props) {
-  const [stats, setStats] = useState<UserStats>(profile.stats);
-  const [activeTab, setActiveTab] = useState<"recipes" | "followers" | "following">("recipes");
+export default function UserProfileClient({ profile }: Props) {
+  const stats = profile.stats;
 
+  // recent_recipes là 6 món mới nhất = trang 1 (limit 6); "Xem thêm" tải trang kế.
   const [recipes, setRecipes] = useState<RecipeCard[]>(profile.recent_recipes);
-  const [recipesLoaded, setRecipesLoaded] = useState(false);
   const [recipesPage, setRecipesPage] = useState(1);
-  const [recipesTotalPages, setRecipesTotalPages] = useState(1);
   const [recipesLoading, setRecipesLoading] = useState(false);
 
-  const [followers, setFollowers] = useState<FollowerOut[]>([]);
-  const [followersLoaded, setFollowersLoaded] = useState(false);
-  const [followersPage, setFollowersPage] = useState(1);
-  const [followersTotalPages, setFollowersTotalPages] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(stats.recipe_count / PAGE_SIZE));
 
-  const [following, setFollowing] = useState<FollowerOut[]>([]);
-  const [followingLoaded, setFollowingLoaded] = useState(false);
-  const [followingPage, setFollowingPage] = useState(1);
-  const [followingTotalPages, setFollowingTotalPages] = useState(1);
-
-  const loadRecipes = useCallback(async (page: number) => {
+  const loadMore = useCallback(async () => {
+    const next = recipesPage + 1;
     setRecipesLoading(true);
     try {
-      const res = await api.get(`/users/${profile.id}/recipes`, { params: { page, limit: 12, status: "approved" } });
-      if (page === 1) setRecipes(res.data.data);
-      else setRecipes((prev) => [...prev, ...res.data.data]);
-      setRecipesPage(page);
-      setRecipesTotalPages(res.data.pagination.total_pages);
-      setRecipesLoaded(true);
+      const res = await api.get(`/users/${profile.id}/recipes`, {
+        params: { page: next, limit: PAGE_SIZE, status: "approved" },
+      });
+      setRecipes((prev) => [...prev, ...res.data.data]);
+      setRecipesPage(next);
     } catch { /* ignore */ } finally {
       setRecipesLoading(false);
     }
-  }, [profile.id]);
-
-  const loadFollowers = useCallback(async (page: number) => {
-    try {
-      const res = await api.get(`/users/${profile.id}/followers`, { params: { page, limit: 20 } });
-      if (page === 1) setFollowers(res.data.data);
-      else setFollowers((prev) => [...prev, ...res.data.data]);
-      setFollowersPage(page);
-      setFollowersTotalPages(res.data.pagination.total_pages);
-      setFollowersLoaded(true);
-    } catch { /* ignore */ }
-  }, [profile.id]);
-
-  const loadFollowing = useCallback(async (page: number) => {
-    try {
-      const res = await api.get(`/users/${profile.id}/following`, { params: { page, limit: 20 } });
-      if (page === 1) setFollowing(res.data.data);
-      else setFollowing((prev) => [...prev, ...res.data.data]);
-      setFollowingPage(page);
-      setFollowingTotalPages(res.data.pagination.total_pages);
-      setFollowingLoaded(true);
-    } catch { /* ignore */ }
-  }, [profile.id]);
-
-  useEffect(() => {
-    if (activeTab === "recipes" && !recipesLoaded) loadRecipes(1);
-    if (activeTab === "followers" && !followersLoaded) loadFollowers(1);
-    if (activeTab === "following" && !followingLoaded) loadFollowing(1);
-  }, [activeTab, recipesLoaded, followersLoaded, followingLoaded, loadRecipes, loadFollowers, loadFollowing]);
+  }, [profile.id, recipesPage]);
 
   const avatarSrc = profile.avatar_url
     ? profile.avatar_url.startsWith("http")
       ? profile.avatar_url
       : `${process.env.NEXT_PUBLIC_API_URL}${profile.avatar_url}`
     : undefined;
-
-  const isSelf = currentUserId === profile.id;
-
-  const tabTriggerClass =
-    "px-4 py-2.5 text-sm font-medium rounded-lg -mb-px border-b-2 border-transparent " +
-    "text-muted-foreground data-[state=active]:border-primary data-[state=active]:text-primary " +
-    "data-[state=active]:bg-transparent data-[state=active]:shadow-none " +
-    "hover:text-foreground transition-colors";
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-24 lg:pb-8">
@@ -107,27 +58,13 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
 
         {/* Avatar + info */}
         <div className="px-6 pb-6">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 -mt-12 sm:-mt-14">
-            {/* Avatar */}
+          <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-12 sm:-mt-14">
             <Avatar className="w-24 h-24 sm:w-28 sm:h-28 border-4 border-card shadow-md shrink-0">
               <AvatarImage src={avatarSrc} alt={profile.full_name ?? "User"} />
               <AvatarFallback className="bg-primary text-white text-3xl font-bold">
                 {profile.full_name?.charAt(0)?.toUpperCase() ?? "?"}
               </AvatarFallback>
             </Avatar>
-
-            {/* Follow button */}
-            <div className="sm:pb-2">
-              <FollowButton
-                userId={profile.id}
-                initialFollowing={profile.is_following ?? false}
-                initialCount={stats.follower_count}
-                isSelf={isSelf}
-                onToggle={(isFollowing, count) =>
-                  setStats((s) => ({ ...s, follower_count: count }))
-                }
-              />
-            </div>
           </div>
 
           <div className="mt-4">
@@ -150,115 +87,40 @@ export default function UserProfileClient({ profile, currentUserId }: Props) {
               )}
             </div>
           </div>
-
-          <div className="mt-5">
-            <UserStatsBar
-              stats={stats}
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-            />
-          </div>
         </div>
       </div>
 
-      {/* ── Tabs ── */}
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
-        <TabsList className="w-full justify-start border-b border-border bg-transparent h-auto p-0 rounded-lg mb-6">
-          <TabsTrigger value="recipes" className={tabTriggerClass}>
-            <ChefHat className="w-4 h-4 mr-1.5" />
-            Công thức ({stats.recipe_count})
-          </TabsTrigger>
-          <TabsTrigger value="followers" className={tabTriggerClass}>
-            Người theo dõi ({stats.follower_count})
-          </TabsTrigger>
-          <TabsTrigger value="following" className={tabTriggerClass}>
-            Đang theo dõi ({stats.following_count})
-          </TabsTrigger>
-        </TabsList>
+      {/* ── Recipes ── */}
+      <h2 className="flex items-center gap-1.5 text-lg font-semibold text-foreground mb-4">
+        <ChefHat className="w-5 h-5 text-primary" />
+        Công thức ({stats.recipe_count})
+      </h2>
 
-        {/* Recipes tab */}
-        <TabsContent value="recipes">
-          {recipes.length === 0 && !recipesLoading ? (
-            <div className="text-center py-16 text-muted-foreground">
-              <ChefHat className="w-12 h-12 mx-auto mb-3 opacity-30" />
-              <p className="font-medium">Chưa có công thức nào</p>
+      {recipes.length === 0 ? (
+        <div className="text-center py-16 text-muted-foreground">
+          <ChefHat className="w-12 h-12 mx-auto mb-3 opacity-30" />
+          <p className="font-medium">Chưa có công thức nào</p>
+        </div>
+      ) : (
+        <>
+          <RecipeGrid recipes={recipes} />
+          {recipesLoading && (
+            <div className="flex justify-center py-8">
+              <div className="w-7 h-7 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
-          ) : (
-            <>
-              <RecipeGrid recipes={recipes} />
-              {recipesLoading && (
-                <div className="flex justify-center py-8">
-                  <div className="w-7 h-7 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                </div>
-              )}
-              {!recipesLoading && recipesPage < recipesTotalPages && (
-                <div className="flex justify-center mt-6">
-                  <button
-                    onClick={() => loadRecipes(recipesPage + 1)}
-                    className="px-6 py-2.5 rounded-xl border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                  >
-                    Xem thêm
-                  </button>
-                </div>
-              )}
-            </>
           )}
-        </TabsContent>
-
-        {/* Followers tab */}
-        <TabsContent value="followers">
-          {followers.length === 0 && followersLoaded ? (
-            <div className="text-center py-16 text-muted-foreground">
-              <p>Chưa có người theo dõi</p>
+          {!recipesLoading && recipesPage < totalPages && (
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={loadMore}
+                className="px-6 py-2.5 rounded-xl border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+              >
+                Xem thêm
+              </button>
             </div>
-          ) : (
-            <>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {followers.map((u) => (
-                  <UserCard key={u.id} user={u} currentUserId={currentUserId ?? undefined} />
-                ))}
-              </div>
-              {followersPage < followersTotalPages && (
-                <div className="flex justify-center mt-6">
-                  <button
-                    onClick={() => loadFollowers(followersPage + 1)}
-                    className="px-6 py-2.5 rounded-xl border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                  >
-                    Xem thêm
-                  </button>
-                </div>
-              )}
-            </>
           )}
-        </TabsContent>
-
-        {/* Following tab */}
-        <TabsContent value="following">
-          {following.length === 0 && followingLoaded ? (
-            <div className="text-center py-16 text-muted-foreground">
-              <p>Chưa theo dõi ai</p>
-            </div>
-          ) : (
-            <>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {following.map((u) => (
-                  <UserCard key={u.id} user={u} currentUserId={currentUserId ?? undefined} />
-                ))}
-              </div>
-              {followingPage < followingTotalPages && (
-                <div className="flex justify-center mt-6">
-                  <button
-                    onClick={() => loadFollowing(followingPage + 1)}
-                    className="px-6 py-2.5 rounded-xl border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                  >
-                    Xem thêm
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-        </TabsContent>
-      </Tabs>
+        </>
+      )}
     </div>
   );
 }

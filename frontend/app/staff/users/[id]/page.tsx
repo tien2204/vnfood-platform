@@ -7,7 +7,7 @@ import { use } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft, Shield, ShieldOff, UserCog,
-  BookOpen, MessageSquare, Users, Star, Brain, Calendar,
+  BookOpen, MessageSquare, Star, Brain, Calendar,
 } from "lucide-react";
 import { toast } from "sonner";
 import useSWR, { mutate as globalMutate } from "swr";
@@ -31,8 +31,6 @@ interface UserDetail {
   stats: {
     recipe_count: number;
     comment_count: number;
-    follower_count: number;
-    following_count: number;
     total_ratings_given: number;
     ai_recognitions: number;
     joined_days: number;
@@ -283,11 +281,9 @@ export default function AdminUserDetailPage({ params }: { params: Promise<{ id: 
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mt-5 pt-5 border-t border-muted">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-5 pt-5 border-t border-muted">
           <StatPill icon={<BookOpen className="w-4 h-4" />} label="Công thức" value={stats.recipe_count} />
           <StatPill icon={<MessageSquare className="w-4 h-4" />} label="Bình luận" value={stats.comment_count} />
-          <StatPill icon={<Users className="w-4 h-4" />} label="Người theo dõi" value={stats.follower_count} />
-          <StatPill icon={<Users className="w-4 h-4" />} label="Đang theo dõi" value={stats.following_count} />
           <StatPill icon={<Star className="w-4 h-4" />} label="Đã đánh giá" value={stats.total_ratings_given} />
           <StatPill icon={<Brain className="w-4 h-4" />} label="AI nhận diện" value={stats.ai_recognitions} />
         </div>

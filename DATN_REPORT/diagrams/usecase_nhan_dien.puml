@@ -1,0 +1,33 @@
+@startuml usecase_nhan_dien
+' Biểu đồ use case Nhận diện món ăn
+' Nhận diện ("/recognize") là chức năng công khai: cả Khách lẫn Người dùng đều dùng được.
+' Hai actor nối trực tiếp tới các use case nhận diện (không dùng quan hệ kế thừa).
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+left to right direction
+
+actor "Khách" as Guest
+actor "Người dùng" as User
+
+rectangle "Nhận diện món ăn" {
+  usecase "Tải ảnh món ăn" as UC_Upload
+  usecase "Nhận diện món ăn" as UC_Detect
+  usecase "Phân loại nhóm món" as UC_Group
+  usecase "Khớp công thức chuẩn" as UC_Match
+  usecase "Xem công thức tương ứng" as UC_Result
+  usecase "Báo không nhận diện được" as UC_NotFound
+}
+
+Guest --> UC_Upload
+Guest --> UC_Detect
+Guest --> UC_Result
+User  --> UC_Upload
+User  --> UC_Detect
+User  --> UC_Result
+
+UC_Detect ..> UC_Group : <<include>>
+UC_Detect ..> UC_Match : <<include>>
+UC_Detect <.. UC_NotFound : <<extend>>
+@enduml

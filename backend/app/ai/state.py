@@ -9,21 +9,21 @@ from typing import TYPE_CHECKING
 from fastapi import HTTPException
 
 if TYPE_CHECKING:
-    from app.ai.inference import VNFoodPredictor
+    from app.ai.inference import TastyVietnamPredictor
 
-_predictor: "VNFoodPredictor | None" = None
+_predictor: "TastyVietnamPredictor | None" = None
 
 
-def set_predictor(p: "VNFoodPredictor | None") -> None:
+def set_predictor(p: "TastyVietnamPredictor | None") -> None:
     global _predictor
     _predictor = p
 
 
-def get_predictor() -> "VNFoodPredictor":
+def get_predictor() -> "TastyVietnamPredictor":
     if _predictor is None:
         raise HTTPException(status_code=503, detail="AI models chưa sẵn sàng")
     return _predictor
 
 
-def get_predictor_optional() -> "VNFoodPredictor | None":
+def get_predictor_optional() -> "TastyVietnamPredictor | None":
     return _predictor

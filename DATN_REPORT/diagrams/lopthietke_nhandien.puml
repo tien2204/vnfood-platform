@@ -1,0 +1,27 @@
+@startuml
+' Biểu đồ lớp - gói nhận diện món ăn
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+class AIService {
+  +recognize(image, db)
+}
+class TastyVietnamPredictor {
+  +predict_group(img)
+  +predict_dish(img, group)
+}
+class DishResolver {
+  +resolve_vnfood(result)
+  +resolve_to_slug(name)
+  +has_canonical(slug)
+}
+class RecipeService {
+  +find_canonical_for_class(slug)
+}
+
+AIService --> TastyVietnamPredictor
+AIService --> DishResolver
+AIService --> RecipeService
+TastyVietnamPredictor ..> DishResolver
+@enduml

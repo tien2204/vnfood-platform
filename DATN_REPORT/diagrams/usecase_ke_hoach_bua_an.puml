@@ -1,0 +1,25 @@
+@startuml usecase_ke_hoach_bua_an
+' Biểu đồ use case Kế hoạch bữa ăn & danh sách đi chợ
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+left to right direction
+
+actor "Người dùng" as User
+
+rectangle "Kế hoạch bữa ăn" {
+  usecase "Tạo kế hoạch bữa ăn" as UC_Create
+  usecase "Thêm công thức vào kế hoạch" as UC_Add
+  usecase "Xem / chỉnh sửa kế hoạch" as UC_Edit
+  usecase "Sinh danh sách đi chợ" as UC_Grocery
+  usecase "Tổng hợp nguyên liệu" as UC_Aggregate
+}
+
+User --> UC_Create
+User --> UC_Add
+User --> UC_Edit
+User --> UC_Grocery
+
+UC_Grocery ..> UC_Aggregate : <<include>>
+@enduml

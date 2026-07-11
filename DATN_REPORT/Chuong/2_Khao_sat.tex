@@ -1,0 +1,225 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+
+Chương 1 đã giới thiệu bài toán và định hướng giải pháp cho hệ thống. Chương này tiến hành khảo sát hiện trạng nhu cầu người dùng cùng các sản phẩm tương tự, sau đó phân tích yêu cầu của hệ thống thông qua mô hình hướng đối tượng. Nội dung gồm: khảo sát hiện trạng (mục~\ref{sec:2-khaosat}), tổng quan chức năng qua biểu đồ use case và quy trình nghiệp vụ (mục~\ref{sec:2-tongquan}), đặc tả chi tiết các use case chính (mục~\ref{sec:2-dactahoa}) và các yêu cầu phi chức năng (mục~\ref{sec:2-phichucnang}).
+
+\section{Khảo sát hiện trạng}
+\label{sec:2-khaosat}
+
+\subsection{Nhu cầu người dùng}
+Người dùng phổ thông, đặc biệt là người trẻ và người ít kinh nghiệm nấu ăn, có nhu cầu tra cứu công thức một cách nhanh chóng và dễ làm theo. Họ mong muốn công thức được trình bày rõ ràng về nguyên liệu, định lượng, các bước thực hiện, thời gian và độ khó, đồng thời có thể lọc theo vùng miền hay loại món để phù hợp với khẩu vị. Bên cạnh đó, nhu cầu lưu lại công thức yêu thích, lập kế hoạch ăn uống và chuẩn bị nguyên liệu cũng ngày càng phổ biến. Một nhu cầu đặc thù khác là xác định nhanh tên món ăn khi bắt gặp trong thực tế để tra cứu công thức tương ứng, điều mà cách tìm kiếm bằng từ khóa thông thường khó đáp ứng.
+
+\subsection{Các hệ thống tương tự và hạn chế}
+Trên thị trường hiện có một số sản phẩm phục vụ nhu cầu tra cứu và chia sẻ công thức. Cookpad và Yummly là các hệ thống phần mềm quốc tế với lượng công thức lớn và cộng đồng đóng góp sôi nổi; Món Ngon Mỗi Ngày là trang nội dung ẩm thực phổ biến tại Việt Nam; ngoài ra còn nhiều nhóm và trang chia sẻ trên mạng xã hội. Qua khảo sát, các sản phẩm này tuy phong phú nhưng vẫn còn một số hạn chế: dữ liệu công thức chưa được chuẩn hóa đồng bộ về nguyên liệu và các bước; việc tìm kiếm chủ yếu dựa trên từ khóa văn bản, chưa hỗ trợ nhận diện món ăn từ hình ảnh; khả năng cá nhân hóa như lập kế hoạch bữa ăn còn hạn chế; và nguồn công thức tiếng Việt có cấu trúc còn phân mảnh. Những hạn chế này là cơ sở để xác định các chức năng cần xây dựng ở các mục tiếp theo.
+
+\section{Tổng quan chức năng}
+\label{sec:2-tongquan}
+
+\subsection{Yêu cầu tác nhân của hệ thống}
+Hệ thống website có ba tác nhân chính. \textbf{Khách} là người dùng chưa đăng nhập; theo cơ chế phân quyền ở tầng định tuyến, Khách chỉ được phép xem trang chủ, sử dụng chức năng nhận diện món ăn từ ảnh gửi hệ thống, và đăng ký / đăng nhập. \textbf{Người dùng} là tài khoản đã đăng nhập, kế thừa toàn bộ quyền của Khách và bổ sung các chức năng yêu cầu xác thực như tìm kiếm và gửi công thức, xem chi tiết, đánh giá, bình luận, lưu công thức, lập kế hoạch bữa ăn và đề xuất công thức. \textbf{Quản trị viên} chịu trách nhiệm kiểm duyệt nội dung, bao gồm duyệt các đề xuất công thức, quản lý công thức, ẩn bình luận vi phạm, quản lý tài khoản người dùng và biên soạn, gửi bản tin công thức tới những người đã đăng ký nhận.
+
+\subsection{Biểu đồ use case tổng quát}
+Biểu đồ use case tổng quát ở Hình~\ref{fig:uc-tongquat} mô tả mối quan hệ giữa ba tác nhân và các nhóm chức năng chính của hệ thống, trong đồ án này hệ thống có tên là TastyVietnam.
+
+\diagramfig{usecase_tong_quat}{Biểu đồ use case tổng quát}{fig:uc-tongquat}
+
+\subsection{Biểu đồ use case phân rã}
+
+\subsubsection{Xác thực tài khoản}
+Nhóm use case xác thực (Hình~\ref{fig:uc-xacthuc}) gồm Đăng ký và Đăng nhập dành cho Khách, và Đăng xuất dành cho Người dùng. Việc xác thực dựa trên cơ chế JSON Web Token.
+
+\diagramfig{usecase_xac_thuc}{Use case phân rã xác thực tài khoản}{fig:uc-xacthuc}
+
+\subsubsection{Nhận diện món ăn}
+Đây là nhóm chức năng nổi bật của hệ thống (Hình~\ref{fig:uc-nhandien}). Từ ảnh người dùng cung cấp, hệ thống tiền xử lý và đưa vào mô hình EfficientNet để dự đoán. Nếu dự đoán đủ tin cậy, kết quả được ánh xạ về công thức tương ứng trong kho; nếu mô hình không đủ tin cậy để xác định món, hệ thống thông báo không nhận diện được.
+
+\diagramfig{usecase_nhan_dien}{Use case phân rã nhận diện món ăn}{fig:uc-nhandien}
+
+\subsubsection{Quản lý và đề xuất công thức}
+Người dùng có thể đề xuất tạo mới, chỉnh sửa hoặc xóa công thức và theo dõi trạng thái đề xuất; mỗi đề xuất sinh ra một yêu cầu được lưu ở trạng thái chờ duyệt. Quản trị viên xem xét rồi phê duyệt (áp dụng thay đổi vào kho) hoặc từ chối kèm lý do (Hình~\ref{fig:uc-quanlyct}).
+
+\diagramfig{usecase_quan_ly_cong_thuc}{Use case phân rã quản lý và đề xuất công thức}{fig:uc-quanlyct}
+
+\subsubsection{Lập kế hoạch bữa ăn}
+Người dùng tạo kế hoạch bữa ăn theo tuần, thêm món vào từng bữa và điều chỉnh khẩu phần; hệ thống tổng hợp nguyên liệu của các món thành danh sách đi chợ và cho phép đánh dấu các mục đã mua (Hình~\ref{fig:uc-kehoach}).
+
+\diagramfig{usecase_ke_hoach_bua_an}{Use case phân rã lập kế hoạch bữa ăn}{fig:uc-kehoach}
+
+\subsubsection{Tương tác cộng đồng}
+Trên mỗi công thức, người dùng đã đăng nhập có thể đánh giá theo thang điểm từ một đến năm sao, bình luận và lưu công thức vào danh sách cá nhân (Hình~\ref{fig:uc-congdong}). Bên cạnh đó, người dùng có thể đăng ký nhận bản tin công thức hàng tuần qua email và chủ động hủy nhận bất cứ lúc nào; quản trị viên là người biên soạn và gửi bản tin này.
+
+\diagramfig{usecase_cong_dong}{Use case phân rã tương tác cộng đồng}{fig:uc-congdong}
+
+\subsubsection{Bản tin công thức}
+Người dùng đăng ký nhận bản tin công thức mới qua email và có thể hủy nhận bất cứ lúc nào, thông qua liên kết đính kèm trong email hoặc tùy chọn trong trang hồ sơ. Quản trị viên biên soạn và gửi bản tin tới những người đang đăng ký, mỗi lần gửi hệ thống tự dựng nội dung email từ các công thức mới nhất (Hình~\ref{fig:uc-bantin}).
+
+\diagramfig{usecase_ban_tin}{Use case phân rã bản tin công thức}{fig:uc-bantin}
+
+\subsubsection{Hướng dẫn nấu ăn theo từng bước}
+Từ trang chi tiết công thức, người dùng bật chế độ nấu để xem hướng dẫn thực hiện theo từng bước. Hệ thống website hỗ trợ điều hướng tiến/lùi giữa các bước, đọc nội dung bước bằng giọng nói và hẹn giờ đếm ngược cho các bước có mốc thời gian (Hình~\ref{fig:uc-chedonau}).
+
+\diagramfig{usecase_che_do_nau}{Use case phân rã hướng dẫn nấu ăn theo từng bước}{fig:uc-chedonau}
+
+\subsection{Quy trình nghiệp vụ}
+
+\subsubsection{Quy trình nhận diện món ăn}
+Hình~\ref{fig:qt-nhandien} mô tả luồng xử lý khi người dùng nhận diện món ăn từ ảnh, thể hiện sự phối hợp giữa người dùng và hệ thống cùng các nhánh xử lý khi mô hình không chắc chắn hoặc khi món ăn không có trong kho công thức.
+
+\diagramfig{quytrinh_nhan_dien}{Quy trình nhận diện món ăn}{fig:qt-nhandien}
+
+\subsubsection{Quy trình đề xuất và duyệt công thức}
+Hình~\ref{fig:qt-dexuat} mô tả luồng từ khi người dùng gửi đề xuất công thức đến khi quản trị viên phê duyệt hoặc từ chối.
+
+\diagramfig{quytrinh_de_xuat_duyet_cong_thuc}{Quy trình đề xuất và duyệt công thức}{fig:qt-dexuat}
+
+\section{Đặc tả use case}
+\label{sec:2-dactahoa}
+Mục này đặc tả chi tiết các use case chính của hệ thống. Mỗi use case được trình bày theo các thành phần: mã và tên, tác nhân, mô tả, tiền điều kiện, hậu điều kiện, luồng sự kiện chính và các ngoại lệ.
+
+% Bảng đặc tả KHÔNG trôi (non-float): nằm ngay dưới tiêu đề mục, tránh khoảng
+% trắng do float bị hoãn. minipage giữ caption + bảng dính nhau, không tách trang.
+\newcommand{\uctable}[3]{%
+  \par\addvspace{\medskipamount}%
+  \begin{minipage}{\linewidth}
+  \centering
+  \captionof{table}{#1}\label{#2}
+  \begin{tabular}{|p{3.1cm}|p{10.4cm}|}\hline #3 \end{tabular}
+  \end{minipage}%
+  \par\addvspace{\medskipamount}}
+
+\subsection{Use case Đăng ký}
+\uctable{Đặc tả use case Đăng ký}{tab:uc-dangky}{
+\textbf{Mã \& Tên} & UC-01 Đăng ký \\ \hline
+\textbf{Tác nhân} & Khách \\ \hline
+\textbf{Mô tả} & Khách tạo tài khoản mới bằng email và mật khẩu để sử dụng các chức năng cá nhân hóa. \\ \hline
+\textbf{Tiền điều kiện} & Khách chưa có tài khoản với email tương ứng. \\ \hline
+\textbf{Hậu điều kiện} & Tài khoản được tạo và lưu vào cơ sở dữ liệu. \\ \hline
+\textbf{Luồng chính} & (i) Khách nhập email, mật khẩu, họ tên; (ii) hệ thống kiểm tra email chưa tồn tại và mật khẩu đạt độ dài tối thiểu; (iii) hệ thống tạo tài khoản và chuyển hướng đến trang đăng nhập. \\ \hline
+\textbf{Ngoại lệ} & Email đã tồn tại hoặc mật khẩu không hợp lệ: hệ thống báo lỗi và yêu cầu nhập lại. \\ \hline}
+
+\subsection{Use case Đăng nhập}
+\uctable{Đặc tả use case Đăng nhập}{tab:uc-dangnhap}{
+\textbf{Mã \& Tên} & UC-02 Đăng nhập \\ \hline
+\textbf{Tác nhân} & Khách \\ \hline
+\textbf{Mô tả} & Khách xác thực bằng email và mật khẩu để thiết lập phiên làm việc. \\ \hline
+\textbf{Tiền điều kiện} & Tài khoản đã tồn tại và đang hoạt động. \\ \hline
+\textbf{Hậu điều kiện} & Hệ thống website cấp access token và refresh token cho phiên đăng nhập. \\ \hline
+\textbf{Luồng chính} & (i) Khách nhập email và mật khẩu; (ii) hệ thống xác thực thông tin; (iii) hệ thống cấp token và chuyển đến trang chính. \\ \hline
+\textbf{Ngoại lệ} & Sai thông tin đăng nhập: báo lỗi chung. Tài khoản quản trị đăng nhập qua cổng người dùng: bị từ chối. \\ \hline}
+
+\subsection{Use case Đăng xuất}
+\uctable{Đặc tả use case Đăng xuất}{tab:uc-dangxuat}{
+\textbf{Mã \& Tên} & UC-03 Đăng xuất \\ \hline
+\textbf{Tác nhân} & Người dùng \\ \hline
+\textbf{Mô tả} & Người dùng kết thúc phiên làm việc và xóa thông tin xác thực. \\ \hline
+\textbf{Tiền điều kiện} & Người dùng đang đăng nhập. \\ \hline
+\textbf{Hậu điều kiện} & Token được xóa khỏi trình duyệt; phiên kết thúc. \\ \hline
+\textbf{Luồng chính} & (i) Người dùng chọn Đăng xuất; (ii) hệ thống xóa token ở phía client và cookie; (iii) chuyển về trang chủ. \\ \hline
+\textbf{Ngoại lệ} & Không có. \\ \hline}
+
+\subsection{Use case Tìm kiếm và lọc công thức}
+\uctable{Đặc tả use case Tìm kiếm và lọc công thức}{tab:uc-timkiem}{
+\textbf{Mã \& Tên} & UC-04 Tìm kiếm và lọc công thức \\ \hline
+\textbf{Tác nhân} & Người dùng \\ \hline
+\textbf{Mô tả} & Tìm công thức theo từ khóa, kết hợp các bộ lọc theo vùng miền, loại món, khẩu phần và độ khó. \\ \hline
+\textbf{Tiền điều kiện} & Người dùng đã đăng nhập. \\ \hline
+\textbf{Hậu điều kiện} & Hệ thống website hiển thị danh sách công thức phù hợp, có phân trang. \\ \hline
+\textbf{Luồng chính} & (i) Người dùng nhập từ khóa hoặc chọn bộ lọc; (ii) hệ thống truy vấn trên tập công thức được phép hiển thị; (iii) trả về danh sách kết quả. \\ \hline
+\textbf{Ngoại lệ} & Không có kết quả phù hợp: hệ thống hiển thị thông báo tương ứng. \\ \hline}
+
+\subsection{Use case Nhận diện món ăn từ ảnh}
+\uctable{Đặc tả use case Nhận diện món ăn từ ảnh}{tab:uc-nhandien}{
+\textbf{Mã \& Tên} & UC-05 Nhận diện món ăn từ ảnh \\ \hline
+\textbf{Tác nhân} & Khách, Người dùng \\ \hline
+\textbf{Mô tả} & Hệ thống website nhận diện món ăn từ ảnh và gợi ý công thức tương ứng trong kho. \\ \hline
+\textbf{Tiền điều kiện} & Người dùng cung cấp một ảnh món ăn. \\ \hline
+\textbf{Hậu điều kiện} & Hệ thống website hiển thị công thức gợi ý, hoặc thông báo không tìm thấy. \\ \hline
+\textbf{Luồng chính} & (i) Người dùng tải lên hoặc chụp ảnh; (ii) hệ thống tiền xử lý và đưa vào mô hình EfficientNet; (iii) nếu nhận diện được lớp món có trong kho thì hiển thị công thức tương ứng. \\ \hline
+\textbf{Ngoại lệ} & Mô hình không đủ tin cậy hoặc món không thuộc tập nhận diện được: hệ thống thông báo không nhận diện được. \\ \hline}
+
+\subsection{Use case Đề xuất công thức}
+\uctable{Đặc tả use case Đề xuất công thức}{tab:uc-dexuat}{
+\textbf{Mã \& Tên} & UC-06 Đề xuất công thức \\ \hline
+\textbf{Tác nhân} & Người dùng \\ \hline
+\textbf{Mô tả} & Người dùng gửi đề xuất tạo mới, chỉnh sửa hoặc xóa công thức để chờ quản trị viên duyệt. \\ \hline
+\textbf{Tiền điều kiện} & Người dùng đã đăng nhập. \\ \hline
+\textbf{Hậu điều kiện} & Đề xuất được lưu ở trạng thái chờ duyệt. \\ \hline
+\textbf{Luồng chính} & (i) Người dùng nhập nội dung công thức gồm nguyên liệu, các bước và thông tin liên quan; (ii) gửi đề xuất; (iii) hệ thống lưu đề xuất ở trạng thái chờ duyệt. \\ \hline
+\textbf{Ngoại lệ} & Dữ liệu không hợp lệ hoặc thiếu: hệ thống báo lỗi. \\ \hline}
+
+\subsection{Use case Duyệt đề xuất công thức}
+\uctable{Đặc tả use case Duyệt đề xuất công thức}{tab:uc-duyet}{
+\textbf{Mã \& Tên} & UC-07 Duyệt đề xuất công thức \\ \hline
+\textbf{Tác nhân} & Quản trị viên \\ \hline
+\textbf{Mô tả} & Quản trị viên xem xét các đề xuất chờ duyệt và quyết định phê duyệt hoặc từ chối. \\ \hline
+\textbf{Tiền điều kiện} & Quản trị viên đã đăng nhập; tồn tại đề xuất ở trạng thái chờ duyệt. \\ \hline
+\textbf{Hậu điều kiện} & Đề xuất được áp dụng vào kho công thức, hoặc bị từ chối kèm lý do. \\ \hline
+\textbf{Luồng chính} & (i) Quản trị viên mở danh sách đề xuất chờ duyệt; (ii) xem chi tiết một đề xuất; (iii) phê duyệt để áp dụng, hoặc từ chối và nhập lý do. \\ \hline
+\textbf{Ngoại lệ} & Không có. \\ \hline}
+
+\subsection{Use case Lập kế hoạch bữa ăn}
+\uctable{Đặc tả use case Lập kế hoạch bữa ăn}{tab:uc-kehoach}{
+\textbf{Mã \& Tên} & UC-08 Lập kế hoạch bữa ăn \\ \hline
+\textbf{Tác nhân} & Người dùng \\ \hline
+\textbf{Mô tả} & Người dùng lập kế hoạch bữa ăn theo tuần và sinh danh sách đi chợ từ các món đã chọn. \\ \hline
+\textbf{Tiền điều kiện} & Người dùng đã đăng nhập. \\ \hline
+\textbf{Hậu điều kiện} & Kế hoạch bữa ăn và danh sách đi chợ được lưu lại. \\ \hline
+\textbf{Luồng chính} & (i) Người dùng tạo kế hoạch cho một tuần; (ii) thêm món vào từng bữa và điều chỉnh khẩu phần; (iii) hệ thống tổng hợp nguyên liệu thành danh sách đi chợ. \\ \hline
+\textbf{Ngoại lệ} & Không có. \\ \hline}
+
+\subsection{Use case Đăng ký nhận bản tin công thức}
+\uctable{Đặc tả use case Đăng ký nhận bản tin công thức}{tab:uc-dangkybantin}{
+\textbf{Mã \& Tên} & UC-09 Đăng ký nhận bản tin công thức \\ \hline
+\textbf{Tác nhân} & Người dùng \\ \hline
+\textbf{Mô tả} & Người dùng đã đăng nhập đăng ký nhận bản tin gợi ý công thức mới gửi tới email tài khoản, và có thể chủ động hủy nhận bất cứ lúc nào. \\ \hline
+\textbf{Tiền điều kiện} & Người dùng đã đăng nhập. \\ \hline
+\textbf{Hậu điều kiện} & Email tài khoản được lưu vào danh sách nhận bản tin ở trạng thái đang nhận; hoặc được chuyển sang trạng thái đã hủy khi người dùng hủy nhận. \\ \hline
+\textbf{Luồng chính} & (i) Người dùng bật đăng ký tại biểu mẫu chân trang, hộp thoại gợi ý hoặc tùy chọn trong trang hồ sơ; (ii) hệ thống lưu mới hoặc kích hoạt lại bản ghi đăng ký gắn với email tài khoản; (iii) hệ thống xác nhận đăng ký thành công. \\ \hline
+\textbf{Ngoại lệ} & Khách chưa đăng nhập không thể đăng ký; hệ thống yêu cầu đăng nhập trước. Khi hủy nhận, người dùng có thể dùng liên kết hủy đính kèm trong email hoặc tắt tùy chọn trong trang hồ sơ. \\ \hline}
+
+\subsection{Use case Gửi bản tin công thức}
+\uctable{Đặc tả use case Gửi bản tin công thức}{tab:uc-guibantin}{
+\textbf{Mã \& Tên} & UC-10 Gửi bản tin công thức \\ \hline
+\textbf{Tác nhân} & Quản trị viên \\ \hline
+\textbf{Mô tả} & Quản trị viên biên soạn và gửi bản tin gồm các công thức mới tới toàn bộ những người đang đăng ký nhận. \\ \hline
+\textbf{Tiền điều kiện} & Quản trị viên đã đăng nhập; hệ thống đã cấu hình dịch vụ gửi thư điện tử; tồn tại người đăng ký ở trạng thái đang nhận. \\ \hline
+\textbf{Hậu điều kiện} & Bản tin được gửi tới các địa chỉ đang đăng ký; hệ thống ghi nhận số lượng gửi thành công và thất bại. \\ \hline
+\textbf{Luồng chính} & (i) Quản trị viên chọn chức năng gửi bản tin; (ii) hệ thống lấy các công thức mới nhất trong tập công thức được phép hiển thị và dựng nội dung email; (iii) hệ thống gửi lần lượt tới từng người đăng ký, mỗi email kèm một liên kết hủy nhận riêng; (iv) hệ thống báo cáo kết quả gửi. \\ \hline
+\textbf{Ngoại lệ} & Chưa cấu hình dịch vụ gửi thư: hệ thống thông báo và không gửi. Một số email gửi thất bại: hệ thống vẫn tiếp tục với các địa chỉ còn lại và thống kê số lỗi. \\ \hline}
+
+\subsection{Use case Xem chi tiết công thức}
+\uctable{Đặc tả use case Xem chi tiết công thức}{tab:uc-xemchitiet}{
+\textbf{Mã \& Tên} & UC-11 Xem chi tiết công thức \\ \hline
+\textbf{Tác nhân} & Người dùng \\ \hline
+\textbf{Mô tả} & Người dùng xem đầy đủ thông tin của một công thức gồm nguyên liệu, các bước thực hiện, hình ảnh, thời gian, khẩu phần, độ khó và đánh giá. \\ \hline
+\textbf{Tiền điều kiện} & Người dùng đã đăng nhập; công thức tồn tại và thuộc tập được phép hiển thị. \\ \hline
+\textbf{Hậu điều kiện} & Hệ thống website hiển thị chi tiết công thức và ghi nhận lượt xem. \\ \hline
+\textbf{Luồng chính} & (i) Người dùng chọn một công thức từ danh sách hoặc kết quả tìm kiếm; (ii) hệ thống truy vấn chi tiết công thức; (iii) hiển thị nguyên liệu, các bước và thông tin liên quan, kèm các thao tác đánh giá, bình luận, lưu và bắt đầu nấu. \\ \hline
+\textbf{Ngoại lệ} & Công thức không tồn tại hoặc không được phép hiển thị: hệ thống thông báo không tìm thấy. \\ \hline}
+
+\subsection{Use case Hướng dẫn nấu ăn theo từng bước}
+\uctable{Đặc tả use case Hướng dẫn nấu ăn theo từng bước}{tab:uc-chedonau}{
+\textbf{Mã \& Tên} & UC-12 Hướng dẫn nấu ăn theo từng bước \\ \hline
+\textbf{Tác nhân} & Người dùng \\ \hline
+\textbf{Mô tả} & Người dùng bật chế độ nấu để được hướng dẫn thực hiện công thức theo từng bước, kèm đọc giọng nói và hẹn giờ đếm ngược. \\ \hline
+\textbf{Tiền điều kiện} & Người dùng đang xem chi tiết một công thức có các bước thực hiện. \\ \hline
+\textbf{Hậu điều kiện} & Phiên hướng dẫn kết thúc khi người dùng hoàn thành hoặc thoát. \\ \hline
+\textbf{Luồng chính} & (i) Người dùng chọn ``Bắt đầu nấu''; (ii) hệ thống hiển thị từng bước và tự đọc nội dung bước bằng giọng nói; (iii) người dùng chuyển bước bằng nút bấm hoặc phím mũi tên; (iv) với bước có mốc thời gian, người dùng khởi động đồng hồ đếm ngược và hệ thống báo hiệu khi hết giờ. \\ \hline
+\textbf{Ngoại lệ} & Trình duyệt không hỗ trợ tổng hợp giọng nói: hệ thống ẩn nút đọc và vẫn cho phép điều hướng thủ công. \\ \hline}
+
+\section{Yêu cầu phi chức năng}
+\label{sec:2-phichucnang}
+
+\subsection{Yêu cầu giao diện}
+Giao diện cần thân thiện, bố cục rõ ràng và nhất quán trên toàn hệ thống, hỗ trợ hiển thị tương thích trên nhiều kích thước màn hình từ máy tính để bàn đến thiết bị di động. Các thao tác chính như tìm kiếm, nhận diện ảnh và xem công thức cần được truy cập thuận tiện.
+
+\subsection{Yêu cầu hiệu năng và khả dụng}
+Hệ thống website cần phản hồi nhanh với các thao tác duyệt và tìm kiếm công thức. Riêng chức năng nhận diện ảnh phụ thuộc vào thời gian suy luận của mô hình, do đó hệ thống cần hiển thị trạng thái xử lý để người dùng nắm được tiến trình. Các truy vấn danh sách đều áp dụng phân trang nhằm hạn chế tải dữ liệu lớn một lần.
+
+\subsection{Yêu cầu bảo mật}
+Việc xác thực dựa trên JSON Web Token; mật khẩu người dùng được băm trước khi lưu vào cơ sở dữ liệu. Hệ thống website phân tách rõ quyền của ba tác nhân, trong đó các thao tác quản trị và kiểm duyệt chỉ dành cho quản trị viên. Người dùng chỉ được chỉnh sửa hoặc xóa nội dung do chính mình tạo, các thay đổi đối với công thức chung phải thông qua quy trình đề xuất và duyệt.
+
+\bigskip
+Chương này đã phân tích nhu cầu người dùng và hạn chế của các sản phẩm hiện có, từ đó xác định ba tác nhân cùng các nhóm chức năng của hệ thống thông qua biểu đồ use case và quy trình nghiệp vụ, đồng thời đặc tả chi tiết các use case chính và các yêu cầu phi chức năng. Kết quả phân tích này là cơ sở để lựa chọn công nghệ ở Chương 3 và thiết kế, triển khai hệ thống ở Chương 4.
+
+\end{document}

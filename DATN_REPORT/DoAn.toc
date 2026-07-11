@@ -1,0 +1,84 @@
+\ttl@change@i {\@ne }{chapter}{0.0cm}{\bfseries \vspace {0.3cm}}{{\bfseries {\scshape } CHƯƠNG \thecontentslabel .\ }}{}{\titlerule *[0.3pc]{.}\contentspage }\relax 
+\ttl@change@v {chapter}{}{}{}\relax 
+\ttl@change@i {\@ne }{section}{0.0cm}{\vspace {0.3cm}}{\thecontentslabel \ }{}{\titlerule *[0.3pc]{.}\contentspage }\relax 
+\ttl@change@v {section}{}{}{}\relax 
+\ttl@change@i {\@ne }{subsection}{1.0cm}{\vspace {0.3cm}}{\thecontentslabel \ }{}{\titlerule *[0.3pc]{.}\contentspage }\relax 
+\ttl@change@v {subsection}{}{}{}\relax 
+\thispagestyle {empty}
+\contentsline {chapter}{\numberline {1}GIỚI THIỆU ĐỀ TÀI}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Đặt vấn đề}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Mục tiêu và phạm vi đề tài}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Định hướng giải pháp}{2}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Bố cục đồ án}{3}{section.1.4}%
+\contentsline {chapter}{\numberline {2}KHẢO SÁT VÀ PHÂN TÍCH YÊU CẦU}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Khảo sát hiện trạng}{4}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Nhu cầu người dùng}{4}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Các hệ thống tương tự và hạn chế}{4}{subsection.2.1.2}%
+\contentsline {section}{\numberline {2.2}Tổng quan chức năng}{4}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Yêu cầu tác nhân của hệ thống}{4}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Biểu đồ use case tổng quát}{5}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Biểu đồ use case phân rã}{6}{subsection.2.2.3}%
+\contentsline {subsubsection}{\numberline {a}Xác thực tài khoản}{6}{subsubsection.2.2.3.1}%
+\contentsline {subsubsection}{\numberline {b}Nhận diện món ăn}{7}{subsubsection.2.2.3.2}%
+\contentsline {subsubsection}{\numberline {c}Quản lý và đề xuất công thức}{7}{subsubsection.2.2.3.3}%
+\contentsline {subsubsection}{\numberline {d}Lập kế hoạch bữa ăn}{8}{subsubsection.2.2.3.4}%
+\contentsline {subsubsection}{\numberline {e}Tương tác cộng đồng}{8}{subsubsection.2.2.3.5}%
+\contentsline {subsubsection}{\numberline {f}Bản tin công thức}{9}{subsubsection.2.2.3.6}%
+\contentsline {subsubsection}{\numberline {g}Hướng dẫn nấu ăn theo từng bước}{10}{subsubsection.2.2.3.7}%
+\contentsline {subsection}{\numberline {2.2.4}Quy trình nghiệp vụ}{10}{subsection.2.2.4}%
+\contentsline {subsubsection}{\numberline {a}Quy trình nhận diện món ăn}{10}{subsubsection.2.2.4.1}%
+\contentsline {subsubsection}{\numberline {b}Quy trình đề xuất và duyệt công thức}{11}{subsubsection.2.2.4.2}%
+\contentsline {section}{\numberline {2.3}Đặc tả use case}{12}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Use case Đăng ký}{12}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Use case Đăng nhập}{13}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Use case Đăng xuất}{13}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Use case Tìm kiếm và lọc công thức}{14}{subsection.2.3.4}%
+\contentsline {subsection}{\numberline {2.3.5}Use case Nhận diện món ăn từ ảnh}{14}{subsection.2.3.5}%
+\contentsline {subsection}{\numberline {2.3.6}Use case Đề xuất công thức}{15}{subsection.2.3.6}%
+\contentsline {subsection}{\numberline {2.3.7}Use case Duyệt đề xuất công thức}{15}{subsection.2.3.7}%
+\contentsline {subsection}{\numberline {2.3.8}Use case Lập kế hoạch bữa ăn}{16}{subsection.2.3.8}%
+\contentsline {subsection}{\numberline {2.3.9}Use case Đăng ký nhận bản tin công thức}{16}{subsection.2.3.9}%
+\contentsline {subsection}{\numberline {2.3.10}Use case Gửi bản tin công thức}{17}{subsection.2.3.10}%
+\contentsline {subsection}{\numberline {2.3.11}Use case Xem chi tiết công thức}{18}{subsection.2.3.11}%
+\contentsline {subsection}{\numberline {2.3.12}Use case Hướng dẫn nấu ăn theo từng bước}{19}{subsection.2.3.12}%
+\contentsline {section}{\numberline {2.4}Yêu cầu phi chức năng}{19}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Yêu cầu giao diện}{19}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Yêu cầu hiệu năng và khả dụng}{19}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Yêu cầu bảo mật}{19}{subsection.2.4.3}%
+\contentsline {chapter}{\numberline {3}NỀN TẢNG LÝ THUYẾT VÀ CÔNG NGHỆ SỬ DỤNG}{21}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Tổng quan kiến trúc và công nghệ}{21}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Cơ sở lý thuyết nhận diện ảnh}{21}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Mạng nơ-ron tích chập}{21}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Kiến trúc EfficientNet}{22}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Học chuyển giao và Fine - Tuning mô hình}{24}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Kiến trúc nhận diện hai tầng của hệ thống}{24}{subsection.3.2.4}%
+\contentsline {section}{\numberline {3.3}Công nghệ phát triển giao diện}{25}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Công nghệ phát triển dịch vụ}{26}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Cơ sở dữ liệu và hạ tầng}{26}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Xác thực và bảo mật}{26}{section.3.6}%
+\contentsline {chapter}{\numberline {4}PHÂN TÍCH THIẾT KẾ, TRIỂN KHAI VÀ ĐÁNH GIÁ HỆ THỐNG}{28}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Thiết kế kiến trúc}{28}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Lựa chọn kiến trúc phần mềm}{28}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Thiết kế tổng quan}{28}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Thiết kế chi tiết gói}{29}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}Thiết kế chi tiết}{29}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Thiết kế giao diện}{29}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Thiết kế lớp và biểu đồ trình tự}{29}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Thiết kế cơ sở dữ liệu}{30}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Xây dựng ứng dụng}{31}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Thư viện và công cụ sử dụng}{31}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Kết quả đạt được}{31}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Minh họa các chức năng chính}{32}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}Đánh giá mô hình nhận diện}{35}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Kiểm thử}{38}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Triển khai}{38}{section.4.6}%
+\contentsline {chapter}{\numberline {5}CÁC GIẢI PHÁP VÀ ĐÓNG GÓP NỔI BẬT}{40}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Xây dựng kho công thức nấu ăn gắn với tập món ăn được hệ thống nhận diện}{40}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Ràng buộc nhất quán giữa nhận diện và dữ liệu công thức}{41}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Luồng xử lí khối nhận diện hai tầng phân cấp}{42}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Quy trình đóng góp công thức có kiểm duyệt}{42}{section.5.4}%
+\contentsline {chapter}{\numberline {6}KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}{44}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Kết luận}{44}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Hướng phát triển}{44}{section.6.2}%
+\contentsline {chapter}{TÀI LIỆU THAM KHẢO}{46}{section*.41}%
+\contentsfinish 

@@ -1,11 +1,9 @@
 import { setTokensCookie, clearTokensCookie } from "./actions/auth-cookies";
+import { decodeJWT } from "./jwt";
 import type { User } from "./types";
 
-export interface JWTPayload {
-  sub: string;
-  role: string;
-  exp: number;
-}
+export { decodeJWT } from "./jwt";
+export type { JWTPayload } from "./jwt";
 
 export async function saveTokens(
   accessToken: string,
@@ -60,17 +58,6 @@ export function getStoredUser(): User | null {
   if (!raw) return null;
   try {
     return JSON.parse(raw) as User;
-  } catch {
-    return null;
-  }
-}
-
-export function decodeJWT(token: string): JWTPayload | null {
-  try {
-    const part = token.split(".")[1];
-    const base64 = part.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = base64 + "==".slice(0, (4 - (base64.length % 4)) % 4);
-    return JSON.parse(atob(padded)) as JWTPayload;
   } catch {
     return null;
   }

@@ -19,10 +19,11 @@ pydantic==2.7.1
 pydantic-settings==2.2.1
 python-dotenv==1.0.1
 
-# HTTP client (OpenAI fallback)
+# HTTP client
 httpx>=0.27.0,<1
-openai>=1.52.0
-edge-tts>=6.1.9
+
+# TTS (offline, local neural voice — no network dependency)
+piper-tts>=1.4.2
 
 # AI / ML
 # torch 2.2/2.3 CPU wheels are built against NumPy 1.x — pin <2 to avoid the

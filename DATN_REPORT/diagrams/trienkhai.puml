@@ -1,0 +1,27 @@
+@startuml
+' Biểu đồ triển khai - TastyVietnam (localhost)
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+node "Máy người dùng" {
+  [Trình duyệt web]
+}
+
+node "Máy chủ phát triển (localhost)" {
+  node "Next.js dev server\n(port 3000)" as FE
+  node "FastAPI / Uvicorn\n(port 8000)" as BE
+  artifact "Mô hình EfficientNet\n(.pth)" as MODEL
+  folder "uploads/" as UP
+}
+
+node "Docker" {
+  database "PostgreSQL 16\n(port 5432)" as DB
+}
+
+[Trình duyệt web] --> FE : HTTP
+FE --> BE : REST / JSON
+BE --> DB : SQL
+BE --> MODEL : nạp khi khởi động
+BE --> UP : lưu ảnh tải lên
+@enduml

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -14,6 +15,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.v1.admin import router as admin_router
 from app.api.v1.meal_plans import router as meal_plans_router, grocery_router
 from app.api.v1.ai import router as ai_router
+from app.api.v1.newsletter import router as newsletter_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.comments import router as comments_router
 from app.api.v1.ratings import router as ratings_router
@@ -34,7 +36,7 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # ── startup ──────────────────────────────────────────────
-    from app.ai.inference import VNFoodPredictor
+    from app.ai.inference import TastyVietnamPredictor
     from app.ai.state import set_predictor
 
     weights_dir = os.path.abspath(settings.MODEL_WEIGHTS_DIR)
@@ -43,7 +45,7 @@ async def lifespan(app: FastAPI):
     else:
         try:
             logger.info("Loading AI models from %s ...", weights_dir)
-            set_predictor(VNFoodPredictor(weights_dir))
+            set_predictor(TastyVietnamPredictor(weights_dir))
             logger.info("AI models loaded successfully")
         except Exception as exc:
             logger.error("Failed to load AI models: %s", exc)
@@ -56,6 +58,15 @@ async def lifespan(app: FastAPI):
 
     metrics_count = load_model_metrics()
     logging.info(f"[startup] Loaded model metrics for {metrics_count} classes")
+
+    # Warm the Piper TTS voice so the first cooking-mode request doesn't pay the
+    # one-time model-load cost. Non-fatal: TTS lazy-loads on demand if this fails.
+    try:
+        from app.services.tts_service import _get_voice
+        await asyncio.to_thread(_get_voice)
+        logging.info("[startup] Piper TTS voice ready")
+    except Exception:
+        logger.exception("[startup] Piper TTS voice preload failed — will lazy-load on demand")
 
     # Coverage check must not block startup — on DB error, log and continue with an
     # empty canonical-slug cache (tentative/openai_known tiers simply won't trigger).
@@ -110,6 +121,7 @@ app.include_router(meal_plans_router, prefix="/api/v1/meal-plans", tags=["meal-p
 app.include_router(grocery_router, prefix="/api/v1", tags=["grocery"])
 app.include_router(tts_router, prefix="/api/v1", tags=["tts"])
 app.include_router(change_requests_router, prefix="/api/v1/recipe-change-requests", tags=["change-requests"])
+app.include_router(newsletter_router, prefix="/api/v1/newsletter", tags=["newsletter"])
 
 
 @app.get("/health")

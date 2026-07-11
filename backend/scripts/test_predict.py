@@ -1,5 +1,5 @@
 """
-Quick smoke-test for VNFoodPredictor.
+Quick smoke-test for TastyVietnamPredictor.
 Run from backend/ with the venv active:
     python scripts/test_predict.py [path/to/image.jpg]
 """
@@ -10,7 +10,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from PIL import Image
-from app.ai.inference import VNFoodPredictor
+from app.ai.inference import TastyVietnamPredictor
 from app.core.config import settings
 
 
@@ -25,7 +25,7 @@ def main():
         sys.exit(1)
 
     print("\nLoading models...")
-    predictor = VNFoodPredictor(weights_dir)
+    predictor = TastyVietnamPredictor(weights_dir)
     print("Models loaded.\n")
 
     if image_path is None:

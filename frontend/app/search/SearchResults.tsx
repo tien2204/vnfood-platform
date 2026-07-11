@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, X } from "lucide-react";
+import Link from "next/link";
+import { Search, X, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RecipeGrid from "@/components/recipes/RecipeGrid";
 import RecipeCardSkeleton from "@/components/recipes/RecipeCardSkeleton";
@@ -71,6 +72,15 @@ export default function SearchResults() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      {/* Back to recipes */}
+      <Link
+        href="/recipes"
+        className="inline-flex items-center gap-1.5 mb-6 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Quay lại danh sách công thức
+      </Link>
+
       {/* Search input */}
       <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
         <div className="relative">

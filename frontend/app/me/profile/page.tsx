@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Save, User, Mail, KeyRound, Copy, Check, Eye, EyeOff } from "lucide-react";
+import { Save, User, Mail, KeyRound, Copy, Check, Eye, EyeOff, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -78,6 +78,9 @@ export default function EditProfilePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
+  // Card 5 — newsletter subscription
+  const [newsletterOn, setNewsletterOn] = useState(false);
+  const [newsletterLoading, setNewsletterLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
@@ -97,6 +100,30 @@ export default function EditProfilePage() {
       })
       .finally(() => setFetching(false));
   }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    setNewsletterLoading(true);
+    api
+      .get<ApiResponse<{ subscribed: boolean }>>("/newsletter/me")
+      .then((res) => setNewsletterOn(!!res.data.data.subscribed))
+      .catch(() => setNewsletterOn(false))
+      .finally(() => setNewsletterLoading(false));
+  }, [user]);
+
+  async function handleToggleNewsletter() {
+    const next = !newsletterOn;
+    setNewsletterLoading(true);
+    try {
+      await api.put("/newsletter/me", { subscribed: next });
+      setNewsletterOn(next);
+      toast.success(next ? "Đã bật nhận bản tin công thức" : "Đã tắt nhận bản tin");
+    } catch {
+      toast.error("Cập nhật thất bại, thử lại");
+    } finally {
+      setNewsletterLoading(false);
+    }
+  }
 
   if (isLoading || fetching) {
     return (
@@ -334,6 +361,35 @@ export default function EditProfilePage() {
             <Badge variant="secondary">{roleLabel}</Badge>
           </div>
           {joinedLabel && <div className="text-muted-foreground">Tham gia {joinedLabel}</div>}
+        </div>
+      </div>
+
+      {/* Card — Newsletter subscription */}
+      <div className="bg-card rounded-2xl border border-border p-5">
+        <h2 className="font-semibold text-foreground flex items-center gap-2 mb-1">
+          <Bell className="w-4 h-4" />
+          Bản tin công thức
+        </h2>
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm text-muted-foreground">
+            Nhận email gợi ý công thức nấu ăn mới mỗi tuần.
+          </p>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={newsletterOn}
+            disabled={newsletterLoading}
+            onClick={handleToggleNewsletter}
+            className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+              newsletterOn ? "bg-primary" : "bg-muted-foreground/30"
+            }`}
+          >
+            <span
+              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                newsletterOn ? "translate-x-5" : "translate-x-0.5"
+              }`}
+            />
+          </button>
         </div>
       </div>
 

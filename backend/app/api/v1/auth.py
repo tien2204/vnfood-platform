@@ -61,8 +61,15 @@ async def staff_login(
 
 @router.post("/refresh")
 async def refresh(body: RefreshRequest, db: AsyncSession = Depends(get_db)):
-    access_token = await auth_service.refresh_access_token(db, body.refresh_token)
-    return {"success": True, "data": {"access_token": access_token, "token_type": "bearer"}}
+    tokens = await auth_service.refresh_access_token(db, body.refresh_token)
+    return {
+        "success": True,
+        "data": {
+            "access_token": tokens["access_token"],
+            "refresh_token": tokens["refresh_token"],
+            "token_type": "bearer",
+        },
+    }
 
 
 @router.post("/logout")

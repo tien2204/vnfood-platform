@@ -73,6 +73,41 @@ def catalog_visible_clause():
     return or_(catalog_canonical_clause(), Recipe.source == "user")
 
 
+def _catalog_representative_ids():
+    """One representative recipe id per AI class among catalog canonical dishes.
+
+    Mỗi lớp trong 103 lớp AI chỉ giữ một công thức đại diện — ưu tiên món có
+    canonical_dish_slug trùng hệt tên lớp, sau đó là món nhiều lượt lưu / điểm
+    cao nhất. Nhờ đó trang duyệt không hiển thị các biến thể cùng lớp (vd
+    "Phở bò", "Phở gà" chỉ còn một đại diện cho lớp "pho")."""
+    return (
+        select(Recipe.id)
+        .where(
+            Recipe.is_canonical.is_(True),
+            Recipe.ai_class_slug.isnot(None),
+            Recipe.source == CATALOG_SOURCE,
+            Recipe.is_dessert.is_(False),
+        )
+        .distinct(Recipe.ai_class_slug)
+        .order_by(
+            Recipe.ai_class_slug,
+            (Recipe.canonical_dish_slug == Recipe.ai_class_slug).desc(),
+            Recipe.save_count.desc(),
+            Recipe.avg_rating.desc(),
+            Recipe.id,
+        )
+    )
+
+
+def browse_visible_clause():
+    """Pool hiển thị trên trang duyệt /recipes: mỗi lớp AI một công thức đại diện
+    (loại biến thể) cộng với công thức do người dùng đóng góp."""
+    return or_(
+        Recipe.id.in_(_catalog_representative_ids()),
+        Recipe.source == "user",
+    )
+
+
 def _build_recipe_card(recipe: Recipe, author: Optional[User], saved_ids: set, user: Optional[User]) -> RecipeCardOut:
     author_out = None
     if author:
@@ -146,8 +181,10 @@ async def list_recipes(
     stmt = _base_approved_query()
 
     if not show_all:
+        # Trang duyệt /recipes chỉ hiển thị một công thức đại diện cho mỗi lớp AI
+        # (loại biến thể cùng lớp) — xem browse_visible_clause.
         stmt = stmt.where(
-            catalog_visible_clause(),
+            browse_visible_clause(),
             Recipe.is_dessert.is_(False),
         )
 
@@ -517,8 +554,10 @@ async def get_featured_recipes(
     )
 
     if not show_all:
+        # Homepage hiển thị đồng bộ với trang duyệt: mỗi lớp AI một công thức
+        # đại diện (loại biến thể cùng lớp).
         base = base.where(
-            catalog_visible_clause(),
+            browse_visible_clause(),
             Recipe.is_dessert.is_(False),
         )
 

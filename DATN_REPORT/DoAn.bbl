@@ -1,0 +1,355 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{none/global//global/global/global}
+  \entry{lecun1998gradient}{article}{}{}
+    \name{author}{4}{}{%
+      {{hash=LY}{%
+         family={LeCun},
+         familyi={L\bibinitperiod},
+         given={Yann},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=BL}{%
+         family={Bottou},
+         familyi={B\bibinitperiod},
+         given={L{\'e}on},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=BY}{%
+         family={Bengio},
+         familyi={B\bibinitperiod},
+         given={Yoshua},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=HP}{%
+         family={Haffner},
+         familyi={H\bibinitperiod},
+         given={Patrick},
+         giveni={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LY+1}
+    \strng{fullhash}{LYBLBYHP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{number}{11}
+    \field{pages}{2278\bibrangedash 2324}
+    \field{title}{Gradient-based learning applied to document recognition}
+    \field{volume}{86}
+    \field{journaltitle}{Proceedings of the {IEEE}}
+    \field{year}{1998}
+  \endentry
+
+  \entry{krizhevsky2012imagenet}{inproceedings}{}{}
+    \name{author}{3}{}{%
+      {{hash=KA}{%
+         family={Krizhevsky},
+         familyi={K\bibinitperiod},
+         given={Alex},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=SI}{%
+         family={Sutskever},
+         familyi={S\bibinitperiod},
+         given={Ilya},
+         giveni={I\bibinitperiod},
+      }}%
+      {{hash=HGE}{%
+         family={Hinton},
+         familyi={H\bibinitperiod},
+         given={Geoffrey\bibnamedelima E.},
+         giveni={G\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KA+1}
+    \strng{fullhash}{KASIHGE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{booktitle}{Advances in Neural Information Processing Systems
+  ({NeurIPS})}
+    \field{pages}{1097\bibrangedash 1105}
+    \field{title}{{ImageNet} classification with deep convolutional neural
+  networks}
+    \field{volume}{25}
+    \field{year}{2012}
+  \endentry
+
+  \entry{tan2019efficientnet}{inproceedings}{}{}
+    \name{author}{2}{}{%
+      {{hash=TM}{%
+         family={Tan},
+         familyi={T\bibinitperiod},
+         given={Mingxing},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=LQV}{%
+         family={Le},
+         familyi={L\bibinitperiod},
+         given={Quoc\bibnamedelima V.},
+         giveni={Q\bibinitperiod\bibinitdelim V\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{TMLQV1}
+    \strng{fullhash}{TMLQV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{booktitle}{Proceedings of the 36th International Conference on
+  Machine Learning ({ICML})}
+    \field{pages}{6105\bibrangedash 6114}
+    \field{title}{{EfficientNet}: Rethinking Model Scaling for Convolutional
+  Neural Networks}
+    \field{year}{2019}
+  \endentry
+
+  \entry{yosinski2014transferable}{inproceedings}{}{}
+    \name{author}{4}{}{%
+      {{hash=YJ}{%
+         family={Yosinski},
+         familyi={Y\bibinitperiod},
+         given={Jason},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=CJ}{%
+         family={Clune},
+         familyi={C\bibinitperiod},
+         given={Jeff},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=BY}{%
+         family={Bengio},
+         familyi={B\bibinitperiod},
+         given={Yoshua},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=LH}{%
+         family={Lipson},
+         familyi={L\bibinitperiod},
+         given={Hod},
+         giveni={H\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{YJ+1}
+    \strng{fullhash}{YJCJBYLH1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{booktitle}{Advances in Neural Information Processing Systems
+  ({NeurIPS})}
+    \field{pages}{3320\bibrangedash 3328}
+    \field{title}{How transferable are features in deep neural networks?}
+    \field{volume}{27}
+    \field{year}{2014}
+  \endentry
+
+  \entry{yan2015hdcnn}{inproceedings}{}{}
+    \name{author}{7}{}{%
+      {{hash=YZ}{%
+         family={Yan},
+         familyi={Y\bibinitperiod},
+         given={Zhicheng},
+         giveni={Z\bibinitperiod},
+      }}%
+      {{hash=ZH}{%
+         family={Zhang},
+         familyi={Z\bibinitperiod},
+         given={Hao},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=PR}{%
+         family={Piramuthu},
+         familyi={P\bibinitperiod},
+         given={Robinson},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=JV}{%
+         family={Jagadeesh},
+         familyi={J\bibinitperiod},
+         given={Vignesh},
+         giveni={V\bibinitperiod},
+      }}%
+      {{hash=DD}{%
+         family={DeCoste},
+         familyi={D\bibinitperiod},
+         given={Dennis},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=DW}{%
+         family={Di},
+         familyi={D\bibinitperiod},
+         given={Wei},
+         giveni={W\bibinitperiod},
+      }}%
+      {{hash=YY}{%
+         family={Yu},
+         familyi={Y\bibinitperiod},
+         given={Yizhou},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{YZ+1}
+    \strng{fullhash}{YZZHPRJVDDDWYY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{booktitle}{Proceedings of the {IEEE} International Conference on
+  Computer Vision ({ICCV})}
+    \field{pages}{2740\bibrangedash 2748}
+    \field{title}{{HD-CNN}: Hierarchical Deep Convolutional Neural Networks for
+  Large Scale Visual Recognition}
+    \field{year}{2015}
+  \endentry
+
+  \entry{zhu2017bcnn}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=ZX}{%
+         family={Zhu},
+         familyi={Z\bibinitperiod},
+         given={Xinqi},
+         giveni={X\bibinitperiod},
+      }}%
+      {{hash=BM}{%
+         family={Bain},
+         familyi={B\bibinitperiod},
+         given={Michael},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{ZXBM1}
+    \strng{fullhash}{ZXBM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{{B-CNN}: Branch Convolutional Neural Network for Hierarchical
+  Classification}
+    \field{journaltitle}{arXiv preprint arXiv:1709.09890}
+    \field{year}{2017}
+  \endentry
+
+  \entry{nextjs}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=V}{%
+         family={{Vercel}},
+         familyi={V\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{V1}
+    \strng{fullhash}{V1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{Next.js Documentation}
+    \verb{url}
+    \verb https://nextjs.org/docs
+    \endverb
+    \field{urlday}{14}
+    \field{urlmonth}{06}
+    \field{urlyear}{2026}
+  \endentry
+
+  \entry{fastapi}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=RS}{%
+         family={Ram{\'\i}rez},
+         familyi={R\bibinitperiod},
+         given={Sebasti{\'a}n},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{RS1}
+    \strng{fullhash}{RS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{{FastAPI} Documentation}
+    \verb{url}
+    \verb https://fastapi.tiangolo.com
+    \endverb
+    \field{urlday}{14}
+    \field{urlmonth}{06}
+    \field{urlyear}{2026}
+  \endentry
+
+  \entry{pytorch}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=P}{%
+         family={{PyTorch Team}},
+         familyi={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{P1}
+    \strng{fullhash}{P1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{{PyTorch} Documentation}
+    \verb{url}
+    \verb https://pytorch.org/docs
+    \endverb
+    \field{urlday}{14}
+    \field{urlmonth}{06}
+    \field{urlyear}{2026}
+  \endentry
+
+  \entry{postgresql}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=T}{%
+         family={{The PostgreSQL Global Development Group}},
+         familyi={T\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{T1}
+    \strng{fullhash}{T1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{{PostgreSQL} 16 Documentation}
+    \verb{url}
+    \verb https://www.postgresql.org/docs/16/
+    \endverb
+    \field{urlday}{14}
+    \field{urlmonth}{06}
+    \field{urlyear}{2026}
+  \endentry
+
+  \entry{rfc7519}{misc}{}{}
+    \name{author}{3}{}{%
+      {{hash=JM}{%
+         family={Jones},
+         familyi={J\bibinitperiod},
+         given={Michael},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=BJ}{%
+         family={Bradley},
+         familyi={B\bibinitperiod},
+         given={John},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=SN}{%
+         family={Sakimura},
+         familyi={S\bibinitperiod},
+         given={Nat},
+         giveni={N\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{JM+1}
+    \strng{fullhash}{JMBJSN1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{{JSON} Web Token ({JWT}), {RFC} 7519}
+    \verb{url}
+    \verb https://www.rfc-editor.org/rfc/rfc7519
+    \endverb
+    \field{year}{2015}
+  \endentry
+\enddatalist
+\endinput
