@@ -59,4 +59,19 @@ api.interceptors.response.use(
   }
 );
 
+/**
+ * Đọc message lỗi từ response. Ưu tiên envelope mới
+ * ({success:false, error:{message}}), fallback {detail} cũ để tương thích ngược.
+ */
+export function extractError(err: unknown): string {
+  const e = err as {
+    response?: { data?: { error?: { message?: string }; detail?: string } };
+  };
+  return (
+    e?.response?.data?.error?.message ||
+    e?.response?.data?.detail ||
+    "Đã có lỗi xảy ra, vui lòng thử lại."
+  );
+}
+
 export default api;
