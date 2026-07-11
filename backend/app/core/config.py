@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -32,6 +33,19 @@ class Settings(BaseSettings):
     # Base URL dùng để dựng link trong email (hủy nhận, xem công thức, ảnh).
     APP_BASE_URL: str = "http://localhost:8000"  # backend
     FRONTEND_BASE_URL: str = "http://localhost:3000"  # frontend
+
+    @field_validator("SECRET_KEY")
+    @classmethod
+    def _validate_secret_key(cls, v: str) -> str:
+        placeholders = ("change-this", "your-super-secret", "changeme")
+        low = v.lower()
+        if not v or any(p in low for p in placeholders):
+            raise ValueError(
+                "SECRET_KEY là placeholder — đặt một chuỗi ngẫu nhiên ≥32 ký tự trong .env"
+            )
+        if len(v) < 32:
+            raise ValueError("SECRET_KEY phải dài ít nhất 32 ký tự")
+        return v
 
     @property
     def max_upload_size_bytes(self) -> int:
