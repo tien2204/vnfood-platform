@@ -16,6 +16,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import register_exception_handlers
+from app.core.rate_limit import register_rate_limiting
 from app.core.database import get_db
 from app.api.v1.admin import router as admin_router
 from app.api.v1.meal_plans import router as meal_plans_router, grocery_router
@@ -100,6 +101,7 @@ app = FastAPI(
 )
 
 register_exception_handlers(app)
+register_rate_limiting(app)
 
 app.add_middleware(
     CORSMiddleware,

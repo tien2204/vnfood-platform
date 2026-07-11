@@ -1,12 +1,13 @@
 import uuid
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.state import get_predictor, get_predictor_optional
 from app.core.database import get_db
 from app.core.deps import get_current_user, get_optional_current_user
+from app.core.rate_limit import limiter
 
 router = APIRouter()
 
@@ -28,7 +29,9 @@ async def ai_health():
 
 
 @router.post("/recognize")
+@limiter.limit("20/minute")
 async def recognize_endpoint(
+    request: Request,
     file: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
     predictor=Depends(get_predictor),
@@ -60,7 +63,9 @@ class RecognizeUrlRequest(BaseModel):
 
 
 @router.post("/recognize-url")
+@limiter.limit("20/minute")
 async def recognize_url_endpoint(
+    request: Request,
     req: RecognizeUrlRequest,
     db: AsyncSession = Depends(get_db),
     predictor=Depends(get_predictor),

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.deps import get_current_active_user, require_admin
+from app.core.rate_limit import limiter
 from app.models.user import User
 from app.services import newsletter_service
 
@@ -25,7 +26,9 @@ class ToggleBody(BaseModel):
 # ── Authenticated: đăng ký / hủy chỉ dành cho người dùng đã đăng nhập ─────────
 
 @router.post("/subscribe")
+@limiter.limit("5/minute")
 async def subscribe(
+    request: Request,
     body: SubscribeBody,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),

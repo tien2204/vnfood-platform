@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.deps import get_current_active_user
+from app.core.rate_limit import limiter
 from app.models.user import User
 from app.schemas.auth import (
     ChangeEmailRequest,
@@ -19,13 +20,16 @@ router = APIRouter()
 
 
 @router.post("/register", status_code=201)
-async def register(body: RegisterRequest, db: AsyncSession = Depends(get_db)):
+@limiter.limit("5/minute")
+async def register(request: Request, body: RegisterRequest, db: AsyncSession = Depends(get_db)):
     await auth_service.register_user(db, body.email, body.password, body.full_name)
     return {"success": True, "message": "Đăng ký thành công"}
 
 
 @router.post("/login")
+@limiter.limit("5/minute")
 async def login(
+    request: Request,
     body: LoginRequest,
     db: AsyncSession = Depends(get_db),
 ):
@@ -41,7 +45,9 @@ async def login(
 
 
 @router.post("/staff-login")
+@limiter.limit("5/minute")
 async def staff_login(
+    request: Request,
     body: LoginRequest,
     db: AsyncSession = Depends(get_db),
 ):
