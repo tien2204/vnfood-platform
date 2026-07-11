@@ -8,11 +8,15 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import register_exception_handlers
+from app.core.database import get_db
 from app.api.v1.admin import router as admin_router
 from app.api.v1.meal_plans import router as meal_plans_router, grocery_router
 from app.api.v1.ai import router as ai_router
@@ -133,12 +137,18 @@ async def health_check():
 
 
 @app.get("/api/v1/health")
-async def api_health_check():
+async def api_health_check(db: AsyncSession = Depends(get_db)):
+    try:
+        await db.execute(text("SELECT 1"))
+    except Exception:
+        return JSONResponse(
+            status_code=503,
+            content={
+                "success": False,
+                "error": {"code": "DB_UNAVAILABLE", "message": "Không kết nối được cơ sở dữ liệu"},
+            },
+        )
     return {
         "success": True,
-        "data": {
-            "status": "ok",
-            "database": "not_connected",
-            "version": "1.0.0",
-        },
+        "data": {"status": "ok", "database": "connected", "version": "1.0.0"},
     }
