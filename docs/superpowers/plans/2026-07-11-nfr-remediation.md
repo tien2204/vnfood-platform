@@ -15,7 +15,7 @@
 - Message lỗi cho người dùng: tiếng Việt.
 - Test đặt trong `backend/tests/`, chạy `pytest` từ thư mục `backend/`.
 - Rate-limit storage: in-memory (single-instance dev). Ghi chú Redis cho production, KHÔNG implement Redis.
-- **Product assumption (finding #6):** trang duyệt recipe (`/recipes/*`), hồ sơ user (`/users/*`), tìm kiếm (`/search`) coi là PUBLIC — khớp với API public và homepage public. Nếu chủ dự án muốn gate sau login thì bỏ Task 7.
+- Finding #6 (307/allowlist) **đã loại khỏi phạm vi** theo quyết định chủ dự án — giữ nguyên hành vi middleware hiện tại.
 
 ---
 
@@ -625,55 +625,6 @@ git commit -m "docs(perf): N+1 audit for recipe/meal-plan/social queries"
 
 ---
 
-### Task 7: Public-route allowlist trong middleware (#6)
-
-**Files:**
-- Modify: `frontend/proxy.ts:18-19`
-
-**Interfaces:** không đổi chữ ký; chỉ mở rộng allowlist.
-
-> **Trước khi làm:** xác nhận với chủ dự án rằng recipe/user/search pages nên xem được khi CHƯA đăng nhập (mặc định: có — khớp API public + homepage public). Nếu KHÔNG → bỏ Task này.
-
-- [ ] **Step 1: Xác nhận hành vi hiện tại (baseline)**
-
-Run: `curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/recipes/246623fc-bbc6-47c4-8cf1-db93365d1591`
-Expected (trước sửa): `307` (redirect về login dù đây là recipe public).
-
-- [ ] **Step 2: Mở rộng allowlist trong `proxy.ts`**
-
-Trong `frontend/proxy.ts`, thay 2 dòng ([proxy.ts:18-19]):
-
-```typescript
-const PUBLIC_EXACT = new Set(["/", "/recognize"]);
-const PUBLIC_PREFIXES = ["/auth/", "/recognize/"];
-```
-
-thành:
-
-```typescript
-const PUBLIC_EXACT = new Set(["/", "/recognize", "/search", "/recipes", "/users"]);
-const PUBLIC_PREFIXES = ["/auth/", "/recognize/", "/recipes/", "/users/", "/search"];
-```
-
-- [ ] **Step 3: Xác minh sau sửa**
-
-Restart frontend (`npm run dev`) rồi:
-Run: `curl -s -o /dev/null -w "recipe:%{http_code}\n" http://localhost:3000/recipes/246623fc-bbc6-47c4-8cf1-db93365d1591`
-Expected: `200` (recipe public xem được khi chưa login).
-Run: `curl -s -o /dev/null -w "protected:%{http_code}\n" http://localhost:3000/me/profile`
-Expected: `307` (route cần auth vẫn bị chặn — không hồi quy bảo mật).
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add frontend/proxy.ts
-git commit -m "fix(web): allow public browsing of recipe/user/search routes"
-```
-
-> Ghi chú: route KHÔNG tồn tại ở cấp cao nhất (vd `/khong-ton-tai-abc`) với user CHƯA login vẫn redirect về login — đây là giới hạn của Next middleware (chạy trước routing, không phân biệt được 404 với route-protected). Chấp nhận; user ĐÃ login sẽ thấy đúng `not-found.tsx` (404).
-
----
-
 ## Self-Review
 
 **Spec coverage:**
@@ -682,7 +633,7 @@ git commit -m "fix(web): allow public browsing of recipe/user/search routes"
 - #4 Error envelope (backend) → Task 2 ✅; (frontend) → Task 3 ✅
 - #1 Rate limiting → Task 5 ✅
 - #5 Verify N+1 → Task 6 ✅
-- #6 307/allowlist → Task 7 ✅
+- #6 307/allowlist → **loại khỏi phạm vi** theo quyết định chủ dự án.
 
 **Type consistency:** `register_exception_handlers`, `register_rate_limiting`, `limiter`, `AppException`, `extractError`, `api_health_check(db)` dùng nhất quán giữa các task và test. ✅
 
