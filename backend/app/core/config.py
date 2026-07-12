@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     MAX_UPLOAD_SIZE_MB: int = 10
     MODEL_WEIGHTS_DIR: str = "../model_weights"
 
+    # AI backend. "local" → nạp model in-process (dev). "http" → gọi service AI
+    # riêng (Hugging Face) qua HTTP để tầng AI scale độc lập.
+    AI_BACKEND: str = "local"
+    AI_SERVICE_URL: str = ""
+    AI_SERVICE_TOKEN: str = ""
+    AI_SERVICE_TIMEOUT: int = 30
+
     # Rate-limit storage. Empty → in-memory (single-instance dev). For horizontal
     # scaling set a shared Redis URI (Upstash: rediss://default:<pass>@<host>:<port>)
     # so the limit counter is shared across all backend instances.
