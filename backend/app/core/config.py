@@ -26,6 +26,13 @@ class Settings(BaseSettings):
     # so the limit counter is shared across all backend instances.
     RATE_LIMIT_STORAGE_URI: str = ""
 
+    # DB connection pool. Tune down when DATABASE_URL points at an external pooler
+    # (Neon -pooler / PgBouncer) so N instances don't exhaust the server's connection
+    # limit. pool_recycle guards against managed/serverless DBs dropping idle conns.
+    DB_POOL_SIZE: int = 10
+    DB_MAX_OVERFLOW: int = 20
+    DB_POOL_RECYCLE_SECONDS: int = 1800
+
     # ── Email / Newsletter (Gmail SMTP) ──────────────────────────────
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 465
