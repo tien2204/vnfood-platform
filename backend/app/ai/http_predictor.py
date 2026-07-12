@@ -67,6 +67,6 @@ class HttpPredictor:
         except ValueError:
             raise HTTPException(status_code=502, detail="AI service trả dữ liệu không hợp lệ")
 
-        if not all(k in data for k in _REQUIRED_FIELDS):
+        if not isinstance(data, dict) or not all(k in data for k in _REQUIRED_FIELDS):
             raise HTTPException(status_code=502, detail="AI service trả dữ liệu không hợp lệ")
         return data

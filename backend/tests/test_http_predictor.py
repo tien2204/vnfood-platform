@@ -103,3 +103,11 @@ def test_bad_json_maps_502(monkeypatch):
     with pytest.raises(HTTPException) as exc:
         HttpPredictor("http://svc").predict(_img())
     assert exc.value.status_code == 502
+
+
+def test_non_dict_json_maps_502(monkeypatch):
+    monkeypatch.setattr(hp.requests, "post",
+                        lambda *a, **k: _Resp(200, None))  # valid JSON, but null (not a dict)
+    with pytest.raises(HTTPException) as exc:
+        HttpPredictor("http://svc").predict(_img())
+    assert exc.value.status_code == 502
