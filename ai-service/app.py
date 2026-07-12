@@ -1,3 +1,4 @@
+import hmac
 import io
 import logging
 import os
@@ -35,7 +36,7 @@ def health():
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...), authorization: str = Header(default="")):
-    if API_TOKEN and authorization != f"Bearer {API_TOKEN}":
+    if API_TOKEN and not hmac.compare_digest(authorization, f"Bearer {API_TOKEN}"):
         raise HTTPException(status_code=401, detail="Unauthorized")
     if _predictor is None:
         raise HTTPException(status_code=503, detail="Model not loaded")

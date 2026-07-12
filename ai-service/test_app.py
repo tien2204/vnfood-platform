@@ -46,3 +46,23 @@ def test_health(monkeypatch):
         r = client.get("/health")
     assert r.status_code == 200
     assert r.json()["status"] == "ok"
+
+
+def test_predict_rejects_wrong_token(monkeypatch):
+    monkeypatch.setattr(svc, "TastyVietnamPredictor", _StubPredictor)
+    monkeypatch.setattr(svc, "API_TOKEN", "secret")
+    with TestClient(svc.app) as client:
+        r = client.post("/predict",
+                        files={"file": ("x.jpg", _img_bytes(), "image/jpeg")},
+                        headers={"Authorization": "Bearer wrong"})
+    assert r.status_code == 401
+
+
+def test_predict_accepts_correct_token(monkeypatch):
+    monkeypatch.setattr(svc, "TastyVietnamPredictor", _StubPredictor)
+    monkeypatch.setattr(svc, "API_TOKEN", "secret")
+    with TestClient(svc.app) as client:
+        r = client.post("/predict",
+                        files={"file": ("x.jpg", _img_bytes(), "image/jpeg")},
+                        headers={"Authorization": "Bearer secret"})
+    assert r.status_code == 200

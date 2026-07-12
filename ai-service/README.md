@@ -15,7 +15,7 @@ MODEL_WEIGHTS_DIR=./model_weights uvicorn app:app --port 7860
 ## Deploy Hugging Face Spaces (Docker)
 1. Tạo Space kiểu **Docker**.
 2. Push thư mục này + `model_weights/` (~300MB) hoặc mount qua HF storage.
-3. Đặt secret `AI_SERVICE_TOKEN` (tùy chọn) để bảo vệ endpoint.
+3. Đặt secret `AI_SERVICE_TOKEN` — **nên đặt** cho mọi deploy có thể truy cập từ mạng (endpoint /predict công khai nếu để trống).
 4. Space chạy port 7860; URL công khai dạng `https://<user>-<space>.hf.space`.
 
 ## Kết nối từ backend
