@@ -33,6 +33,17 @@ class Settings(BaseSettings):
     DB_MAX_OVERFLOW: int = 20
     DB_POOL_RECYCLE_SECONDS: int = 1800
 
+    # Object storage. "local" → disk under UPLOAD_DIR (dev). "s3" → S3-compatible
+    # bucket (Cloudflare R2 / Supabase Storage / AWS S3), required for horizontal
+    # scaling so uploads are shared instead of living on per-instance disk.
+    STORAGE_BACKEND: str = "local"
+    S3_ENDPOINT_URL: str = ""  # R2/Supabase endpoint; empty = AWS default
+    S3_BUCKET: str = ""
+    S3_ACCESS_KEY: str = ""
+    S3_SECRET_KEY: str = ""
+    S3_REGION: str = "auto"
+    S3_PUBLIC_BASE_URL: str = ""  # public base URL for serving objects
+
     # ── Email / Newsletter (Gmail SMTP) ──────────────────────────────
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 465
