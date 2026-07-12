@@ -21,6 +21,11 @@ class Settings(BaseSettings):
     MAX_UPLOAD_SIZE_MB: int = 10
     MODEL_WEIGHTS_DIR: str = "../model_weights"
 
+    # Rate-limit storage. Empty → in-memory (single-instance dev). For horizontal
+    # scaling set a shared Redis URI (Upstash: rediss://default:<pass>@<host>:<port>)
+    # so the limit counter is shared across all backend instances.
+    RATE_LIMIT_STORAGE_URI: str = ""
+
     # ── Email / Newsletter (Gmail SMTP) ──────────────────────────────
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 465

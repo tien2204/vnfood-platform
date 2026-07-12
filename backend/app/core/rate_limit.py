@@ -6,7 +6,16 @@ from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
 from starlette.requests import Request
 
-limiter = Limiter(key_func=get_remote_address)
+from app.core.config import settings
+
+
+def build_limiter(storage_uri: str | None = None) -> Limiter:
+    """Build the limiter. Empty/None storage_uri → slowapi's in-memory default;
+    a Redis URI (e.g. Upstash) makes the counter shared across instances."""
+    return Limiter(key_func=get_remote_address, storage_uri=storage_uri or None)
+
+
+limiter = build_limiter(settings.RATE_LIMIT_STORAGE_URI)
 
 
 async def _rate_limit_handler(request: Request, exc: RateLimitExceeded):
