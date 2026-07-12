@@ -42,19 +42,16 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # ── startup ──────────────────────────────────────────────
-    from app.ai.inference import TastyVietnamPredictor
+    from app.ai.factory import build_predictor
     from app.ai.state import set_predictor
 
-    weights_dir = os.path.abspath(settings.MODEL_WEIGHTS_DIR)
-    if not os.path.isdir(weights_dir):
-        logger.warning("Model weights dir not found: %s — AI features disabled", weights_dir)
-    else:
-        try:
-            logger.info("Loading AI models from %s ...", weights_dir)
-            set_predictor(TastyVietnamPredictor(weights_dir))
-            logger.info("AI models loaded successfully")
-        except Exception as exc:
-            logger.error("Failed to load AI models: %s", exc)
+    try:
+        predictor = build_predictor()
+        set_predictor(predictor)
+        if predictor is not None:
+            logger.info("AI predictor ready (backend=%s)", settings.AI_BACKEND)
+    except Exception as exc:
+        logger.error("Failed to init AI predictor: %s", exc)
 
     count = load_dish_recipes()
     logging.info(f"[startup] Loaded {count} curated dish recipes")
