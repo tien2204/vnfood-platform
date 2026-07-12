@@ -115,3 +115,7 @@ backups/
 cookpad_recipe/
 kaggle_output/
 *.pdf
+
+# load-test generated outputs (regenerable; numbers captured in RESULTS.md)
+backend/loadtest/report.html
+backend/loadtest/results*.csv
