@@ -64,6 +64,11 @@ class Settings(BaseSettings):
     APP_BASE_URL: str = "http://localhost:8000"  # backend
     FRONTEND_BASE_URL: str = "http://localhost:3000"  # frontend
 
+    # CORS: danh sách origin được phép, ngăn cách dấu phẩy. Rỗng → mặc định
+    # localhost (dev). Production: đặt domain frontend, ví dụ
+    # CORS_ORIGINS=https://app.vercel.app,https://www.example.com
+    CORS_ORIGINS: str = ""
+
     @field_validator("SECRET_KEY")
     @classmethod
     def _validate_secret_key(cls, v: str) -> str:
@@ -80,6 +85,12 @@ class Settings(BaseSettings):
     @property
     def max_upload_size_bytes(self) -> int:
         return self.MAX_UPLOAD_SIZE_MB * 1024 * 1024
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        if self.CORS_ORIGINS.strip():
+            return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
+        return ["http://localhost:3000", "http://127.0.0.1:3000"]
 
     @property
     def smtp_from_email(self) -> str:
