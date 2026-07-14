@@ -78,7 +78,7 @@ export default function Navbar() {
             <UtensilsCrossed className="w-5 h-5 text-white" />
           </span>
           <span className="text-2xl text-primary font-display leading-none">
-            VNFood
+            TastyVietnam
           </span>
         </Link>
 

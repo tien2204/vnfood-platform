@@ -211,7 +211,7 @@ export default async function HomePage() {
               Công nghệ AI kết nối bạn với kho công thức ẩm thực Việt.
             </h2>
             <p className="mb-8 max-w-xl leading-relaxed text-white/70">
-              VNFood ứng dụng trí tuệ nhân tạo để nhận diện món ăn từ ảnh, gợi
+              TastyVietnam ứng dụng trí tuệ nhân tạo để nhận diện món ăn từ ảnh, gợi
               ý công thức nấu chi tiết và giúp bạn khám phá nền ẩm thực phong
               phú của ba miền Việt Nam.
             </p>
@@ -243,7 +243,7 @@ export default async function HomePage() {
               thức nấu chi tiết. Khám phá ẩm thực Việt chưa bao giờ dễ dàng
               đến thế.&quot;
             </p>
-            <div className="font-bold">VNFood AI</div>
+            <div className="font-bold">TastyVietnam AI</div>
             <div className="text-sm text-muted-foreground">Nhận diện món ăn thông minh</div>
           </div>
         </div>

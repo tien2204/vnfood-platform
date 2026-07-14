@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const profile = await fetchProfile(id);
   return {
-    title: profile?.full_name ? `${profile.full_name} — VNFood` : "Hồ sơ người dùng",
+    title: profile?.full_name ? `${profile.full_name} — TastyVietnam` : "Hồ sơ người dùng",
   };
 }
 

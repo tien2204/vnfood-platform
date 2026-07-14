@@ -21,8 +21,8 @@ const lobster = Lobster({
 
 export const metadata: Metadata = {
   title: {
-    default: "VNFood — Khám phá ẩm thực Việt",
-    template: "%s | VNFood",
+    default: "TastyVietnam — Khám phá ẩm thực Việt",
+    template: "%s | TastyVietnam",
   },
   description:
     "Hàng nghìn công thức nấu ăn Việt Nam với AI nhận diện món ăn và lập kế hoạch bữa ăn thông minh.",

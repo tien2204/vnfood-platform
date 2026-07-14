@@ -190,7 +190,7 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-foreground font-heading">Tổng quan</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Hệ thống VNFood Platform</p>
+        <p className="text-sm text-muted-foreground mt-0.5">Hệ thống TastyVietnam Platform</p>
       </div>
 
       {/* Stats cards */}

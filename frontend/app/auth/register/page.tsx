@@ -46,7 +46,7 @@ export default function RegisterPage() {
       };
       await saveTokens(access_token, refresh_token, user);
       await refreshUser();
-      toast.success("Đăng ký thành công! Chào mừng bạn đến VNFood 🎉");
+      toast.success("Đăng ký thành công! Chào mừng bạn đến TastyVietnam 🎉");
       router.push("/");
     } catch (err: unknown) {
       const msg =
@@ -65,7 +65,7 @@ export default function RegisterPage() {
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
             <UtensilsCrossed className="w-8 h-8 text-primary" />
             <span className="text-2xl font-bold text-primary">
-              VNFood
+              TastyVietnam
             </span>
           </Link>
           <h1 className="text-2xl font-semibold text-foreground">Tạo tài khoản</h1>

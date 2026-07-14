@@ -14,7 +14,7 @@ const KEYWORD_LINKS = [
 ];
 
 const INFO_LINKS = [
-  { label: "Về VNFood", href: "/about" },
+  { label: "Về TastyVietnam", href: "/about" },
   { label: "Tất cả công thức", href: "/recipes" },
   { label: "AI Nhận diện món ăn", href: "/ai/scan" },
   { label: "Đăng công thức", href: "/recipes/new" },
@@ -77,7 +77,7 @@ export default function Footer() {
               <span className="flex h-9 w-9 items-center justify-center border-2 border-white bg-[#ec2028]">
                 <UtensilsCrossed className="w-5 h-5 text-white" />
               </span>
-              <span className="text-lg font-display tracking-wide text-white">VNFood</span>
+              <span className="text-lg font-display tracking-wide text-white">TastyVietnam</span>
             </Link>
             <p className="text-sm text-white/70 leading-relaxed">
               Khám phá hương vị Việt Nam qua hàng nghìn công thức nấu ăn truyền thống và hiện đại.
@@ -151,7 +151,7 @@ export default function Footer() {
         {/* ── Bottom row ── */}
         <div className="border-t border-white/15 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-white/60">
-            © 2026 VNFood Platform. Tổng hợp từ Cookpad & cộng đồng.
+            © 2026 TastyVietnam Platform. Tổng hợp từ Cookpad & cộng đồng.
           </p>
           <div className="flex items-center gap-3 text-xs text-white/60">
             <Link href="/privacy" className="hover:text-white transition-colors">

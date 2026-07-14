@@ -7,7 +7,7 @@ export function generateMetadata({
   searchParams: Promise<{ q?: string }>;
 }) {
   void searchParams;
-  return { title: "Tìm kiếm — VNFood" };
+  return { title: "Tìm kiếm — TastyVietnam" };
 }
 
 export default function SearchPage() {

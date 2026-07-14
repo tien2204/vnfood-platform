@@ -57,7 +57,7 @@ export default function LoginPage() {
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
             <UtensilsCrossed className="w-8 h-8 text-primary" />
             <span className="text-2xl font-bold text-primary">
-              VNFood
+              TastyVietnam
             </span>
           </Link>
           <h1 className="text-2xl font-semibold text-foreground">Đăng nhập</h1>

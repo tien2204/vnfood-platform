@@ -63,7 +63,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
             <ChefHat className="w-4 h-4 text-white" />
           </div>
           <div>
-            <p className="text-sm font-bold text-foreground font-heading leading-none">VNFood</p>
+            <p className="text-sm font-bold text-foreground font-heading leading-none">TastyVietnam</p>
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">{title}</p>
           </div>
         </Link>
@@ -112,7 +112,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
           <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-1.5 rounded-lg hover:bg-muted text-muted-foreground">
             <Menu className="w-5 h-5" />
           </button>
-          <span className="lg:hidden font-semibold text-foreground font-heading">VNFood {title}</span>
+          <span className="lg:hidden font-semibold text-foreground font-heading">TastyVietnam {title}</span>
         </header>
         <main className="flex-1 p-4 lg:p-8">{children}</main>
       </div>
