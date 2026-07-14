@@ -59,9 +59,6 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
     <div className="flex flex-col h-full">
       <div className="px-4 py-5 border-b border-border">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <ChefHat className="w-4 h-4 text-white" />
-          </div>
           <div>
             <p className="text-sm font-bold text-foreground font-heading leading-none">TastyVietnam</p>
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">{title}</p>
