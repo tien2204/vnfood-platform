@@ -122,11 +122,11 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-white mb-3">Liên hệ</h4>
             <a
-              href="mailto:contact@vnfood.local"
+              href="mailto:contact@tastyvietnam.local"
               className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-[#ec2028] transition-colors duration-150 mb-4"
             >
               <Mail className="w-4 h-4" />
-              contact@vnfood.local
+              contact@tastyvietnam.local
             </a>
 
             <div className="flex items-center gap-3 mt-1">

@@ -181,7 +181,7 @@ def _render_html(recipes: list[Recipe], unsubscribe_url: str) -> str:
       <table role="presentation" cellpadding="0" cellspacing="0" style="width:600px;max-width:92%;background:#ffffff;border-radius:12px;overflow:hidden;">
         <tr>
           <td style="background:#ec2028;padding:24px 28px;">
-            <span style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:0.5px;">VNFood</span>
+            <span style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:0.5px;">TastyVietnam</span>
             <div style="color:#ffe;opacity:0.9;font-size:13px;margin-top:4px;">Bản tin công thức hàng tuần</div>
           </td>
         </tr>
@@ -189,7 +189,7 @@ def _render_html(recipes: list[Recipe], unsubscribe_url: str) -> str:
           <td style="padding:24px 28px 8px;">
             <h1 style="margin:0 0 6px;font-size:20px;color:#1a1a1a;">Công thức mới trong tuần</h1>
             <p style="margin:0;color:#666;font-size:14px;line-height:1.6;">
-              Những món ăn mới nhất vừa được thêm vào VNFood. Chụp ảnh món ăn bất kỳ,
+              Những món ăn mới nhất vừa được thêm vào TastyVietnam. Chụp ảnh món ăn bất kỳ,
               để AI nhận diện và gợi ý công thức nấu ngay.
             </p>
           </td>
@@ -207,7 +207,7 @@ def _render_html(recipes: list[Recipe], unsubscribe_url: str) -> str:
         <tr>
           <td style="background:#fafafa;padding:18px 28px;border-top:1px solid #eee;">
             <p style="margin:0;color:#999;font-size:12px;line-height:1.6;">
-              Bạn nhận được email này vì đã đăng ký bản tin VNFood.<br/>
+              Bạn nhận được email này vì đã đăng ký bản tin TastyVietnam.<br/>
               Không muốn nhận nữa? <a href="{unsubscribe_url}" style="color:#ec2028;">Hủy nhận tại đây</a>
               hoặc tắt trong <a href="{fe}/me/profile" style="color:#ec2028;">trang hồ sơ</a>.
             </p>
@@ -222,7 +222,7 @@ def _render_html(recipes: list[Recipe], unsubscribe_url: str) -> str:
 
 def _render_text(recipes: list[Recipe], unsubscribe_url: str) -> str:
     fe = settings.FRONTEND_BASE_URL.rstrip("/")
-    lines = ["VNFood — Công thức mới trong tuần", ""]
+    lines = ["TastyVietnam — Công thức mới trong tuần", ""]
     for r in recipes:
         lines.append(f"- {r.title or 'Công thức mới'}: {fe}/recipes/{r.id}")
     lines += [
@@ -255,7 +255,7 @@ async def send_weekly_newsletter(db: AsyncSession) -> dict:
     ).scalars().all()
 
     api = settings.APP_BASE_URL.rstrip("/")
-    subject = "VNFood — Công thức mới trong tuần"
+    subject = "TastyVietnam — Công thức mới trong tuần"
 
     sent = 0
     failed = 0

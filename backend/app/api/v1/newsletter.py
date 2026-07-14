@@ -55,17 +55,17 @@ async def unsubscribe(
     fe = settings.FRONTEND_BASE_URL.rstrip("/")
     if ok:
         heading = "Đã hủy nhận bản tin"
-        msg = "Bạn sẽ không nhận email công thức hàng tuần từ VNFood nữa."
+        msg = "Bạn sẽ không nhận email công thức hàng tuần từ TastyVietnam nữa."
     else:
         heading = "Link không hợp lệ"
         msg = "Link hủy nhận không đúng hoặc đã hết hiệu lực."
     html = f"""<!DOCTYPE html>
 <html lang="vi"><head><meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>{heading} — VNFood</title></head>
+<title>{heading} — TastyVietnam</title></head>
 <body style="margin:0;font-family:Arial,sans-serif;background:#f5f5f5;">
   <div style="max-width:480px;margin:64px auto;background:#fff;border-radius:12px;padding:32px;text-align:center;">
-    <div style="color:#ec2028;font-size:24px;font-weight:bold;">VNFood</div>
+    <div style="color:#ec2028;font-size:24px;font-weight:bold;">TastyVietnam</div>
     <h1 style="font-size:20px;color:#1a1a1a;margin:20px 0 8px;">{heading}</h1>
     <p style="color:#666;font-size:14px;line-height:1.6;">{msg}</p>
     <a href="{fe}" style="display:inline-block;margin-top:20px;background:#ec2028;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;">Về trang chủ</a>

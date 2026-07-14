@@ -57,7 +57,7 @@ class Settings(BaseSettings):
     SMTP_USE_SSL: bool = True  # True → SMTP_SSL (465); False → STARTTLS (587)
     SMTP_USERNAME: str = ""
     SMTP_PASSWORD: str = ""  # Gmail App Password (16 ký tự, không phải mật khẩu thường)
-    SMTP_FROM_NAME: str = "VNFood"
+    SMTP_FROM_NAME: str = "TastyVietnam"
     SMTP_FROM_EMAIL: str = ""  # mặc định lấy theo SMTP_USERNAME nếu để trống
 
     # Base URL dùng để dựng link trong email (hủy nhận, xem công thức, ảnh).
