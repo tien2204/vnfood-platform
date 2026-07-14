@@ -50,8 +50,16 @@ async def lifespan(app: FastAPI):
         set_predictor(predictor)
         if predictor is not None:
             logger.info("AI predictor ready (backend=%s)", settings.AI_BACKEND)
-    except Exception as exc:
-        logger.error("Failed to init AI predictor: %s", exc)
+        else:
+            logger.warning(
+                "AI predictor is None (backend=%s) — AI features disabled",
+                settings.AI_BACKEND,
+            )
+    except Exception:
+        logger.exception(
+            "Failed to init AI predictor (backend=%s) — AI features disabled",
+            settings.AI_BACKEND,
+        )
 
     count = load_dish_recipes()
     logging.info(f"[startup] Loaded {count} curated dish recipes")
