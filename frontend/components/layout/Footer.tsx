@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { UtensilsCrossed, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import NewsletterForm from "@/components/common/NewsletterForm";
 
 const KEYWORD_LINKS = [
@@ -74,9 +74,6 @@ export default function Footer() {
           {/* Col 1: Brand */}
           <div>
             <Link href="/" className="inline-flex items-center gap-2 mb-3">
-              <span className="flex h-9 w-9 items-center justify-center border-2 border-white bg-[#ec2028]">
-                <UtensilsCrossed className="w-5 h-5 text-white" />
-              </span>
               <span className="text-lg font-display tracking-wide text-white">TastyVietnam</span>
             </Link>
             <p className="text-sm text-white/70 leading-relaxed">

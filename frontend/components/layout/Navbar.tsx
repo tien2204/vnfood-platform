@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useCallback } from "react";
-import { Search, ScanLine, UtensilsCrossed, X, ChevronDown, LogOut, UserRound, Bookmark, ChefHat, Settings, CalendarDays, ClipboardList } from "lucide-react";
+import { Search, ScanLine, X, ChevronDown, LogOut, UserRound, Bookmark, ChefHat, Settings, CalendarDays, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -74,9 +74,6 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary shadow-sm">
-            <UtensilsCrossed className="w-5 h-5 text-white" />
-          </span>
           <span className="text-2xl text-primary font-display leading-none">
             TastyVietnam
           </span>
