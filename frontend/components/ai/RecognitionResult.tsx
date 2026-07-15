@@ -108,7 +108,12 @@ export default function RecognitionResult({ result, imagePreview, onReset }: Pro
                   </h2>
                 </Link>
                 {result.subgroup && (
-                  <p className="text-xs text-muted-foreground mt-1">Nhóm: {result.subgroup}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Nhóm: {result.subgroup}
+                    {result.subgroup_confidence != null && (
+                      <> · độ tin cậy {Math.round(result.subgroup_confidence * 100)}%</>
+                    )}
+                  </p>
                 )}
               </div>
 

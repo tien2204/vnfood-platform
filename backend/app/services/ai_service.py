@@ -36,7 +36,7 @@ async def recognize_image(
     """
     Pipeline:
       1. Validate image (size, dimensions)
-      2. TastyVietnamPredictor → if needs_fallback → OpenAI Vision
+      2. TastyVietnamPredictor → if needs_fallback → báo "không nhận diện được"
       3. Query suggested recipes from DB
       4. Log to ai_logs
     """
@@ -52,6 +52,7 @@ async def recognize_image(
     vnfood_result = predictor.predict(pil_image)
     top5: list = vnfood_result.get("top5", [])
     group: Optional[str] = vnfood_result.get("group")
+    group_confidence: float = vnfood_result.get("group_confidence") or 0.0
 
     resolved_slug: Optional[str] = None
     match_tier: str = "unknown"
@@ -117,9 +118,11 @@ async def recognize_image(
         "model_used": model_used,
         "match_tier": match_tier,
         "resolved_slug": resolved_slug,
-        # Only surface VNFood's group on VNFood-trusted results; on OpenAI paths the
-        # group is a discarded low-confidence guess and would contradict resolved_slug.
+        # Only surface the group on model-trusted results; otherwise the group is a
+        # discarded low-confidence guess and would contradict resolved_slug.
         "subgroup": group if model_used == "vnfood" else None,
+        # Độ tin cậy tầng 1 (phân nhóm) — hiển thị kèm nhóm ở UI.
+        "subgroup_confidence": group_confidence if model_used == "vnfood" else None,
         "top_predictions": top5,
         "suggested_recipes": suggested_recipes,
         "canonical_recipe": canonical_recipe,

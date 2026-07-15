@@ -283,6 +283,7 @@ export interface AIRecognitionResult {
   match_tier: "confident" | "tentative" | "openai_known" | "unknown";
   resolved_slug: string | null;
   subgroup: string | null;
+  subgroup_confidence: number | null;
   top_predictions: AITopPrediction[];
   suggested_recipes: SuggestedRecipe[];
   canonical_recipe: SuggestedRecipe | null;
