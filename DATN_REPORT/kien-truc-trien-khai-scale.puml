@@ -1,0 +1,37 @@
+@startuml VNFood-kien-truc-trien-khai-scale
+
+skinparam backgroundColor transparent
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+
+actor "Người dùng" as user
+
+node "Vercel" {
+  component "Next.js\n(frontend + CDN)" as next
+}
+
+node "Render (autoscale)" {
+  component "FastAPI\nstateless → scale ngang" as api
+}
+
+node "Hugging Face" {
+  component "EfficientNet\n(AI inference)" as ai
+}
+
+node "Supabase" {
+  database "PostgreSQL" as pg
+  storage "Object Storage" as store
+}
+
+node "Upstash" {
+  queue "Redis" as redis
+}
+
+user --> next  : HTTP
+next --> api   : REST / JSON
+api  --> ai    : HTTP
+api  --> pg    : SQL
+api  --> store : upload ảnh
+api  --> redis : rate-limit
+
+@enduml

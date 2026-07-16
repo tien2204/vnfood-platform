@@ -35,6 +35,14 @@ venv
 .env*.local
 .env.example.local
 
+# Deployment secrets (DB password, S3 keys, tokens) — NEVER commit
+cloud_pass.txt
+**/cloud_pass.txt
+*secrets*.txt
+Admin_pass.txt
+*_pass.txt
+**/*_pass.txt
+
 # Model weights & AI files
 *.pth
 *.pt

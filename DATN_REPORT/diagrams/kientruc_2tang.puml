@@ -7,18 +7,19 @@ skinparam defaultTextAlignment center
 
 rectangle "Ảnh món ăn (đầu vào)" as IMG
 rectangle "Tiền xử lý ảnh\nResize 224x224 + chuẩn hóa ImageNet" as PRE1
-rectangle "LAYER 1 — Bộ phân loại nhóm\nEfficientNet-B0\n→ chọn 1 trong 8 nhóm món" as G
+rectangle "LAYER 1 — Bộ phân loại nhóm\nEfficientNet-B0\n→ chọn 1 trong 8 nhóm món\n(ngưỡng tin cậy ≥ 0,5)" as G
 rectangle "Định tuyến theo nhóm\n(chọn sub-model tương ứng)" as SEL
 rectangle "Tiền xử lý ảnh\nResize 260x260 + chuẩn hóa ImageNet" as PRE2
-rectangle "LAYER 2 — Bộ phân loại món\nEfficientNet-B2 của nhóm\n→ softmax trên các lớp món" as S
+rectangle "LAYER 2 — Bộ phân loại món\nEfficientNet-B2 của nhóm\n→ softmax trên các lớp món\n(ngưỡng tin cậy ≥ 0,6)" as S
 rectangle "Báo không nhận diện được\n(khi độ tin cậy thấp)" as LOW
 rectangle "Nhãn món + độ tin cậy\n→ ánh xạ về công thức chuẩn" as OUT
 
 IMG --> PRE1
 PRE1 --> G
-G --> SEL
+G --> SEL : độ tin cậy nhóm ≥ 0,5
 SEL --> PRE2
 PRE2 --> S
-S --> OUT
-S ..> LOW : độ tin cậy thấp
+S --> OUT : độ tin cậy món ≥ 0,6
+G ..> LOW : độ tin cậy nhóm < 0,5
+S ..> LOW : độ tin cậy món < 0,6
 @enduml
